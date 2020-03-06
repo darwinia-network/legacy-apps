@@ -8,10 +8,10 @@ import { css } from 'styled-components';
 const colorBtnDefault = '#666';
 
 /* highlighted buttons, orange */
-const colorBtnHighlight = '#f19135';
+const colorBtnHighlight = '#666';
 
 /* primary buttons, blue */
-const colorBtnPrimary = '#2e86ab';
+const colorBtnPrimary = '#302B3C';
 
 /* button text color */
 const colorBtnText = '#f9f9f9';

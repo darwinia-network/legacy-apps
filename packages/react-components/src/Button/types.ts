@@ -11,7 +11,7 @@ export type Button$OnClick = () => void | Promise<void>;
 export interface ButtonProps extends BareProps {
   children?: React.ReactNode;
   floated?: 'left' | 'right';
-  icon: string;
+  icon?: string;
   isBasic?: boolean;
   isCircular?: boolean;
   isDisabled?: boolean;

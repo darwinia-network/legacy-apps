@@ -115,13 +115,15 @@ class InputBalanceBonded extends React.PureComponent<Props, State> {
     let prevMax = new BN(0);
     let maxBalance = new BN(1);
     let extrinsic: any;
+    const currencyType = 'ring';
+    const typeKey = currencyType.charAt(0).toUpperCase() + currencyType.slice(1);
 
     while (!prevMax.eq(maxBalance)) {
       prevMax = maxBalance;
 
       if (extrinsicProp === 'staking.bond') {
         extrinsic = controllerId && (destination || destination === 0)
-          ? api.tx.staking.bond(controllerId, prevMax, destination)
+          ? api.tx.staking.bond(controllerId, { [typeKey]: prevMax }, destination, 0)
           : null;
       } else if (extrinsicProp === 'staking.unbond') {
         extrinsic = api.tx.staking.unbond(prevMax);
@@ -146,7 +148,7 @@ class InputBalanceBonded extends React.PureComponent<Props, State> {
       const { api, controllerId, destination, value } = this.props;
       const { maxBalance = prevState.maxBalance } = newState;
       const extrinsic = (value && controllerId && destination)
-        ? api.tx.staking.bond(controllerId, value, destination)
+        ? api.tx.staking.bond(controllerId, { ring: value }, destination, 0)
         : null;
 
       return {

@@ -24,6 +24,7 @@ export interface AppProps {
   basePath: string;
   className?: string;
   onStatusChange: (status: ActionStatus) => void;
+  currentAccount?: string;
 }
 
 export type I18nProps = BareProps & WithTranslation;
