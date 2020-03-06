@@ -4,6 +4,7 @@
 
 export { default as Available } from './Available';
 export { default as Balance } from './Balance';
+export { default as BalanceKton } from './BalanceKton';
 export { default as BalanceFree } from './BalanceFree';
 export { default as BalanceVoting } from './BalanceVoting';
 export { BlockAuthors, BlockAuthorsContext, ValidatorsContext } from './BlockAuthors';
