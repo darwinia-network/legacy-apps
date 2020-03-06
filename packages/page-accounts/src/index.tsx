@@ -48,18 +48,7 @@ export default function AccountsApp ({ basePath, onStatusChange }: Props): React
 
   return (
     <main className='accounts--App'>
-      <HelpOverlay md={basicMd} />
-      <header>
-        <Tabs
-          basePath={basePath}
-          hidden={hidden}
-          items={items}
-        />
-      </header>
-      <Switch>
-        <Route path={`${basePath}/vanity`}>{_renderComponent(Vanity)}</Route>
-        <Route>{_renderComponent(Overview)}</Route>
-      </Switch>
+      {_renderComponent(Overview)}
     </main>
   );
 }
