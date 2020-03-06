@@ -2822,8 +2822,10 @@ __metadata:
     "@babel/runtime": ^7.8.4
     "@polkadot/react-components": 0.40.0-beta.67
     "@polkadot/react-qr": ^0.52.0-beta.5
+    dayjs: 1.8.21
     detect-browser: ^4.8.0
     file-saver: ^2.0.2
+    react-paginate: 6.3.2
     yargs: ^15.1.0
   languageName: unknown
   linkType: soft
@@ -3241,6 +3243,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@polkadot/react-darwinia@workspace:packages/react-darwinia":
+  version: 0.0.0-use.local
+  resolution: "@polkadot/react-darwinia@workspace:packages/react-darwinia"
+  dependencies:
+    axios: ^0.19.0
+  languageName: unknown
+  linkType: soft
+
 "@polkadot/react-hooks@workspace:packages/react-hooks":
   version: 0.0.0-use.local
   resolution: "@polkadot/react-hooks@workspace:packages/react-hooks"
@@ -3476,6 +3486,7 @@ __metadata:
   dependencies:
     "@babel/runtime": ^7.8.4
     "@types/bn.js": ^4.11.6
+    bignumber.js: 9.0.0
     bn.js: ^5.1.1
     camelcase: ^5.3.1
     chalk: ^3.0.0
@@ -5297,6 +5308,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^0.19.0":
+  version: 0.19.2
+  resolution: "axios@npm:0.19.2"
+  dependencies:
+    follow-redirects: 1.5.10
+  checksum: 2/bad346deea24050f9953ce09bb8015f85a99a7b8f016806adccfab0b8981827d1fbee9c77c0ef7c70cc48392c1af6bbc65e07c3e88221d17282d2d5fd0a191f6
+  languageName: node
+  linkType: hard
+
 "babel-core@npm:^7.0.0-bridge.0":
   version: 7.0.0-bridge.0
   resolution: "babel-core@npm:7.0.0-bridge.0"
@@ -5521,6 +5541,13 @@ __metadata:
   version: 5.2.2
   resolution: "big.js@npm:5.2.2"
   checksum: 2/ea33d7d25674df4253ae3667da7f48ade6cc8828cb4f2c3a7753f53975f10cebae57e0d1ecf84f1b920b5467262dc0d4f357e5e497b138472d0e64992a8402a4
+  languageName: node
+  linkType: hard
+
+"bignumber.js@npm:9.0.0":
+  version: 9.0.0
+  resolution: "bignumber.js@npm:9.0.0"
+  checksum: 2/5968a936fbd801d591d35756078c4c3755887346b703f7e77eb2a5506fe900ca7c48baa253c21ed42b45d1d5c7012b69ac57c3936295d16924b7fc257f22bb80
   languageName: node
   linkType: hard
 
@@ -7566,6 +7593,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dayjs@npm:1.8.21":
+  version: 1.8.21
+  resolution: "dayjs@npm:1.8.21"
+  checksum: 2/a57e92dfaf9b3e4b6d474ef447c9149c74b3a0bb2e069c539ac2cfb2fae761d3819b086f8a476a5666a418b88b1ae53f4fc1d1e2df9c8c477cd44c6c01bb7b43
+  languageName: node
+  linkType: hard
+
 "de-indent@npm:^1.0.2":
   version: 1.0.2
   resolution: "de-indent@npm:1.0.2"
@@ -7591,7 +7625,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:3.1.0, debug@npm:~3.1.0":
+"debug@npm:3.1.0, debug@npm:=3.1.0, debug@npm:~3.1.0":
   version: 3.1.0
   resolution: "debug@npm:3.1.0"
   dependencies:
@@ -9726,6 +9760,15 @@ __metadata:
     inherits: ^2.0.3
     readable-stream: ^2.3.6
   checksum: 2/b8fa1fbfadd5c4b6df3cf2c34b3c408fe508a2899c536bafa339f679de545689997e907bd4ff61dd292942f8044fb2f293a5956dd8b601f6a5601617842d0dda
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:1.5.10":
+  version: 1.5.10
+  resolution: "follow-redirects@npm:1.5.10"
+  dependencies:
+    debug: =3.1.0
+  checksum: 2/6e58e02c31337b6b41ffc3d5f3d49920b7db428eddcf374537da00ef121fe473983e12d8557f4304287604168d3efcc288d1f009abaf4c9d61e5db0c0cee3c4a
   languageName: node
   linkType: hard
 
@@ -17056,6 +17099,17 @@ __metadata:
   peerDependencies:
     react: ^15.0.0 || ^16.0.0
   checksum: 2/89111d726b03e47a0282557041aca3f918c9e4a9b2cdb4988061f162ad348fec576fcf91b1ab37d34f32475b620c72ea21a8bb61a8e1702d3fb8f5e7fc7f09b3
+  languageName: node
+  linkType: hard
+
+"react-paginate@npm:6.3.2":
+  version: 6.3.2
+  resolution: "react-paginate@npm:6.3.2"
+  dependencies:
+    prop-types: ^15.6.1
+  peerDependencies:
+    react: ^16.0.0
+  checksum: 2/bad6e4f09b234f6f60f2c180804d8cb2e8b15aa99e6c2997199a4296c5894dea1625fc71bab6ffabf897026c6d9f8e2a0037135eff70724b176938bd07a9b686
   languageName: node
   linkType: hard
 

@@ -81,7 +81,15 @@
       "@polkadot/rpc-provider": ["packages/rpc-provider/src"],
       "@polkadot/rpc-provider/*": ["packages/rpc-provider/src/*"],
       "@polkadot/types": ["packages/types/src"],
-      "@polkadot/types/*": ["packages/types/src/*"]
+      "@polkadot/types/*": ["packages/types/src/*"],
+      "@polkadot/react-darwinia": ["packages/react-darwinia/src"],
+      "@polkadot/react-darwinia/*": ["packages/react-darwinia/src/*"],
+      "@polkadot/util": ["packages/util/src"],
+      "@polkadot/util/*": ["packages/util/src/*"],
+      "@polkadot/util-crypto": ["packages/util-crypto/src"],
+      "@polkadot/util-crypto/*": ["packages/util-crypto/src/*"],
+      "@polkadot/keyring": ["packages/keyring/src"],
+      "@polkadot/keyring/*": ["packages/keyring/src/*"]
     },
     "skipLibCheck": true,
     "typeRoots": [
