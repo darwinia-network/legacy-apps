@@ -23,3 +23,4 @@ export * from './is';
 export * from './number';
 export * from './string';
 export * from './u8a';
+export * from './transform';
