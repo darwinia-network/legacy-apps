@@ -149,14 +149,14 @@ export default function CurrentList ({ authorsMap, hasQueries, isIntentions, isV
 
   return (
     <div className={`${!isVisible && 'staking--hidden'}`}>
-      <FilterOverlay>
+      {/* <FilterOverlay>
         <Dropdown
           onChange={setFilter}
           options={filterOpts}
           value={filter}
           withLabel={false}
         />
-      </FilterOverlay>
+      </FilterOverlay> */}
       <Input
         autoFocus
         isFull

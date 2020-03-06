@@ -15,7 +15,7 @@ import Tabs from '@polkadot/react-components/Tabs';
 import { useCall, useAccounts, useApi } from '@polkadot/react-hooks';
 
 import basicMd from './md/basic.md';
-import Actions from './Actions';
+import Actions from './ActionsNode';
 import Overview from './Overview';
 import Summary from './Overview/Summary';
 import Query from './Query';
@@ -44,7 +44,31 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
   const sessionRewards = useSessionRewards(MAX_SESSIONS);
   const hasQueries = hasAccounts && !!(api.query.imOnline?.authoredBlocks);
   const [nominators, dispatchNominators] = useReducer(reduceNominators, [] as string[]);
-  
+  const items = useMemo(() => [
+    {
+      isRoot: true,
+      name: 'overview',
+      text: t('Staking overview')
+    },
+    {
+      name: 'waiting',
+      text: t('Waiting')
+    },
+    {
+      name: 'returns',
+      text: t('Returns')
+    },
+    {
+      name: 'actions',
+      text: t('Account actions')
+    },
+    {
+      hasParams: true,
+      name: 'query',
+      text: t('Validator stats')
+    }
+  ], [t]);
+
   useEffect((): void => {
     stakingOverview && setNext(
       allStashes.filter((address): boolean => !stakingOverview.validators.includes(address as any))
@@ -53,6 +77,34 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
 
   return (
     <main className={`staking--App ${className}`}>
+      {/* <HelpOverlay md={basicMd} />
+      <header>
+        <Tabs
+          basePath={basePath}
+          hidden={
+            hasAccounts
+              ? hasQueries
+                ? []
+                : ['query']
+              : ['actions', 'query']
+          }
+          items={items}
+        />
+      </header> */}
+      {/* <Summary
+        isVisible={pathname === basePath}
+        next={next}
+        nominators={nominators}
+        stakingOverview={stakingOverview}
+      /> */}
+      {/* <Switch>
+        <Route path={[`${basePath}/query/:value`, `${basePath}/query`]}>
+          <Query sessionRewards={sessionRewards} />
+        </Route>
+        <Route path={`${basePath}/returns`}>
+          <Targets sessionRewards={sessionRewards} />
+        </Route>
+      </Switch> */}
       <Actions
         allStashes={allStashes}
         isVisible={pathname === `${basePath}`}
@@ -60,6 +112,15 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
         next={next}
         stakingOverview={stakingOverview}
       />
+      {/* <Overview
+        hasQueries={hasQueries}
+        isVisible={[basePath, `${basePath}/waiting`].includes(pathname)}
+        recentlyOnline={recentlyOnline}
+        next={next}
+        setNominators={dispatchNominators}
+        stakingOverview={stakingOverview}
+        className="staking--overview"
+      /> */}
     </main>
   );
 }

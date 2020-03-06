@@ -44,7 +44,31 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
   const sessionRewards = useSessionRewards(MAX_SESSIONS);
   const hasQueries = hasAccounts && !!(api.query.imOnline?.authoredBlocks);
   const [nominators, dispatchNominators] = useReducer(reduceNominators, [] as string[]);
-  
+  const items = useMemo(() => [
+    {
+      isRoot: true,
+      name: 'overview',
+      text: t('Staking overview')
+    },
+    {
+      name: 'waiting',
+      text: t('Waiting')
+    },
+    {
+      name: 'returns',
+      text: t('Returns')
+    },
+    {
+      name: 'actions',
+      text: t('Account actions')
+    },
+    {
+      hasParams: true,
+      name: 'query',
+      text: t('Validator stats')
+    }
+  ], [t]);
+
   useEffect((): void => {
     stakingOverview && setNext(
       allStashes.filter((address): boolean => !stakingOverview.validators.includes(address as any))
@@ -53,12 +77,20 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
 
   return (
     <main className={`staking--App ${className}`}>
-      <Actions
-        allStashes={allStashes}
-        isVisible={pathname === `${basePath}`}
+      <Summary
+        isVisible={pathname === basePath}
+        next={next}
+        nominators={nominators}
+        stakingOverview={stakingOverview}
+      />
+      <Overview
+        hasQueries={hasQueries}
+        isVisible={true}
         recentlyOnline={recentlyOnline}
         next={next}
+        setNominators={dispatchNominators}
         stakingOverview={stakingOverview}
+        className="staking--overview"
       />
     </main>
   );

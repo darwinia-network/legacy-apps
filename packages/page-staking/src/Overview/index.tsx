@@ -23,7 +23,7 @@ interface Props extends BareProps {
 export default function Overview ({ hasQueries, isVisible, className, recentlyOnline, next, setNominators, stakingOverview }: Props): React.ReactElement<Props> {
   const { pathname } = useLocation();
   const { byAuthor, lastBlockAuthors } = useContext(BlockAuthorsContext);
-  const isIntentions = pathname !== '/staking';
+  const isIntentions = pathname !== '/scan';
 
   return (
     <div className={`staking--Overview ${className} ${!isVisible && 'staking--hidden'}`}>
@@ -31,6 +31,18 @@ export default function Overview ({ hasQueries, isVisible, className, recentlyOn
         authorsMap={byAuthor}
         hasQueries={hasQueries}
         isIntentions={isIntentions}
+        isVisible={isVisible}
+        lastAuthors={lastBlockAuthors}
+        next={next}
+        recentlyOnline={recentlyOnline}
+        setNominators={setNominators}
+        stakingOverview={stakingOverview}
+      />
+
+      <CurrentList
+        authorsMap={byAuthor}
+        hasQueries={hasQueries}
+        isIntentions={true}
         isVisible={isVisible}
         lastAuthors={lastBlockAuthors}
         next={next}

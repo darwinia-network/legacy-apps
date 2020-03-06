@@ -13,7 +13,6 @@ import { Option } from '@polkadot/types';
 import Account from './Account';
 import StartStaking from './NewStake';
 import { useTranslation } from '../translate';
-import { RowTitle, Box, SorryNote, ActionNote } from '@polkadot/react-darwinia/components';
 
 interface Props {
   allStashes: string[];
@@ -74,7 +73,7 @@ export default function Actions ({ allStashes, className, isVisible, next, recen
     });
 
   return (
-    <div className={`staking--Actions ${className} ${!isVisible && 'staking--hidden'}`}>
+    <div className={`${className} ${!isVisible && 'staking--hidden'}`}>
       <Button.Group>
         <Button
           isPrimary
@@ -106,14 +105,7 @@ export default function Actions ({ allStashes, className, isVisible, next, recen
             </Table.Body>
           </Table>
         )
-        : <div>
-          <RowTitle title={t('My Nomination')} />
-          <RowTitle title={t('Power Manager')} />
-          <RowTitle title={t('Start')} />
-          <ActionNote onStart={() => {}} type="nominate"/>
-          <RowTitle title={t('Note')} />
-          <SorryNote type="nominate"/>
-        </div>
+        : t('No funds staked yet. Bond funds to validate or nominate a validator.')
       }
     </div>
   );
