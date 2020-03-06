@@ -22,6 +22,8 @@ import parachains from './parachains';
 import settings from './settings';
 import society from './society';
 import staking from './staking';
+import node from './node';
+import scan from './scan';
 import storage from './storage';
 import sudo from './sudo';
 import techcomm from './techcomm';
@@ -32,50 +34,54 @@ import treasury from './treasury';
 const routes: Routes = appSettings.uiMode === 'light'
   ? ([] as Routes).concat(
     // dashboard,
-    explorer,
+    // explorer,
     accounts,
-    addressbook,
+    // addressbook,
     claims,
-    transfer,
-    genericAsset,
+    // transfer,
+    // genericAsset,
     null,
+    scan,
     staking,
-    democracy,
-    council,
+    node,
+    // democracy,
+    // council,
     // TODO Not sure about the inclusion of treasury, parachains & society here
     null,
     settings
   )
   : ([] as Routes).concat(
     // dashboard,
-    explorer,
+    // explorer,
     accounts,
-    addressbook,
+    // addressbook,
     claims,
-    transfer,
-    genericAsset,
+    // transfer,
+    // genericAsset,
     null,
+    scan,
     staking,
-    democracy,
-    council,
-    treasury,
-    techcomm,
-    parachains,
-    society,
+    node,
+    // democracy,
+    // council,
+    // treasury,
+    // techcomm,
+    // parachains,
+    // society,
     null,
-    contracts,
+    // contracts,
     storage,
     extrinsics,
     sudo,
     null,
-    settings,
-    toolbox,
-    js,
-    template
+    settings
+    // toolbox,
+    // js,
+    // template
   );
 
 const setup: Routing = {
-  default: 'explorer',
+  default: 'accounts',
   routes
 };
 
