@@ -16,6 +16,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { withCalls, withMulti, withApi } from '@polkadot/react-api/hoc';
 import { ZERO_BALANCE, ZERO_FEES } from '@polkadot/react-signer/Checks/constants';
 import { bnMax } from '@polkadot/util';
+import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
 
 interface Props extends BareProps, ApiProps {
   autoFocus?: boolean;
@@ -32,6 +33,7 @@ interface Props extends BareProps, ApiProps {
   isZeroable?: boolean;
   label?: any;
   onChange?: (value?: BN) => void;
+  onChangeType?: (value?: currencyType) => void;
   onEnter?: () => void;
   onEscape?: () => void;
   placeholder?: string;
@@ -40,6 +42,10 @@ interface Props extends BareProps, ApiProps {
   withEllipsis?: boolean;
   withLabel?: boolean;
   withMax?: boolean;
+  currencyType: currencyType;
+  isType?: boolean;
+  isSi?: boolean;
+  isSiShow?: boolean;
 }
 
 interface State {
@@ -63,7 +69,7 @@ class InputBalanceBonded extends React.PureComponent<Props, State> {
   }
 
   public render (): React.ReactNode {
-    const { autoFocus, className, defaultValue, help, isDisabled, isError, isFull, isZeroable, label, onChange, onEnter, onEscape, placeholder, style, value, withEllipsis, withLabel, withMax } = this.props;
+    const { autoFocus, className, defaultValue, help, isDisabled, isError, isFull, isZeroable, label, onChange, onEnter, onEscape, placeholder, style, value, withEllipsis, withLabel, withMax, isType, onChangeType, isSi, isSiShow } = this.props;
     const { maxBalance } = this.state;
 
     return (
@@ -76,12 +82,13 @@ class InputBalanceBonded extends React.PureComponent<Props, State> {
         isDisabled={isDisabled}
         isError={isError}
         isFull={isFull}
-        isSi
+        isSi={isSi}
         isZeroable={isZeroable}
         label={label}
         maxValue={maxBalance}
         onChange={onChange}
         onEnter={onEnter}
+        onChangeType={onChangeType}
         onEscape={onEscape}
         placeholder={placeholder}
         style={style}
@@ -89,6 +96,8 @@ class InputBalanceBonded extends React.PureComponent<Props, State> {
         withEllipsis={withEllipsis}
         withLabel={withLabel}
         withMax={withMax}
+        isType={isType}
+        isSiShow={isSiShow}
       />
     );
   }
@@ -109,19 +118,19 @@ class InputBalanceBonded extends React.PureComponent<Props, State> {
   }
 
   private setMaxBalance = (): void => {
-    const { api, balances_fees = ZERO_FEES, balances_all = ZERO_BALANCE, controllerId, destination, extrinsicProp } = this.props;
+    const { api, balances_fees = ZERO_FEES, balances_all = ZERO_BALANCE, controllerId, destination, extrinsicProp, currencyType } = this.props;
     const { transactionBaseFee, transactionByteFee } = balances_fees;
     const { freeBalance } = balances_all;
     let prevMax = new BN(0);
     let maxBalance = new BN(1);
     let extrinsic: any;
-    const currencyType = 'ring';
-    const typeKey = currencyType.charAt(0).toUpperCase() + currencyType.slice(1);
+    const typeKey = currencyType + 'balance';
 
     while (!prevMax.eq(maxBalance)) {
       prevMax = maxBalance;
 
       if (extrinsicProp === 'staking.bond') {
+        console.log(controllerId, { [typeKey]: prevMax }, destination, 0);
         extrinsic = controllerId && (destination || destination === 0)
           ? api.tx.staking.bond(controllerId, { [typeKey]: prevMax }, destination, 0)
           : null;
@@ -145,10 +154,12 @@ class InputBalanceBonded extends React.PureComponent<Props, State> {
 
   private nextState (newState: Partial<State>): void {
     this.setState((prevState: State): State => {
-      const { api, controllerId, destination, value } = this.props;
+      const { api, controllerId, destination, value, currencyType } = this.props;
       const { maxBalance = prevState.maxBalance } = newState;
+      const typeKey = currencyType + 'balance';
+
       const extrinsic = (value && controllerId && destination)
-        ? api.tx.staking.bond(controllerId, { ring: value }, destination, 0)
+        ? api.tx.staking.bond(controllerId, { [typeKey]: value }, destination, 0)
         : null;
 
       return {

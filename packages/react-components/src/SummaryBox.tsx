@@ -22,12 +22,14 @@ function SummaryBox ({ children, className }: Props): React.ReactElement<Props> 
 
 export default styled(SummaryBox)`
   align-items: stretch;
-  border-radius: 4px;
   display: flex;
   flex-wrap: no-wrap;
   justify-content: space-between;
   margin-bottom: 1.4rem;
-
+  background: #fff;
+  border-radius: 2px;
+  border:1px solid #EDEDED;
+  padding: 28px 16px;
   > section {
     display: flex;
     flex: 0 1 auto;

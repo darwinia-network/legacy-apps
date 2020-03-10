@@ -8,6 +8,7 @@ import { BareProps, BitLength } from './types';
 import BN from 'bn.js';
 import React, { useEffect, useState } from 'react';
 import { formatBalance } from '@polkadot/util';
+import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 
 import { classes } from './util';
 import { BitLengthOption } from './constants';
@@ -27,6 +28,8 @@ interface Props extends BareProps {
   isError?: boolean;
   isFull?: boolean;
   isSi?: boolean;
+  isSiShow?: boolean;
+  isType?: boolean;
   isDecimal?: boolean;
   isZeroable?: boolean;
   label?: React.ReactNode;
@@ -34,6 +37,7 @@ interface Props extends BareProps {
   maxLength?: number;
   maxValue?: BN;
   onChange?: (value?: BN) => void;
+  onChangeType?: (value?: string) => void;
   onEnter?: () => void;
   onEscape?: () => void;
   placeholder?: string;
@@ -195,9 +199,10 @@ function isNewPropsValue (propsValue: BN | string, value: string, valueBn: BN): 
 
 export default function InputNumber (props: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { bitLength = DEFAULT_BITLENGTH, className, defaultValue = ZERO, help, isDecimal, isFull, isSi, isDisabled, isError = false, maxLength, maxValue, onChange, onEnter, onEscape, placeholder, style, value: propsValue } = props;
+  const { bitLength = DEFAULT_BITLENGTH, className, defaultValue = ZERO, help, isDecimal, isFull, isSi = true, isDisabled, isError = false, maxLength, maxValue, onChange, onEnter, onEscape, placeholder, style, value: propsValue, isType, isSiShow = true } = props;
 
   const [si, setSi] = useState<SiDef | null>(isSi ? formatBalance.findSi('-') : null);
+  const [type, setType] = useState('ring');
   const [isPreKeyDown, setIsPreKeyDown] = useState(false);
 
   const [[value, valueBn, isValid], setValues] = useState<[string, BN, boolean]>(
@@ -236,6 +241,31 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
         event.preventDefault();
       }
     }
+  };
+
+  const selectType = (type: string): void => {
+    const { onChangeType } = props;
+    onChangeType(type);
+    setType(type);
+  };
+
+  const renderTypeDropdown = () => {
+    const typeOptions = [{
+      text: RING_PROPERTIES.tokenSymbol,
+      value: 'ring'
+    }, {
+      text: KTON_PROPERTIES.tokenSymbol,
+      value: 'kton'
+    }];
+    return (
+      <Dropdown
+        dropdownClassName='ui--TypeDropdown'
+        isButton
+        onChange={selectType}
+        options={typeOptions}
+        defaultValue={type}
+      />
+    );
   };
 
   const _onKeyUp = (event: React.KeyboardEvent<Element>): void => {
@@ -292,7 +322,7 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
           {t('Max')}
         </Button>
       ) */}
-      {!!si && (
+      {!!isSiShow && (
         <Dropdown
           dropdownClassName='ui--SiDropdown'
           isButton
@@ -301,6 +331,8 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
           options={getSiOptions()}
         />
       )}
+      {isType && renderTypeDropdown()}
+
     </Input>
   );
 }

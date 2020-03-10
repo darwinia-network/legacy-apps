@@ -62,7 +62,7 @@ export default createGlobalStyle`
 
     &.error,
     &.warning {
-      margin-left: 2.25rem;
+      margin-left: 2rem;
     }
 
     &.error {

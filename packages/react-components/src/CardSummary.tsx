@@ -28,16 +28,16 @@ interface Props extends BareProps {
   progress?: ProgressProps;
 }
 
-function CardSummary ({ children, className, help, label, progress }: Props): React.ReactElement<Props> | null {
+function CardSummary({ children, className, help, label, progress }: Props): React.ReactElement<Props> | null {
   const value = progress && progress.value;
   const total = progress && progress.total;
   const left = progress && !isUndefined(value) && !isUndefined(total) && value.gten(0) && total.gtn(0)
     ? (
       value.gt(total)
         ? `>${
-          progress.isPercent
-            ? '100'
-            : formatNumber(total)
+        progress.isPercent
+          ? '100'
+          : formatNumber(total)
         }`
         : (
           progress.isPercent
@@ -63,9 +63,9 @@ function CardSummary ({ children, className, help, label, progress }: Props): Re
             !left || isUndefined(progress.total)
               ? '-'
               : `${left}${progress.isPercent ? '' : '/'}${
-                progress.isPercent
-                  ? '%'
-                  : formatNumber(progress.total)
+              progress.isPercent
+                ? '%'
+                : formatNumber(progress.total)
               }`
           )
         }
@@ -112,12 +112,19 @@ export default styled(CardSummary)`
 
     > label {
       line-height: 1rem;
-      font-size: 0.95rem;
+      font-size: 1.14rem;
       min-height: 1rem;
+      color: #98959F;
+      font-weight: bold;
+      
     }
-
+    .ui--Labelled-content{
+      color: #302B3C;
+      font-size: 2.85rem;
+      margin-top: 1.5rem;
+    }
     .progress {
-      margin: 0.2rem 0 -0.5rem !important;
+      margin: 0.5rem 0 -0.5rem !important;
       background: rgba(0,0,0,0.05);
     }
   }
