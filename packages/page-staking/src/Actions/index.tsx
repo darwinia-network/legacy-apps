@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 // Copyright 2017-2020 @polkadot/app-staking authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
@@ -6,7 +7,7 @@ import { DerivedHeartbeats, DerivedStakingOverview } from '@polkadot/api-derive/
 import { AccountId, StakingLedger } from '@polkadot/types/interfaces';
 
 import React, { useEffect, useState } from 'react';
-import { Button, Table } from '@polkadot/react-components';
+import { Button } from '@polkadot/react-components';
 import { useCall, useApi, useAccounts } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
 
@@ -22,38 +23,37 @@ interface Props {
   recentlyOnline?: DerivedHeartbeats;
   next: string[];
   stakingOverview?: DerivedStakingOverview;
+  accountChecked: string;
 }
 
-function getStashes (allAccounts: string[], stashTypes: Record<string, number>, queryBonded?: Option<AccountId>[], queryLedger?: Option<StakingLedger>[]): [string, boolean][] | null {
-  const result: [string, boolean][] = [];
+function getStashes (allAccounts: string[], stashTypes: Record<string, number>, queryBonded?: Option<AccountId>[], queryLedger?: Option<StakingLedger>): [string, boolean][] | null {
+  let result: [string, boolean][] = [];
 
   if (!queryBonded || !queryLedger) {
     return null;
   }
 
   queryBonded.forEach((value, index): void => {
-    value.isSome && result.push([allAccounts[index], true]);
+    value.isSome && (result = [[allAccounts[index], true]]);
   });
 
-  queryLedger.forEach((ledger): void => {
-    if (ledger.isSome) {
-      const stashId = ledger.unwrap().stash.toString();
+  if (queryLedger.isSome) {
+    const stashId = queryLedger.unwrap().stash.toString();
 
-      !result.some(([accountId]): boolean => accountId === stashId) && result.push([stashId, false]);
-    }
-  });
+    !result.some(([accountId]): boolean => accountId === stashId) && (result = [[stashId, false]]);
+  }
 
   return result.sort((a, b): number =>
     (stashTypes[a[0]] || 99) - (stashTypes[b[0]] || 99)
   );
 }
 
-export default function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stakingOverview }: Props): React.ReactElement<Props> {
+export default function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
-  const queryBonded = useCall<Option<AccountId>[]>(api.query.staking.bonded.multi as any, [allAccounts]);
-  const queryLedger = useCall<Option<StakingLedger>[]>(api.query.staking.ledger.multi as any, [allAccounts]);
+  const queryBonded = useCall<Option<AccountId>[]>(api.query.staking.bonded.multi as any, [[accountChecked]]);
+  const queryLedger = useCall<Option<StakingLedger>>(api.query.staking.ledger as any, [accountChecked]);
   const [isNewStakeOpen, setIsNewStateOpen] = useState(false);
   const [foundStashes, setFoundStashes] = useState<[string, boolean][] | null>(null);
   const [stashTypes, setStashTypes] = useState<Record<string, number>>({});
@@ -75,23 +75,16 @@ export default function Actions ({ allStashes, className, isVisible, next, recen
 
   return (
     <div className={`staking--Actions ${className} ${!isVisible && 'staking--hidden'}`}>
-      <Button.Group>
-        <Button
-          isPrimary
-          key='new-stake'
-          label={t('New stake')}
-          icon='add'
-          onClick={_toggleNewStake}
-        />
-      </Button.Group>
       {isNewStakeOpen && (
-        <StartStaking onClose={_toggleNewStake} />
+        <StartStaking onClose={_toggleNewStake} accountId={accountChecked} />
       )}
+
       {foundStashes?.length
         ? (
-          <Table>
-            <Table.Body>
-              {foundStashes.map(([stashId, isOwnStash]): React.ReactNode => (
+          <>
+            {foundStashes.map(([stashId, isOwnStash]): React.ReactNode => (
+              <>
+
                 <Account
                   allStashes={allStashes}
                   isOwnStash={isOwnStash}
@@ -102,17 +95,28 @@ export default function Actions ({ allStashes, className, isVisible, next, recen
                   stakingOverview={stakingOverview}
                   stashId={stashId}
                 />
-              ))}
-            </Table.Body>
-          </Table>
+              </>
+            ))}
+          </>
         )
         : <div>
           <RowTitle title={t('My Nomination')} />
+          <Box>
+            <Button.Group>
+              <Button
+                isPrimary
+                key='new-stake'
+                label={t('New stake')}
+                icon='add'
+                onClick={_toggleNewStake}
+              />
+            </Button.Group>
+          </Box>
           <RowTitle title={t('Power Manager')} />
           <RowTitle title={t('Start')} />
-          <ActionNote onStart={() => {}} type="nominate"/>
+          <ActionNote onStart={() => { }} type="nominate" />
           <RowTitle title={t('Note')} />
-          <SorryNote type="nominate"/>
+          <SorryNote type="nominate" />
         </div>
       }
     </div>

@@ -13,18 +13,14 @@ import styled from 'styled-components';
 import { HelpOverlay } from '@polkadot/react-components';
 import Tabs from '@polkadot/react-components/Tabs';
 import { useCall, useAccounts, useApi } from '@polkadot/react-hooks';
-
-import basicMd from './md/basic.md';
-import Actions from './Actions';
+import { RowTitle } from '@polkadot/react-darwinia/components';
 import Overview from './Overview';
 import Summary from './Overview/Summary';
-import Query from './Query';
-import Targets from './Targets';
 import { MAX_SESSIONS } from './constants';
 import { useTranslation } from './translate';
 import useSessionRewards from './useSessionRewards';
 
-function reduceNominators (nominators: string[], additional: string[]): string[] {
+function reduceNominators(nominators: string[], additional: string[]): string[] {
   return nominators.concat(...additional.filter((nominator): boolean => !nominators.includes(nominator)));
 }
 
@@ -44,30 +40,6 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
   const sessionRewards = useSessionRewards(MAX_SESSIONS);
   const hasQueries = hasAccounts && !!(api.query.imOnline?.authoredBlocks);
   const [nominators, dispatchNominators] = useReducer(reduceNominators, [] as string[]);
-  const items = useMemo(() => [
-    {
-      isRoot: true,
-      name: 'overview',
-      text: t('Staking overview')
-    },
-    {
-      name: 'waiting',
-      text: t('Waiting')
-    },
-    {
-      name: 'returns',
-      text: t('Returns')
-    },
-    {
-      name: 'actions',
-      text: t('Account actions')
-    },
-    {
-      hasParams: true,
-      name: 'query',
-      text: t('Validator stats')
-    }
-  ], [t]);
 
   useEffect((): void => {
     stakingOverview && setNext(
@@ -77,12 +49,14 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
 
   return (
     <main className={`staking--App ${className}`}>
+      <RowTitle title={t('Overview')} />
       <Summary
         isVisible={pathname === basePath}
         next={next}
         nominators={nominators}
         stakingOverview={stakingOverview}
       />
+      <RowTitle title={t('Validators')} />
       <Overview
         hasQueries={hasQueries}
         isVisible={true}
@@ -119,6 +93,17 @@ export default styled(StakingApp)`
     &>div {
       flex: 1;
       flex-basis: 430px;
+    }
+    &>div:first-child {
+      margin-right: 20px;
+    }
+  }
+
+  @media(max-width: 1170px) {
+    .staking--Overview {
+      &>div:first-child {
+        margin-right: 0px;
+      }
     }
   }
 

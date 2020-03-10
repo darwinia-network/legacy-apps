@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 // Copyright 2017-2020 @polkadot/ui-staking authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
@@ -5,13 +6,19 @@
 import { I18nProps } from '@polkadot/react-components/types';
 import { ApiProps } from '@polkadot/react-api/types';
 import { CalculateBalanceProps } from '../types';
+import { Balance } from '@polkadot/types/interfaces/runtime';
 
 import BN from 'bn.js';
 import React from 'react';
+import { Checkbox } from 'semantic-ui-react';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { Dropdown, InputAddress, InputBalanceBonded, Modal, TxButton, TxComponent } from '@polkadot/react-components';
 import { withApi, withMulti } from '@polkadot/react-api/hoc';
 import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
+import { lockLimitOptionsMaker, KTON_PROPERTIES } from '@polkadot/react-darwinia';
+import { PowerTelemetry } from '@polkadot/react-darwinia/components';
+import styled from 'styled-components';
+import { formatBalance, ringToKton } from '@polkadot/util';
 
 import translate from '../translate';
 import detectUnsafe from '../unsafeChains';
@@ -21,6 +28,9 @@ import { rewardDestinationOptions } from './constants';
 
 interface Props extends ApiProps, I18nProps, CalculateBalanceProps {
   onClose: () => void;
+  accountId: string;
+  staking_ktonPool: Balance;
+  staking_ringPool: Balance;
 }
 
 interface State {
@@ -33,7 +43,10 @@ interface State {
   stashId: string | null;
   currencyType: currencyType;
   promiseMonth: promiseMonth;
+  accept: boolean;
 }
+
+const ZERO = new BN(0);
 
 class NewStake extends TxComponent<Props, State> {
   public state: State;
@@ -49,16 +62,17 @@ class NewStake extends TxComponent<Props, State> {
       extrinsic: null,
       stashId: null,
       currencyType: 'ring',
-      promiseMonth: 0
+      promiseMonth: 0,
+      accept: false
     };
   }
 
   public render (): React.ReactNode {
-    const { onClose, systemChain, t } = this.props;
-    const { amountError, bondValue, controllerError, controllerId, destination, extrinsic, stashId } = this.state;
+    const { onClose, systemChain, accountId, t } = this.props;
+    const { amountError, bondValue, controllerError, controllerId, destination, extrinsic, stashId, currencyType, promiseMonth, accept } = this.state;
     const hasValue = !!bondValue && bondValue.gtn(0);
     const isUnsafeChain = detectUnsafe(systemChain);
-    const canSubmit = (hasValue && (isUnsafeChain || (!controllerError && !!controllerId)));
+    const canSubmit = (hasValue && (isUnsafeChain || (!controllerError && !!controllerId))) || (promiseMonth && currencyType === 'ring' ? accept : true);
 
     return (
       <Modal
@@ -71,8 +85,10 @@ class NewStake extends TxComponent<Props, State> {
             className='medium'
             label={t('stash account')}
             onChange={this.onChangeStash}
+            isDisabled
             type='account'
-            value={stashId}
+            // value={stashId}
+            defaultValue={accountId}
           />
           <InputAddress
             className='medium'
@@ -99,9 +115,13 @@ class NewStake extends TxComponent<Props, State> {
             isError={!hasValue || !!amountError}
             label={t('value bonded')}
             onChange={this.onChangeValue}
+            onChangeType={this.onChangeType}
             onEnter={this.sendTx}
             stashId={stashId}
             withMax={!isUnsafeChain}
+            currencyType={currencyType}
+            isType
+            isSiShow={false}
           />
           <InputValidateAmount
             accountId={stashId}
@@ -117,6 +137,29 @@ class NewStake extends TxComponent<Props, State> {
             options={rewardDestinationOptions}
             value={destination}
           />
+          {currencyType === 'ring' ? <Dropdown
+            className='medium'
+            defaultValue={promiseMonth}
+            help={t('lock limit')}
+            label={t('lock limit')}
+            onChange={this.onChangePromiseMonth}
+            options={lockLimitOptionsMaker(t)}
+          /> : null}
+          {promiseMonth ? <KtonTipStyledWrapper>
+            <div>
+              <p>{t('After setting a lock limit, you will receive an additional {{KTON}} bonus; if you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the {{KTON}} reward.', {
+                replace: {
+                  KTON: KTON_PROPERTIES.tokenSymbol
+                }
+              })}</p>
+              <Checkbox checked={accept} onChange={this.toggleAccept} label={t('I Accept')} />
+            </div>
+          </KtonTipStyledWrapper> : null}
+
+          <GetPowerStyledWrapper>
+            <p>{t('You will get')}: <span>{this.getPowerAmount()} POWER</span></p>
+            {promiseMonth ? <p><span>{this.getKtonAmount()} {KTON_PROPERTIES.tokenSymbol}</span></p> : null}
+          </GetPowerStyledWrapper>
         </Modal.Content>
         <Modal.Actions onCancel={onClose}>
           <TxButton
@@ -134,11 +177,51 @@ class NewStake extends TxComponent<Props, State> {
     );
   }
 
+  private onChangeType = (currencyType?: currencyType): void => {
+    this.nextState({ currencyType, promiseMonth: 0 });
+  }
+
+  private onChangePromiseMonth = (promiseMonth: promiseMonth): void => {
+    this.nextState({ promiseMonth });
+  }
+
+  private toggleAccept = (): void => {
+    const { accept } = this.state;
+    this.nextState({ accept: !accept });
+  }
+
+  private getKtonAmount = (): string => {
+    const { currencyType, bondValue = ZERO, promiseMonth } = this.state;
+    const parsedBondValue = bondValue;
+    if (currencyType === 'ring' && promiseMonth !== 0) {
+      return formatBalance(new BN(ringToKton(parsedBondValue.toString(), promiseMonth)), false);
+    }
+    return '0';
+  };
+
+  private getPowerAmount = (): React.ReactElement => {
+    const { staking_ringPool, staking_ktonPool } = this.props;
+    const { currencyType, bondValue = ZERO } = this.state;
+
+    const ktonBonded = new BN(0);
+    const ringBonded = new BN(0);
+
+    return <PowerTelemetry
+      ringAmount={ringBonded}
+      ktonAmount={ktonBonded}
+      ringPool={staking_ringPool}
+      ktonPool={staking_ktonPool}
+      ringExtraAmount={currencyType === 'ring' ? bondValue : new BN(0)}
+      ktonExtraAmount={currencyType === 'kton' ? bondValue : new BN(0)}
+    />;
+  }
+
   private nextState (newState: Partial<State>): void {
     this.setState((prevState: State): State => {
       const { api } = this.props;
-      const { amountError = prevState.amountError, bondValue = prevState.bondValue, controllerError = prevState.controllerError, controllerId = prevState.controllerId, destination = prevState.destination, stashId = prevState.stashId, currencyType = prevState.currencyType, promiseMonth = prevState.promiseMonth } = newState;
-      const typeKey = currencyType.charAt(0).toUpperCase() + currencyType.slice(1);
+      const { amountError = prevState.amountError, bondValue = prevState.bondValue, controllerError = prevState.controllerError, controllerId = prevState.controllerId, destination = prevState.destination, stashId = prevState.stashId, currencyType = prevState.currencyType, promiseMonth = prevState.promiseMonth, accept = prevState.accept } = newState;
+      // const typeKey = currencyType.charAt(0).toUpperCase() + currencyType.slice(1) + 'Balance';
+      const typeKey = currencyType + 'balance';
       const extrinsic = (bondValue && controllerId)
         ? api.tx.staking.bond(controllerId, { [typeKey]: bondValue }, destination, promiseMonth)
         : null;
@@ -152,7 +235,8 @@ class NewStake extends TxComponent<Props, State> {
         extrinsic,
         stashId,
         currencyType,
-        promiseMonth
+        promiseMonth,
+        accept
       };
     });
   }
@@ -181,6 +265,48 @@ class NewStake extends TxComponent<Props, State> {
     this.setState({ controllerError });
   }
 }
+
+const KtonTipStyledWrapper = styled.div`
+  display: flex;
+  margin-top: -4px;
+  padding-left: 2rem;
+  label{
+    flex: 0 0 15rem;
+  }
+  &>div{
+    border: 1px solid #DEDEDF;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    p{
+      color: #98959F;
+      font-size: 12px;
+    }
+    
+    padding: 10px 20px;
+    background: #FBFBFB;
+  }
+`;
+
+const GetPowerStyledWrapper = styled.div`
+  font-size: 0;
+  margin-top: 20px;
+  p{
+    text-align: right;
+    font-size: 16px;
+    color: #302B3C;
+    margin-bottom: 10px;
+  }
+
+  p:last-child{
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  span{
+    color: #5930DD;
+    font-weight: bold;
+  }
+`;
 
 export default withMulti(
   NewStake,

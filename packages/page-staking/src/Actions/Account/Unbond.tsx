@@ -11,7 +11,7 @@ import BN from 'bn.js';
 import React from 'react';
 import styled from 'styled-components';
 import { Option } from '@polkadot/types';
-import { AddressInfo, InputAddress, InputBalance, Modal, TxButton, TxComponent } from '@polkadot/react-components';
+import { AddressInfo, InputAddress, InputNumber, Modal, TxButton, TxComponent } from '@polkadot/react-components';
 import { withCalls, withApi, withMulti } from '@polkadot/react-api/hoc';
 
 import translate from '../../translate';
@@ -27,6 +27,7 @@ interface Props extends I18nProps, ApiProps {
 interface State {
   maxBalance?: BN;
   maxUnbond?: BN;
+  type: string;
 }
 
 const BalanceWrapper = styled.div`
@@ -50,10 +51,15 @@ class Unbond extends TxComponent<Props, State> {
     }
   }
 
+  private onChangeType = (type?: string): void => {
+    this.nextState({ type });
+  }
+
   public render (): React.ReactNode {
     const { controllerId, isOpen, onClose, t } = this.props;
-    const { maxUnbond } = this.state;
+    const { maxUnbond, type } = this.state;
     const canSubmit = !!maxUnbond && maxUnbond.gtn(0);
+    const typeKey = type + 'balance';
 
     if (!isOpen) {
       return null;
@@ -74,7 +80,7 @@ class Unbond extends TxComponent<Props, State> {
             label={t('Unbond')}
             icon='sign-out'
             onStart={onClose}
-            params={[maxUnbond]}
+            params={[{ [typeKey]: maxUnbond }]}
             tx='staking.unbond'
             withSpinner
           />
@@ -103,15 +109,17 @@ class Unbond extends TxComponent<Props, State> {
             }}
           />
         </BalanceWrapper>
-        <InputBalance
+        <InputNumber
           autoFocus
           className='medium'
           help={t('The amount of funds to unbond, this is adjusted using the bonded funds on the stash account.')}
           label={t('unbond amount')}
           maxValue={maxBalance}
           onChange={this.onChangeValue}
+          onChangeType={this.onChangeType}
           onEnter={this.sendTx}
           withMax
+          isType
         />
       </Modal.Content>
     );
@@ -119,11 +127,12 @@ class Unbond extends TxComponent<Props, State> {
 
   private nextState (newState: Partial<State>): void {
     this.setState((prevState: State): State => {
-      const { maxUnbond = prevState.maxUnbond, maxBalance = prevState.maxBalance } = newState;
+      const { maxUnbond = prevState.maxUnbond, maxBalance = prevState.maxBalance, type = prevState.type } = newState;
 
       return {
         maxUnbond,
-        maxBalance
+        maxBalance,
+        type
       };
     });
   }

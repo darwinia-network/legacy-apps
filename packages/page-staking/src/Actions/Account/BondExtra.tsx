@@ -148,11 +148,12 @@ class BondExtra extends TxComponent<Props, State> {
     let prevMax = new BN(0);
     let maxBalance = new BN(1);
     let extrinsic: any;
+    const typeKey = currencyType + 'balance';
 
     while (!prevMax.eq(maxBalance)) {
       prevMax = maxBalance;
       extrinsic = (maxAdditional && maxAdditional.gte(ZERO))
-        ? api.tx.staking.bondExtra(maxAdditional)
+        ? api.tx.staking.bondExtra({ [typeKey]: maxAdditional })
         : null;
 
       const txLength = calcTxLength(extrinsic, accountNonce);

@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import SummarySession from '@polkadot/app-explorer/SummarySession';
 import { CardSummary, IdentityIcon, SummaryBox } from '@polkadot/react-components';
 import { BlockAuthorsContext } from '@polkadot/react-query';
+import { RowTitle, Box } from '@polkadot/react-darwinia/components';
 
 import { useTranslation } from '../translate';
 
@@ -21,7 +22,7 @@ interface Props {
   style?: any;
 }
 
-function Summary ({ className, isVisible, next, nominators, stakingOverview, style }: Props): React.ReactElement<Props> {
+function Summary({ className, isVisible, next, nominators, stakingOverview, style }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { lastBlockAuthors, lastBlockNumber } = useContext(BlockAuthorsContext);
 
@@ -71,6 +72,9 @@ function Summary ({ className, isVisible, next, nominators, stakingOverview, sty
 }
 
 export default styled(Summary)`
+  .summary--box {
+    width: 100%;
+  }
   .validator--Account-block-icon {
     margin-right: 0.75rem;
     margin-top: -0.25rem;

@@ -2,7 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AccountId, Balance, RewardPoint } from '@polkadot/types/interfaces';
+import { AccountId, Balance, RewardPoint, Power } from '@polkadot/types/interfaces';
+
 import { DeriveAccountInfo, DerivedStakingQuery, DerivedHeartbeatAuthor } from '@polkadot/api-derive/types';
 import { ValidatorFilter } from '../types';
 
@@ -50,10 +51,10 @@ interface StakingState {
 
 function expandInfo ({ controllerId, exposure, nextSessionIds, validatorPrefs }: DerivedStakingQuery, myAccounts: string[], withNominations = true): StakingState {
   const nominators = withNominations && exposure
-    ? exposure.others.map(({ who, value }): [AccountId, Balance] => [who, value.unwrap()])
+    ? exposure.others.map(({ who, power }): [AccountId, Power] => [who, power])
     : [];
-  const stakeTotal = (exposure && !exposure.total.isEmpty && exposure.total.unwrap()) || undefined;
-  const stakeOwn = (exposure && !exposure.own.isEmpty && exposure.own.unwrap()) || undefined;
+  const stakeTotal = (exposure && !exposure.total_power.isEmpty && exposure.total_power) || undefined;
+  const stakeOwn = (exposure && !exposure.own_power.isEmpty && exposure.own_power) || undefined;
   const stakeOther = (stakeTotal && stakeOwn) ? stakeTotal.sub(stakeOwn) : undefined;
   const commission = validatorPrefs?.commission?.unwrap();
 
@@ -153,13 +154,6 @@ export default function Address ({ address, className, filter, filterName, hasQu
 
   return (
     <tr className={`${className} ${isAuthor && 'isHighlight'} ${!isVisible && 'staking--hidden'}`}>
-      <td className='favorite'>
-        <Icon
-          className={`${isFavorite && 'isSelected'}`}
-          name={isFavorite ? 'star' : 'star outline'}
-          onClick={_onFavorite}
-        />
-      </td>
       <td className='together'>
         {isElected && (
           <Badge
@@ -196,9 +190,9 @@ export default function Address ({ address, className, filter, filterName, hasQu
           />
         )}
       </td>
-      <td className={'toggle number'} colSpan={isExpanded ? 5 : 1} onClick={_toggleNominators}>
+      <td className={'number'} colSpan={5}>
         {stakeOther?.gtn(0) && (
-          isExpanded
+          true
             ? (
               <div>
                 {nominators.map(([who, bonded]): React.ReactNode =>
