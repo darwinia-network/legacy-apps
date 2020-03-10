@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { TFunction } from './types';
 
 const SUBSCAN_URL = 'https://icefrog.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
@@ -26,7 +27,7 @@ const instance = axios.create({
   timeout: 30000
 });
 
-export async function getBondList ({ page = 0, row = 10, status = 'bonded', locked = 0, address }) {
+async function getBondList ({ page = 0, row = 10, status = 'bonded', locked = 0, address }) {
   if (status === 'map') {
     return await instance.post('/api/wallet/mapping_history', {
       row: row,
@@ -43,6 +44,36 @@ export async function getBondList ({ page = 0, row = 10, status = 'bonded', lock
   });
 }
 
+async function getStakingHistory ({ page = 0, row = 10, address }, callback) {
+  instance.post('/api/scan/staking_history', {
+    page: page,
+    row: 10,
+    address: address
+  }).then((response) => {
+    callback && callback(response.data);
+  })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    })
+    .finally(function () {
+      // always executed
+    });
+}
+
+const lockLimitOptionsMaker = (t: TFunction): Array<object> => {
+  const month = [0, 3, 6, 12, 18, 24, 30, 36];
+  const options = [];
+  month.map((i) => {
+    options.push({
+      text: i === 0 ? t('No fixed term') : `${i} ${t('Month')}`,
+      value: i
+    });
+  });
+
+  return options;
+};
+
 export {
   SUBSCAN_URL,
   RING_PROPERTIES,
@@ -50,5 +81,8 @@ export {
   setRingProperties,
   setKtonProperties,
   INIT_VERSION,
-  ETHERSCAN_URL
+  ETHERSCAN_URL,
+  getBondList,
+  getStakingHistory,
+  lockLimitOptionsMaker
 };
