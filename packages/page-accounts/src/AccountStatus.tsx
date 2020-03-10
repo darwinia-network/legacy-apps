@@ -11,6 +11,7 @@ import keyring from '@polkadot/ui-keyring';
 import { getLedger, isLedger } from '@polkadot/react-api';
 import { useAccounts, useFavorites, useAccountChecked } from '@polkadot/react-hooks';
 import { Button, Input, Table, AddressRow } from '@polkadot/react-components';
+import { ActionStatus } from '@polkadot/react-components/Status/types';
 
 import CreateModal from './modals/Create';
 import ImportModal from './modals/Import';
@@ -22,7 +23,8 @@ import { useTranslation } from './translate';
 import ChangeIcon from './img/changeIcon.svg';
 import SwitchIcon from './img/switchAccount.svg';
 
-interface Props extends ComponentProps {
+interface Props {
+  onStatusChange: (status: ActionStatus) => void;
   onToggleAccountChecked: (address: string) => void;
   accountChecked: string;
 }
