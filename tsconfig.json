@@ -89,7 +89,11 @@
       "@polkadot/util-crypto": ["packages/util-crypto/src"],
       "@polkadot/util-crypto/*": ["packages/util-crypto/src/*"],
       "@polkadot/keyring": ["packages/keyring/src"],
-      "@polkadot/keyring/*": ["packages/keyring/src/*"]
+      "@polkadot/keyring/*": ["packages/keyring/src/*"],
+
+      "sample-polkadotjs-typegen/*": ["/Users/beiwan/Downloads/90_typegen/src/*"],
+      "@polkadot/api/augment": ["/Users/beiwan/Downloads/90_typegen/src/interfaces/augment-api.ts"],
+      "@polkadot/types/augment": ["/Users/beiwan/Downloads/90_typegen/src/interfaces/augment-types.ts"]
     },
     "skipLibCheck": true,
     "typeRoots": [

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 // Copyright 2017-2020 @polkadot/api-derive authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
@@ -13,54 +14,57 @@ import { createType } from '@polkadot/types';
 
 import { memo } from '../util';
 
-type Result = [Balance, Balance, Balance, Balance, Index];
+type Result = [Balance, Balance, Balance, Balance, Balance, Balance, Index];
 
-function calcBalances (api: ApiInterfaceRx, [accountId, [freeBalance, reservedBalance, frozenFee, frozenMisc, accountNonce]]: [AccountId, Result]): DerivedBalancesAccount {
+function calcBalances (api: ApiInterfaceRx, [accountId, [free_ring, free_kton, reserved_ring, reserved_kton, fee_frozen, misc_frozen, accountNonce]]: [AccountId, Result]): DerivedBalancesAccount {
   return {
     accountId,
     accountNonce,
-    freeBalance,
-    frozenFee,
-    frozenMisc,
-    reservedBalance,
-    votingBalance: createType(api.registry, 'Balance', freeBalance.add(reservedBalance))
+    freeBalance: free_ring,
+    freeBalanceKton: free_kton,
+    frozenFee: fee_frozen,
+    frozenMisc: misc_frozen,
+    reservedBalance: reserved_ring,
+    reservedBalanceKton: reserved_kton,
+    votingBalance: createType(api.registry, 'Balance', free_ring.add(reserved_ring)),
+    votingBalanceKton: createType(api.registry, 'Balance', free_kton.add(reserved_kton))
   };
 }
 
 // old
-function queryBalancesFree (api: ApiInterfaceRx, accountId: AccountId): Observable<Result> {
-  return api.queryMulti<[Balance, Balance, Index]>([
-    [api.query.balances.freeBalance, accountId],
-    [api.query.balances.reservedBalance, accountId],
-    [api.query.system.accountNonce, accountId]
-  ]).pipe(
-    map(([freeBalance, reservedBalance, accountNonce]): Result =>
-      [freeBalance, reservedBalance, createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), accountNonce]
-    )
-  );
-}
+// function queryBalancesFree (api: ApiInterfaceRx, accountId: AccountId): Observable<Result> {
+//   return api.queryMulti<[Balance, Balance, Index]>([
+//     [api.query.balances.freeBalance, accountId],
+//     [api.query.balances.reservedBalance, accountId],
+//     [api.query.system.accountNonce, accountId]
+//   ]).pipe(
+//     map(([freeBalance, reservedBalance, accountNonce]): Result =>
+//       [freeBalance, reservedBalance, createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), accountNonce]
+//     )
+//   );
+// }
 
-function queryBalancesAccount (api: ApiInterfaceRx, accountId: AccountId): Observable<Result> {
-  return api.queryMulti<[AccountData, Index]>([
-    [api.query.balances.account, accountId],
-    [api.query.system.accountNonce, accountId]
-  ]).pipe(
-    map(([{ free, reserved, miscFrozen, feeFrozen }, accountNonce]): Result =>
-      [free, reserved, feeFrozen, miscFrozen, accountNonce]
-    )
-  );
-}
+// function queryBalancesAccount (api: ApiInterfaceRx, accountId: AccountId): Observable<Result> {
+//   return api.queryMulti<[AccountData, Index]>([
+//     [api.query.balances.account, accountId],
+//     [api.query.system.accountNonce, accountId]
+//   ]).pipe(
+//     map(([{ free_ring, free_kton, reserved_ring, reserved_kton, misc_frozen, fee_frozen }, accountNonce]): Result =>
+//       [free_ring, free_kton, reserved_ring, reserved_kton, fee_frozen, misc_frozen, accountNonce]
+//     )
+//   );
+// }
 
 function queryCurrent (api: ApiInterfaceRx, accountId: AccountId): Observable<Result> {
   // AccountInfo is current, support old, eg. Edgeware
   return api.query.system.account<AccountInfo | ITuple<[Index, AccountData]>>(accountId).pipe(
     map((infoOrTuple): Result => {
-      const { free, reserved, miscFrozen, feeFrozen } = (infoOrTuple as AccountInfo).nonce
+      const { free_ring, free_kton, reserved_ring, reserved_kton, misc_frozen, fee_frozen } = (infoOrTuple as AccountInfo).nonce
         ? (infoOrTuple as AccountInfo).data
         : (infoOrTuple as [Index, AccountData])[1];
       const accountNonce = (infoOrTuple as AccountInfo).nonce || (infoOrTuple as [Index, AccountData])[0];
 
-      return [free, reserved, feeFrozen, miscFrozen, accountNonce];
+      return [free_ring, free_kton, reserved_ring, reserved_kton, fee_frozen, misc_frozen, accountNonce];
     })
   );
 }
@@ -87,13 +91,9 @@ export function account (api: ApiInterfaceRx): (address: AccountIndex | AccountI
         (accountId
           ? combineLatest([
             of(accountId),
-            api.query.system.account
-              ? queryCurrent(api, accountId)
-              : api.query.balances.account
-                ? queryBalancesAccount(api, accountId)
-                : queryBalancesFree(api, accountId)
+            queryCurrent(api, accountId)
           ])
-          : of([createType(api.registry, 'AccountId'), [createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Index')]])
+          : of([createType(api.registry, 'AccountId'), [createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Index')]])
         )
       ),
       map((result): DerivedBalancesAccount => calcBalances(api, result))
