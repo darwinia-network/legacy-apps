@@ -108,7 +108,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
                 <div className="ui--value-box">
                   <p className="p-title">{t('available')}:</p>
                   <div className="p-amount">
-                    <Balance label={''} params={_accountChecked} />
+                    <Available params={_accountChecked} />
                   </div>
                   <p className="p-btn"><Button
                     isBasic={true}
@@ -132,7 +132,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
               <div className="info-bottom">
                 <div className="ui--value-box">
                   <p className="p-title">{t('available')}:</p>
-                  <div className="p-amount"><BalanceKton label={''} params={_accountChecked} /></div>
+                  <div className="p-amount"><AvailableKton label={''} params={_accountChecked} /></div>
                   <p className="p-btn"><Button
                     isBasic={true}
                     isSecondary={true}
