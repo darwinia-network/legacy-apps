@@ -6,7 +6,7 @@ import { AccountId, AccountIndex, Address } from '@polkadot/types/interfaces';
 import { BareProps } from './types';
 
 import React from 'react';
-import { Available } from '@polkadot/react-query';
+import { AvailableKton } from '@polkadot/react-query';
 
 import { classes } from './util';
 
@@ -21,7 +21,7 @@ export default function AvailableDisplay ({ params, className, label, style }: P
   }
 
   return (
-    <Available
+    <AvailableKton
       className={classes('ui--Available', className)}
       label={label}
       params={params}
