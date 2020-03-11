@@ -19,13 +19,13 @@ interface Props extends BareProps {
 
 export default function AvailableDisplay ({ children, className, label, params }: Props): React.ReactElement<Props> {
   const { api } = useApi();
-  const allBalances = useCall<DerivedBalancesAll>(api.derive.kton.all as any, [params]);
+  const allBalances = useCall<DerivedBalancesAll>(api.derive.balances.all as any, [params]);
 
   return (
     <FormatBalance
       className={className}
       label={label}
-      value={allBalances?.availableBalance}
+      value={allBalances?.availableBalanceKton}
     >
       {children}
     </FormatBalance>

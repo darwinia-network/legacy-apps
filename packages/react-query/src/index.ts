@@ -3,10 +3,12 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 export { default as Available } from './Available';
+export { default as AvailableKton } from './AvailableKton';
 export { default as Balance } from './Balance';
 export { default as BalanceKton } from './BalanceKton';
 export { default as BalanceFree } from './BalanceFree';
 export { default as BalanceVoting } from './BalanceVoting';
+export { default as BalanceVotingKton } from './BalanceVotingKton';
 export { BlockAuthors, BlockAuthorsContext, ValidatorsContext } from './BlockAuthors';
 export { default as Bonded } from './Bonded';
 export { default as BestFinalized } from './BestFinalized';
