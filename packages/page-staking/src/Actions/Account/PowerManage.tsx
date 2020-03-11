@@ -18,7 +18,11 @@ import powerbg from '../../Assets/power-bg.svg';
 import ringIcon from '../../Assets/ring.svg';
 import ktonIcon from '../../Assets/kton.svg';
 import { Power } from '@polkadot/react-darwinia/components';
+import { AvailableKton, Available } from '@polkadot/react-components';
+import { DerivedStakingAccount } from '@polkadot/api-derive/types'
 import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
+import { formatBalance } from '@polkadot/util';
+import { FormatBalance } from '@polkadot/react-query';
 
 // true to display, or (for bonded) provided values [own, ...all extras]
 export type BalanceActiveType = {
@@ -50,10 +54,12 @@ type Props = BareProps & I18nProps & {
   // isReadyStaking: boolean;
   // staking_ledger: StakingLedgers;
   stakingLedger: StakingLedger;
+  stakingAccount?: DerivedStakingAccount;
+
 };
 
 class AddressInfoStaking extends React.PureComponent<Props> {
-  render() {
+  render (): React.ReactElement {
     const { children, className } = this.props;
     return (
       <div className={`${className}`}>
@@ -70,7 +76,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
     );
   }
 
-  private renderPower() {
+  private renderPower (): React.ReactElement {
     const { stakingLedger } = this.props;
 
     if (!stakingLedger || stakingLedger.isEmpty) {
@@ -88,8 +94,8 @@ class AddressInfoStaking extends React.PureComponent<Props> {
     );
   }
 
-  private renderBalances(): React.ReactElement {
-    const { t, buttons } = this.props;
+  private renderBalances (): React.ReactElement {
+    const { t, buttons, stakingLedger, stakingAccount } = this.props;
     // const { staking_info, t, withBalance = true, kton_locks, balances_locks, buttons, isReadyStaking = false, staking_ledger, balances_all, kton_all, stashId } = this.props;
     // const balanceDisplay = withBalance === true
     //   ? { available: true, bonded: true, free: true, redeemable: true, unlocking: true }
@@ -116,7 +122,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
     //   }
     // }
 
-    // if (!isReadyStaking) {
+    // if (stakingLedger?.stash.isEmpty) {
     //   return (
     //     <div className='column'>
     //       <div className="ui--address-value">
@@ -133,9 +139,9 @@ class AddressInfoStaking extends React.PureComponent<Props> {
     //   );
     // }
 
-    // if (!staking_ledger || staking_ledger.isEmpty) {
-    //   return null;
-    // }
+    if (!stakingLedger || stakingLedger.isEmpty) {
+      return null;
+    }
 
     return (
       <div className="token-box">
@@ -146,9 +152,18 @@ class AddressInfoStaking extends React.PureComponent<Props> {
             <p>{RING_PROPERTIES.tokenSymbol}</p>
           </div>
           <div className="box-right">
-            <p><label>{t('available')}</label><span>123</span></p>
-            <p><label>{t('bonded')}</label><span>123</span></p>
-            <p><label>{t('unbonding')}</label><span>123</span></p>
+            <div>
+              <label>{t('available')}</label>
+              <Available params={stakingLedger.stash}/>
+            </div>
+            <div>
+              <label>{t('bonded')}</label>
+              <FormatBalance value={stakingLedger.active_ring} />
+            </div>
+            <div>
+              <label>{t('unbonding')}</label>
+              <FormatBalance value={stakingAccount.unlockingTotalValue} />
+            </div>
           </div>
 
         </div>
@@ -159,10 +174,9 @@ class AddressInfoStaking extends React.PureComponent<Props> {
             <p>{KTON_PROPERTIES.tokenSymbol}</p>
           </div>
           <div className="box-right">
-            <p><label>{t('available')}</label><span>344</span></p>
-            <p><label>{t('bonded')}</label><span>2344</span></p>
-            <p><label>{t('unbonding')}</label><span>1234</span></p>
-
+            <div><label>{t('available')}</label><AvailableKton params={stakingLedger.stash}/></div>
+            <div><label>{t('bonded')}</label><FormatBalance value={stakingLedger.active_kton} /></div>
+            <div><label>{t('unbonding')}</label><FormatBalance value={stakingAccount.unlockingKtonTotalValue} /></div>
           </div>
         </div>
         {buttons}
@@ -254,7 +268,10 @@ export default withMulti(
         .box-right{
           flex: 1;
           margin-left: 30px;
-          p {
+          &>div:last-child {
+            margin-bottom: 0;
+          }
+          &>div {
             display: flex;
             flex-direction: row;
             margin-bottom: 0.9rem;
@@ -263,11 +280,16 @@ export default withMulti(
               font-size: 12px;
               min-width: 88px;
               text-align: left;
+              font-weight: bold;
             }
-            span{
+            div{
               color: #5930DD;
               font-size: 16px;
               font-weight: bold;
+              span {
+                font-size: 16px;
+                font-weight: bold;
+              }
             }
           }
           p:last-child {

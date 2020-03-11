@@ -55,13 +55,13 @@ interface StakeState {
   validatorPrefs?: ValidatorPrefs;
 }
 
-function toIdString(id?: AccountId | null): string | null {
+function toIdString (id?: AccountId | null): string | null {
   return id
     ? id.toString()
     : null;
 }
 
-function getStakeState(allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DerivedStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
+function getStakeState (allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DerivedStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
   const isStashNominating = !!(nominators?.length);
   const isStashValidating = !validateInfo[1].isEmpty || !!allStashes?.includes(stashId);
   const nextConcat = u8aConcat(...nextSessionIds.map((id): Uint8Array => id.toU8a()));
@@ -89,7 +89,7 @@ function getStakeState(allAccounts: string[], allStashes: string[] | undefined, 
   };
 }
 
-function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakingOverview, stashId }: Props): React.ReactElement<Props> {
+function Account ({ allStashes, className, isOwnStash, next, onUpdateType, stakingOverview, stashId }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -130,7 +130,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
       setActiveNoms(nominees.filter((id): boolean => !inactiveNoms.includes(id)));
     }
   }, [inactiveNoms, nominees]);
-  console.log(111, stakingLedger, stakingAccount)
+
   return (
     <div className={className}>
 
@@ -336,8 +336,8 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
       <RowTitle title={t('Power Manager')} />
       <Box>
         <PowerManage
-
           stakingLedger={stakingLedger}
+          stakingAccount={stakingAccount}
           buttons={
             <div className="staking--PowerMange-buttons">
               <Button.Group>
@@ -365,7 +365,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
       <Box>
         <Earnings address={stashId} />
       </Box>
-      <AddressMini
+      {/* <AddressMini
         className='mini-nopad'
         label={t('controller')}
         value={controllerId}
@@ -381,7 +381,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
           unlocking: true
         }}
         withRewardDestination
-      />
+      /> */}
 
       {isStashValidating
         ? (
