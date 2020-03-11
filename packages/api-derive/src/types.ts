@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AccountId, AccountIndex, Balance, BalanceLock, BalanceLockTo212, BalanceOf, Bid, BidKind, BlockNumber, CollatorId, EraIndex, EraRewardPoints, Hash, Index, Keys, MomentOf, ParaId, ParaInfo, Proposal, PropIndex, ProposalIndex, ReferendumInfo, RegistrationJudgement, RewardDestination, SessionIndex, SetIndex, SocietyVote, StakingLedger, StrikeCount, TreasuryProposal, UpwardMessage, ValidatorPrefs, Vote, Votes, VoteIndex, VouchingStatus } from '@polkadot/types/interfaces';
+import { AccountId, AccountIndex, Balance, BalanceLock, BalanceLockTo212, BalanceOf, Bid, BidKind, BlockNumber, CollatorId, EraIndex, EraRewardPoints, Hash, Index, Keys, MomentOf, ParaId, ParaInfo, Proposal, PropIndex, ProposalIndex, ReferendumInfo, RegistrationJudgement, RewardDestination, SessionIndex, SetIndex, SocietyVote, StakingLedger, StrikeCount, TreasuryProposal, UpwardMessage, ValidatorPrefs, Vote, Votes, VoteIndex, VouchingStatus, Moment, LockIdentifier, LockReasons } from '@polkadot/types/interfaces';
 import { Exposure } from '@polkadot/react-darwinia/interfaces/types';
 import BN from 'bn.js';
 import { Bytes, Option, u32, Vec } from '@polkadot/types';
@@ -35,17 +35,23 @@ export interface DerivedBalancesAccount {
   accountId: AccountId;
   accountNonce: Index;
   freeBalance: Balance;
+  freeBalanceKton: Balance;
   frozenFee: Balance;
   frozenMisc: Balance;
   reservedBalance: Balance;
+  reservedBalanceKton: Balance;
   votingBalance: Balance;
+  votingBalanceKton: Balance;
 }
 
 export interface DerivedBalancesAll extends DerivedBalancesAccount {
   isVesting: boolean;
   lockedBalance: Balance;
-  lockedBreakdown: (BalanceLock | BalanceLockTo212)[];
+  lockedBalanceKton: Balance;
+  lockedBreakdown: (DerivedBalanceLock | BalanceLockTo212)[];
+  lockedBreakdownKton: (DerivedBalanceLock | BalanceLockTo212)[];
   availableBalance: Balance;
+  availableBalanceKton: Balance;
   votingBalance: Balance;
   vestedBalance: Balance;
   vestingTotal: Balance;
@@ -244,6 +250,9 @@ export interface DerivedStakingQuery extends DerivedStakingStash {
 export interface DerivedStakingAccount extends DerivedStakingQuery {
   redeemable?: Balance;
   unlocking?: DerivedUnlocking[];
+  unlockingKton?: DerivedUnlocking[];
+  unlockingTotalValue?: Balance;
+  unlockingKtonTotalValue?: Balance;
 }
 
 export interface DerivedStakingOverview extends DeriveSessionIndexes {
@@ -276,3 +285,36 @@ export interface VoterPosition {
 }
 
 export type DerivedVoterPositions = Record<string, VoterPosition>;
+
+export type DerivedLedger = {
+  stash: AccountId;
+  activeRing: Balance;
+  activeDepositRing: Balance;
+  activeKton: Balance;
+  depositItems: DerivedLedgerDepositItem[];
+  ringStakingLock: StakingLock;
+  ktonStakingLock: StakingLock;
+};
+
+export type DerivedLedgerDepositItem = {
+  value: Balance;
+  startTime: Moment;
+  expireTime: Moment;
+};
+
+export type StakingLock = {
+  stakingAmount: Balance;
+  unbondings: StakingLockUnbonding[];
+}
+
+export type StakingLockUnbonding = {
+  amount: Balance;
+  moment: BlockNumber;
+}
+
+export type DerivedBalanceLock = {
+  id: LockIdentifier;
+  amount: Balance;
+  until: BlockNumber;
+  reasons: LockReasons;
+}
