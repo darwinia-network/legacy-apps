@@ -7,7 +7,7 @@ export default {
     "MomentT": "Moment",
     "Power": "u32",
     "DepositId": "U256",
-  
+
     "StakingBalanceT": "StakingBalance",
     "StakingBalance": {
       "_enum": {
@@ -16,7 +16,7 @@ export default {
         "KtonBalance": "Balance"
       }
     },
-  
+
     "StakingLedgerT": "StakingLedger",
     "StakingLedger": {
       "stash": "AccountId",
@@ -30,13 +30,13 @@ export default {
       "active": "Compact<Balance>",
       "unlocking": "Vec<UnlockChunk>"
     },
-  
+
     "TimeDepositItem": {
       "value": "Compact<Balance>",
       "start_time": "Compact<Moment>",
       "expire_time": "Compact<Moment>"
     },
-  
+
     "RewardDestination": {
       "_enum": {
         "Staked": "Staked",
@@ -44,11 +44,11 @@ export default {
         "Controller": null
       }
     },
-  
+
     "Staked": {
       "promise_month": "Moment"
     },
-  
+
     "Exposure": {
       "own_ring_balance": "Compact<Balance>",
       "own_kton_balance": "Compact<Balance>",
@@ -56,41 +56,66 @@ export default {
       "total_power": "Power",
       "others": "Vec<IndividualExposure>"
     },
-  
+
     "IndividualExposure": {
       "who": "AccountId",
       "ring_balance": "Compact<Balance>",
       "kton_balance": "Compact<Balance>",
       "power": "Power"
     },
-  
+
     "ValidatorReward": {
       "who": "AccountId",
       "amount": "Compact<Balance>",
       "nominators_reward": "Vec<NominatorReward>"
     },
-  
+
     "NominatorReward": {
       "who": "AccountId",
       "amount": "Compact<Balance>"
     },
-  
+
     "RKT": "RK",
     "RK": {
       "r": "Balance",
       "k": "Balance"
     },
-  
+
+    "BalanceLock": {
+      "id": "LockIdentifier",
+      "lock_for": "LockFor",
+      "lock_reasons": "LockReasons"
+    },
+
+    "LockFor": {
+      "_enum": {
+        "Common": "Common",
+        "Staking": "StakingLock"
+      }
+    },
+
+    "Common": {
+      "amount": "Balance"
+    },
+
     "StakingLock": {
       "staking_amount": "Balance",
       "unbondings": "Vec<Unbonding>"
     },
-  
+
+    "LockReasons": {
+      "_enum": {
+        "Fee": null,
+        "Misc": null,
+        "All": null
+      }
+    },
+
     "Unbonding": {
       "amount": "Balance",
       "moment": "BlockNumber"
     },
-  
+
     "AccountData": {
       "free_ring": "Balance",
       "free_kton": "Balance",
@@ -101,18 +126,18 @@ export default {
       "misc_frozen": "Balance",
       "fee_frozen": "Balance"
     },
-  
+
     "EthBlockNumber": "u64",
     "EthAddress": "H160",
-  
+
     "EthTransactionIndex": "(H256, u64)",
-  
+
     "HeaderInfo": {
       "total_difficulty": "U256",
       "parent_hash": "H256",
       "number": "EthBlockNumber"
     },
-  
+
     "EthHeader": {
       "parent_hash": "H256",
       "timestamp": "u64",
@@ -130,11 +155,18 @@ export default {
       "seal": "Vec<Bytes>",
       "hash": "Option<H256>"
     },
-  
+
     "Bloom": {
       "_struct": "[u8; 256]"
     },
-  
+
+    "Receipt": {
+      "gas_used": "U256",
+      "log_bloom": "Bloom",
+      "logs": "Vec<LogEntry>",
+      "outcome": "TransactionOutcome"
+    },
+
     "EthReceiptProof": {
       "index": "u64",
       "proof": "Bytes",

@@ -4,7 +4,7 @@
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Option, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
 import { Bytes, U256, u32, u64 } from '@polkadot/types/primitive';
-import { AccountId, Balance, BlockNumber, H160, H256, Moment } from '@polkadot/types/interfaces/runtime';
+import { AccountId, Balance, BlockNumber, H160, H256, LockIdentifier, Moment } from '@polkadot/types/interfaces/runtime';
 import { UnlockChunk } from '@polkadot/types/interfaces/staking';
 
 /** @name AccountData */
@@ -19,9 +19,21 @@ export interface AccountData extends Struct {
   readonly fee_frozen: Balance;
 }
 
+/** @name BalanceLock */
+export interface BalanceLock extends Struct {
+  readonly id: LockIdentifier;
+  readonly lock_for: LockFor;
+  readonly lock_reasons: LockReasons;
+}
+
 /** @name Bloom */
 export interface Bloom extends Struct {
   readonly _struct: U8aFixed;
+}
+
+/** @name Common */
+export interface Common extends Struct {
+  readonly amount: Balance;
 }
 
 /** @name DepositId */
@@ -88,6 +100,21 @@ export interface IndividualExposure extends Struct {
 
 /** @name KtonBalance */
 export interface KtonBalance extends Balance {}
+
+/** @name LockFor */
+export interface LockFor extends Enum {
+  readonly isCommon: boolean;
+  readonly asCommon: Common;
+  readonly isStaking: boolean;
+  readonly asStaking: StakingLock;
+}
+
+/** @name LockReasons */
+export interface LockReasons extends Enum {
+  readonly isFee: boolean;
+  readonly isMisc: boolean;
+  readonly isAll: boolean;
+}
 
 /** @name MomentT */
 export interface MomentT extends Moment {}
