@@ -5,7 +5,6 @@
 import { ApiInterfaceRx } from '@polkadot/api/types';
 import { Balance, BlockNumber, StakingLedger, UnlockChunk, Unbonding } from '@polkadot/types/interfaces';
 import { DerivedSessionInfo, DerivedStakingAccount, DerivedStakingQuery, DerivedUnlocking } from '../types';
-import { currencyType } from '@polkadot/react-darwinia/types';
 
 import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
