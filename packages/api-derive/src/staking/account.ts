@@ -3,8 +3,9 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ApiInterfaceRx } from '@polkadot/api/types';
-import { Balance, BlockNumber, StakingLedger, UnlockChunk } from '@polkadot/types/interfaces';
+import { Balance, BlockNumber, StakingLedger, UnlockChunk, Unbonding } from '@polkadot/types/interfaces';
 import { DerivedSessionInfo, DerivedStakingAccount, DerivedStakingQuery, DerivedUnlocking } from '../types';
+import { currencyType } from '@polkadot/react-darwinia/types';
 
 import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
@@ -16,13 +17,13 @@ import { isUndefined } from '@polkadot/util';
 import { memo } from '../util';
 
 // groups the supplied chunks by era, i.e. { [era]: BN(total of values) }
-function groupByEra (list: UnlockChunk[]): Record<string, BN> {
-  return list.reduce((map: Record<string, BN>, { era, value }): Record<string, BN> => {
-    const key = era.toString();
+function groupByEra (list: Unbonding[]): Record<string, BN> {
+  return list.reduce((map: Record<string, BN>, { moment, amount }): Record<string, BN> => {
+    const key = moment.toString();
 
     map[key] = !map[key]
-      ? value.unwrap()
-      : map[key].add(value.unwrap());
+      ? amount
+      : map[key].add(amount);
 
     return map;
   }, {});
@@ -42,17 +43,17 @@ function remainingBlocks (api: ApiInterfaceRx, era: BN, sessionInfo: DerivedSess
   );
 }
 
-function calculateUnlocking (api: ApiInterfaceRx, stakingLedger: StakingLedger | undefined, sessionInfo: DerivedSessionInfo): DerivedUnlocking[] | undefined {
+function calculateUnlocking (api: ApiInterfaceRx, stakingLedger: StakingLedger | undefined, sessionInfo: DerivedSessionInfo, currencyType: currencyType): [DerivedUnlocking[] | undefined, Balance] {
   if (isUndefined(stakingLedger)) {
-    return undefined;
+    return [undefined, createType(api.registry, 'Balance', 0)];
   }
 
-  const unlockingChunks = stakingLedger.unlocking.filter(({ era }): boolean =>
-    remainingBlocks(api, era.unwrap(), sessionInfo).gtn(0)
+  const unlockingChunks = stakingLedger[`${currencyType}_staking_lock`].unbondings.filter(({ moment }): boolean =>
+    remainingBlocks(api, moment.toBn(), sessionInfo).gtn(0)
   );
 
   if (!unlockingChunks.length) {
-    return undefined;
+    return [undefined, createType(api.registry, 'Balance', 0)];
   }
 
   // group the unlock chunks that have the same era and sum their values
@@ -62,7 +63,9 @@ function calculateUnlocking (api: ApiInterfaceRx, stakingLedger: StakingLedger |
     remainingBlocks: remainingBlocks(api, new BN(eraString), sessionInfo)
   }));
 
-  return results.length ? results : undefined;
+  const total = Object.entries(groupedResult).reduce((all, [, amount]) => (all.add(amount)), new BN(0));
+
+  return [results.length ? results : undefined, createType(api.registry, 'Balance', total)];
 }
 
 function redeemableSum (api: ApiInterfaceRx, stakingLedger: StakingLedger | undefined, sessionInfo: DerivedSessionInfo): Balance {
@@ -70,18 +73,23 @@ function redeemableSum (api: ApiInterfaceRx, stakingLedger: StakingLedger | unde
     return createType(api.registry, 'Balance');
   }
 
-  return createType(api.registry, 'Balance', stakingLedger.unlocking.reduce((total, { era, value }): BN => {
-    return remainingBlocks(api, era.unwrap(), sessionInfo).eqn(0)
-      ? total.add(value.unwrap())
+  return createType(api.registry, 'Balance', stakingLedger.ring_staking_lock.unbondings.reduce((total, { moment, amount }): BN => {
+    return remainingBlocks(api, moment.toBn(), sessionInfo).eqn(0)
+      ? total.add(amount)
       : total;
   }, new BN(0)));
 }
 
 function parseResult (api: ApiInterfaceRx, sessionInfo: DerivedSessionInfo, query: DerivedStakingQuery): DerivedStakingAccount {
+  const calcUnlocking = calculateUnlocking(api, query.stakingLedger, sessionInfo, 'ring');
+  const calcUnlockingKton = calculateUnlocking(api, query.stakingLedger, sessionInfo, 'kton');
   return {
     ...query,
     redeemable: redeemableSum(api, query.stakingLedger, sessionInfo),
-    unlocking: calculateUnlocking(api, query.stakingLedger, sessionInfo)
+    unlocking: calcUnlocking[0],
+    unlockingTotalValue: calcUnlocking[1],
+    unlockingKton: calcUnlockingKton[0],
+    unlockingKtonTotalValue: calcUnlockingKton[1]
   };
 }
 
