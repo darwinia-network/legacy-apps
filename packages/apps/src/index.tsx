@@ -103,9 +103,34 @@ const DARWINIA_TYPES = {
 		"k": "Balance"
 	},
 
+	"BalanceLock": {
+		"id": "LockIdentifier",
+		"lock_for": "LockFor",
+		"lock_reasons": "LockReasons"
+	},
+
+	"LockFor": {
+		"_enum": {
+			"Common": "Common",
+			"Staking": "StakingLock"
+		}
+	},
+
+	"Common": {
+		"amount": "Balance"
+	},
+
 	"StakingLock": {
 		"staking_amount": "Balance",
 		"unbondings": "Vec<Unbonding>"
+	},
+
+	"LockReasons":{
+		"_enum": {
+			"Fee": null,
+			"Misc": null,
+			"All": null
+		}
 	},
 
 	"Unbonding": {
