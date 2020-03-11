@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { BitLengthOption } from '@polkadot/react-components/constants';
 import { InputNumber } from '@polkadot/react-components';
 import { formatBalance } from '@polkadot/util';
+import { currencyType } from '@polkadot/react-darwinia/types';
 
 interface Props extends BareProps {
   autoFocus?: boolean;
@@ -23,6 +24,7 @@ interface Props extends BareProps {
   labelExtra?: React.ReactNode;
   maxValue?: BN;
   onChange?: (value?: BN) => void;
+  onChangeType?: (value?: currencyType) => void;
   onEnter?: () => void;
   onEscape?: () => void;
   placeholder?: string;
@@ -30,11 +32,14 @@ interface Props extends BareProps {
   withEllipsis?: boolean;
   withLabel?: boolean;
   withMax?: boolean;
+  isType?: boolean;
+  isSi?: boolean;
+  isSiShow?: boolean;
 }
 
 const DEFAULT_BITLENGTH = BitLengthOption.CHAIN_SPEC as BitLength;
 
-function InputBalance ({ autoFocus, className, defaultValue: inDefault, help, isDisabled, isError, isFull, isZeroable, label, labelExtra, maxValue, onChange, onEnter, onEscape, placeholder, style, value, withEllipsis, withLabel, withMax }: Props): React.ReactElement<Props> {
+function InputBalance ({ autoFocus, className, defaultValue: inDefault, help, isDisabled, isError, isFull, isZeroable, label, labelExtra, maxValue, onChange, onEnter, onEscape, placeholder, style, value, withEllipsis, withLabel, withMax, isType, onChangeType, isSi, isSiShow }: Props): React.ReactElement<Props> {
   const defaultValue = inDefault
     ? formatBalance(inDefault, { forceUnit: '-', withSi: false }).replace(',', isDisabled ? ',' : '')
     : inDefault;
@@ -50,19 +55,22 @@ function InputBalance ({ autoFocus, className, defaultValue: inDefault, help, is
       isError={isError}
       isFull={isFull}
       isZeroable={isZeroable}
-      isSi
+      isSi={isSi}
       label={label}
       labelExtra={labelExtra}
       maxValue={maxValue}
       onChange={onChange}
       onEnter={onEnter}
       onEscape={onEscape}
+      onChangeType={onChangeType}
       placeholder={placeholder}
       style={style}
       value={value}
       withEllipsis={withEllipsis}
       withLabel={withLabel}
       withMax={withMax}
+      isType={isType}
+      isSiShow={isSiShow}
     />
   );
 }

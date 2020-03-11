@@ -25,6 +25,7 @@ interface Props extends BareProps, ApiProps {
   controllerId: string;
   defaultValue?: BN | string;
   destination?: number;
+  promiseMonth?: promiseMonth;
   extrinsicProp: 'staking.bond' | 'staking.bondExtra' | 'staking.unbond';
   help?: React.ReactNode;
   isDisabled?: boolean;
@@ -118,7 +119,7 @@ class InputBalanceBonded extends React.PureComponent<Props, State> {
   }
 
   private setMaxBalance = (): void => {
-    const { api, balances_fees = ZERO_FEES, balances_all = ZERO_BALANCE, controllerId, destination, extrinsicProp, currencyType } = this.props;
+    const { api, balances_fees = ZERO_FEES, balances_all = ZERO_BALANCE, controllerId, destination, extrinsicProp, currencyType, promiseMonth = 0 } = this.props;
     const { transactionBaseFee, transactionByteFee } = balances_fees;
     const { freeBalance } = balances_all;
     let prevMax = new BN(0);
@@ -130,14 +131,13 @@ class InputBalanceBonded extends React.PureComponent<Props, State> {
       prevMax = maxBalance;
 
       if (extrinsicProp === 'staking.bond') {
-        console.log(controllerId, { [typeKey]: prevMax }, destination, 0);
         extrinsic = controllerId && (destination || destination === 0)
-          ? api.tx.staking.bond(controllerId, { [typeKey]: prevMax }, destination, 0)
+          ? api.tx.staking.bond(controllerId, { [typeKey]: prevMax }, destination, promiseMonth)
           : null;
       } else if (extrinsicProp === 'staking.unbond') {
         extrinsic = api.tx.staking.unbond(prevMax);
       } else if (extrinsicProp === 'staking.bondExtra') {
-        extrinsic = api.tx.staking.bondExtra(prevMax);
+        extrinsic = api.tx.staking.bondExtra({ [typeKey]: prevMax }, promiseMonth);
       }
 
       const txLength = calcTxLength(extrinsic, balances_all.accountNonce);
@@ -154,12 +154,12 @@ class InputBalanceBonded extends React.PureComponent<Props, State> {
 
   private nextState (newState: Partial<State>): void {
     this.setState((prevState: State): State => {
-      const { api, controllerId, destination, value, currencyType } = this.props;
+      const { api, controllerId, destination, value, currencyType, promiseMonth = 0 } = this.props;
       const { maxBalance = prevState.maxBalance } = newState;
       const typeKey = currencyType + 'balance';
 
       const extrinsic = (value && controllerId && destination)
-        ? api.tx.staking.bond(controllerId, { [typeKey]: value }, destination, 0)
+        ? api.tx.staking.bond(controllerId, { [typeKey]: value }, destination, promiseMonth)
         : null;
 
       return {
