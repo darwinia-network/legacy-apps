@@ -72,7 +72,7 @@ class NewStake extends TxComponent<Props, State> {
     const { amountError, bondValue, controllerError, controllerId, destination, extrinsic, stashId, currencyType, promiseMonth, accept } = this.state;
     const hasValue = !!bondValue && bondValue.gtn(0);
     const isUnsafeChain = detectUnsafe(systemChain);
-    const canSubmit = (hasValue && (isUnsafeChain || (!controllerError && !!controllerId))) || (promiseMonth && currencyType === 'ring' ? accept : true);
+    const canSubmit = (hasValue && (isUnsafeChain || (!controllerError && !!controllerId))) && (promiseMonth && currencyType === 'ring' ? accept : true);
 
     return (
       <Modal
