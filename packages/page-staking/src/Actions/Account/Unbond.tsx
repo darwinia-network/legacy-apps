@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { Option } from '@polkadot/types';
 import { AddressInfo, InputAddress, InputNumber, Modal, TxButton, TxComponent } from '@polkadot/react-components';
 import { withCalls, withApi, withMulti } from '@polkadot/react-api/hoc';
+import { currencyType } from '@polkadot/react-darwinia/types';
 
 import translate from '../../translate';
 
@@ -27,7 +28,7 @@ interface Props extends I18nProps, ApiProps {
 interface State {
   maxBalance?: BN;
   maxUnbond?: BN;
-  type: string;
+  currencyType: currencyType;
 }
 
 const BalanceWrapper = styled.div`
@@ -41,7 +42,9 @@ const BalanceWrapper = styled.div`
 `;
 
 class Unbond extends TxComponent<Props, State> {
-  public state: State = {};
+  public state: State = {
+    currencyType: 'ring'
+  };
 
   public componentDidUpdate (prevProps: Props): void {
     const { staking_ledger } = this.props;
@@ -51,15 +54,15 @@ class Unbond extends TxComponent<Props, State> {
     }
   }
 
-  private onChangeType = (type?: string): void => {
-    this.nextState({ type });
+  private onChangeType = (currencyType?: currencyType): void => {
+    this.nextState({ currencyType });
   }
 
   public render (): React.ReactNode {
     const { controllerId, isOpen, onClose, t } = this.props;
-    const { maxUnbond, type } = this.state;
+    const { maxUnbond, currencyType } = this.state;
     const canSubmit = !!maxUnbond && maxUnbond.gtn(0);
-    const typeKey = type + 'balance';
+    const typeKey = currencyType + 'balance';
 
     if (!isOpen) {
       return null;
@@ -120,6 +123,7 @@ class Unbond extends TxComponent<Props, State> {
           onEnter={this.sendTx}
           withMax
           isType
+          isSiShow={false}
         />
       </Modal.Content>
     );
@@ -127,27 +131,27 @@ class Unbond extends TxComponent<Props, State> {
 
   private nextState (newState: Partial<State>): void {
     this.setState((prevState: State): State => {
-      const { maxUnbond = prevState.maxUnbond, maxBalance = prevState.maxBalance, type = prevState.type } = newState;
+      const { maxUnbond = prevState.maxUnbond, maxBalance = prevState.maxBalance, currencyType = prevState.currencyType } = newState;
 
       return {
         maxUnbond,
         maxBalance,
-        type
+        currencyType
       };
     });
   }
 
   private setMaxBalance = (): void => {
     const { staking_ledger } = this.props;
+    const { currencyType } = this.state;
 
     if (!staking_ledger || staking_ledger.isNone) {
       return;
     }
 
-    const { active } = staking_ledger.unwrap();
-
+    const { active_ring, active_kton } = staking_ledger.unwrap();
     this.nextState({
-      maxBalance: active.unwrap()
+      maxBalance: currencyType === 'ring' ? active_ring.unwrap() : active_kton.unwrap()
     });
   }
 
