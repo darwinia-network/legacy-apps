@@ -11,7 +11,7 @@ export default ([
     Component: Claims,
     display: {
       needsApi: [
-        'query.claims.claims'
+        'query.claims.claimsFromEth'
       ]
     },
     i18n: {
