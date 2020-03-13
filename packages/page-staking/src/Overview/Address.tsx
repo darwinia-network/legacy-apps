@@ -154,7 +154,7 @@ export default function Address ({ address, className, filter, filterName, hasQu
 
   return (
     <tr className={`${className} ${isAuthor && 'isHighlight'} ${!isVisible && 'staking--hidden'}`}>
-      <td className='together'>
+      {/* <td className='together'>
         {isElected && (
           <Badge
             hover={t('Selected for the next session')}
@@ -178,7 +178,7 @@ export default function Address ({ address, className, filter, filterName, hasQu
             type='online'
           />
         )}
-      </td>
+      </td> */}
       <td>
         <AddressSmall value={address} />
       </td>
@@ -190,7 +190,7 @@ export default function Address ({ address, className, filter, filterName, hasQu
           />
         )}
       </td>
-      <td className={'number'} colSpan={5}>
+      {/* <td className={'number'} colSpan={5}>
         {stakeOther?.gtn(0) && (
           true
             ? (
@@ -214,7 +214,7 @@ export default function Address ({ address, className, filter, filterName, hasQu
               </FormatBalance>
             )
         )}
-      </td>
+      </td> */}
       {!isExpanded && (
         <>
           <td className='number'>

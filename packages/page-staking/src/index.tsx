@@ -44,7 +44,7 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
   const [nominators, dispatchNominators] = useReducer(reduceNominators, [] as string[]);
   const [accountChecked, toggleAccountChecked] = useAccountChecked(STORE_CHECKED);
   const onStatusChange = () => {};
-  const _accountChecked = accountChecked[0] || allAccounts[0];
+  const _accountChecked = accountChecked[0];
 
   useEffect((): void => {
     stakingOverview && setNext(

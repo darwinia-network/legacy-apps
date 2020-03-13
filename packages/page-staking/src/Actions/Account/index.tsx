@@ -270,7 +270,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                       >
                         {balancesAll?.freeBalance.gtn(0) && (
                           <Menu.Item
-                            disabled={!isOwnStash}
+                            // disabled={!isOwnStash}
                             onClick={toggleBondExtra}
                           >
                             {t('Bond more funds')}
@@ -283,7 +283,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                           {t('Unbond funds')}
                         </Menu.Item>
                         <Menu.Item
-                          disabled={!isOwnStash}
+                          // disabled={!isOwnStash}
                           onClick={toggleSetController}
                         >
                           {t('Change controller account')}
@@ -318,11 +318,11 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                             {t('Set nominees')}
                           </Menu.Item>
                         }
-                        {!isStashNominating &&
+                        {/* {!isStashNominating &&
                           <Menu.Item onClick={toggleInject}>
                             {t('Inject session keys (advanced)')}
                           </Menu.Item>
-                        }
+                        } */}
                       </Menu>
                     </Popup>
                   </td>
@@ -383,7 +383,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
         withRewardDestination
       /> */}
 
-      {isStashValidating
+      {/* {isStashValidating
         ? (
           <div className='top'>
             <AddressInfo
@@ -428,7 +428,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
             )}
           </div>
         )
-      }
+      } */}
     </div>
   );
 }

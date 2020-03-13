@@ -34,7 +34,7 @@ function getStashes (allAccounts: string[], stashTypes: Record<string, number>, 
   }
 
   queryBonded.forEach((value, index): void => {
-    value.isSome && (result = [[allAccounts[index], true]]);
+    value.isSome && (result = [[value.unwrap().toString(), true]]);
   });
 
   if (queryLedger.isSome) {
@@ -48,19 +48,46 @@ function getStashes (allAccounts: string[], stashTypes: Record<string, number>, 
   );
 }
 
+function checkAccountType (allAccounts: string[], assumedControllerId: string, queryBonded?: Option<AccountId>[], queryLedger?: Option<StakingLedger>): string {
+  let _assumedControllerId = assumedControllerId;
+  if (queryBonded && queryLedger) {
+    queryBonded.forEach((value, index): void => {
+      value.isSome && (_assumedControllerId = value.unwrap().toString());
+    });
+
+    // if (queryLedger.isSome) {
+    //   const stashId = queryLedger.unwrap().stash.toString();
+    //   _assumedControllerId === stashId;
+    // }
+  }
+  return _assumedControllerId;
+}
+
 export default function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
-  const queryBonded = useCall<Option<AccountId>[]>(api.query.staking.bonded.multi as any, [[accountChecked]]);
-  const queryLedger = useCall<Option<StakingLedger>>(api.query.staking.ledger as any, [accountChecked]);
+  const [assumedControllerId, setassumedControllerId] = useState<string>(accountChecked);
+  const queryAssumedBonded = useCall<Option<AccountId>[]>(api.query.staking.bonded.multi as any, [[accountChecked]]);
+  const queryAssumedLedger = useCall<Option<StakingLedger>>(api.query.staking.ledger as any, [accountChecked]);
+
+  const queryBonded = useCall<Option<AccountId>[]>(api.query.staking.bonded.multi as any, [[assumedControllerId]]);
+  const queryLedger = useCall<Option<StakingLedger>>(api.query.staking.ledger as any, [assumedControllerId]);
+
   const [isNewStakeOpen, setIsNewStateOpen] = useState(false);
   const [foundStashes, setFoundStashes] = useState<[string, boolean][] | null>(null);
   const [stashTypes, setStashTypes] = useState<Record<string, number>>({});
 
   useEffect((): void => {
     setFoundStashes(getStashes(allAccounts, stashTypes, queryBonded, queryLedger));
+    console.log(22222)
   }, [allAccounts, queryBonded, queryLedger, stashTypes]);
+
+  useEffect((): void => {
+    const _assumedControllerId: string = checkAccountType(allAccounts, accountChecked, queryAssumedBonded, queryAssumedLedger);
+    console.log(111111, _assumedControllerId)
+    setassumedControllerId(_assumedControllerId);
+  }, [allAccounts, queryAssumedBonded, queryAssumedLedger]);
 
   const _toggleNewStake = (): void => setIsNewStateOpen(!isNewStakeOpen);
   const _onUpdateType = (stashId: string, type: 'validator' | 'nominator' | 'started' | 'other'): void =>
@@ -84,7 +111,6 @@ export default function Actions ({ allStashes, className, isVisible, next, recen
           <>
             {foundStashes.map(([stashId, isOwnStash]): React.ReactNode => (
               <>
-
                 <Account
                   allStashes={allStashes}
                   isOwnStash={isOwnStash}
@@ -114,9 +140,9 @@ export default function Actions ({ allStashes, className, isVisible, next, recen
           </Box>
           <RowTitle title={t('Power Manager')} />
           <RowTitle title={t('Start')} />
-          <ActionNote onStart={() => { }} type="nominate" />
-          <RowTitle title={t('Note')} />
-          <SorryNote type="nominate" />
+          <ActionNote onStart={_toggleNewStake} type="nominate" />
+          {/* <RowTitle title={t('Note')} /> */}
+          {/* <SorryNote type="nominate" /> */}
         </div>
       }
     </div>
