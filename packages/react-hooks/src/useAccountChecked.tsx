@@ -5,11 +5,13 @@
 import { useState } from 'react';
 
 import useCacheKey from './useCacheKey';
+import useAccounts from './useAccounts';
 
 // hook for accountChecked with local storage
 export default function useAccountChecked (storageKeyBase: string): [string[], (address: string) => void] {
   const [getCache, setCache] = useCacheKey<string[]>(storageKeyBase);
-  const [accountChecked, setAccountChecked] = useState<string[]>(getCache() || []);
+  const { allAccounts, hasAccounts } = useAccounts();
+  const [accountChecked, setAccountChecked] = useState<string[]>(getCache() || (hasAccounts ? [allAccounts[0]] : []));
 
   const _toggleAccountChecked = (address: string): void =>
     setAccountChecked(
