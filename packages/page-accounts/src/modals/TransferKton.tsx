@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { InputAddress, InputBalance, Modal, TxButton } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
-import { Available } from '@polkadot/react-query';
+import { AvailableKton } from '@polkadot/react-query';
 // import Checks from '@polkadot/react-signer/Checks';
 
 import { useTranslation } from '../translate';
@@ -72,7 +72,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
 
   useEffect((): void => {
     if (senderId && recipientId) {
-      setExtrinsic(api.tx.balances.transfer(recipientId, amount || ZERO));
+      setExtrinsic(api.tx.kton.transfer(recipientId, amount || ZERO));
 
       // We currently have not enabled the max functionality - we don't take care of weights
       // calcMax(api, balances_fees, senderId, recipientId)
@@ -95,7 +95,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
             help={t('The account you will send funds from.')}
             isDisabled={!!propSenderId}
             label={t('send from account')}
-            labelExtra={<Available label={transferrable} params={senderId} withUnit/>}
+            labelExtra={<AvailableKton label={transferrable} params={senderId} withUnit/>}
             onChange={setSenderId}
             type='account'
           />
@@ -104,7 +104,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
             help={t('Select a contact or paste the address you want to send funds to.')}
             isDisabled={!!propRecipientId}
             label={t('send to address')}
-            labelExtra={<Available label={transferrable} params={recipientId} withUnit/>}
+            labelExtra={<AvailableKton label={transferrable} params={recipientId} withUnit/>}
             onChange={setRecipientId}
             type='allPlus'
           />
@@ -117,6 +117,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
             maxValue={maxBalance}
             onChange={setAmount}
             withMax
+            currencyType='kton'
           />
           {/* <Checks
             accountId={senderId}

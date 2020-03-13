@@ -120,7 +120,7 @@ function AccountStatus({ className, onStatusChange, onToggleAccountChecked, acco
               </div>
               <AddressRow
                 isEditable={true}
-                value={accountChecked || allAccounts[0]}
+                value={accountChecked}
                 className="ui--AccountStatus-Address"
               // withExplorer
               // withIndex

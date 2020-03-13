@@ -256,14 +256,14 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
         {isAccountChecked ? <Button
           isPrimary
           label={t('')}
-          isSecondary={true}
+          // isSecondary={true}
           onClick={noop}
         >
           <img width="17px" src={buttonChecked} />
         </Button>
           : <Button
             isBasic={true}
-            isSecondary={true}
+            // isSecondary={true}
             label={t('Change')}
             onClick={() => {
               store.set('accountMain', address);

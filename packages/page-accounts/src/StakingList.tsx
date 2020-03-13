@@ -224,14 +224,14 @@ class Overview extends React.PureComponent<Props, State> {
                   {item.month === 0 ? <>{t('Completed')}</> : (dayjs(item.expired_at).unix() < dayjs().unix()) ? <TxButton
                     accountId={controllerId}
                     isBasic={true}
-                    isSecondary={true}
+                    // isSecondary={true}
                     onSuccess={() => { this.refreshList(); }}
                     label={t('Release')}
                     tx='staking.claimMatureDeposits'
                   /> : (item.unlock ? <>{t('Lock limit canceled')}</> : <TxButton
                     accountId={controllerId}
                     isBasic={true}
-                    isSecondary={true}
+                    // isSecondary={true}
                     onSuccess={() => { this.refreshList(); }}
                     params={[
                       item.expired_at

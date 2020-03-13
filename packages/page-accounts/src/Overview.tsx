@@ -25,6 +25,7 @@ import StakingList from './StakingList';
 import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import { RowTitle } from '@polkadot/react-darwinia/components';
 import Transfer from './modals/Transfer';
+import TransferKton from './modals/TransferKton';
 
 type SortedAccount = { address: string; isFavorite: boolean };
 
@@ -55,6 +56,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
   const [sortedAccounts, setSortedAccounts] = useState<SortedAccount[]>([]);
   const [filter, setFilter] = useState<string>('');
   const [isTransferOpen, toggleTransfer] = useToggle();
+  const [isTransferKtonOpen, toggleKtonTransfer] = useToggle();
 
   useEffect((): void => {
     setSortedAccounts(
@@ -79,7 +81,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
   const _toggleCreate = (): void => setIsCreateOpen(!isCreateOpen);
   const _toggleImport = (): void => setIsImportOpen(!isImportOpen);
   const _toggleQr = (): void => setIsQrOpen(!isQrOpen);
-  const _accountChecked = accountChecked[0] || allAccounts[0];
+  const _accountChecked = accountChecked[0];
   return (
     <div className={className}>
       {hasAccounts ? <>
@@ -112,9 +114,9 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
                   </div>
                   <p className="p-btn"><Button
                     isBasic={true}
-                    isSecondary={true}
+                    // isSecondary={true}
                     label={t('Transfer')}
-                    onClick={() => { toggleTransfer(); }}
+                    onClick={(): void => { toggleTransfer(); }}
                   /></p>
                 </div>
               </div>
@@ -135,9 +137,9 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
                   <div className="p-amount"><AvailableKton label={''} params={_accountChecked} /></div>
                   <p className="p-btn"><Button
                     isBasic={true}
-                    isSecondary={true}
+                    // isSecondary={true}
                     label={t('Transfer')}
-                  // onClick={() => { (transferCb && transferCb('kton')) }}
+                    onClick={(): void => { toggleKtonTransfer(); }}
                   /></p>
                 </div>
               </div>
@@ -189,6 +191,13 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
         <Transfer
           key='modal-transfer'
           onClose={toggleTransfer}
+          senderId={_accountChecked}
+        />
+      )}
+      {isTransferKtonOpen && (
+        <TransferKton
+          key='modal-transfer'
+          onClose={toggleKtonTransfer}
           senderId={_accountChecked}
         />
       )}
