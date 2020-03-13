@@ -3,21 +3,21 @@
 
 import { Enum, Set, Struct } from '@polkadot/types/codec';
 import { Balance, BlockNumber, LockIdentifier } from '@polkadot/types/interfaces/runtime';
+export { AccountData, BalanceLock } from '@polkadot/react-darwinia/interfaces';
+// /** @name AccountData */
+// export interface AccountData extends Struct {
+//   readonly free: Balance;
+//   readonly reserved: Balance;
+//   readonly miscFrozen: Balance;
+//   readonly feeFrozen: Balance;
+// }
 
-/** @name AccountData */
-export interface AccountData extends Struct {
-  readonly free: Balance;
-  readonly reserved: Balance;
-  readonly miscFrozen: Balance;
-  readonly feeFrozen: Balance;
-}
-
-/** @name BalanceLock */
-export interface BalanceLock extends Struct {
-  readonly id: LockIdentifier;
-  readonly amount: Balance;
-  readonly reasons: Reasons;
-}
+// /** @name BalanceLock */
+// export interface BalanceLock extends Struct {
+//   readonly id: LockIdentifier;
+//   readonly amount: Balance;
+//   readonly reasons: Reasons;
+// }
 
 /** @name BalanceLockTo212 */
 export interface BalanceLockTo212 extends Struct {

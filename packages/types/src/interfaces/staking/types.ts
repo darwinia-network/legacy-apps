@@ -5,6 +5,7 @@ import { ITuple } from '@polkadot/types/types';
 import { BTreeMap, Compact, Enum, Struct, Vec } from '@polkadot/types/codec';
 import { bool, u128, u16, u32 } from '@polkadot/types/primitive';
 import { AccountId, Balance, BlockNumber, Moment, Perbill } from '@polkadot/types/interfaces/runtime';
+export { RewardDestination, Exposure, IndividualExposure, StakingLedger } from '@polkadot/react-darwinia/interfaces';
 
 /** @name CompactAssignments */
 export interface CompactAssignments extends Struct {
@@ -73,11 +74,11 @@ export interface EraRewards extends Struct {
 }
 
 /** @name Exposure */
-export interface Exposure extends Struct {
-  readonly total: Compact<Balance>;
-  readonly own: Compact<Balance>;
-  readonly others: Vec<IndividualExposure>;
-}
+// export interface Exposure extends Struct {
+//   readonly total: Compact<Balance>;
+//   readonly own: Compact<Balance>;
+//   readonly others: Vec<IndividualExposure>;
+// }
 
 /** @name Forcing */
 export interface Forcing extends Enum {
@@ -88,10 +89,10 @@ export interface Forcing extends Enum {
 }
 
 /** @name IndividualExposure */
-export interface IndividualExposure extends Struct {
-  readonly who: AccountId;
-  readonly value: Compact<Balance>;
-}
+// export interface IndividualExposure extends Struct {
+//   readonly who: AccountId;
+//   readonly value: Compact<Balance>;
+// }
 
 /** @name KeyType */
 export interface KeyType extends AccountId {}
@@ -113,11 +114,11 @@ export interface PhragmenScore extends Vec<u128> {}
 export interface Points extends u32 {}
 
 /** @name RewardDestination */
-export interface RewardDestination extends Enum {
-  readonly isStaked: boolean;
-  readonly isStash: boolean;
-  readonly isController: boolean;
-}
+// export interface RewardDestination extends Enum {
+//   readonly isStaked: boolean;
+//   readonly isStash: boolean;
+//   readonly isController: boolean;
+// }
 
 /** @name RewardPoint */
 export interface RewardPoint extends u32 {}
@@ -154,7 +155,7 @@ export interface SpanRecord extends Struct {
 }
 
 /** @name StakingLedger */
-export interface StakingLedger extends StakingLedgerTo223 {}
+// export interface StakingLedger extends StakingLedgerTo223 {}
 
 /** @name StakingLedgerNew */
 export interface StakingLedgerNew extends Struct {
