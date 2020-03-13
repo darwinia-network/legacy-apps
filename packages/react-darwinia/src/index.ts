@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { TFunction } from './types';
+import { i18nT } from './types';
 
 const SUBSCAN_URL = 'https://icefrog.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
@@ -61,7 +61,7 @@ async function getStakingHistory ({ page = 0, row = 10, address }, callback) {
     });
 }
 
-const lockLimitOptionsMaker = (t: TFunction): Array<object> => {
+const lockLimitOptionsMaker = (t: i18nT): Array<object> => {
   const month = [0, 3, 6, 12, 18, 24, 30, 36];
   const options = [];
   month.map((i) => {
