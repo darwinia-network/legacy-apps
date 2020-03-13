@@ -16,7 +16,7 @@ export interface Props extends BareProps {
   withUnit?: boolean;
 }
 
-export default function AvailableDisplay ({ params, className, label, style }: Props): React.ReactElement<Props> | null {
+export default function AvailableDisplay ({ params, className, label, style, withUnit }: Props): React.ReactElement<Props> | null {
   if (!params) {
     return null;
   }

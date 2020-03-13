@@ -35,11 +35,12 @@ interface Props extends BareProps {
   isType?: boolean;
   isSi?: boolean;
   isSiShow?: boolean;
+  currencyType?: currencyType;
 }
 
 const DEFAULT_BITLENGTH = BitLengthOption.CHAIN_SPEC as BitLength;
 
-function InputBalance ({ autoFocus, className, defaultValue: inDefault, help, isDisabled, isError, isFull, isZeroable, label, labelExtra, maxValue, onChange, onEnter, onEscape, placeholder, style, value, withEllipsis, withLabel, withMax, isType, onChangeType, isSi, isSiShow }: Props): React.ReactElement<Props> {
+function InputBalance ({ autoFocus, className, defaultValue: inDefault, help, isDisabled, isError, isFull, isZeroable, label, labelExtra, maxValue, onChange, onEnter, onEscape, placeholder, style, value, withEllipsis, withLabel, withMax, isType, onChangeType, isSi, isSiShow, currencyType }: Props): React.ReactElement<Props> {
   const defaultValue = inDefault
     ? formatBalance(inDefault, { forceUnit: '-', withSi: false }).replace(',', isDisabled ? ',' : '')
     : inDefault;
@@ -71,6 +72,7 @@ function InputBalance ({ autoFocus, className, defaultValue: inDefault, help, is
       withMax={withMax}
       isType={isType}
       isSiShow={isSiShow}
+      currencyType={currencyType}
     />
   );
 }

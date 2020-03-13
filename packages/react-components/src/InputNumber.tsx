@@ -2,13 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { SiDef } from '@polkadot/util/types';
+import { SiDef, BalanceFormatter } from '@polkadot/util/types';
 import { BareProps, BitLength } from './types';
 
 import BN from 'bn.js';
 import React, { useEffect, useState } from 'react';
-import { formatBalance } from '@polkadot/util';
+import { formatBalance, formatKtonBalance } from '@polkadot/util';
 import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
+import { currencyType } from '@polkadot/react-darwinia/types';
 
 import { classes } from './util';
 import { BitLengthOption } from './constants';
@@ -45,6 +46,7 @@ interface Props extends BareProps {
   withEllipsis?: boolean;
   withLabel?: boolean;
   withMax?: boolean;
+  currencyType?: currencyType;
 }
 
 const DEFAULT_BITLENGTH = BitLengthOption.NORMAL_NUMBERS as BitLength;
@@ -71,8 +73,13 @@ function getRegex (isDecimal: boolean): RegExp {
   );
 }
 
-function getSiOptions (): { text: string; value: string }[] {
-  return formatBalance.getOptions()
+function getFormat (currencyType: currencyType = 'ring'): BalanceFormatter {
+  console.log(111, currencyType);
+  return currencyType === 'ring' ? formatBalance : formatKtonBalance;
+}
+
+function getSiOptions (currencyType: currencyType): { text: string; value: string }[] {
+  return getFormat(currencyType).getOptions()
     .map(({ power, text, value }): { text: string; value: string } => ({
       value,
       text: power === 0
@@ -81,12 +88,12 @@ function getSiOptions (): { text: string; value: string }[] {
     }));
 }
 
-function getSiPowers (si: SiDef | null): [BN, number, number] {
+function getSiPowers (si: SiDef | null, currencyType: currencyType): [BN, number, number] {
   if (!si) {
     return [ZERO, 0, 0];
   }
 
-  const basePower = formatBalance.getDefaults().decimals;
+  const basePower = getFormat(currencyType).getDefaults().decimals;
 
   return [new BN(basePower + si.power), basePower, si.power];
 }
@@ -110,8 +117,8 @@ function isValidNumber (bn: BN, { bitLength = DEFAULT_BITLENGTH, isZeroable, max
   return true;
 }
 
-function inputToBn (input: string, si: SiDef | null, props: Props): [BN, boolean] {
-  const [siPower, basePower, siUnitPower] = getSiPowers(si);
+function inputToBn (input: string, si: SiDef | null, props: Props, currencyType: currencyType): [BN, boolean] {
+  const [siPower, basePower, siUnitPower] = getSiPowers(si, currencyType);
 
   // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
   const isDecimalValue = input.match(/^(\d+)\.(\d+)$/);
@@ -165,8 +172,8 @@ function inputToBn (input: string, si: SiDef | null, props: Props): [BN, boolean
 //   }`;
 // }
 
-function getValuesFromString (value: string, si: SiDef | null, props: Props): [string, BN, boolean] {
-  const [valueBn, isValid] = inputToBn(value, si, props);
+function getValuesFromString (value: string, si: SiDef | null, props: Props, currencyType: currencyType): [string, BN, boolean] {
+  const [valueBn, isValid] = inputToBn(value, si, props, currencyType);
 
   return [
     value,
@@ -187,10 +194,10 @@ function getValuesFromBn (valueBn: BN, si: SiDef | null): [string, BN, boolean] 
   ];
 }
 
-function getValues (value: BN | string, si: SiDef | null, props: Props): [string, BN, boolean] {
+function getValues (value: BN | string, si: SiDef | null, props: Props, currencyType: currencyType): [string, BN, boolean] {
   return BN.isBN(value)
     ? getValuesFromBn(value, si)
-    : getValuesFromString(value, si, props);
+    : getValuesFromString(value, si, props, currencyType);
 }
 
 function isNewPropsValue (propsValue: BN | string, value: string, valueBn: BN): boolean {
@@ -199,24 +206,24 @@ function isNewPropsValue (propsValue: BN | string, value: string, valueBn: BN): 
 
 export default function InputNumber (props: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { bitLength = DEFAULT_BITLENGTH, className, defaultValue = ZERO, help, isDecimal, isFull, isSi = true, isDisabled, isError = false, maxLength, maxValue, onChange, onEnter, onEscape, placeholder, style, value: propsValue, isType, isSiShow = true } = props;
+  const { bitLength = DEFAULT_BITLENGTH, className, defaultValue = ZERO, help, isDecimal, isFull, isSi = true, isDisabled, isError = false, maxLength, maxValue, onChange, onEnter, onEscape, placeholder, style, value: propsValue, isType, isSiShow = true, currencyType } = props;
 
-  const [si, setSi] = useState<SiDef | null>(isSi ? formatBalance.findSi('-') : null);
+  const [si, setSi] = useState<SiDef | null>(isSi ? getFormat(currencyType).findSi('-') : null);
   const [type, setType] = useState('ring');
   const [isPreKeyDown, setIsPreKeyDown] = useState(false);
 
   const [[value, valueBn, isValid], setValues] = useState<[string, BN, boolean]>(
-    getValues(propsValue || defaultValue, si, props)
+    getValues(propsValue || defaultValue, si, props, currencyType)
   );
 
   useEffect((): void => {
     if (propsValue && isNewPropsValue(propsValue, value, valueBn)) {
-      setValues(getValues(propsValue, si, props));
+      setValues(getValues(propsValue, si, props, currencyType));
     }
   }, [propsValue]);
 
   useEffect((): void => {
-    setValues(getValues(value, si, props));
+    setValues(getValues(value, si, props, currencyType));
   }, [value, si, bitLength, maxValue]);
 
   useEffect((): void => {
@@ -224,7 +231,7 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
   }, [valueBn]);
 
   const _onChange = (input: string): void => {
-    setValues(getValuesFromString(input, si, props));
+    setValues(getValuesFromString(input, si, props, currencyType));
   };
 
   const _onKeyDown = (event: React.KeyboardEvent<Element>): void => {
@@ -245,11 +252,11 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
 
   const selectType = (type: string): void => {
     const { onChangeType } = props;
-    onChangeType(type);
+    onChangeType && onChangeType(type);
     setType(type);
   };
 
-  const renderTypeDropdown = () => {
+  const renderTypeDropdown = (): React.ReactElement => {
     const typeOptions = [{
       text: RING_PROPERTIES.tokenSymbol,
       value: 'ring'
@@ -283,7 +290,7 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
   };
 
   const _onSelectSiUnit = (siUnit: string): void => {
-    setSi(formatBalance.findSi(siUnit));
+    setSi(getFormat(currencyType).findSi(siUnit));
   };
 
   // const _onClickMaxButton = (): void => {
@@ -328,7 +335,7 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
           isButton
           defaultValue={si.value}
           onChange={_onSelectSiUnit}
-          options={getSiOptions()}
+          options={getSiOptions(currencyType)}
         />
       )}
       {isType && renderTypeDropdown()}
