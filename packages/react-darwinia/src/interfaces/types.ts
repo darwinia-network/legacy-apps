@@ -19,6 +19,9 @@ export interface AccountData extends Struct {
   readonly fee_frozen: Balance;
 }
 
+/** @name AddressT */
+export interface AddressT extends U8aFixed {}
+
 /** @name BalanceLock */
 export interface BalanceLock extends Struct {
   readonly id: LockIdentifier;
@@ -128,6 +131,14 @@ export interface NominatorReward extends Struct {
 /** @name Power */
 export interface Power extends u32 {}
 
+/** @name Receipt */
+export interface Receipt extends Struct {
+  readonly gas_used: U256;
+  readonly log_bloom: Bloom;
+  // readonly logs: Vec<LogEntry>;
+  // readonly outcome: TransactionOutcome;
+}
+
 /** @name RewardDestination */
 export interface RewardDestination extends Enum {
   readonly isStaked: boolean;
@@ -193,6 +204,11 @@ export interface TimeDepositItem extends Struct {
   readonly value: Compact<Balance>;
   readonly start_time: Compact<Moment>;
   readonly expire_time: Compact<Moment>;
+}
+
+/** @name TronAddress */
+export interface TronAddress extends Struct {
+  readonly _struct: AddressT;
 }
 
 /** @name Unbonding */
