@@ -193,6 +193,19 @@ const DARWINIA_TYPES = {
 		"index": "u64",
 		"proof": "Bytes",
 		"header_hash": "H256"
+	},
+
+	"AddressT": "[u8; 20]",
+
+	"EthereumAddress": {
+		"_struct": "AddressT"
+	},
+	"TronAddress": {
+		"_struct": "AddressT"
+	},
+
+	"EcdsaSignature": {
+		"_struct": "[u8; 65]"
 	}
 };
 

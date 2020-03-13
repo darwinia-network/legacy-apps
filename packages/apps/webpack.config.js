@@ -14,10 +14,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { WebpackPluginServe } = require('webpack-plugin-serve');
 
 const findPackages = require('../../scripts/findPackages');
-
+var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const ENV = process.env.NODE_ENV || 'development';
 
-function createWebpack ({ alias = {}, context, name = 'index' }) {
+function createWebpack({ alias = {}, context, name = 'index' }) {
   const pkgJson = require(path.join(context, 'package.json'));
   const isProd = ENV === 'production';
   const hasPublic = fs.existsSync(path.join(context, 'public'));
@@ -180,7 +180,7 @@ function createWebpack ({ alias = {}, context, name = 'index' }) {
           hmr: false, // switch off, Chrome WASM memory leak
           liveReload: false, // explict off, overrides hmr
           progress: false, // since we have hmr off, disable
-          port: 3000,
+          port: 3001,
           static: path.join(process.cwd(), '/build')
         })
     ]).filter((plugin) => plugin),
