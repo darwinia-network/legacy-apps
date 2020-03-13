@@ -3,6 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 // Augment the modules
+// import '@polkadot/react-darwinia/interfaces/augment';
 import '@polkadot/api/augment';
 
 import BN from 'bn.js';
