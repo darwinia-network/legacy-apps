@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Box from './Box';
 import { useTranslation } from '../translate';
 import { RING_PROPERTIES, KTON_PROPERTIES } from '../index';
+import ColorButton from './ColorButton/Button';
 
 interface Props {
   className?: string;
@@ -57,9 +58,10 @@ function ActionNote ({ className, type, onStart }: Props): React.ReactElement<Pr
               })}<br />
               {t('3. After you choose to become a nominee, this account does not support to upgrade to node for now, we will support the upgrade of the account in the future.')}
             </p>
-            <button
+            <ColorButton
+              key='detail'
               onClick={onStart}
-            >{t('Staking now')}</button>
+            >{t('Staking now')}</ColorButton>
           </div>
         </div>
       </Box>
