@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import BN from 'bn.js';
-
+import { BalanceFormatter } from './format/formatBalance';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface Constructor<T = any> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,3 +42,5 @@ export type BnList = {
   0: BN;
   1: BN;
 } & BN[];
+
+export { BalanceFormatter };
