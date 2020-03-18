@@ -74,7 +74,6 @@ function getRegex (isDecimal: boolean): RegExp {
 }
 
 function getFormat (currencyType: currencyType = 'ring'): BalanceFormatter {
-  console.log(111, currencyType);
   return currencyType === 'ring' ? formatBalance : formatKtonBalance;
 }
 

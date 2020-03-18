@@ -85,7 +85,6 @@ export default function Actions ({ allStashes, className, isVisible, next, recen
 
   useEffect((): void => {
     const _assumedControllerId: string = checkAccountType(allAccounts, accountChecked, queryAssumedBonded, queryAssumedLedger);
-    console.log(111111, _assumedControllerId)
     setassumedControllerId(_assumedControllerId);
   }, [allAccounts, queryAssumedBonded, queryAssumedLedger]);
 
