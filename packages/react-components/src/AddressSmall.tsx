@@ -24,7 +24,7 @@ function AddressSmall ({ className, defaultName, onClickName, overrideName, togg
   return (
     <div className={`ui--AddressSmall ${className}`}>
       <IdentityIcon
-        size={32}
+        size={36}
         value={value as Uint8Array}
       />
       <div className='nameInfo'>
