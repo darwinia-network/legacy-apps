@@ -233,7 +233,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
           />
         )}
       </td>
-      <td className='top'>
+      <td className='middle'>
         {/* <AddressInfo
           address={address}
           withBalance
@@ -243,7 +243,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
         <Balance className="accountBox--all" label={`${t('Ring')}: `} params={address} />
 
       </td>
-      <td className='top'>
+      <td className='middle'>
         {/* <AddressInfo
           address={address}
           withBalance={false}
@@ -252,7 +252,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
         <BalanceKton className="accountBox--all" label={`${t('Kton')}: `} params={address} />
 
       </td>
-      <td className='number top'>
+      <td className='number middle'>
         {isAccountChecked ? <Button
           isPrimary
           label={t('')}
@@ -344,14 +344,6 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
             )}
           </Menu>
         </Popup>
-      </td>
-      <td className='mini top'>
-        <LinkExternal
-          className='ui--AddressCard-exporer-link'
-          data={address}
-          type='address'
-          withShort
-        />
       </td>
     </tr>
   );
