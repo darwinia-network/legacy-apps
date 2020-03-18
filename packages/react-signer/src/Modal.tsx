@@ -212,7 +212,7 @@ class Signer extends React.PureComponent<Props, State> {
         {!isRenderError && (!isQrVisible || !isQrScanning) && !signedTx && (
           <>
             {!currentItem.isUnsigned && this.renderSignToggle()}
-            <Button.Or />
+
             <Button
               className='ui--signer-Signer-Submit'
               isDisabled={!isSendable}

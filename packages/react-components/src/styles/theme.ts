@@ -31,6 +31,7 @@ export default css`
     .ui.buttons .button {
       background-color: ${colorBtnDefault};
       color: ${colorBtnText};
+      border-radius: 2px;
 
       &.active,
       &:active,
@@ -95,13 +96,34 @@ export default css`
       }
 
       > .text:not(.default) {
-        color: ${colorBtnText};
+        color: ${colorBtnPrimary};
       }
+    }
+
+    
+    .ui.basic.button {
+      box-shadow: 0 0 0 1px #302B3C inset;
+      color: ${colorBtnPrimary}!important;
+    }
+
+    .ui.button {
+      padding: 0.57em 1.5em 0.57em
     }
 
     .ui.toggle.checkbox input:checked~.box:before,
     .ui.toggle.checkbox input:checked~label:before {
       background-color: ${colorBtnHighlight} !important;
+    }
+  }
+
+  .ui--Modal {
+    .close-btn {
+      width: 48px;
+      height: 48px;
+      position: absolute;
+      top: 0;
+      right: -68px;
+      cursor: pointer;
     }
   }
 `;

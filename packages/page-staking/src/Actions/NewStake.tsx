@@ -79,6 +79,7 @@ class NewStake extends TxComponent<Props, State> {
         className='staking--Bonding'
         header={t('Bonding Preferences')}
         size='small'
+        onCancel={onClose}
       >
         <Modal.Content className='ui--signer-Signer-Content'>
           <InputAddress
