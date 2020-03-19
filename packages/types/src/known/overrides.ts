@@ -12,6 +12,9 @@ const TYPES_MODULES: Record<string, OverrideModuleType> = {
     AccountInfo: 'ContractAccountInfo'
   },
   // current from here on
+  balances: {
+    Releases: 'ReleasesBalances'
+  },
   contracts: {
     StorageKey: 'ContractStorageKey'
   },
@@ -26,7 +29,8 @@ const TYPES_MODULES: Record<string, OverrideModuleType> = {
     Vote: 'SocietyVote'
   },
   staking: {
-    Compact: 'CompactAssignments'
+    Compact: 'CompactAssignments',
+    Releases: 'ReleasesStaking'
   },
   treasury: {
     Proposal: 'TreasuryProposal'
@@ -39,12 +43,13 @@ const TYPES_MODULES: Record<string, OverrideModuleType> = {
 // definition as applicable. (4 keys in substrate vs 5 in Polkadot/CC3).
 const TYPES_POLKADOT_VERSIONED: OverrideVersionedType[] = [
   {
-    minmax: [1000, undefined],
+    minmax: [1000, 1003],
     types: {
       Address: 'GenericAddress',
       BalanceLock: 'BalanceLockTo212',
       Keys: 'SessionKeys5',
-      StakingLedger: 'StakingLedgerTo223'
+      StakingLedger: 'StakingLedgerTo223',
+      Votes: 'VotesTo230'
     }
   },
   {
@@ -52,14 +57,14 @@ const TYPES_POLKADOT_VERSIONED: OverrideVersionedType[] = [
     types: {
       // Indices optional, not in transaction
       Address: 'AccountId',
-      Keys: 'SessionKeys5',
-      StakingLedger: 'StakingLedgerTo223'
+      Keys: 'SessionKeys5'
     }
   }
 ];
 
 const TYPES_KUSAMA_VERSIONED: OverrideVersionedType[] = [
   {
+    // 1020 is first CC3
     minmax: [1019, 1031],
     types: {
       Address: 'GenericAddress',
@@ -67,7 +72,8 @@ const TYPES_KUSAMA_VERSIONED: OverrideVersionedType[] = [
       DispatchError: 'DispatchErrorTo198',
       Keys: 'SessionKeys5',
       SlashingSpans: 'SlashingSpansTo204',
-      StakingLedger: 'StakingLedgerTo223'
+      StakingLedger: 'StakingLedgerTo223',
+      Votes: 'VotesTo230'
     }
   },
   {
@@ -77,25 +83,28 @@ const TYPES_KUSAMA_VERSIONED: OverrideVersionedType[] = [
       BalanceLock: 'BalanceLockTo212',
       Keys: 'SessionKeys5',
       SlashingSpans: 'SlashingSpansTo204',
-      StakingLedger: 'StakingLedgerTo223'
+      StakingLedger: 'StakingLedgerTo223',
+      Votes: 'VotesTo230'
     }
   },
   {
+    // actual at 1045 (1043-1044 is dev)
     minmax: [1043, 1045],
     types: {
       Address: 'GenericAddress',
       BalanceLock: 'BalanceLockTo212',
       Keys: 'SessionKeys5',
-      StakingLedger: 'StakingLedgerTo223'
+      StakingLedger: 'StakingLedgerTo223',
+      Votes: 'VotesTo230'
     }
   },
   {
+    // actual at 1050 (1046-1049 is dev)
     minmax: [1046, undefined],
     types: {
       // Indices optional, not in transaction
       Address: 'AccountId',
-      Keys: 'SessionKeys5',
-      StakingLedger: 'StakingLedgerTo223'
+      Keys: 'SessionKeys5'
     }
   }
 ];
