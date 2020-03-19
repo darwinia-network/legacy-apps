@@ -456,6 +456,16 @@ const TitleWrapper = styled.div`
     }
     .statusButtons{
       margin-left: 35px;
+      .ui.buttons {
+        .button{
+          color: #B3B3B3;
+          background-color: #fff!important;
+        }
+        .active.button{
+          background-color: #fff!important;
+          color: #302B3C;
+        }
+      }
     }
   }
 `;

@@ -37,6 +37,18 @@ export default css`
     border-radius: 0 2px 2px 0;
   }
 
+  .ui.action.input:not([class*="left action"])>input:focus {
+      border-right-color: rgba(34,36,38,.15)!important;
+  }
+
+  .ui.input.focus>input, .ui.input>input:focus {
+    border-color: rgba(34,36,38,.15);
+    background: #fff;
+    color: rgba(0,0,0,.8);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+
   .ui.selection.dropdown>.delete.icon, .ui.selection.dropdown>.dropdown.icon, .ui.selection.dropdown>.search.icon {
     margin: -.78571429em -1.2em;
   }
