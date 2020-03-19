@@ -45,7 +45,7 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
       allStashes.filter((address): boolean => !stakingOverview.validators.includes(address as any))
     );
   }, [allStashes, stakingOverview]);
-  
+
   return (
     <main className={`staking--App ${className}`}>
       <RowTitle title={t('Overview')} />
@@ -55,7 +55,7 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
         nominators={nominators}
         stakingOverview={stakingOverview}
       />
-      <RowTitle title={t('Validators')} />
+      
       <Overview
         hasQueries={hasQueries}
         isVisible={true}
