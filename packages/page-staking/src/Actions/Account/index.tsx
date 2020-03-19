@@ -223,7 +223,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                           {(!sessionIds.length || hexSessionIdNext === '0x')
                             ? (
                               <Button
-                                isPrimary
+                                isNegative
                                 key='set'
                                 onClick={toggleSetSession}
                                 label={t('Session Key')}
@@ -232,7 +232,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                             )
                             : (
                               <Button
-                                isPrimary
+                                isNegative
                                 key='validate'
                                 onClick={toggleValidate}
                                 label={t('Validate')}
@@ -242,7 +242,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                           }
                           <Button.Or key='nominate.or' />
                           <Button
-                            isPrimary
+                            isNegative
                             key='nominate'
                             onClick={toggleNominate}
                             label={t('Nominate')}
@@ -342,7 +342,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
             <div className="staking--PowerMange-buttons">
               <Button.Group>
                 <Button
-                  isPrimary
+                  isNegative
                   key='bondmore'
                   onClick={toggleBondExtra}
                   label={t('Bond More')}
@@ -350,7 +350,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                 />
                 <Button.Or key='nominate.or' />
                 <Button
-                  isPrimary
+                  isNegative
                   key='unbond'
                   onClick={toggleUnbond}
                   label={t('Unbond')}
