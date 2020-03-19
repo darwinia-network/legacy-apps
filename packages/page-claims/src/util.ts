@@ -10,11 +10,13 @@ import { registry } from '@polkadot/react-api';
 import { createType } from '@polkadot/types';
 import { assert, hexToU8a, stringToU8a, u8aToBuffer, u8aConcat } from '@polkadot/util';
 import { keccakAsHex, keccakAsU8a } from '@polkadot/util-crypto';
+import { ChainType } from './types';
 
 interface RecoveredSignature {
   error: Error | null;
   ethereumAddress: EthereumAddress | null;
   signature: EcdsaSignature | null;
+  chain: ChainType;
 }
 
 interface SignatureParts {
@@ -87,7 +89,7 @@ export function recoverAddress (message: string, { recovery, signature }: Signat
 // recover an address from a signature JSON (as supplied by e.g. MyCrypto)
 export function recoverFromJSON (signatureJson: string | null): RecoveredSignature {
   try {
-    const { msg, sig } = JSON.parse(signatureJson || '{}');
+    const { msg, sig, address } = JSON.parse(signatureJson || '{}');
 
     if (!msg || !sig) {
       throw new Error('Invalid signature object');
@@ -98,6 +100,7 @@ export function recoverFromJSON (signatureJson: string | null): RecoveredSignatu
     return {
       error: null,
       ethereumAddress: createType(registry, 'EthereumAddress', recoverAddress(msg, parts)),
+      chain: address.substr(0, 2) == '0x' ? 'eth' : 'tron',
       signature: createType(registry, 'EcdsaSignature', u8aConcat(parts.signature, new Uint8Array([parts.recovery])))
     };
   } catch (error) {
@@ -106,7 +109,8 @@ export function recoverFromJSON (signatureJson: string | null): RecoveredSignatu
     return {
       error,
       ethereumAddress: null,
-      signature: null
+      signature: null,
+      chain: 'eth'
     };
   }
 }

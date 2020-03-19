@@ -13,25 +13,27 @@ import { FormatBalance } from '@polkadot/react-query';
 
 import { useTranslation } from './translate';
 import { addrToChecksum } from './util';
+import { ChainType } from './types';
 
 interface Props {
   button: React.ReactNode;
   className?: string;
   ethereumAddress: EthereumAddress | null;
+  chain: ChainType
 }
 
-function Claim ({ button, className, ethereumAddress }: Props): React.ReactElement<Props> | null {
+function Claim ({ button, className, ethereumAddress, chain }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const { api } = useApi();
   const [claimValue, setClaimValue] = useState<BalanceOf | null>(null);
   const [claimAddress, setClaimAddress] = useState<EthereumAddress | null>(null);
   const [isBusy, setIsBusy] = useState(false);
 
-  const _fetchClaim = (address: EthereumAddress): void => {
+  const _fetchClaim = (address: EthereumAddress, chain: ChainType): void => {
     setIsBusy(true);
 
     api.query.claims
-      .claims<Option<BalanceOf>>(address)
+      [chain === 'eth' ? 'claimsFromEth' : 'claimsFromTron']<Option<BalanceOf>>(address)
       .then((claim): void => {
         setClaimValue(claim.unwrapOr(null));
         setIsBusy(false);
@@ -42,7 +44,7 @@ function Claim ({ button, className, ethereumAddress }: Props): React.ReactEleme
   useEffect((): void => {
     if (ethereumAddress !== claimAddress) {
       setClaimAddress(ethereumAddress);
-      ethereumAddress && _fetchClaim(ethereumAddress);
+      ethereumAddress && _fetchClaim(ethereumAddress, chain);
     }
   }, [ethereumAddress]);
 
