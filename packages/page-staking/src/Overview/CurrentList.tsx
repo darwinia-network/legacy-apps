@@ -157,13 +157,13 @@ export default function CurrentList ({ authorsMap, hasQueries, isIntentions, isV
           withLabel={false}
         />
       </FilterOverlay> */}
-      <Input
+      {/* <Input
         autoFocus
         isFull
         label={t('filter by name, address or index')}
         onChange={setNameFilter}
         value={nameFilter}
-      />
+      /> */}
       <Table className={isIntentions ? 'staking--hidden' : ''}>
         <Table.Body>
           {_renderRows(validators, t('validators'), true)}
