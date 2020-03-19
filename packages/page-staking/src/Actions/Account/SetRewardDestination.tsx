@@ -40,6 +40,7 @@ class SetRewardDestination extends TxComponent<Props, State> {
         className='staking--Bonding'
         header={t('Bonding Preferences')}
         size='small'
+        onCancel={onClose}
       >
         {this.renderContent()}
         <Modal.Actions onCancel={onClose}>

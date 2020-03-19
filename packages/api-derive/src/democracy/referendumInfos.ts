@@ -23,7 +23,7 @@ export function referendumInfos (api: ApiInterfaceRx): (ids?: (BN | number)[]) =
     ).pipe(
       switchMap((infos): Observable<(DerivedReferendum | null)[]> =>
         combineLatest(
-          ...ids.map((id, index): Observable<DerivedReferendum | null> =>
+          ids.map((id, index): Observable<DerivedReferendum | null> =>
             retrieveInfo(api, id, infos[index])
           )
         )

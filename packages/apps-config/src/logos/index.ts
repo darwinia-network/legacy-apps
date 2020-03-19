@@ -11,6 +11,7 @@ import nodeEdgeware from './nodes/edgeware-circle.svg';
 import nodePolkadot from './nodes/polkadot-circle.svg';
 import nodePolkadotJs from './nodes/polkadot-js.svg';
 import nodeSubstrate from './nodes/substrate-hexagon.svg';
+import nodeCrab from './nodes/darwinia-white-logo.svg';
 
 // last-resort fallback, just something empty
 import emptyLogo from './empty.svg';
@@ -20,7 +21,8 @@ const chainLogos: Record<string, any> = {
   kusama: chainKusama, // new name after CC3
   'kusama cc1': chainKusama,
   'kusama cc2': chainKusama,
-  'kusama cc3': chainKusama
+  'kusama cc3': chainKusama,
+  'darwinia crab network': nodeCrab,
 };
 
 // overrides based on the actual software node type (all '-' converted to ' ')
@@ -30,7 +32,8 @@ const nodeLogos: Record<string, any> = {
   'node template': nodeSubstrate,
   'parity polkadot': nodePolkadot,
   'polkadot js': nodePolkadotJs,
-  'substrate node': nodeSubstrate
+  'substrate node': nodeSubstrate,
+
 };
 
 // overrides when we pass an explicit logo name
@@ -42,12 +45,14 @@ const namedLogos: Record<string, any> = {
   kusama: chainKusama,
   polkadot: nodePolkadot,
   substrate: nodeSubstrate,
-  westend: nodePolkadot
+  westend: nodePolkadot,
+  crab: nodeCrab
 };
 
 export {
   chainLogos,
   emptyLogo,
   namedLogos,
-  nodeLogos
+  nodeLogos,
+  nodeCrab,
 };

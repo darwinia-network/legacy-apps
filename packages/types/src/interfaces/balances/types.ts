@@ -3,7 +3,7 @@
 
 import { Enum, Set, Struct } from '@polkadot/types/codec';
 import { Balance, BlockNumber, LockIdentifier } from '@polkadot/types/interfaces/runtime';
-export { AccountData, BalanceLock } from '@polkadot/react-darwinia/interfaces';
+
 // /** @name AccountData */
 // export interface AccountData extends Struct {
 //   readonly free: Balance;
@@ -32,6 +32,12 @@ export interface Reasons extends Enum {
   readonly isFee: boolean;
   readonly isMisc: boolean;
   readonly isAll: boolean;
+}
+
+/** @name ReleasesBalances */
+export interface ReleasesBalances extends Enum {
+  readonly isV100: boolean;
+  readonly isV200: boolean;
 }
 
 /** @name VestingSchedule */

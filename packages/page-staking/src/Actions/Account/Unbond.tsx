@@ -73,6 +73,7 @@ class Unbond extends TxComponent<Props, State> {
         className='staking--Unbond'
         header={t('Unbond funds')}
         size='small'
+        onCancel={onClose}
       >
         {this.renderContent()}
         <Modal.Actions onCancel={onClose}>

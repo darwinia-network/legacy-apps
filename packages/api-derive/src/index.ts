@@ -9,7 +9,6 @@ import { Observable } from 'rxjs';
 
 import * as accounts from './accounts';
 import * as balances from './balances';
-import * as kton from './kton';
 import * as chain from './chain';
 import * as contracts from './contracts';
 import * as council from './council';
@@ -25,7 +24,7 @@ import * as treasury from './treasury';
 
 export * from './type';
 
-export const derive = { accounts, balances, kton, chain, contracts, council, democracy, elections, imOnline, parachains, session, society, staking, technicalCommittee, treasury };
+export const derive = { accounts, balances, chain, contracts, council, democracy, elections, imOnline, parachains, session, society, staking, technicalCommittee, treasury };
 
 type DeriveSection<Section> = {
   [Method in keyof Section]: Section[Method] extends AnyFunction

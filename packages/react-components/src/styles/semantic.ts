@@ -23,6 +23,34 @@ export default css`
   .ui.selection.dropdown,
   .ui.input > input {
     color: inherit;
+    border-radius: 2px;
+  }
+
+  .ui.compact.selection.dropdown {
+    color: #302B3C!important;
+    background-color: #fff!important;
+    border: 1px solid #302B3C!important;
+    font-weight: normal;
+  }
+
+  .ui.action.input:not([class*="left action"])>.button:last-child, .ui.action.input:not([class*="left action"])>.buttons:last-child>.button, .ui.action.input:not([class*="left action"])>.dropdown:last-child {
+    border-radius: 0 2px 2px 0;
+  }
+
+  .ui.action.input:not([class*="left action"])>input:focus {
+      border-right-color: rgba(34,36,38,.15)!important;
+  }
+
+  .ui.input.focus>input, .ui.input>input:focus {
+    border-color: rgba(34,36,38,.15);
+    background: #fff;
+    color: rgba(0,0,0,.8);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+
+  .ui.selection.dropdown>.delete.icon, .ui.selection.dropdown>.dropdown.icon, .ui.selection.dropdown>.search.icon {
+    margin: -.78571429em -1.2em;
   }
 
   .ui.dropdown {
@@ -87,7 +115,7 @@ export default css`
   }
 
   .ui.inverted.dimmer {
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: rgba(48, 43, 60, 0.8);
     padding: 0 1rem 1rem;
   }
 
@@ -99,19 +127,23 @@ export default css`
   }
 
   .ui.modal {
-    background: #fafafa;
+    background: #fff;
     color: #4e4e4e;
     font-family: sans-serif;
-
+    border-radius: 0;
     > .actions,
     > .content {
       background: transparent;
+      padding: 1.5rem 3rem;
     }
 
     > .actions {
       border-top: none;
       text-align: right;
-      padding: 1rem !important;
+      padding: 1.875rem 3rem !important;
+      .ui.buttons .button {
+        padding: 0.78125rem 1.5rem 0.78125rem;
+      }
     }
 
     > .header:not(.ui) {

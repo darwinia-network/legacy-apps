@@ -7,14 +7,16 @@ import { DerivedHeartbeats, DerivedStakingOverview } from '@polkadot/api-derive/
 import { AccountId, StakingLedger } from '@polkadot/types/interfaces';
 
 import React, { useEffect, useState } from 'react';
-import { Button } from '@polkadot/react-components';
+import { Button, AddressSmall } from '@polkadot/react-components';
 import { useCall, useApi, useAccounts } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
+import styled from 'styled-components';
 
 import Account from './Account';
 import StartStaking from './NewStake';
 import { useTranslation } from '../translate';
-import { RowTitle, Box, SorryNote, ActionNote } from '@polkadot/react-darwinia/components';
+import { RowTitle, Box, ActionNote } from '@polkadot/react-darwinia/components';
+import PowerManage from './Account/PowerManage';
 
 interface Props {
   allStashes: string[];
@@ -63,7 +65,7 @@ function checkAccountType (allAccounts: string[], assumedControllerId: string, q
   return _assumedControllerId;
 }
 
-export default function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked }: Props): React.ReactElement<Props> {
+function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -85,7 +87,6 @@ export default function Actions ({ allStashes, className, isVisible, next, recen
 
   useEffect((): void => {
     const _assumedControllerId: string = checkAccountType(allAccounts, accountChecked, queryAssumedBonded, queryAssumedLedger);
-    console.log(111111, _assumedControllerId)
     setassumedControllerId(_assumedControllerId);
   }, [allAccounts, queryAssumedBonded, queryAssumedLedger]);
 
@@ -126,25 +127,30 @@ export default function Actions ({ allStashes, className, isVisible, next, recen
           </>
         )
         : <div>
-          <RowTitle title={t('My Nomination')} />
-          <Box>
-            <Button.Group>
-              <Button
-                isPrimary
-                key='new-stake'
-                label={t('New stake')}
-                icon='add'
-                onClick={_toggleNewStake}
-              />
-            </Button.Group>
-          </Box>
-          <RowTitle title={t('Power Manager')} />
-          <RowTitle title={t('Start')} />
-          <ActionNote onStart={_toggleNewStake} type="nominate" />
-          {/* <RowTitle title={t('Note')} /> */}
-          {/* <SorryNote type="nominate" /> */}
-        </div>
+              <RowTitle title={t('My Nomination')} />
+              <Box className="Actions--Nomination">
+                <AddressSmall value={accountChecked} />
+              </Box>
+              <RowTitle title={t('Power Manager')} />
+              <Box>
+                <PowerManage
+                  stakingAccount={accountChecked}
+                />
+              </Box>
+              <RowTitle title={t('Start')} />
+              <ActionNote onStart={_toggleNewStake} type="nominate" />
+          </div>
       }
     </div>
   );
 }
+
+export default styled(Actions)`
+  .Actions--Nomination {
+    .ui--Box{
+      display: flex;
+      justify-content: space-between;
+      padding: 1.25rem 0.625rem;
+    }
+  }
+`;

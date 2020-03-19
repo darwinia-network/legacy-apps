@@ -10,7 +10,7 @@ import BN from 'bn.js';
 import { combineLatest, of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ApiInterfaceRx } from '@polkadot/api/types';
-import { Option, Vec, createType } from '@polkadot/types';
+import { Option, Vec } from '@polkadot/types';
 import { bnMax } from '@polkadot/util';
 
 import { memo } from '../util';
@@ -20,7 +20,7 @@ type Result = [DerivedBalancesAccount, BlockNumber, ResultBalance];
 
 function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock | BalanceLockTo212)[], bestNumber: BlockNumber): [Balance, (DerivedBalanceLock | BalanceLockTo212)[]] {
   let lockedBn = new BN(0);
-  let lockedBalance = createType(api.registry, 'Balance');
+  let lockedBalance = api.registry.createType('Balance');
   let lockedBreakdown: (DerivedBalanceLock | BalanceLockTo212)[] = [];
   lockedBn = locks.reduce((total, { lock_for }) => {
     if (lock_for.isStaking) {
@@ -36,13 +36,13 @@ function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock | BalanceLockTo212)
     }
     return total;
   }, new BN(0));
-  lockedBalance = createType(api.registry, 'Balance', lockedBn);
+  lockedBalance = api.registry.createType('Balance', lockedBn);
   return [lockedBalance, lockedBreakdown];
 }
 
 function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBalance, freeBalanceKton, frozenFee, frozenMisc, reservedBalance, reservedBalanceKton, votingBalance, votingBalanceKton }, bestNumber, [vesting, locks, locksKton]]: Result): DerivedBalancesAll {
-  let lockedBalance = createType(api.registry, 'Balance');
-  let lockedBalanceKton = createType(api.registry, 'Balance');
+  let lockedBalance = api.registry.createType('Balance');
+  let lockedBalanceKton = api.registry.createType('Balance');
   let lockedBreakdown: (DerivedBalanceLock | BalanceLockTo212)[] = [];
   let lockedBreakdownKton: (DerivedBalanceLock | BalanceLockTo212)[] = [];
   if (Array.isArray(locks)) {
@@ -57,9 +57,9 @@ function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBala
   // Calculate the vesting balances,
   //  - offset = balance locked at startingBlock
   //  - perBlock is the unlock amount
-  const { locked: vestingTotal, perBlock, startingBlock } = vesting || createType(api.registry, 'VestingInfo');
+  const { locked: vestingTotal, perBlock, startingBlock } = vesting || api.registry.createType('VestingInfo');
   const isStarted = bestNumber.gt(startingBlock);
-  const vestedBalance = createType(api.registry, 'Balance', isStarted ? perBlock.mul(bestNumber.sub(startingBlock)) : 0);
+  const vestedBalance = api.registry.createType('Balance', isStarted ? perBlock.mul(bestNumber.sub(startingBlock)) : 0);
   const isVesting = isStarted && vestedBalance.lt(vestingTotal);
 
   // The available balance & vested has an interplay here
@@ -71,11 +71,11 @@ function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBala
   // ""
   const floating = freeBalance.sub(lockedBalance);
   const extraReceived = isVesting ? freeBalance.sub(vestingTotal) : new BN(0);
-  const availableBalance = createType(api.registry, 'Balance', bnMax(new BN(0), isVesting && floating.gt(vestedBalance) ? vestedBalance.add(extraReceived) : floating));
+  const availableBalance = api.registry.createType('Balance', bnMax(new BN(0), isVesting && floating.gt(vestedBalance) ? vestedBalance.add(extraReceived) : floating));
 
   // kton has no vesting module
   const floatingKton = freeBalanceKton.sub(lockedBalanceKton);
-  const availableBalanceKton = createType(api.registry, 'Balance', bnMax(new BN(0), floatingKton));
+  const availableBalanceKton = api.registry.createType('Balance', bnMax(new BN(0), floatingKton));
 
   return {
     accountId,
@@ -160,7 +160,7 @@ export function all (api: ApiInterfaceRx): (address: AccountIndex | AccountId | 
             api.derive.chain.bestNumber(),
             queryCurrent(api, account.accountId)
           ])
-          : of([account, createType(api.registry, 'BlockNumber'), [null, createType(api.registry, 'Vec<BalanceLock>'), createType(api.registry, 'Vec<BalanceLock>')]])
+          : of([account, api.registry.createType('BlockNumber'), [null, api.registry.createType('Vec<BalanceLock>'), api.registry.createType('Vec<BalanceLock>')]])
         )
       ),
       map((result): DerivedBalancesAll => calcBalances(api, result))

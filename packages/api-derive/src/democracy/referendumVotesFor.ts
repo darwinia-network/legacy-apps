@@ -5,10 +5,10 @@
 import { AccountId, Vote } from '@polkadot/types/interfaces';
 
 import BN from 'bn.js';
-import { combineLatest, Observable, of } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ApiInterfaceRx } from '@polkadot/api/types';
-import { Vec, createType } from '@polkadot/types';
+import { Vec } from '@polkadot/types';
 
 import { DerivedBalancesAccount, DerivedReferendumVote } from '../types';
 import { memo } from '../util';
@@ -26,8 +26,8 @@ export function referendumVotesFor (api: ApiInterfaceRx): (referendumId: BN | nu
       map(([votersFor, votes, balances]): DerivedReferendumVote[] =>
         votersFor.map((accountId, index): DerivedReferendumVote => ({
           accountId,
-          balance: balances[index].votingBalance || createType(api.registry, 'Balance'),
-          vote: votes[index] || createType(api.registry, 'Vote')
+          balance: balances[index].votingBalance || api.registry.createType('Balance'),
+          vote: votes[index] || api.registry.createType('Vote')
         } as DerivedReferendumVote))
       )
     ));

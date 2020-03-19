@@ -36,7 +36,7 @@ class Unlock extends TxComponent<Props, State> {
   }
 
   public render (): React.ReactNode {
-    const { pair, t } = this.props;
+    const { pair, t, onClose } = this.props;
 
     if (!pair) {
       return null;
@@ -44,6 +44,7 @@ class Unlock extends TxComponent<Props, State> {
 
     return (
       <Modal
+        onCancel={onClose}
         className='toolbox--Unlock'
         header={t('Unlock account')}
       >

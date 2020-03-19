@@ -32,11 +32,10 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
   const { allAccounts, hasAccounts } = useAccounts();
   const { pathname } = useLocation();
   const [next, setNext] = useState<string[]>([]);
-  const allStashes = useCall<string[]>(api.derive.staking.controllers, [], {
-    defaultValue: [],
-    transform: ([stashes]: [AccountId[]]): string[] =>
+  const allStashes = useCall<string[]>(api.derive.staking.stashes, [], {
+    transform: (stashes: AccountId[]): string[] =>
       stashes.map((accountId): string => accountId.toString())
-  }) as string[];
+  });
   const recentlyOnline = useCall<DerivedHeartbeats>(api.derive.imOnline?.receivedHeartbeats, []);
   const stakingOverview = useCall<DerivedStakingOverview>(api.derive.staking.overview, []);
   const sessionRewards = useSessionRewards(MAX_SESSIONS);
@@ -47,10 +46,10 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
   const _accountChecked = accountChecked[0];
 
   useEffect((): void => {
-    stakingOverview && setNext(
+    allStashes && stakingOverview && setNext(
       allStashes.filter((address): boolean => !stakingOverview.validators.includes(address as any))
     );
-  }, [allStashes, stakingOverview?.validators]);
+  }, [allStashes, stakingOverview]);
 
   return (
     <main className={`staking--App ${className}`}>

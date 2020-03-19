@@ -62,6 +62,7 @@ function Nominate ({ className, controllerId, nominees, onClose, next, stakingOv
     <Modal
       className={`staking--Nominating ${className}`}
       header={t('Nominate Validators')}
+      onCancel={onClose}
     >
       <Modal.Content className='ui--signer-Signer-Content'>
         <InputAddress

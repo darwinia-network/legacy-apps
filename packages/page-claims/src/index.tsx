@@ -17,7 +17,7 @@ import { TokenUnit } from '@polkadot/react-components/InputNumber';
 import TxModal, { TxModalState, TxModalProps } from '@polkadot/react-components/TxModal';
 import { u8aToHex, u8aToString } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
-
+import { ChainType } from './types';
 import ClaimDisplay from './Claim';
 import { recoverFromJSON } from './util';
 
@@ -37,6 +37,7 @@ interface State extends TxModalState {
   claim?: Balance | null;
   signature?: EcdsaSignature | null;
   step: Step;
+  chain: ChainType;
 }
 
 const Payload = styled.pre`
@@ -83,7 +84,8 @@ class ClaimsApp extends TxModal<Props, State> {
       didCopy: false,
       ethereumAddress: null,
       signature: null,
-      step: 0
+      step: 0,
+      chain: 'eth'
     };
     this.state = this.defaultState;
   }
@@ -98,7 +100,7 @@ class ClaimsApp extends TxModal<Props, State> {
 
   public render (): React.ReactNode {
     const { api, systemChain = '', t } = this.props;
-    const { accountId, didCopy, ethereumAddress, signature, step } = this.state;
+    const { accountId, didCopy, ethereumAddress, signature, step, chain } = this.state;
 
     const payload = accountId
       ? (
@@ -186,6 +188,7 @@ class ClaimsApp extends TxModal<Props, State> {
               <ClaimDisplay
                 button={this.renderTxButton()}
                 ethereumAddress={ethereumAddress}
+                chain={chain}
               />
             )}
           </Column>

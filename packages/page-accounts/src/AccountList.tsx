@@ -67,7 +67,7 @@ function AccountList ({ className, onStatusChange, onClose, accountChecked, onTo
   const _toggleQr = (): void => setIsQrOpen(!isQrOpen);
 
   return (
-    <Modal header={t('Add via backup file')}>
+    <Modal onCancel={onClose}>
       <Wrapper className={className}>
 
         {isCreateOpen && (
@@ -141,7 +141,7 @@ function AccountList ({ className, onStatusChange, onClose, accountChecked, onTo
                   />
                 </div>
               </div>
-              <div className='filter--tags'>
+              {/* <div className='filter--tags'>
                 <Input
                   autoFocus
                   isFull
@@ -149,7 +149,7 @@ function AccountList ({ className, onStatusChange, onClose, accountChecked, onTo
                   onChange={setFilter}
                   value={filter}
                 />
-              </div>
+              </div> */}
               <Table>
                 <Table.Body>
                   {sortedAccounts.map(({ address, isFavorite }): React.ReactNode => (
@@ -187,8 +187,6 @@ function AccountList ({ className, onStatusChange, onClose, accountChecked, onTo
           </div>
         }
       </Wrapper>
-      <Modal.Actions onCancel={onClose}>
-      </Modal.Actions>
     </Modal>
   );
 }
@@ -198,7 +196,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 44px 15px 20px;
+    padding: 15px 20px 15px 20px;
     margin: 0;
     p{
       font-size: 20px;

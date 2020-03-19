@@ -13,6 +13,10 @@ const deprecated = {
 export default {
   types: {
     ...deprecated,
+    ActiveEraInfo: {
+      index: 'EraIndex',
+      start: 'Option<Moment>'
+    },
     CompactAssignments: {
       votes1: 'Vec<(AccountId, [CompactScore; 0], AccountId)>',
       votes2: 'Vec<(AccountId, [CompactScore; 1], AccountId)>',
@@ -82,6 +86,9 @@ export default {
     },
     PhragmenScore: '[u128; 3]',
     Points: 'u32',
+    ReleasesStaking: {
+      _enum: ['V1_0_0', 'V2_0_0']
+    },
     RewardDestination: {
       _enum: [
         'Staked',
@@ -118,14 +125,13 @@ export default {
       unlocking: 'Vec<UnlockChunk>'
     },
     // TODO Enable as default when new staking payouts go live
-    StakingLedgerNew: {
+    StakingLedger: {
       stash: 'AccountId',
       total: 'Compact<Balance>',
       active: 'Compact<Balance>',
       unlocking: 'Vec<UnlockChunk>',
-      nextReward: 'EraIndex'
+      lastReward: 'Option<EraIndex>'
     },
-    StakingLedger: 'StakingLedgerTo223',
     UnappliedSlashOther: '(AccountId, Balance)',
     UnappliedSlash: {
       validator: 'AccountId',

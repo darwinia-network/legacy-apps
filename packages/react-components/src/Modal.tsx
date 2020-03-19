@@ -10,12 +10,14 @@ import SUIModal from 'semantic-ui-react/dist/commonjs/modules/Modal/Modal';
 import Button from './Button';
 import ButtonCancel from './ButtonCancel';
 import { classes } from './util';
+import modalCloseIcon from './styles/images/modal-close.png';
 
 interface ModalProps extends BareProps {
   children: React.ReactNode;
   header?: React.ReactNode;
   open?: boolean;
   [index: string]: any;
+  onCancel?: () => void;
 }
 
 interface ActionsProps extends BareProps {
@@ -26,7 +28,7 @@ interface ActionsProps extends BareProps {
 }
 
 function Modal (props: ModalProps): React.ReactElement<ModalProps> {
-  const { className, children, header, open = true } = props;
+  const { className, children, header, open = true, onCancel } = props;
 
   return (
     <SUIModal
@@ -40,6 +42,7 @@ function Modal (props: ModalProps): React.ReactElement<ModalProps> {
         <SUIModal.Header>{header}</SUIModal.Header>
       )}
       {children}
+      <img className="close-btn" src={modalCloseIcon} onClick={onCancel} />
     </SUIModal>
   );
 }
@@ -48,9 +51,9 @@ function Actions ({ cancelLabel, className, children, withOr = true, onCancel }:
   return (
     <SUIModal.Actions>
       <Button.Group className={className}>
-        <ButtonCancel label={cancelLabel} onClick={onCancel} />
-        {withOr && <Button.Or />}
+        {/* {withOr && <Button.Or />} */}
         {children}
+        <ButtonCancel label={cancelLabel} onClick={onCancel} />
       </Button.Group>
     </SUIModal.Actions>
   );

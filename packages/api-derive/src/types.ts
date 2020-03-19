@@ -1,11 +1,15 @@
 // Copyright 2017-2020 @polkadot/api-derive authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
-
 import { AccountId, AccountIndex, Balance, BalanceLock, BalanceLockTo212, BalanceOf, Bid, BidKind, BlockNumber, CollatorId, EraIndex, EraRewardPoints, Hash, Index, Keys, MomentOf, ParaId, ParaInfo, Proposal, PropIndex, ProposalIndex, ReferendumInfo, RegistrationJudgement, RewardDestination, SessionIndex, SetIndex, SocietyVote, StakingLedger, StrikeCount, TreasuryProposal, UpwardMessage, ValidatorPrefs, Vote, Votes, VoteIndex, VouchingStatus, Moment, LockIdentifier, LockReasons } from '@polkadot/types/interfaces';
+
 import { Exposure } from '@polkadot/react-darwinia/interfaces/types';
 import BN from 'bn.js';
 import { Bytes, Option, u32, Vec } from '@polkadot/types';
+
+export * from './parachains/types';
+export * from './session/types';
+export * from './staking/types';
 
 export type AccountIndexes = Record<string, AccountIndex>;
 
@@ -114,6 +118,7 @@ export interface RecentlyOffline {
   count: BN;
 }
 
+
 export interface DeriveParachainActive {
   collatorId: CollatorId;
   isRetriable: boolean;
@@ -175,6 +180,7 @@ export interface DerivedReferendumVote {
   balance: Balance;
   vote: Vote;
 }
+
 
 export interface DeriveSessionIndexes {
   activeEra: EraIndex;

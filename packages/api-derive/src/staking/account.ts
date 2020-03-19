@@ -9,7 +9,6 @@ import { DerivedSessionInfo, DerivedStakingAccount, DerivedStakingQuery, Derived
 import BN from 'bn.js';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { createType } from '@polkadot/types';
 
 import { isUndefined } from '@polkadot/util';
 
@@ -33,7 +32,7 @@ function remainingBlocks (api: ApiInterfaceRx, era: BN, sessionInfo: DerivedSess
   const remaining = era.sub(sessionInfo.currentEra);
 
   // on the Rust side the current-era >= era-for-unlock (removal done on >)
-  return createType(api.registry, 'BlockNumber', remaining.gtn(0)
+  return api.registry.createType('BlockNumber', remaining.gtn(0)
     ? remaining
       .subn(1)
       .mul(sessionInfo.eraLength)
@@ -44,7 +43,7 @@ function remainingBlocks (api: ApiInterfaceRx, era: BN, sessionInfo: DerivedSess
 
 function calculateUnlocking (api: ApiInterfaceRx, stakingLedger: StakingLedger | undefined, sessionInfo: DerivedSessionInfo, currencyType: currencyType): [DerivedUnlocking[] | undefined, Balance] {
   if (isUndefined(stakingLedger)) {
-    return [undefined, createType(api.registry, 'Balance', 0)];
+    return [undefined, api.registry.createType('Balance', 0)];
   }
 
   const unlockingChunks = stakingLedger[`${currencyType}_staking_lock`].unbondings.filter(({ moment }): boolean =>
@@ -52,27 +51,27 @@ function calculateUnlocking (api: ApiInterfaceRx, stakingLedger: StakingLedger |
   );
 
   if (!unlockingChunks.length) {
-    return [undefined, createType(api.registry, 'Balance', 0)];
+    return [undefined, api.registry.createType('Balance', 0)];
   }
 
   // group the unlock chunks that have the same era and sum their values
   const groupedResult = groupByEra(unlockingChunks);
   const results = Object.entries(groupedResult).map(([eraString, value]): DerivedUnlocking => ({
-    value: createType(api.registry, 'Balance', value),
+    value: api.registry.createType('Balance', value),
     remainingBlocks: remainingBlocks(api, new BN(eraString), sessionInfo)
   }));
 
   const total = Object.entries(groupedResult).reduce((all, [, amount]) => (all.add(amount)), new BN(0));
 
-  return [results.length ? results : undefined, createType(api.registry, 'Balance', total)];
+  return [results.length ? results : undefined, api.registry.createType('Balance', total)];
 }
 
 function redeemableSum (api: ApiInterfaceRx, stakingLedger: StakingLedger | undefined, sessionInfo: DerivedSessionInfo): Balance {
   if (isUndefined(stakingLedger)) {
-    return createType(api.registry, 'Balance');
+    return api.registry.createType('Balance');
   }
 
-  return createType(api.registry, 'Balance', stakingLedger.ring_staking_lock.unbondings.reduce((total, { moment, amount }): BN => {
+  return api.registry.createType('Balance', stakingLedger.ring_staking_lock.unbondings.reduce((total, { moment, amount }): BN => {
     return remainingBlocks(api, moment.toBn(), sessionInfo).eqn(0)
       ? total.add(amount)
       : total;

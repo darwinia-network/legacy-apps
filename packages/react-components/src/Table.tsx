@@ -58,7 +58,7 @@ export default styled(Table)`
 
   table {
     border-collapse: separate;
-    border-spacing: 0 0.25rem;
+    border-spacing: 0 0;
     width: 100%;
 
     tr {
@@ -80,14 +80,14 @@ export default styled(Table)`
         }
 
         td {
-          border-color: #ccc;
+          background: #fbfbfb;
         }
       }
 
       &:not(:hover) {
         .ui.button:not(.disabled) {
-          background: #eee !important;
-          color: #555 !important;
+          /* background: #fff !important;
+          color: #302B3C !important; */
         }
 
         .ui.toggle.checkbox input:checked~.box:before,
@@ -101,8 +101,7 @@ export default styled(Table)`
       }
 
       td, th {
-        padding: 0.5rem 0.75rem;
-
+        padding: 1.07142rem 1.42857rem;
         &.all {
           width: 100%;
 
@@ -125,6 +124,18 @@ export default styled(Table)`
 
         &.top {
           vertical-align: top;
+
+          >.ui--AddressMini.padded:first-child {
+            margin-top: -0.25rem;
+
+            .ui--AddressMini-label {
+              margin-bottom: 0.25rem;
+            }
+          }
+        }
+
+        &.middle {
+          vertical-align: middle;
 
           >.ui--AddressMini.padded:first-child {
             margin-top: -0.25rem;
@@ -163,19 +174,17 @@ export default styled(Table)`
 
         &:first-child {
           border-left-width: 1px;
-          border-radius: 0.25rem 0 0 0.25rem;
         }
 
         &:last-child {
           border-right-width: 1px;
-          border-radius: 0 0.25rem 0.25rem 0;
         }
 
         &.favorite i.icon.isSelected {
           color: darkorange;
         }
       }
-
+      
       th {
         background: #666;
         color: #eee;
@@ -199,6 +208,12 @@ export default styled(Table)`
           background: #888;
         }
       }
+    }
+  }
+
+  tr+tr{
+    td {
+      border-top: 0;
     }
   }
 ` as any as TableImpl;

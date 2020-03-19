@@ -10,7 +10,6 @@ import { DerivedBalancesAccount } from '../types';
 import { combineLatest, of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ApiInterfaceRx } from '@polkadot/api/types';
-import { createType } from '@polkadot/types';
 
 import { memo } from '../util';
 
@@ -26,8 +25,8 @@ function calcBalances (api: ApiInterfaceRx, [accountId, [free_ring, free_kton, r
     frozenMisc: misc_frozen,
     reservedBalance: reserved_ring,
     reservedBalanceKton: reserved_kton,
-    votingBalance: createType(api.registry, 'Balance', free_ring.add(reserved_ring)),
-    votingBalanceKton: createType(api.registry, 'Balance', free_kton.add(reserved_kton))
+    votingBalance: api.registry.createType('Balance', free_ring.add(reserved_ring)),
+    votingBalanceKton: api.registry.createType('Balance', free_kton.add(reserved_kton))
   };
 }
 
@@ -93,7 +92,7 @@ export function account (api: ApiInterfaceRx): (address: AccountIndex | AccountI
             of(accountId),
             queryCurrent(api, accountId)
           ])
-          : of([createType(api.registry, 'AccountId'), [createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Balance'), createType(api.registry, 'Index')]])
+          : of([api.registry.createType('AccountId'), [api.registry.createType('Balance'), api.registry.createType('Balance'), api.registry.createType('Balance'), api.registry.createType('Balance'), api.registry.createType('Balance'), api.registry.createType('Balance'), api.registry.createType('Index')]])
         )
       ),
       map((result): DerivedBalancesAccount => calcBalances(api, result))

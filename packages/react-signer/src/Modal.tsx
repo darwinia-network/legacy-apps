@@ -81,7 +81,6 @@ function extractExternal (
     publicKey = keyring.decodeAddress(accountId);
   } catch (error) {
     console.error(error);
-
     return { isExternal: false, isHardware: false };
   }
 
@@ -183,14 +182,14 @@ class Signer extends React.PureComponent<Props, State> {
 
   public render (): React.ReactNode {
     const { className } = this.props;
-    const { currentItem } = this.state;
+    const { currentItem, isQrScanning, isQrVisible, isRenderError, isSendable, isSubmit, signedTx } = this.state;
 
     if (!currentItem) {
       return null;
     }
 
     return (
-      <Modal className={`ui--signer-Signer ${className}`}>
+      <Modal className={`ui--signer-Signer ${className}`} onCancel={isQrVisible ? this.onCancelQr : signedTx ? this.onCancelSign : this.onCancel}onCancel={isQrVisible ? this.onCancelQr : signedTx ? this.onCancelSign : this.onCancel}>
         <ErrorBoundary onError={this.onRenderError}>{this.renderContent()}</ErrorBoundary>
         {this.renderButtons()}
       </Modal>
@@ -212,7 +211,7 @@ class Signer extends React.PureComponent<Props, State> {
         {!isRenderError && (!isQrVisible || !isQrScanning) && !signedTx && (
           <>
             {!currentItem.isUnsigned && this.renderSignToggle()}
-            <Button.Or />
+
             <Button
               className='ui--signer-Signer-Submit'
               isDisabled={!isSendable}

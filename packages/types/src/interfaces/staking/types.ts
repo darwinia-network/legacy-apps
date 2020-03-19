@@ -2,10 +2,16 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { ITuple } from '@polkadot/types/types';
-import { BTreeMap, Compact, Enum, Struct, Vec } from '@polkadot/types/codec';
+import { BTreeMap, Compact, Enum, Option, Struct, Vec } from '@polkadot/types/codec';
 import { bool, u128, u16, u32 } from '@polkadot/types/primitive';
 import { AccountId, Balance, BlockNumber, Moment, Perbill } from '@polkadot/types/interfaces/runtime';
 export { RewardDestination, Exposure, IndividualExposure, StakingLedger } from '@polkadot/react-darwinia/interfaces';
+
+/** @name ActiveEraInfo */
+export interface ActiveEraInfo extends Struct {
+  readonly index: EraIndex;
+  readonly start: Option<Moment>;
+}
 
 /** @name CompactAssignments */
 export interface CompactAssignments extends Struct {
@@ -113,6 +119,12 @@ export interface PhragmenScore extends Vec<u128> {}
 /** @name Points */
 export interface Points extends u32 {}
 
+/** @name ReleasesStaking */
+export interface ReleasesStaking extends Enum {
+  readonly isV100: boolean;
+  readonly isV200: boolean;
+}
+
 /** @name RewardDestination */
 // export interface RewardDestination extends Enum {
 //   readonly isStaked: boolean;
@@ -155,16 +167,13 @@ export interface SpanRecord extends Struct {
 }
 
 /** @name StakingLedger */
-// export interface StakingLedger extends StakingLedgerTo223 {}
-
-/** @name StakingLedgerNew */
-export interface StakingLedgerNew extends Struct {
-  readonly stash: AccountId;
-  readonly total: Compact<Balance>;
-  readonly active: Compact<Balance>;
-  readonly unlocking: Vec<UnlockChunk>;
-  readonly nextReward: EraIndex;
-}
+// export interface StakingLedger extends Struct {
+//   readonly stash: AccountId;
+//   readonly total: Compact<Balance>;
+//   readonly active: Compact<Balance>;
+//   readonly unlocking: Vec<UnlockChunk>;
+//   readonly lastReward: Option<EraIndex>;
+// }
 
 /** @name StakingLedgerTo223 */
 export interface StakingLedgerTo223 extends Struct {

@@ -69,22 +69,39 @@ async function query (api: ApiPromise, keyring: TestKeyringMap): Promise<void> {
 
   console.log(multiRes);
 
+  // at queries
+  const events = await api.query.system.events.at('0x12345');
+  console.log(`Received ${events.length} events:`);
+
   // check entries()
   await api.query.system.account.entries(); // should not take a param
   await api.query.staking.nominatorSlashInEra.entries(123); // should take a param
 
   // check range
   await api.query.balances.freeBalance.range<Balance>(['0x1234'], keyring.bob.address);
-  await api.query.system.events.range(['0x12345', '0x7890']);
+
+  // check range types
+  const entries = await api.query.system.events.range(['0x12345', '0x7890']);
+  console.log(`Received ${entries.length} entries, ${entries.map(([hash, events]) => `${hash.toHex()}: ${events.length} events`)}`);
 }
 
 async function rpc (api: ApiPromise): Promise<void> {
-  await api.rpc.chain.subscribeNewHeads((header: Header): void => {
-    console.log('current header:', header);
+  // defaults
+  await api.rpc.chain.subscribeNewHeads((header): void => {
+    console.log('current header #', header.number.toNumber());
   });
 
+  // with generic params
   await api.rpc.state.subscribeStorage<[Balance]>(['my_balance_key'], ([balance]): void => {
     console.log('current balance:', balance.toString());
+  });
+
+  // using raw
+  await api.rpc.chain.getBlock.raw('0x123456');
+
+  // using raw subs
+  api.rpc.chain.subscribeNewHeads.raw((result: Uint8Array): void => {
+    console.log(result);
   });
 }
 

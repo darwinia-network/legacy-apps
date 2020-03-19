@@ -63,7 +63,7 @@ function toIdString (id?: AccountId | null): string | null {
 
 function getStakeState (allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DerivedStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
   const isStashNominating = !!(nominators?.length);
-  const isStashValidating = !validateInfo[1].isEmpty || !!allStashes?.includes(stashId);
+  const isStashValidating = !(Array.isArray(validateInfo) ? validateInfo[1].isEmpty : validateInfo.isEmpty) || !!allStashes?.includes(stashId);
   const nextConcat = u8aConcat(...nextSessionIds.map((id): Uint8Array => id.toU8a()));
   const currConcat = u8aConcat(...sessionIds.map((id): Uint8Array => id.toU8a()));
   const controllerId = toIdString(_controllerId);
@@ -223,7 +223,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                           {(!sessionIds.length || hexSessionIdNext === '0x')
                             ? (
                               <Button
-                                isPrimary
+                                isNegative
                                 key='set'
                                 onClick={toggleSetSession}
                                 label={t('Session Key')}
@@ -232,7 +232,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                             )
                             : (
                               <Button
-                                isPrimary
+                                isNegative
                                 key='validate'
                                 onClick={toggleValidate}
                                 label={t('Validate')}
@@ -242,7 +242,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                           }
                           <Button.Or key='nominate.or' />
                           <Button
-                            isPrimary
+                            isNegative
                             key='nominate'
                             onClick={toggleNominate}
                             label={t('Nominate')}
@@ -342,7 +342,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
             <div className="staking--PowerMange-buttons">
               <Button.Group>
                 <Button
-                  isPrimary
+                  isNegative
                   key='bondmore'
                   onClick={toggleBondExtra}
                   label={t('Bond More')}
@@ -350,7 +350,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                 />
                 <Button.Or key='nominate.or' />
                 <Button
-                  isPrimary
+                  isNegative
                   key='unbond'
                   onClick={toggleUnbond}
                   label={t('Unbond')}

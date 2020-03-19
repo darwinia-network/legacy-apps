@@ -195,6 +195,14 @@ const DARWINIA_TYPES = {
 		"header_hash": "H256"
 	},
 
+	"RedeemFor": {
+		"_enum": {
+			"Ring": "EthReceiptProof",
+			"Kton": "EthReceiptProof",
+			"Deposit": "EthReceiptProof"
+		}
+	},
+
 	"AddressT": "[u8; 20]",
 
 	"EthereumAddress": {
@@ -202,6 +210,22 @@ const DARWINIA_TYPES = {
 	},
 	"TronAddress": {
 		"_struct": "AddressT"
+	},
+
+	"OtherSignature": {
+		"_enum": {
+			"Dot": "EcdsaSignature",
+			"Eth": "EcdsaSignature",
+			"Tron": "EcdsaSignature"
+		}
+	},
+
+	"OtherAddress": {
+		"_enum": {
+			"Dot": "EthereumAddress",
+			"Eth": "EthereumAddress",
+			"Tron": "EthereumAddress"
+		}
 	},
 
 	"EcdsaSignature": {

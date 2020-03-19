@@ -53,9 +53,8 @@ type Props = BareProps & I18nProps & {
   // balances_locks: Array<any>;
   // isReadyStaking: boolean;
   // staking_ledger: StakingLedgers;
-  stakingLedger: StakingLedger;
+  stakingLedger?: StakingLedger;
   stakingAccount?: DerivedStakingAccount;
-
 };
 
 class AddressInfoStaking extends React.PureComponent<Props> {
@@ -138,7 +137,6 @@ class AddressInfoStaking extends React.PureComponent<Props> {
     //     </div>
     //   );
     // }
-
     if (!stakingLedger || stakingLedger.isEmpty) {
       return null;
     }

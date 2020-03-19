@@ -80,13 +80,13 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
               onClick={_toggleModal('network')}
             >
               <ChainImg />
-              <div className='info'>
+              {/* <div className='info'>
                 <Chain className='chain' />
                 {runtimeVersion && (
                   <div className='runtimeVersion'>{t('version {{version}}', { replace: { version: runtimeVersion.specVersion.toNumber() } })}</div>
                 )}
                 <BestNumber label='#' />
-              </div>
+              </div> */}
             </div>
             {routing.routes.map((route, index): React.ReactNode => (
               route
@@ -110,11 +110,11 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
                 )
             ))}
             <Menu.Divider hidden />
-            {
+            {/* {
               isCollapsed
                 ? undefined
                 : <NodeInfo />
-            }
+            } */}
           </div>
           <Responsive
             minWidth={SIDEBAR_MENU_THRESHOLD}
@@ -155,7 +155,7 @@ export default styled(SideBar)`
 
   .apps--SideBar {
     align-items: center;
-    background: #4f4f4f;
+    background: #302B3C;
     display: flex;
     flex-flow: column;
     height: auto;
@@ -193,8 +193,13 @@ export default styled(SideBar)`
       padding: 0 !important;
       width: inherit;
 
+      .icon {
+        font-size: 1.25rem;
+      }
+
       .text {
         padding-left: 0.5rem;
+        letter-spacing: 0.3px;
       }
     }
 
@@ -203,13 +208,14 @@ export default styled(SideBar)`
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin: 0.5rem 1rem 1.5rem 0;
-      padding-top: 0.75em;
-      width: 10rem;
+      background: linear-gradient(315deg,rgba(254,56,118,1) 0%,rgba(124,48,221,1) 71%,rgba(58,48,221,1) 100%);
+      width: 100%;
+      display: flex;
+      justify-content: center;
 
       img {
-        height: 2.75rem;
-        width: 2.75rem;
+        height: 4.28571428571rem;
+        width: 3.55rem;
       }
 
       > div.info {
@@ -266,7 +272,6 @@ export default styled(SideBar)`
 
   .toggleImg {
     cursor: pointer;
-    height: 2.75rem;
     left: 0.9rem;
     opacity: 0;
     position: absolute;
