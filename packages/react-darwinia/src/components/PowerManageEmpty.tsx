@@ -4,13 +4,15 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import { Button } from '@polkadot/react-components';
 import Box from './Box';
 import { useTranslation } from '../translate';
 import { RING_PROPERTIES, KTON_PROPERTIES } from '../index';
+import RowTitle from './RowTitle';
+import ActionNote from './ActionNote';
 
 interface Props {
   className?: string;
-  type: 'nominate' | 'validate';
   onStart: () => void;
 }
 
@@ -32,20 +34,28 @@ const styles = `
   }
 `;
 
-function ActionNote ({ className, type, onStart }: Props): React.ReactElement<Props> {
+function PowerManageEmpty({ className, onStart }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
 
   return (
     <div className={className}>
-      <Box className={className}>
-        <div>
-          <div className="ui--ActionNote">
-            
-          </div>
-        </div>
+      <RowTitle title={t('My Nomination')} />
+      <Box>
+        <Button.Group>
+          <Button
+            isPrimary
+            key='new-stake'
+            label={t('New stake')}
+            icon='add'
+            onClick={onStart}
+          />
+        </Button.Group>
       </Box>
+      <RowTitle title={t('Power Manager')} />
+      <RowTitle title={t('Start')} />
+      <ActionNote onStart={onStart} type="nominate" />
     </div>
   );
 }
 
-export default styled(ActionNote)`${styles}`;
+export default styled(PowerManageEmpty)`${styles}`;
