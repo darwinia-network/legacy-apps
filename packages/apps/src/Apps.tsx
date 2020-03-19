@@ -106,19 +106,19 @@ export default styled(Apps)`
     a.apps--SideBar-Item-NavLink {
       color: #f5f5f5;
       display: block;
-      padding: 0.75em 0.75em;
+      padding: 1.1em 0.75em 1.1em 1.4285714em;
       white-space: nowrap;
 
       &:hover {
         background: #5f5f5f;
-        border-radius: 0.28571429rem 0 0 0.28571429rem;
+        /* border-radius: 0.28571429rem 0 0 0.28571429rem; */
         color: #eee;
       }
     }
 
     a.apps--SideBar-Item-NavLink-active {
       background: #fafafa;
-      border-radius: 0.28571429rem 0 0 0.28571429rem;
+      /* border-radius: 0.28571429rem 0 0 0.28571429rem; */
       color: #3f3f3f;
 
       &:hover {
@@ -144,9 +144,9 @@ export default styled(Apps)`
     }
 
     .apps--SideBar-logo {
-      margin: 0.875rem auto;
+      /* margin: 0.875rem auto; */
       padding: 0;
-      width: 3rem;
+      width: 100%;
 
       img {
         margin: 0 0.25rem 0 0;
@@ -166,7 +166,7 @@ export default styled(Apps)`
     text-align: left;
 
     .apps--SideBar-Scroll {
-      padding-left: 0.75rem;
+      /* padding-left: 0.75rem; */
     }
   }
 
