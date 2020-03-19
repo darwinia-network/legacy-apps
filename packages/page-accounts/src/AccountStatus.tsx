@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import keyring from '@polkadot/ui-keyring';
 import { getLedger, isLedger } from '@polkadot/react-api';
-import { useAccounts, useFavorites, useAccountChecked } from '@polkadot/react-hooks';
+import { useAccounts, useFavorites, useAccountChecked, useApi } from '@polkadot/react-hooks';
 import { Button, Input, Table, AddressRow } from '@polkadot/react-components';
 import { ActionStatus } from '@polkadot/react-components/Status/types';
 
@@ -56,6 +56,7 @@ function AccountStatus({ className, onStatusChange, onToggleAccountChecked, acco
   const [favorites, toggleFavorite] = useFavorites(STORE_FAVS);
   const [sortedAccounts, setSortedAccounts] = useState<SortedAccount[]>([]);
   const [filter, setFilter] = useState<string>('');
+  const { systemChain } = useApi();
 
   useEffect((): void => {
     setSortedAccounts(
@@ -116,7 +117,7 @@ function AccountStatus({ className, onStatusChange, onToggleAccountChecked, acco
           <StyledWrapper>
             <div className="ui--AccountStatus-Box">
               <div className="ui--AccountStatus-Network">
-                <span>•</span><span>Darwinia Crab</span>
+              <span>•</span><span>{systemChain}</span>
               </div>
               <AddressRow
                 isEditable={true}
