@@ -42,6 +42,7 @@ export default function SetSessionKey ({ controllerId, isOpen, onClose, sessionI
       className='staking--SetSessionAccount'
       header={t('Set Session Key')}
       size='small'
+      onCancel={onClose}
     >
       <Modal.Content className='ui--signer-Signer-Content'>
         <InputAddress

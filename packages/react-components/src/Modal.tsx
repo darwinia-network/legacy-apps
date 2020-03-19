@@ -51,9 +51,9 @@ function Actions ({ cancelLabel, className, children, withOr = true, onCancel }:
   return (
     <SUIModal.Actions>
       <Button.Group className={className}>
-        {/* <ButtonCancel label={cancelLabel} onClick={onCancel} />
-        {withOr && <Button.Or />} */}
+        {/* {withOr && <Button.Or />} */}
         {children}
+        <ButtonCancel label={cancelLabel} onClick={onCancel} />
       </Button.Group>
     </SUIModal.Actions>
   );
