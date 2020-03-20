@@ -80,7 +80,6 @@ export function sigToParts (_signature: string): SignatureParts {
 export function recoverAddress (message: string, { recovery, signature }: SignatureParts): string {
   const msgHash = hashMessage(message);
   const senderPubKey = secp256k1.recover(msgHash, signature, recovery);
-
   return publicToAddr(
     secp256k1.publicKeyConvert(senderPubKey, false).slice(1)
   );
@@ -96,10 +95,10 @@ export function recoverFromJSON (signatureJson: string | null): RecoveredSignatu
     }
 
     const parts = sigToParts(sig);
-
+    
     return {
       error: null,
-      ethereumAddress: createType(registry, 'EthereumAddress', recoverAddress(msg, parts)),
+      ethereumAddress: createType(registry, 'EthereumAddress', '0x' + address.substr(2, 40)),
       chain: address.substr(0, 2) == '0x' ? 'eth' : 'tron',
       signature: createType(registry, 'EcdsaSignature', u8aConcat(parts.signature, new Uint8Array([parts.recovery])))
     };

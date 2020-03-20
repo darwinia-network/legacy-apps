@@ -35,7 +35,7 @@ interface State extends TxModalState {
   didCopy: boolean;
   ethereumAddress: EthereumAddress | null;
   claim?: Balance | null;
-  signature?: EcdsaSignature | null;
+  signature?: {tron: EcdsaSignature} |  {eth: EcdsaSignature} | null;
   step: Step;
   chain: ChainType;
 }
@@ -210,11 +210,11 @@ class ClaimsApp extends TxModal<Props, State> {
   protected txMethod = (): string => 'claims.claim';
 
   protected txParams = (): [string | null, EcdsaSignature | null] => {
-    const { accountId, signature } = this.state;
+    const { accountId, signature, chain } = this.state;
 
     return [
       accountId ? accountId.toString() : null,
-      signature || null
+      {[chain]: signature} || null
     ];
   }
 
@@ -233,6 +233,7 @@ class ClaimsApp extends TxModal<Props, State> {
 
   protected onChangeSignature = (event: React.SyntheticEvent<Element>): void => {
     const { value: signatureJson } = event.target as HTMLInputElement;
+    const recover = recoverFromJSON(signatureJson);
 
     this.setState(({ step }: State): Pick<State, never> => ({
       ...(
@@ -240,7 +241,7 @@ class ClaimsApp extends TxModal<Props, State> {
           ? { step: Step.Sign }
           : {}
       ),
-      ...recoverFromJSON(signatureJson)
+      ...recover
     }));
   }
 
