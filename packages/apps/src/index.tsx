@@ -29,7 +29,6 @@ const DARWINIA_TYPES = {
 	"MomentT": "Moment",
 	"Power": "u32",
 	"DepositId": "U256",
-
 	"StakingBalanceT": "StakingBalance",
 	"StakingBalance": {
 		"_enum": {
@@ -38,7 +37,6 @@ const DARWINIA_TYPES = {
 			"KtonBalance": "Balance"
 		}
 	},
-
 	"StakingLedgerT": "StakingLedger",
 	"StakingLedger": {
 		"stash": "AccountId",
@@ -52,13 +50,11 @@ const DARWINIA_TYPES = {
 		"active": "Compact<Balance>",
 		"unlocking": "Vec<UnlockChunk>"
 	},
-
 	"TimeDepositItem": {
 		"value": "Compact<Balance>",
 		"start_time": "Compact<Moment>",
 		"expire_time": "Compact<Moment>"
 	},
-
 	"RewardDestination": {
 		"_enum": {
 			"Staked": "Staked",
@@ -66,11 +62,9 @@ const DARWINIA_TYPES = {
 			"Controller": null
 		}
 	},
-
 	"Staked": {
 		"promise_month": "Moment"
 	},
-
 	"Exposure": {
 		"own_ring_balance": "Compact<Balance>",
 		"own_kton_balance": "Compact<Balance>",
@@ -78,66 +72,55 @@ const DARWINIA_TYPES = {
 		"total_power": "Power",
 		"others": "Vec<IndividualExposure>"
 	},
-
 	"IndividualExposure": {
 		"who": "AccountId",
 		"ring_balance": "Compact<Balance>",
 		"kton_balance": "Compact<Balance>",
 		"power": "Power"
 	},
-
 	"ValidatorReward": {
 		"who": "AccountId",
 		"amount": "Compact<Balance>",
 		"nominators_reward": "Vec<NominatorReward>"
 	},
-
 	"NominatorReward": {
 		"who": "AccountId",
 		"amount": "Compact<Balance>"
 	},
-
 	"RKT": "RK",
 	"RK": {
 		"r": "Balance",
 		"k": "Balance"
 	},
-
 	"BalanceLock": {
 		"id": "LockIdentifier",
 		"lock_for": "LockFor",
 		"lock_reasons": "LockReasons"
 	},
-
 	"LockFor": {
 		"_enum": {
 			"Common": "Common",
 			"Staking": "StakingLock"
 		}
 	},
-
 	"Common": {
 		"amount": "Balance"
 	},
-
 	"StakingLock": {
 		"staking_amount": "Balance",
 		"unbondings": "Vec<Unbonding>"
 	},
-
-	"LockReasons":{
+	"LockReasons": {
 		"_enum": {
 			"Fee": null,
 			"Misc": null,
 			"All": null
 		}
 	},
-
 	"Unbonding": {
 		"amount": "Balance",
 		"moment": "BlockNumber"
 	},
-
 	"AccountData": {
 		"free_ring": "Balance",
 		"free_kton": "Balance",
@@ -148,18 +131,14 @@ const DARWINIA_TYPES = {
 		"misc_frozen": "Balance",
 		"fee_frozen": "Balance"
 	},
-
 	"EthBlockNumber": "u64",
 	"EthAddress": "H160",
-
 	"EthTransactionIndex": "(H256, u64)",
-
 	"HeaderInfo": {
 		"total_difficulty": "U256",
 		"parent_hash": "H256",
 		"number": "EthBlockNumber"
 	},
-
 	"EthHeader": {
 		"parent_hash": "H256",
 		"timestamp": "u64",
@@ -177,24 +156,20 @@ const DARWINIA_TYPES = {
 		"seal": "Vec<Bytes>",
 		"hash": "Option<H256>"
 	},
-
 	"Bloom": {
 		"_struct": "[u8; 256]"
 	},
-
 	"Receipt": {
 		"gas_used": "U256",
 		"log_bloom": "Bloom",
 		"logs": "Vec<LogEntry>",
 		"outcome": "TransactionOutcome"
 	},
-
 	"EthReceiptProof": {
 		"index": "u64",
 		"proof": "Bytes",
 		"header_hash": "H256"
 	},
-
 	"RedeemFor": {
 		"_enum": {
 			"Ring": "EthReceiptProof",
@@ -202,61 +177,48 @@ const DARWINIA_TYPES = {
 			"Deposit": "EthReceiptProof"
 		}
 	},
-
 	"AddressT": "[u8; 20]",
-
-	"EthereumAddress": {
-		"_struct": "AddressT"
-	},
-	"TronAddress": {
-		"_struct": "AddressT"
-	},
-
+	"EthereumAddress": 'AddressT',
+	"TronAddress": 'EthereumAddress',
 	"OtherSignature": {
 		"_enum": {
-			"Dot": "EcdsaSignature",
 			"Eth": "EcdsaSignature",
 			"Tron": "EcdsaSignature"
 		}
 	},
-
 	"OtherAddress": {
 		"_enum": {
-			"Dot": "EthereumAddress",
 			"Eth": "EthereumAddress",
 			"Tron": "EthereumAddress"
 		}
 	},
-
-	"EcdsaSignature": {
-		"_struct": "[u8; 65]"
-	}
+	"EcdsaSignature": "[u8; 65]"
 };
 
 if (!rootElement) {
-  throw new Error(`Unable to find element with id '${rootId}'`);
+	throw new Error(`Unable to find element with id '${rootId}'`);
 }
 
 try {
-  store.set('types', DARWINIA_TYPES);
+	store.set('types', DARWINIA_TYPES);
 } catch (error) {
-  console.error('Type registration failed', error);
+	console.error('Type registration failed', error);
 }
 ReactDOM.render(
-  <Suspense fallback='...'>
-    <ThemeProvider theme={theme}>
-      <Queue>
-        <Api url={settings.apiUrl}>
-          <BlockAuthors>
-            <Events>
-              <HashRouter>
-                <Apps />
-              </HashRouter>
-            </Events>
-          </BlockAuthors>
-        </Api>
-      </Queue>
-    </ThemeProvider>
-  </Suspense>,
-  rootElement
+	<Suspense fallback='...'>
+		<ThemeProvider theme={theme}>
+			<Queue>
+				<Api url={settings.apiUrl}>
+					<BlockAuthors>
+						<Events>
+							<HashRouter>
+								<Apps />
+							</HashRouter>
+						</Events>
+					</BlockAuthors>
+				</Api>
+			</Queue>
+		</ThemeProvider>
+	</Suspense>,
+	rootElement
 );
