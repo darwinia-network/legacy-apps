@@ -331,7 +331,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
                 </Menu.Item>
               </>
             )}
-            {!api.isDevelopment && (
+            {/* {!api.isDevelopment && (
               <>
                 <Menu.Divider />
                 <ChainLock
@@ -341,7 +341,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
                   preventDefault
                 />
               </>
-            )}
+            )} */}
           </Menu>
         </Popup>
       </td>
