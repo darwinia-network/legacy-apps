@@ -22,12 +22,18 @@ interface Props {
   chain: ChainType
 }
 
+
+
 function Claim ({ button, className, ethereumAddress, chain }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const { api } = useApi();
   const [claimValue, setClaimValue] = useState<BalanceOf | null>(null);
   const [claimAddress, setClaimAddress] = useState<EthereumAddress | null>(null);
   const [isBusy, setIsBusy] = useState(false);
+  const chainToName = {
+    'eth': t('Ethereum'),
+    'tron': t('Tron')
+  };
 
   const _fetchClaim = (address: EthereumAddress, chain: ChainType): void => {
     setIsBusy(true);
@@ -60,7 +66,7 @@ function Claim ({ button, className, ethereumAddress, chain }: Props): React.Rea
       isSuccess={!!hasClaim}
     >
       <div className={className}>
-        {t('Your Ethereum account')}
+        {t(`Your ${chainToName[chain]} account`)}
         <h3>{addrToChecksum(claimAddress.toString())}</h3>
         {hasClaim && claimValue
           ? (

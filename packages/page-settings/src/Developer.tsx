@@ -10,11 +10,12 @@ import styled from 'styled-components';
 import { registry } from '@polkadot/react-api';
 import { Button, Editor, InputFile } from '@polkadot/react-components';
 import { isJsonObject, stringToU8a, u8aToString } from '@polkadot/util';
+import { DARWINIA_CRAB_TYPES } from '@polkadot/react-darwinia';
 
 import { useTranslation } from './translate';
 
-const EMPTY_CODE = '{\n\n}';
-const EMPTY_TYPES = {};
+const EMPTY_CODE = JSON.stringify(DARWINIA_CRAB_TYPES, undefined, 4);
+const EMPTY_TYPES = DARWINIA_CRAB_TYPES;
 
 function Developer ({ className, onStatusChange }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();

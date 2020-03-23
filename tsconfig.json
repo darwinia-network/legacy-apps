@@ -68,6 +68,8 @@
       "@polkadot/keyring/*": ["packages/keyring/src/*"],
       "@polkadot/dev": ["packages/dev/src"],
       "@polkadot/dev/*": ["packages/dev/src/*"],
+      "@polkadot/ui-settings": [ "packages/ui-settings/src" ],
+      "@polkadot/ui-settings/*": [ "packages/ui-settings/src/*" ],
       "@polkadot/api/augment": ["packages/react-darwinia/src/interfaces/augment/augment-api.ts"],
       "@polkadot/types/augment": ["packages/react-darwinia/src/interfaces/augment/augment-types.ts"]
     },

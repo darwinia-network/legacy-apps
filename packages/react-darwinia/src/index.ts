@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { i18nT } from './types';
+import DARWINIA_CRAB_TYPES from './types_crab.json';
 
-const SUBSCAN_URL = 'https://icefrog.subscan.io';
+const SUBSCAN_URL = 'https://crab.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
 const INIT_VERSION = 'version-2019-12-30';
 let KTON_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CKTON' };
@@ -84,5 +85,6 @@ export {
   ETHERSCAN_URL,
   getBondList,
   getStakingHistory,
-  lockLimitOptionsMaker
+  lockLimitOptionsMaker,
+  DARWINIA_CRAB_TYPES
 };
