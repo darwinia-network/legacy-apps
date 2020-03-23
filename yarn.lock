@@ -3531,17 +3531,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/ui-settings@npm:0.52.0-beta.5, @polkadot/ui-settings@npm:^0.52.0-beta.5":
-  version: 0.52.0-beta.5
-  resolution: "@polkadot/ui-settings@npm:0.52.0-beta.5"
+"@polkadot/ui-settings@0.52.0-beta.5, @polkadot/ui-settings@^0.52.0-beta.5, @polkadot/ui-settings@workspace:packages/ui-settings":
+  version: 0.0.0-use.local
+  resolution: "@polkadot/ui-settings@workspace:packages/ui-settings"
   dependencies:
     "@babel/runtime": ^7.8.4
+    "@polkadot/util": ^2.5.1
+    "@types/store": ^2.0.2
     store: ^2.0.12
   peerDependencies:
     "@polkadot/util": "*"
-  checksum: 2/f85099a2509d9571d5ccc9925275274831904904cfdb0fd18d5b915db1a65b848502c07ed14108d5ad870a97ce8a98b056326c00e7d24bd42ed33aaebe6aabe7
-  languageName: node
-  linkType: hard
+  languageName: unknown
+  linkType: soft
 
 "@polkadot/ui-shared@npm:0.52.0-beta.5":
   version: 0.52.0-beta.5
