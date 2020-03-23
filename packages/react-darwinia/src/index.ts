@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { i18nT } from './types';
+import DARWINIA_CRAB_TYPES from './types_crab.json';
 
 const SUBSCAN_URL = 'https://icefrog.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
@@ -84,5 +85,6 @@ export {
   ETHERSCAN_URL,
   getBondList,
   getStakingHistory,
-  lockLimitOptionsMaker
+  lockLimitOptionsMaker,
+  DARWINIA_CRAB_TYPES
 };

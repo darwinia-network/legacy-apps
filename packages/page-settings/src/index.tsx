@@ -10,7 +10,6 @@ import { Route, Switch } from 'react-router';
 import { HelpOverlay, Tabs } from '@polkadot/react-components';
 import uiSettings from '@polkadot/ui-settings';
 
-import md from './md/basics.md';
 import { useTranslation } from './translate';
 import Developer from './Developer';
 import General from './General';
@@ -35,7 +34,6 @@ export default function SettingsApp ({ basePath, onStatusChange }: Props): React
 
   return (
     <main className='settings--App'>
-      <HelpOverlay md={md} />
       <header>
         <Tabs
           basePath={basePath}
