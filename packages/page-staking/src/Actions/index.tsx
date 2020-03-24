@@ -133,7 +133,7 @@ function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stak
               <RowTitle title={t('Power Manager')} />
               <Box>
                 <PowerManage
-                  stakingAccount={accountChecked}
+                  checkedAccount={accountChecked}
                 />
               </Box>
               <RowTitle title={t('Start')} />
