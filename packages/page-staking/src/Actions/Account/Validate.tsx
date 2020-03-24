@@ -123,6 +123,8 @@ class Validate extends TxComponent<Props, State> {
           isZeroable
           label={t('reward commission percentage')}
           maxValue={MAX_COMM}
+          isSiShow={false}
+          isSi={false}
           onChange={this.onChangeCommission}
           onEnter={this.sendTx}
         />
