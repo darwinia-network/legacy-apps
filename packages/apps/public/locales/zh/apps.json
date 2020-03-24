@@ -18,6 +18,7 @@
   "sidebar.transfer": "转账",
   "sidebar.treasury": "财政",
   "sidebar.extrinsics": "交易",
+  "sidebar.stakingscan": "浏览器",
   "sidebar.js": "javascript",
   "Waiting for API to be connected and ready.": "等待API连接成功。",
   "transfer received": "转账接收成功",

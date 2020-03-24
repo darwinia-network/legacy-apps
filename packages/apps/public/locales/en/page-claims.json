@@ -11,5 +11,9 @@
   "copied": "copied",
   "click to copy": "click to copy",
   "Copy the above string and sign an Ethereum transaction with the account you used during the pre-sale in the wallet of your choice, using the string as the payload, and then paste the transaction signature object below": "Copy the above string and sign an Ethereum transaction with the account you used during the pre-sale in the wallet of your choice, using the string as the payload, and then paste the transaction signature object below",
-  "Confirm claim": "Confirm claim"
+  "Confirm claim": "Confirm claim",
+  "Ethereum": "Ethereum",
+  "Tron": "Tron",
+  "Claim your {{token}} tokens": "Claim your {{token}} tokens",
+  "Your {{chain}} account": "Your {{chain}} account"
 }

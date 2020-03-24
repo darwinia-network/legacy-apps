@@ -1,6 +1,6 @@
 {
-  "Extrinsic submission": "Extrinsic submission",
-  "using the selected account": "using the selected account",
+  "Extrinsic submission": "交易",
+  "using the selected account": "发送账户",
   "with an account balance": "with an account balance",
   "with a transaction nonce": "with a transaction nonce",
   "submit the following extrinsic": "submit the following extrinsic",

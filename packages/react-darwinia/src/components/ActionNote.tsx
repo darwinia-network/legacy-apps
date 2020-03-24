@@ -41,7 +41,7 @@ function ActionNote ({ className, type, onStart }: Props): React.ReactElement<Pr
       <Box className={className}>
         <div>
           <div className="ui--ActionNote">
-            <h1>{t('Get Power for Nominate')}</h1>
+            <h1>{t('Get Power')}</h1>
             <p>{t('note')}: </p>
             <p>
               {t('1. You need to stake some {{KTON}} or {{RING}} to get power for nominate.', {
@@ -55,8 +55,8 @@ function ActionNote ({ className, type, onStart }: Props): React.ReactElement<Pr
                   RING: RING_PROPERTIES.tokenSymbol,
                   KTON: KTON_PROPERTIES.tokenSymbol
                 }
-              })}<br />
-              {t('3. After you choose to become a nominee, this account does not support to upgrade to node for now, we will support the upgrade of the account in the future.')}
+              })}
+
             </p>
             <ColorButton
               key='detail'

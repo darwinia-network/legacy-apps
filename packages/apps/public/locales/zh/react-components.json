@@ -71,5 +71,22 @@
   "session rotate": "session rotate",
   "session next": "session next",
   "Submit signed extrinsic": "提交签名交易",
-  "balances": "余额"
+  "balances": "余额",
+  "1 judgement": "1 judgement",
+  "{{count}} judgements": "{{count}} judgements",
+  "no judgements": "no judgements",
+  " ({{count}} waiting)": " ({{count}} waiting)",
+  "parent": "parent",
+  "Provide judgement": "Provide judgement",
+  "registrar account": "registrar account",
+  "registrar index": "registrar index",
+  "invalid/unknown registrar account": "invalid/unknown registrar account",
+  "judgement": "judgement",
+  "Judge": "Judge",
+  "all available": "all available",
+  "rewards": "rewards",
+  "Uncaught error. Something went wrong with the query and rendering of this component.": "Uncaught error. Something went wrong with the query and rendering of this component.",
+  "partial name, address or account index": "partial name, address or account index",
+  "View this externally": "View this externally",
+  "vote with account": "vote with account"
 }

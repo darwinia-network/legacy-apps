@@ -922,5 +922,9 @@
   "3. After you choose to become a nominee, this account does not support to upgrade to node for now, we will support the upgrade of the account in the future.": "",
   "Staking now": "",
   "No fixed term": "",
-  "Month": ""
+  "Month": "",
+  "Ethereum": "",
+  "Tron": "",
+  "Claim your {{token}} tokens": "",
+  "Your {{chain}} account": ""
 }

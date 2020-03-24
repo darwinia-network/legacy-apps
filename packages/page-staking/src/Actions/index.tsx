@@ -82,7 +82,6 @@ function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stak
 
   useEffect((): void => {
     setFoundStashes(getStashes(allAccounts, stashTypes, queryBonded, queryLedger));
-    console.log(22222)
   }, [allAccounts, queryBonded, queryLedger, stashTypes]);
 
   useEffect((): void => {

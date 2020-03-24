@@ -23,5 +23,15 @@
   "sending from my account": "sending from my account",
   "unlock account with password": "unlock account with password",
   "Include an optional tip for faster processing": "Include an optional tip for faster processing",
-  "Do not include a tip for the block author": "Do not include a tip for the block author"
+  "Do not include a tip for the block author": "Do not include a tip for the block author",
+  "Fees of {{fees}} will be applied to the submission": "Fees of {{fees}} will be applied to the submission",
+  "Close": "Close",
+  "Sign (no submission)": "Sign (no submission)",
+  "Nonce": "Nonce",
+  "Current account nonce: {{accountNonce}}": "Current account nonce: {{accountNonce}}",
+  "Lifetime (# of blocks)": "Lifetime (# of blocks)",
+  "Set to 0 to make transaction immortal": "Set to 0 to make transaction immortal",
+  "Signed transaction": "Signed transaction",
+  "Details": "Details",
+  "wrong password supplied": "wrong password supplied"
 }

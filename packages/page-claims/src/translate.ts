@@ -5,7 +5,7 @@
 import { useTranslation as useTranslationBase, UseTranslationResponse, withTranslation } from 'react-i18next';
 
 export function useTranslation (): UseTranslationResponse {
-  return useTranslationBase('app-claims');
+  return useTranslationBase('page-claims');
 }
 
-export default withTranslation(['app-claims']);
+export default withTranslation(['page-claims']);

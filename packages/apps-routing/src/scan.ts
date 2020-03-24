@@ -21,6 +21,6 @@ export default ([
       defaultValue: 'Staking Scan'
     },
     icon: 'bullseye',
-    name: 'scan'
+    name: 'stakingscan'
   }
 ] as Routes);

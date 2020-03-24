@@ -22,7 +22,7 @@
     "analyze": "yarn run build && cd packages/apps && yarn run source-map-explorer build/main.*.js",
     "build": "yarn run build:i18n && yarn run build:code",
     "build:code": "NODE_ENV=production packages/dev/scripts/polkadot-dev-build-ts.js",
-    "build:i18n": "i18next-scanner --config i18next-scanner.config.js",
+    "build:i18n": "./node_modules/i18next-scanner/bin/cli.js --config i18next-scanner.config.js",
     "build:www": "rm -rf packages/apps/build && mkdir -p packages/apps/build && yarn run build:i18n && cd packages/apps && NODE_ENV=production webpack --config webpack.config.js",
     "docs": "echo \"skipping docs\"",
     "clean": "polkadot-dev-clean-build",

@@ -29,13 +29,13 @@ enum Step {
   Claim = 2,
 }
 
-interface Props extends AppProps, ApiProps, I18nProps, TxModalProps {}
+interface Props extends AppProps, ApiProps, I18nProps, TxModalProps { }
 
 interface State extends TxModalState {
   didCopy: boolean;
   ethereumAddress: EthereumAddress | null;
   claim?: Balance | null;
-  signature?: {tron: EcdsaSignature} |  {eth: EcdsaSignature} | null;
+  signature?: { tron: EcdsaSignature } | { eth: EcdsaSignature } | null;
   step: Step;
   chain: ChainType;
 }
@@ -75,7 +75,7 @@ const Signature = styled.textarea`
 `;
 
 class ClaimsApp extends TxModal<Props, State> {
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props);
 
     this.defaultState = {
@@ -90,7 +90,7 @@ class ClaimsApp extends TxModal<Props, State> {
     this.state = this.defaultState;
   }
 
-  public componentDidUpdate (): void {
+  public componentDidUpdate(): void {
     if (this.state.didCopy) {
       setTimeout((): void => {
         this.setState({ didCopy: false });
@@ -98,7 +98,7 @@ class ClaimsApp extends TxModal<Props, State> {
     }
   }
 
-  public render (): React.ReactNode {
+  public render(): React.ReactNode {
     const { api, systemChain = '', t } = this.props;
     const { accountId, didCopy, ethereumAddress, signature, step, chain } = this.state;
 
@@ -113,7 +113,11 @@ class ClaimsApp extends TxModal<Props, State> {
       <main>
         <header />
         <h1>
-          <Trans>claim your <em>{TokenUnit.abbr}</em> tokens</Trans>
+          {t('Claim your {{token}} tokens', {
+            replace: {
+              token: TokenUnit.abbr
+            }
+          })}
         </h1>
         <Columar>
           <Column>
@@ -214,7 +218,7 @@ class ClaimsApp extends TxModal<Props, State> {
 
     return [
       accountId ? accountId.toString() : null,
-      {[chain]: signature} || null
+      { [chain]: signature } || null
     ];
   }
 
