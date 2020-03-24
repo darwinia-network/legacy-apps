@@ -14,7 +14,7 @@ import { useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
 import keyring from '@polkadot/ui-keyring';
 import { formatBalance, formatNumber } from '@polkadot/util';
-
+import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import Backup from './modals/Backup';
 import ChangePass from './modals/ChangePass';
 import Derive from './modals/Derive';
@@ -23,6 +23,7 @@ import RecoverAccount from './modals/RecoverAccount';
 import RecoverSetup from './modals/RecoverSetup';
 import Transfer from './modals/Transfer';
 import { useTranslation } from './translate';
+
 import store from 'store';
 
 import buttonChecked from './img/buttonChecked.svg';
@@ -240,7 +241,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
           withBalanceToggle
           withExtended={false}
         /> */}
-        <Balance className="accountBox--all" label={`${t('Ring')}: `} params={address} />
+        <Balance className="accountBox--all" label={`${RING_PROPERTIES.tokenSymbol}: `} params={address} />
 
       </td>
       <td className='middle'>
@@ -249,7 +250,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
           withBalance={false}
           withExtended
         /> */}
-        <BalanceKton className="accountBox--all" label={`${t('Kton')}: `} params={address} />
+        <BalanceKton className="accountBox--all" label={`${KTON_PROPERTIES.tokenSymbol}: `} params={address} />
 
       </td>
       <td className='number middle'>

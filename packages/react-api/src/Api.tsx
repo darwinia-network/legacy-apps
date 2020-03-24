@@ -10,14 +10,15 @@ import { typesChain, typesSpec } from '@polkadot/apps-config/api';
 import { isWeb3Injected, web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { StatusContext } from '@polkadot/react-components/Status';
-import { TokenUnit } from '@polkadot/react-components/InputNumber';
+import { TokenUnit, TokenKtonUnit } from '@polkadot/react-components/InputNumber';
 import keyring from '@polkadot/ui-keyring';
 import uiSettings from '@polkadot/ui-settings';
 import ApiSigner from '@polkadot/react-signer/ApiSigner';
 import { createType } from '@polkadot/types';
-import { formatBalance, isTestChain } from '@polkadot/util';
+import { formatBalance, formatKtonBalance, isTestChain } from '@polkadot/util';
 import { setSS58Format } from '@polkadot/util-crypto';
 import addressDefaults from '@polkadot/util-crypto/address/defaults';
+import { setRingProperties, setKtonProperties } from '@polkadot/react-darwinia';
 
 import ApiContext from './ApiContext';
 import registry from './typeRegistry';
@@ -67,6 +68,10 @@ async function loadOnReady (api: ApiPromise): Promise<State> {
     : uiSettings.prefix;
   const tokenSymbol = properties.tokenSymbol.unwrapOr(undefined)?.toString();
   const tokenDecimals = properties.tokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
+
+  const ktonTokenSymbol = properties.ktonTokenSymbol.unwrapOr(undefined)?.toString();
+  const ktonTokenDecimals = properties.ktonTokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
+
   const systemChain = _systemChain
     ? _systemChain.toString()
     : '<unknown>';
@@ -85,7 +90,21 @@ async function loadOnReady (api: ApiPromise): Promise<State> {
     decimals: tokenDecimals,
     unit: tokenSymbol
   });
+  formatKtonBalance.setDefaults({
+    decimals: ktonTokenDecimals,
+    unit: ktonTokenSymbol
+  });
   TokenUnit.setAbbr(tokenSymbol);
+  TokenKtonUnit.setAbbr(ktonTokenSymbol);
+
+
+  setRingProperties({
+    tokenDecimals: tokenDecimals, tokenSymbol: tokenSymbol
+  })
+
+  setKtonProperties({
+    tokenDecimals: ktonTokenDecimals, tokenSymbol: ktonTokenSymbol
+  })
 
   // finally load the keyring
   keyring.loadAll({

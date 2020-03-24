@@ -9,7 +9,9 @@ export default {
     ChainProperties: {
       ss58Format: 'Option<u8>',
       tokenDecimals: 'Option<u32>',
-      tokenSymbol: 'Option<Text>'
+      tokenSymbol: 'Option<Text>',
+      ktonTokenDecimals: 'Option<u32>',
+      ktonTokenSymbol: 'Option<Text>'
     },
     ExtrinsicOrHash: {
       _enum: {

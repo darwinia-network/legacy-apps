@@ -118,7 +118,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
             maxValue={maxBalance}
             onChange={setAmount}
             withMax
-            currencyType='kton'
+            currencyType={'kton'}
           />
           {/* <Checks
             accountId={senderId}

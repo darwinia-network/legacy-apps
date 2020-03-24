@@ -61,6 +61,14 @@ export class TokenUnit {
   }
 }
 
+export class TokenKtonUnit {
+  public static abbr = 'Unit';
+
+  public static setAbbr (abbr: string = TokenKtonUnit.abbr): void {
+    TokenKtonUnit.abbr = abbr;
+  }
+}
+
 function getGlobalMaxValue (bitLength?: number): BN {
   return new BN(2).pow(new BN(bitLength || DEFAULT_BITLENGTH)).subn(1);
 }
@@ -74,7 +82,7 @@ function getRegex (isDecimal: boolean): RegExp {
 }
 
 function getFormat (currencyType: currencyType = 'ring'): BalanceFormatter {
-  return currencyType === 'ring' ? formatBalance : formatKtonBalance;
+  return currencyType === 'kton' ? formatKtonBalance : formatBalance;
 }
 
 function getSiOptions (currencyType: currencyType): { text: string; value: string }[] {
@@ -82,7 +90,7 @@ function getSiOptions (currencyType: currencyType): { text: string; value: strin
     .map(({ power, text, value }): { text: string; value: string } => ({
       value,
       text: power === 0
-        ? TokenUnit.abbr
+        ? currencyType === 'kton' ? TokenKtonUnit.abbr : TokenUnit.abbr
         : text
     }));
 }
@@ -297,7 +305,6 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
   // };
 
   const maxValueLength = getGlobalMaxValue(bitLength).toString().length - 1;
-
   return (
     <Input
       {...props}

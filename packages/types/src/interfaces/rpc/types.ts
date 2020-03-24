@@ -17,6 +17,8 @@ export interface ChainProperties extends Struct {
   readonly ss58Format: Option<u8>;
   readonly tokenDecimals: Option<u32>;
   readonly tokenSymbol: Option<Text>;
+  readonly ktonTokenDecimals: Option<u32>;
+  readonly ktonTokenSymbol: Option<Text>;
 }
 
 /** @name ExtrinsicOrHash */
