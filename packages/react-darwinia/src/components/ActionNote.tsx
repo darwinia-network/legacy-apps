@@ -56,7 +56,7 @@ function ActionNote ({ className, type, onStart }: Props): React.ReactElement<Pr
                   KTON: KTON_PROPERTIES.tokenSymbol
                 }
               })}
-
+              <br/>
             </p>
             <ColorButton
               key='detail'
