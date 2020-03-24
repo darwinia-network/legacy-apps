@@ -20,12 +20,9 @@ export default function useInactives (stashId: string, nominees?: string[]): str
     if (mountedRef.current && nominees?.length && indexes) {
       api
         .queryMulti(
-          api.query.staking.erasStakers
-            ? nominees.map((id) => [api.query.staking.erasStakers, [indexes.activeEra, id]])
-            : nominees.map((id) => [api.query.staking.stakers, id]),
+         nominees.map((id) => [api.query.staking.erasStakers, [indexes.activeEra, id]]),
           (exposures: Exposure[]): void => {
             const inactives: string[] = [];
-
             exposures.forEach((exposure, index): void => {
               if (!exposure.others.some((indv): boolean => indv.who.eq(stashId))) {
                 inactives.push(nominees[index].toString());

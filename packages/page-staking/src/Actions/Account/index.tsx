@@ -55,13 +55,13 @@ interface StakeState {
   validatorPrefs?: ValidatorPrefs;
 }
 
-function toIdString (id?: AccountId | null): string | null {
+function toIdString(id?: AccountId | null): string | null {
   return id
     ? id.toString()
     : null;
 }
 
-function getStakeState (allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DerivedStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
+function getStakeState(allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DerivedStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
   const isStashNominating = !!(nominators?.length);
   const isStashValidating = !(Array.isArray(validateInfo) ? validateInfo[1].isEmpty : validateInfo.isEmpty) || !!allStashes?.includes(stashId);
   const nextConcat = u8aConcat(...nextSessionIds.map((id): Uint8Array => id.toU8a()));
@@ -89,7 +89,7 @@ function getStakeState (allAccounts: string[], allStashes: string[] | undefined,
   };
 }
 
-function Account ({ allStashes, className, isOwnStash, next, onUpdateType, stakingOverview, stashId }: Props): React.ReactElement<Props> {
+function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakingOverview, stashId }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -383,7 +383,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
         withRewardDestination
       /> */}
 
-      {/* {isStashValidating
+      {isStashValidating
         ? (
           <div className='top'>
             <AddressInfo
@@ -394,9 +394,42 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
             />
           </div>
         )
-        : (
-          <div>
-            {isStashNominating && (
+        : isStashNominating && (
+          <div className="lastBox">
+            <RowTitle title={t('Nominating')} />
+            <Box>
+              <>
+                {activeNoms.length !== 0 && (
+                  <div>
+                    {activeNoms.map((nomineeId, index): React.ReactNode => (
+                      <div className="staking--Noms-accountbox">
+                        <AddressSmall
+                          key={index}
+                          value={nomineeId}
+                        // withBalance={false}
+                        // withBonded
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {inactiveNoms.length !== 0 && (
+                  <div>
+                    {inactiveNoms.map((nomineeId, index): React.ReactNode => (
+                      <div className="staking--Noms-accountbox">
+                        <AddressSmall
+                          key={index}
+                          value={nomineeId}
+                        // withBalance={false}
+                        // withBonded
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            </Box>
+            {/* {isStashNominating && (
               <>
                 {activeNoms.length !== 0 && (
                   <details>
@@ -425,10 +458,10 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                   </details>
                 )}
               </>
-            )}
+            )} */}
           </div>
         )
-      } */}
+      }
     </div>
   );
 }
@@ -465,5 +498,17 @@ export default styled(Account)`
     align-items: center;
     flex: 1;
     justify-content: flex-end;
+  }
+
+  .staking--Noms-accountbox {
+    padding: 15px 20px;
+  }
+
+  .staking--Noms-accountbox+.staking--Noms-accountbox {
+    border-top: 1px solid #EDEDED;
+  }
+
+  .lastBox {
+    margin-bottom: 50px;
   }
 `;
