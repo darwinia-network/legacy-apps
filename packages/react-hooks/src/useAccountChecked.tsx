@@ -8,7 +8,7 @@ import useCacheKey from './useCacheKey';
 import useAccounts from './useAccounts';
 
 // hook for accountChecked with local storage
-export default function useAccountChecked (storageKeyBase: string): [string[], (address: string) => void] {
+export default function useAccountChecked(storageKeyBase: string): [string[], (address: string) => void] {
   const [getCache, setCache] = useCacheKey<string[]>(storageKeyBase);
   const { allAccounts, hasAccounts } = useAccounts();
   const [accountChecked, setAccountChecked] = useState<string[]>(getCache() || (hasAccounts ? [allAccounts[0]] : []));
@@ -19,6 +19,8 @@ export default function useAccountChecked (storageKeyBase: string): [string[], (
         [address]
       )
     );
-
+  if (accountChecked.length == 0 && hasAccounts) {
+    _toggleAccountChecked(allAccounts[0])
+  }
   return [accountChecked, _toggleAccountChecked];
 }
