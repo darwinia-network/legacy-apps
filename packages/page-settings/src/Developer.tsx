@@ -147,7 +147,6 @@ function Developer ({ className, onStatusChange }: Props): React.ReactElement<Pr
           label={t('Reset')}
           icon='sync'
         />
-        <Button.Or />
         <Button
           isDisabled={!isTypesValid || !isJsonValid}
           isPrimary

@@ -65,7 +65,7 @@
   "send to address": "接收地址",
   "Type the amount you want to transfer. Note that you can select the unit on the right e.g sending 1 milli is equivalent to sending 0.001.": "输入你要发送的总量. 注意 你可以从右边选择单位 例如 发送 1 milli 相当于发送 0.001.",
   "amount": "总量",
-  "Make Transfer": "添加交易",
+  "Make Transfer": "发送",
   "Add account": "添加账号",
   "Restore JSON": "使用JSON恢复",
   "Add via Qr": "二维码添加",

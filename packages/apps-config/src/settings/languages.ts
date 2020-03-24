@@ -15,7 +15,7 @@ export default [
     value: 'en'
   },
   {
-    text: '汉语',
+    text: '简体中文',
     value: 'zh'
   }
   // For ja, we only have the settings page, remove until comprehensive

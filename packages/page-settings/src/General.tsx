@@ -40,6 +40,13 @@ export default function General ({ className, isModalContent, onClose }: Props):
     }));
   }, [t]);
 
+  const availableUIModes =  useMemo((): Option[] => {
+    return uiSettings.availableUIModes.map(({ text, value }) => ({
+      value,
+      text: t(text as string)
+    }));
+  }, [t]);
+
   useEffect((): void => {
     const prev = uiSettings.get();
     const hasChanges = Object.entries(settings).some(([key, value]): boolean => (prev as any)[key] !== value);
@@ -92,7 +99,7 @@ export default function General ({ className, isModalContent, onClose }: Props):
               help={t('Adjust the mode from basic (with a limited number of beginner-user-friendly apps) to full (with all basic & advanced apps available)')}
               label={t('interface operation mode')}
               onChange={_handleChange('uiMode')}
-              options={uiSettings.availableUIModes}
+              options={availableUIModes}
             />
           </div>
           {isLedgerCapable() && (
