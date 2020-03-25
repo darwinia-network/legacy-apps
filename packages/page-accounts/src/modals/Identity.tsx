@@ -105,6 +105,7 @@ function Identity ({ address, className, onClose }: Props): React.ReactElement<P
     <Modal
       className={className}
       header={t('Register identity')}
+      onCancel={onClose}
     >
       <Modal.Content>
         <Input
