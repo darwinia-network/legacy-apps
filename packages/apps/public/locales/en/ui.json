@@ -926,5 +926,12 @@
   "Ethereum": "",
   "Tron": "",
   "Claim your {{token}} tokens": "",
-  "Your {{chain}} account": ""
+  "Your {{chain}} account": "",
+  "2. Sign ETH/TRON transaction": "",
+  "Method 1:Copy the above string and sign an Ethereum/Tron transaction with the account that got airdrop in the wallet of your choice, using the string as the payload, and copy the transaction signature.": "",
+  "Method 2: Use the [cRING Claim Tool] generate and copy the transaction signature.": "",
+  "Please paste the transaction signature object below": "",
+  "Nominating": "",
+  "Get Power": "",
+  "1. You need to stake some {{KTON}} or {{RING}} to get POWER. The higher the POWER, the greater the share of reward.": ""
 }

@@ -147,7 +147,7 @@ class ClaimsApp extends TxModal<Props, State> {
             </Card>
             {(step >= Step.Sign && !!accountId) && (
               <Card>
-                <h3>{t('2. Sign ETH transaction')}</h3>
+                <h3>{t('2. Sign ETH/TRON transaction')}</h3>
                 <CopyToClipboard
                   onCopy={this.onCopy}
                   text={payload}
@@ -165,8 +165,14 @@ class ClaimsApp extends TxModal<Props, State> {
                   trigger='tx-payload'
                 />
                 <div>
-                  {t('Copy the above string and sign an Ethereum transaction with the account you used during the pre-sale in the wallet of your choice, using the string as the payload, and then paste the transaction signature object below')}
-                  :
+                  {t('Method 1:Copy the above string and sign an Ethereum/Tron transaction with the account that got airdrop in the wallet of your choice, using the string as the payload, and copy the transaction signature.')}
+                  <br/>
+                  {t('Method 2: Use the [cRING Claim Tool] generate and copy the transaction signature.')}
+                  <br/>
+                  <br/>
+                  <p>
+                  {t('Please paste the transaction signature object below')} :</p>
+                
                 </div>
                 <Signature
                   onChange={this.onChangeSignature}

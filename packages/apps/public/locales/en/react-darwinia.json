@@ -11,5 +11,7 @@
   "My Nomination": "My Nomination",
   "New stake": "New stake",
   "Power Manager": "Power Manager",
-  "Start": "Start"
+  "Start": "Start",
+  "Get Power": "Get Power",
+  "1. You need to stake some {{KTON}} or {{RING}} to get POWER. The higher the POWER, the greater the share of reward.": "1. You need to stake some {{KTON}} or {{RING}} to get POWER. The higher the POWER, the greater the share of reward."
 }
