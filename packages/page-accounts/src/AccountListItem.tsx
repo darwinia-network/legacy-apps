@@ -319,7 +319,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
             >
               {t('Forget this account')}
             </Menu.Item>
-            {api.api.tx.recovery?.createRecovery && (
+            {/* {api.api.tx.recovery?.createRecovery && (
               <>
                 <Menu.Divider />
                 {!recoveryInfo && (
@@ -331,7 +331,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
                   {t('Initiate recovery for another')}
                 </Menu.Item>
               </>
-            )}
+            )} */}
             {/* {!api.isDevelopment && (
               <>
                 <Menu.Divider />
