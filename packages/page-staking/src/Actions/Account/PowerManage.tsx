@@ -250,6 +250,9 @@ export default withMulti(
         .balance-box{
           width: 200px;
           text-align: center;
+          p {
+            margin-bottom: 0;
+          }
           h1{
             margin-top: 0;
           }

@@ -60,14 +60,11 @@ const StyledWrapper = styled.div`
       font-weight: bold;
       line-height:36px;
       color: #5930DD;
-      /* background:linear-gradient(315deg, #FE3876 70%, #7C30DD 85%, #3A30DD 100%); */
-      /* background:#5930DD; */
-      /* -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent; */
       margin-top: 10px;
       text-transform: uppercase;
     }
   }
+
   .button-box {
     display: flex;
     align-items: center;

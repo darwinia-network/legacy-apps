@@ -84,7 +84,7 @@ export default css`
     }
 
     .ui--SiDropdown {
-      width: 6.2rem;
+      width: 6.7rem;
       text-align: center;
     }
 

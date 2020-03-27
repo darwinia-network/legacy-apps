@@ -253,7 +253,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
         <BalanceKton className="accountBox--all" label={`${KTON_PROPERTIES.tokenSymbol}: `} params={address} />
 
       </td>
-      <td className='number middle'>
+      <td className='number middle samewidth'>
         {isAccountChecked ? <Button
           isPrimary
           label={t('')}
@@ -367,5 +367,9 @@ export default styled(Account)`
 
   .name--input {
     width: 16rem;
+  }
+
+  .samewidth button:first-child {
+    min-width: 6.5rem;
   }
 `;

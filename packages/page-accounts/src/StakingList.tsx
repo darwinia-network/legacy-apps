@@ -239,7 +239,7 @@ class Overview extends React.PureComponent<Props, State> {
                     label={
                       t('Cancel lock limit')
                     }
-                    key='Redeem'
+                    key='tryClaimDepositsWithPunish'
                     tx='staking.tryClaimDepositsWithPunish'
                   />)}
                 </td>
