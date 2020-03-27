@@ -177,8 +177,7 @@
 		}
 	},
 	"AddressT": "[u8; 20]",
-	"EthereumAddress": "AddressT",
-	"TronAddress": "AddressT",
+	"TronAddress": "EthereumAddress",
 	"OtherSignature": {
 		"_enum": {
 			"Eth": "EcdsaSignature",
