@@ -175,6 +175,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
           onClickName={toggleEditName}
           toggle={isEditingName}
           value={address}
+          isLink
         />
         {isBackupOpen && (
           <Backup

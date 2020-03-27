@@ -28,6 +28,7 @@ interface Props extends BareProps {
   override?: React.ReactNode;
   toggle?: any;
   value: AccountId | AccountIndex | Address | string | Uint8Array | null | undefined;
+  isLink?: boolean;
 }
 
 const DISPLAY_KEYS = ['display', 'legal', 'email', 'web', 'twitter', 'riot'];
@@ -86,7 +87,7 @@ function renderLinkIcon(address) {
   );
 }
 
-function AccountName ({ children, className, defaultName, label, onClick, override, style, toggle, value }: Props): React.ReactElement<Props> {
+function AccountName ({ children, className, defaultName, label, onClick, override, style, toggle, value, isLink }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -226,7 +227,7 @@ function AccountName ({ children, className, defaultName, label, onClick, overri
         }
         style={style}
       >
-        {label || ''}{override || name}{renderLinkIcon(address)}{children}
+        {label || ''}{override || name}{isLink && renderLinkIcon(address)}{children}
       </div>
     </>
   );
