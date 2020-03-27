@@ -76,7 +76,7 @@ export default function TxButton ({ accountId, className, extrinsic: propsExtrin
     <Button
       className={className}
       tooltip={tooltip}
-      icon={icon || 'check'}
+      icon={icon || ''}
       isBasic={isBasic}
       isDisabled={isSending || isDisabled || needsAccount}
       isLoading={isSending}
