@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ApiInterfaceRx } from '@polkadot/api/types';
-import { AccountId, Exposure, Keys, Nominations, RewardDestination, ValidatorPrefs } from '@polkadot/types/interfaces';
+import { AccountId, Exposure, Keys, Nominations, RewardDestination, ValidatorPrefs, StakingLedger } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
 import { DerivedStakingQuery } from '../types';
 
@@ -82,6 +82,20 @@ function retrieveController (api: ApiInterfaceRx, stashId: AccountId, [queuedKey
     : of({ accountId: stashId, nextSessionIds: [], sessionIds: [] });
 }
 
+function resolveController(stashId: AccountId | string, [controller, ledger]: [AccountId, StakingLedger]): AccountId | string | null {
+  if(!controller.isEmpty) {
+    return controller;
+  }
+
+  if(controller.isEmpty && !ledger.isEmpty) {
+    return stashId;
+  }
+
+  if(controller.isEmpty && ledger.isEmpty) {
+    return null;
+  }
+}
+
 /**
  * @description From a stash, retrieve the controllerId and all relevant details
  */
@@ -101,6 +115,19 @@ export function query (api: ApiInterfaceRx): (accountId: Uint8Array | string) =>
     );
   });
 }
+
+export function estimateController (api: ApiInterfaceRx, accountId: AccountId) : (AccountId: AccountId | string) => Observable<AccountId | string | null> {
+  return (accountId: AccountId | string) => (
+    api.queryMulti<[AccountId, StakingLedger]>([
+    [api.query.staking.bonded, accountId],
+    [api.query.staking.ledger, accountId],
+  ])
+  ).pipe(
+    map((result): AccountId | string | null => resolveController(accountId, result))
+  )
+}
+
+
 
 export function queryMulti (api: ApiInterfaceRx): (...accountIds: (Uint8Array | string)[]) => Observable<DerivedStakingQuery[]> {
   return memo((...accountIds: (Uint8Array | string)[]): Observable<DerivedStakingQuery[]> =>
