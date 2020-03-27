@@ -12,6 +12,7 @@ import { AddressInfo, AddressMini, AddressSmall, Button, Menu, Popup, TxButton, 
 import { useAccounts, useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { u8aConcat, u8aToHex } from '@polkadot/util';
 import { RowTitle, Box } from '@polkadot/react-darwinia/components';
+import Identity from '@polkadot/app-accounts/modals/Identity';
 
 import { useTranslation } from '../../translate';
 import BondExtra from './BondExtra';
@@ -108,6 +109,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
   const [isSettingsOpen, toggleSettings] = useToggle();
   const [isUnbondOpen, toggleUnbond] = useToggle();
   const [isValidateOpen, toggleValidate] = useToggle();
+  const [isIdentityOpen, toggleIdentity] = useToggle();
 
   useEffect((): void => {
     if (stakingAccount && validateInfo) {
@@ -191,6 +193,13 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
         />
       )}
 
+      {isIdentityOpen && (
+        <Identity
+          address={stashId}
+          key='modal-identity'
+          onClose={toggleIdentity}
+        />
+      )}
       <RowTitle title={t('Account')} />
       <Box className="staking--Account-mynomination">
         {isLoading
@@ -318,6 +327,12 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
                             {t('Set nominees')}
                           </Menu.Item>
                         }
+                        <Menu.Item
+                          disabled={!api.tx.identity?.setIdentity && isStashValidating}
+                          onClick={toggleIdentity}
+                        >
+                          {t('Set on-chain identity')}
+                        </Menu.Item>
                         {/* {!isStashNominating &&
                           <Menu.Item onClick={toggleInject}>
                             {t('Inject session keys (advanced)')}
