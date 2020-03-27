@@ -295,12 +295,12 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
             >
               {t('Set on-chain identity')}
             </Menu.Item>
-            <Menu.Item
+            {/* <Menu.Item
               disabled={!isEditable || isExternal}
               onClick={toggleDerive}
             >
               {t('Derive account via derivation path')}
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item
               disabled={!isEditable || isExternal || isDevelopment}
               onClick={toggleBackup}
