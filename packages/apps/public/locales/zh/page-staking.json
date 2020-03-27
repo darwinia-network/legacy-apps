@@ -160,7 +160,7 @@
   "Reward": "收益",
   "My Nomination": "我的投票",
   "Session Key": "Session账号",
-  "Set nominees": "Set nominees",
+  "Set nominees": "更改投票人",
   "Power Manager": "POWER 管理",
   "Bond More": "抵押",
   "Filter available candidates based on name, address or short account index.": "Filter available candidates based on name, address or short account index.",
@@ -175,5 +175,8 @@
   "validators/nominators": "节点/投票者",
   "profit/era est.": "profit/era est.",
   "Nominating": "投票",
-  "Account": "账号"
+  "Account": "账号",
+  "Set on-chain identity": "设置链上身份",
+  "No fixed term": "不冻结",
+  "Month": "月"
 }

@@ -12,5 +12,7 @@
   "Power Manager": "POWER 管理",
   "Start": "开始",
   "1. You need to stake some {{KTON}} or {{RING}} to get POWER. The higher the POWER, the greater the share of reward.": "1. 您可以选择冻结 {{KTON}} 或 {{RING}} 来获取票权（POWER），票权越大获得的收益分成比重越大。",
-  "Account": "Account"
+  "Account": "账号",
+  "No fixed term": "不冻结",
+  "Month": "月"
 }

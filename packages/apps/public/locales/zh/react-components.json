@@ -37,7 +37,7 @@
   "Forget": "忘记",
   "click to select or drag and drop the file here": "click to select or drag and drop the file here",
   "{{name}} ({{size}} bytes)": "{{name}} ({{size}} bytes)",
-  "Positive number": "正数",
+  "Positive number": "数量",
   "View this {{type}} on Polkascan.io": "View this {{type}} on Polkascan.io",
   "Mutates contract state": "Mutates contract state",
   "Call this message": "调用这个消息",
