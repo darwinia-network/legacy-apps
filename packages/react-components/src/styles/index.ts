@@ -88,6 +88,7 @@ export default createGlobalStyle`
   body {
     height: 100%;
     margin: 0;
+    line-height: unset;
   }
 
   br {

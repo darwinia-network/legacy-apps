@@ -32,7 +32,7 @@ export default css`
       background-color: ${colorBtnDefault};
       color: ${colorBtnText};
       border-radius: 2px;
-
+      font-size: 1rem;
       &.active,
       &:active,
       &:focus,

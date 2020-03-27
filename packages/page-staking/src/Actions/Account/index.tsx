@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedBalancesAll, DerivedStakingAccount, DerivedStakingOverview, DerivedHeartbeats } from '@polkadot/api-derive/types';
+import { DerivedBalancesAll, DerivedStakingAccount, DerivedStakingOverview, DerivedHeartbeats, DerivedStakingQuery } from '@polkadot/api-derive/types';
 import { AccountId, Exposure, StakingLedger, ValidatorPrefs } from '@polkadot/types/interfaces';
 import { Codec, ITuple } from '@polkadot/types/types';
 
@@ -110,7 +110,8 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
   const [isUnbondOpen, toggleUnbond] = useToggle();
   const [isValidateOpen, toggleValidate] = useToggle();
   const [isIdentityOpen, toggleIdentity] = useToggle();
-
+  const stakingInfo = useCall<DerivedStakingQuery>(api.derive.staking.query as any, ['5HCHa72m91dgJbo3gLRK1SUVyPcyqKy7eVTSbEZB9gLDz9Xm']);
+  console.log(111, stakingInfo);
   useEffect((): void => {
     if (stakingAccount && validateInfo) {
       const state = getStakeState(allAccounts, allStashes, stakingAccount, stashId, validateInfo);
@@ -216,48 +217,49 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
                       ? (
                         <TxButton
                           accountId={controllerId}
-                          isNegative
+                          isBasic
                           label={
                             isStashNominating
                               ? t('Stop Nominating')
                               : t('Stop Validating')
                           }
-                          icon='stop'
+                          // icon='stop'
                           key='stop'
                           tx='staking.chill'
                         />
                       )
                       : (
-                        <Button.Group>
+
+                        <>
                           {(!sessionIds.length || hexSessionIdNext === '0x')
                             ? (
                               <Button
-                                isNegative
+                                isBasic
                                 key='set'
                                 onClick={toggleSetSession}
                                 label={t('Session Key')}
-                                icon='sign-in'
+                                // icon='sign-in'
                               />
                             )
                             : (
                               <Button
-                                isNegative
+                                isBasic
                                 key='validate'
                                 onClick={toggleValidate}
                                 label={t('Validate')}
-                                icon='check circle outline'
+                                // icon='check circle outline'
                               />
                             )
                           }
-                          <Button.Or key='nominate.or' />
+                          {/* <Button.Or key='nominate.or' /> */}
                           <Button
-                            isNegative
+                            isBasic
                             key='nominate'
                             onClick={toggleNominate}
                             label={t('Nominate')}
-                            icon='hand paper outline'
+                            // icon='hand paper outline'
                           />
-                        </Button.Group>
+                        </>
                       )
                     }
                     <Popup
@@ -355,23 +357,22 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
           stakingAccount={stakingAccount}
           buttons={
             <div className="staking--PowerMange-buttons">
-              <Button.Group>
+
                 <Button
-                  isNegative
+                  isBasic
                   key='bondmore'
                   onClick={toggleBondExtra}
                   label={t('Bond More')}
-                  icon='check circle outline'
+                  // icon='check circle outline'
                 />
-                <Button.Or key='nominate.or' />
+                {/* <Button.Or key='nominate.or' /> */}
                 <Button
-                  isNegative
+                  isBasic
                   key='unbond'
                   onClick={toggleUnbond}
                   label={t('Unbond')}
-                  icon='hand paper outline'
+                  // icon='hand paper outline'
                 />
-              </Button.Group>
             </div>
           } />
       </Box>
@@ -408,6 +409,27 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
               withValidatorPrefs
             />
           </div>
+          // <div className="lastBox">
+          //   <RowTitle title={t('Nominating')} />
+          //   <Box>
+          //     <>
+          //       {activeNoms.length !== 0 && (
+          //         <div>
+          //           {activeNoms.map((nomineeId, index): React.ReactNode => (
+          //             <div className="staking--Noms-accountbox">
+          //               <AddressSmall
+          //                 key={index}
+          //                 value={nomineeId}
+          //               // withBalance={false}
+          //               // withBonded
+          //               />
+          //             </div>
+          //           ))}
+          //         </div>
+          //       )}
+          //     </>
+          //   </Box>
+          // </div>
         )
         : isStashNominating && (
           <div className="lastBox">
