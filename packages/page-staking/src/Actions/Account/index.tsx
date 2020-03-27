@@ -191,7 +191,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
         />
       )}
 
-      <RowTitle title={t('My Nomination')} />
+      <RowTitle title={t('Account')} />
       <Box className="staking--Account-mynomination">
         {isLoading
           ? null

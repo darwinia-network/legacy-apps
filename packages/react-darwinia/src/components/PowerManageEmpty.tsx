@@ -39,7 +39,7 @@ function PowerManageEmpty({ className, onStart }: Props): React.ReactElement<Pro
 
   return (
     <div className={className}>
-      <RowTitle title={t('My Nomination')} />
+      <RowTitle title={t('Account')} />
       <Box>
         <Button.Group>
           <Button

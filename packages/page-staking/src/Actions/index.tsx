@@ -126,7 +126,7 @@ function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stak
           </>
         )
         : <div>
-              <RowTitle title={t('My Nomination')} />
+              <RowTitle title={t('Account')} />
               <Box className="Actions--Nomination">
                 <AddressSmall value={accountChecked} />
               </Box>

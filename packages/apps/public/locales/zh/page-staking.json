@@ -174,5 +174,6 @@
   "nominators": "投票者",
   "validators/nominators": "节点/投票者",
   "profit/era est.": "profit/era est.",
-  "Nominating": "Nominating"
+  "Nominating": "投票",
+  "Account": "账号"
 }
