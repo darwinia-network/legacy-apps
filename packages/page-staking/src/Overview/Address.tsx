@@ -232,14 +232,14 @@ export default function Address ({ address, className, filter, filterName, hasQu
               <><label>{t('last #')}</label>{lastBlock}</>
             )}
           </td>
-          <td>
+          {/* <td>
             {hasQueries && api.query.imOnline?.authoredBlocks && (
               <Icon
                 name='line graph'
                 onClick={_onQueryStats}
               />
             )}
-          </td>
+          </td> */}
         </>
       )}
     </tr>

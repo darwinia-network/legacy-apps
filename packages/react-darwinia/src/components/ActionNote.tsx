@@ -41,10 +41,10 @@ function ActionNote ({ className, type, onStart }: Props): React.ReactElement<Pr
       <Box className={className}>
         <div>
           <div className="ui--ActionNote">
-            <h1>{t('Get Power for Nominate')}</h1>
+            <h1>{t('Get Power')}</h1>
             <p>{t('note')}: </p>
             <p>
-              {t('1. You need to stake some {{KTON}} or {{RING}} to get power for nominate.', {
+              {t('1. You need to stake some {{KTON}} or {{RING}} to get POWER. The higher the POWER, the greater the share of reward.', {
                 replace: {
                   RING: RING_PROPERTIES.tokenSymbol,
                   KTON: KTON_PROPERTIES.tokenSymbol
@@ -52,11 +52,10 @@ function ActionNote ({ className, type, onStart }: Props): React.ReactElement<Pr
               })}<br />
               {t('2. Please make sure that you have some excess {{RING}} in this account as gas fee.', {
                 replace: {
-                  RING: RING_PROPERTIES.tokenSymbol,
-                  KTON: KTON_PROPERTIES.tokenSymbol
+                  RING: RING_PROPERTIES.tokenSymbol
                 }
-              })}<br />
-              {t('3. After you choose to become a nominee, this account does not support to upgrade to node for now, we will support the upgrade of the account in the future.')}
+              })}
+              <br/>
             </p>
             <ColorButton
               key='detail'

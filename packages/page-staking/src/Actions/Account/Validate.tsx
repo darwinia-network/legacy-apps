@@ -62,7 +62,7 @@ class Validate extends TxComponent<Props, State> {
   // }
 
   public render (): React.ReactNode {
-    const { isOpen, t } = this.props;
+    const { isOpen, onClose, t } = this.props;
 
     if (!isOpen) {
       return null;
@@ -73,6 +73,7 @@ class Validate extends TxComponent<Props, State> {
         className='staking--Staking'
         header={t('Set validator preferences')}
         size='small'
+        onCancel={onClose}
       >
         {this.renderContent()}
         {this.renderButtons()}
@@ -123,6 +124,8 @@ class Validate extends TxComponent<Props, State> {
           isZeroable
           label={t('reward commission percentage')}
           maxValue={MAX_COMM}
+          isSiShow={false}
+          isSi={false}
           onChange={this.onChangeCommission}
           onEnter={this.sendTx}
         />

@@ -22,6 +22,7 @@ type State = {
   isEarningsDetailOpen: boolean;
   sum: string;
   today: string;
+  history: [];
 };
 
 const StyledWrapper = styled.div`
@@ -59,15 +60,12 @@ const StyledWrapper = styled.div`
       font-weight: bold;
       line-height:36px;
       color: #5930DD;
-      /* background:linear-gradient(315deg, #FE3876 70%, #7C30DD 85%, #3A30DD 100%); */
-      /* background:#5930DD; */
-      /* -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent; */
       margin-top: 10px;
       text-transform: uppercase;
     }
   }
-  .button-box{
+
+  .button-box {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -79,7 +77,8 @@ class Earnings extends React.PureComponent<Props, State> {
     error: null,
     isEarningsDetailOpen: false,
     sum: '--',
-    today: '--'
+    today: '--',
+    history: [],
   };
 
   toggleEarningsDetail = () => {
@@ -107,14 +106,16 @@ class Earnings extends React.PureComponent<Props, State> {
     }, (data) => {
       this.setState({
         sum: data.data.sum,
-        today: data.data.today
+        today: data.data.today,
+        history: data.data.history,
       });
     });
   }
 
   render () {
     const { t, address } = this.props;
-    const { isEarningsDetailOpen, sum, today } = this.state;
+    const { isEarningsDetailOpen, sum, today, history } = this.state;
+
     return (
       <StyledWrapper>
         <div className="content">
@@ -128,6 +129,7 @@ class Earnings extends React.PureComponent<Props, State> {
           </div>
           <div className="button-box">
             <ColorButton
+              isDisabled={history.length <= 0}
               key='detail'
               onClick={this.toggleEarningsDetail}
             >{t('Detail')}</ColorButton>

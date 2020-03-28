@@ -10,6 +10,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useCall, useAccounts, useApi, useToggle } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
+import { SUBSCAN_URL } from '@polkadot/react-darwinia';
 
 import { useTranslation } from './translate';
 import { getAddressName } from './util';
@@ -17,6 +18,7 @@ import AccountNameJudgement from './AccountNameJudgement';
 import AddressMini from './AddressMini';
 import Badge from './Badge';
 import Icon from './Icon';
+import Button from './Button';
 
 interface Props extends BareProps {
   children?: React.ReactNode;
@@ -26,6 +28,7 @@ interface Props extends BareProps {
   override?: React.ReactNode;
   toggle?: any;
   value: AccountId | AccountIndex | Address | string | Uint8Array | null | undefined;
+  isLink?: boolean;
 }
 
 const DISPLAY_KEYS = ['display', 'legal', 'email', 'web', 'twitter', 'riot'];
@@ -69,7 +72,22 @@ function extractName (address: AccountId | string, accountIndex?: AccountIndex, 
   );
 }
 
-function AccountName ({ children, className, defaultName, label, onClick, override, style, toggle, value }: Props): React.ReactElement<Props> {
+function renderLinkIcon(address) {
+  return (
+    <Button
+      onClick={() => {
+        window.open(`${SUBSCAN_URL}/account/${address}`)
+      }}
+      className='icon-button'
+      icon='external alternate'
+      size='mini'
+      isPrimary
+      key='tosubscan'
+    />
+  );
+}
+
+function AccountName ({ children, className, defaultName, label, onClick, override, style, toggle, value, isLink }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -209,13 +227,15 @@ function AccountName ({ children, className, defaultName, label, onClick, overri
         }
         style={style}
       >
-        {label || ''}{override || name}{children}
+        {label || ''}{override || name}{isLink && renderLinkIcon(address)}{children}
       </div>
     </>
   );
 }
 
 export default styled(AccountName)`
+  display: flex;
+
   .via-identity {
     display: inline-block;
     overflow: hidden;

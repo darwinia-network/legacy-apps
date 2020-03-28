@@ -5,7 +5,7 @@
 import { useTranslation as useTranslationBase, UseTranslationResponse, withTranslation } from 'react-i18next';
 
 export function useTranslation (): UseTranslationResponse {
-  return useTranslationBase('app-storage');
+  return useTranslationBase('page-storage');
 }
 
-export default withTranslation(['app-storage']);
+export default withTranslation(['page-storage']);

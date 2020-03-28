@@ -44,7 +44,6 @@ function InputBalance ({ autoFocus, className, defaultValue: inDefault, help, is
   const defaultValue = inDefault
     ? formatBalance(inDefault, { forceUnit: '-', withSi: false }).replace(',', isDisabled ? ',' : '')
     : inDefault;
-
   return (
     <InputNumber
       autoFocus={autoFocus}

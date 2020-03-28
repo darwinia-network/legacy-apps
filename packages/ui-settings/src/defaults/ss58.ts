@@ -10,21 +10,25 @@ export const PREFIXES: Option[] = [
   {
     info: 'default',
     text: 'Default for the connected node',
-    value: -1
+    value: -1,
+    withI18n: true,
   },
-  {
-    info: 'substrate',
-    text: 'Substrate (development)',
-    value: 42
-  },
+  // {
+  //   info: 'substrate',
+  //   text: 'Substrate (development)',
+  //   value: 42,
+  //   withI18n: true,
+  // },
   {
     info: 'crab',
-    text: 'Crab (canary)',
-    value: 42
+    text: 'Crab Network (canary)',
+    value: 42,
+    withI18n: true,
   },
   {
     info: 'darwinia',
     text: 'Darwinia Network (live)',
-    value: 18
+    value: 18,
+    withI18n: true,
   }
 ];

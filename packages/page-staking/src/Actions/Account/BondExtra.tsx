@@ -83,6 +83,7 @@ class BondExtra extends TxComponent<Props, State> {
         className='staking--BondExtra'
         header= {t('Bond more funds')}
         size='small'
+        onCancel={onClose}
       >
         {this.renderContent()}
         <Modal.Actions onCancel={onClose}>

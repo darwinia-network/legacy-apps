@@ -7,6 +7,7 @@ export type Option = {
   info: string;
   text: string;
   value: string | number;
+  withI18n?: boolean;
 }
 
 export interface SettingsStruct {

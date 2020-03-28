@@ -362,12 +362,12 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
             >
               {t('Set on-chain identity')}
             </Menu.Item>
-            <Menu.Item
+            {/* <Menu.Item
               disabled={!isEditable || isExternal}
               onClick={toggleDerive}
             >
               {t('Derive account via derivation path')}
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item
               disabled={!isEditable || isExternal || isDevelopment}
               onClick={toggleBackup}
@@ -386,7 +386,7 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
             >
               {t('Forget this account')}
             </Menu.Item>
-            {api.api.tx.recovery?.createRecovery && (
+            {/* {api.api.tx.recovery?.createRecovery && (
               <>
                 <Menu.Divider />
                 {!recoveryInfo && (
@@ -398,8 +398,8 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
                   {t('Initiate recovery for another')}
                 </Menu.Item>
               </>
-            )}
-            {!api.isDevelopment && (
+            )} */}
+            {/* {!api.isDevelopment && (
               <>
                 <Menu.Divider />
                 <ChainLock
@@ -409,7 +409,7 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
                   preventDefault
                 />
               </>
-            )}
+            )} */}
           </Menu>
         </Popup>
       </td>

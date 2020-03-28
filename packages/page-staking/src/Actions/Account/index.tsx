@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedBalancesAll, DerivedStakingAccount, DerivedStakingOverview, DerivedHeartbeats } from '@polkadot/api-derive/types';
+import { DerivedBalancesAll, DerivedStakingAccount, DerivedStakingOverview, DerivedHeartbeats, DerivedStakingQuery } from '@polkadot/api-derive/types';
 import { AccountId, Exposure, StakingLedger, ValidatorPrefs } from '@polkadot/types/interfaces';
 import { Codec, ITuple } from '@polkadot/types/types';
 
@@ -12,6 +12,7 @@ import { AddressInfo, AddressMini, AddressSmall, Button, Menu, Popup, TxButton, 
 import { useAccounts, useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { u8aConcat, u8aToHex } from '@polkadot/util';
 import { RowTitle, Box } from '@polkadot/react-darwinia/components';
+import Identity from '@polkadot/app-accounts/modals/Identity';
 
 import { useTranslation } from '../../translate';
 import BondExtra from './BondExtra';
@@ -55,13 +56,13 @@ interface StakeState {
   validatorPrefs?: ValidatorPrefs;
 }
 
-function toIdString (id?: AccountId | null): string | null {
+function toIdString(id?: AccountId | null): string | null {
   return id
     ? id.toString()
     : null;
 }
 
-function getStakeState (allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DerivedStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
+function getStakeState(allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DerivedStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
   const isStashNominating = !!(nominators?.length);
   const isStashValidating = !(Array.isArray(validateInfo) ? validateInfo[1].isEmpty : validateInfo.isEmpty) || !!allStashes?.includes(stashId);
   const nextConcat = u8aConcat(...nextSessionIds.map((id): Uint8Array => id.toU8a()));
@@ -89,7 +90,7 @@ function getStakeState (allAccounts: string[], allStashes: string[] | undefined,
   };
 }
 
-function Account ({ allStashes, className, isOwnStash, next, onUpdateType, stakingOverview, stashId }: Props): React.ReactElement<Props> {
+function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakingOverview, stashId }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -108,7 +109,9 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
   const [isSettingsOpen, toggleSettings] = useToggle();
   const [isUnbondOpen, toggleUnbond] = useToggle();
   const [isValidateOpen, toggleValidate] = useToggle();
-
+  const [isIdentityOpen, toggleIdentity] = useToggle();
+  const stakingInfo = useCall<DerivedStakingQuery>(api.derive.staking.query as any, ['5HCHa72m91dgJbo3gLRK1SUVyPcyqKy7eVTSbEZB9gLDz9Xm']);
+  console.log(111, stakingInfo);
   useEffect((): void => {
     if (stakingAccount && validateInfo) {
       const state = getStakeState(allAccounts, allStashes, stakingAccount, stashId, validateInfo);
@@ -191,7 +194,14 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
         />
       )}
 
-      <RowTitle title={t('My Nomination')} />
+      {isIdentityOpen && (
+        <Identity
+          address={stashId}
+          key='modal-identity'
+          onClose={toggleIdentity}
+        />
+      )}
+      <RowTitle title={t('Account')} />
       <Box className="staking--Account-mynomination">
         {isLoading
           ? null
@@ -207,48 +217,49 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                       ? (
                         <TxButton
                           accountId={controllerId}
-                          isNegative
+                          isBasic
                           label={
                             isStashNominating
                               ? t('Stop Nominating')
                               : t('Stop Validating')
                           }
-                          icon='stop'
+                          // icon='stop'
                           key='stop'
                           tx='staking.chill'
                         />
                       )
                       : (
-                        <Button.Group>
+
+                        <>
                           {(!sessionIds.length || hexSessionIdNext === '0x')
                             ? (
                               <Button
-                                isNegative
+                                isBasic
                                 key='set'
                                 onClick={toggleSetSession}
                                 label={t('Session Key')}
-                                icon='sign-in'
+                                // icon='sign-in'
                               />
                             )
                             : (
                               <Button
-                                isNegative
+                                isBasic
                                 key='validate'
                                 onClick={toggleValidate}
                                 label={t('Validate')}
-                                icon='check circle outline'
+                                // icon='check circle outline'
                               />
                             )
                           }
-                          <Button.Or key='nominate.or' />
+                          {/* <Button.Or key='nominate.or' /> */}
                           <Button
-                            isNegative
+                            isBasic
                             key='nominate'
                             onClick={toggleNominate}
                             label={t('Nominate')}
-                            icon='hand paper outline'
+                            // icon='hand paper outline'
                           />
-                        </Button.Group>
+                        </>
                       )
                     }
                     <Popup
@@ -318,6 +329,12 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                             {t('Set nominees')}
                           </Menu.Item>
                         }
+                        <Menu.Item
+                          disabled={!api.tx.identity?.setIdentity && isStashValidating}
+                          onClick={toggleIdentity}
+                        >
+                          {t('Set on-chain identity')}
+                        </Menu.Item>
                         {/* {!isStashNominating &&
                           <Menu.Item onClick={toggleInject}>
                             {t('Inject session keys (advanced)')}
@@ -340,23 +357,22 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
           stakingAccount={stakingAccount}
           buttons={
             <div className="staking--PowerMange-buttons">
-              <Button.Group>
+
                 <Button
-                  isNegative
+                  isBasic
                   key='bondmore'
                   onClick={toggleBondExtra}
                   label={t('Bond More')}
-                  icon='check circle outline'
+                  // icon='check circle outline'
                 />
-                <Button.Or key='nominate.or' />
+                {/* <Button.Or key='nominate.or' /> */}
                 <Button
-                  isNegative
+                  isBasic
                   key='unbond'
                   onClick={toggleUnbond}
                   label={t('Unbond')}
-                  icon='hand paper outline'
+                  // icon='hand paper outline'
                 />
-              </Button.Group>
             </div>
           } />
       </Box>
@@ -383,7 +399,7 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
         withRewardDestination
       /> */}
 
-      {/* {isStashValidating
+      {isStashValidating
         ? (
           <div className='top'>
             <AddressInfo
@@ -393,10 +409,64 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
               withValidatorPrefs
             />
           </div>
+          // <div className="lastBox">
+          //   <RowTitle title={t('Nominating')} />
+          //   <Box>
+          //     <>
+          //       {activeNoms.length !== 0 && (
+          //         <div>
+          //           {activeNoms.map((nomineeId, index): React.ReactNode => (
+          //             <div className="staking--Noms-accountbox">
+          //               <AddressSmall
+          //                 key={index}
+          //                 value={nomineeId}
+          //               // withBalance={false}
+          //               // withBonded
+          //               />
+          //             </div>
+          //           ))}
+          //         </div>
+          //       )}
+          //     </>
+          //   </Box>
+          // </div>
         )
-        : (
-          <div>
-            {isStashNominating && (
+        : isStashNominating && (
+          <div className="lastBox">
+            <RowTitle title={t('Nominating')} />
+            <Box>
+              <>
+                {activeNoms.length !== 0 && (
+                  <div>
+                    {activeNoms.map((nomineeId, index): React.ReactNode => (
+                      <div className="staking--Noms-accountbox">
+                        <AddressSmall
+                          key={index}
+                          value={nomineeId}
+                        // withBalance={false}
+                        // withBonded
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {inactiveNoms.length !== 0 && (
+                  <div>
+                    {inactiveNoms.map((nomineeId, index): React.ReactNode => (
+                      <div className="staking--Noms-accountbox">
+                        <AddressSmall
+                          key={index}
+                          value={nomineeId}
+                        // withBalance={false}
+                        // withBonded
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            </Box>
+            {/* {isStashNominating && (
               <>
                 {activeNoms.length !== 0 && (
                   <details>
@@ -425,10 +495,10 @@ function Account ({ allStashes, className, isOwnStash, next, onUpdateType, staki
                   </details>
                 )}
               </>
-            )}
+            )} */}
           </div>
         )
-      } */}
+      }
     </div>
   );
 }
@@ -465,5 +535,17 @@ export default styled(Account)`
     align-items: center;
     flex: 1;
     justify-content: flex-end;
+  }
+
+  .staking--Noms-accountbox {
+    padding: 15px 20px;
+  }
+
+  .staking--Noms-accountbox+.staking--Noms-accountbox {
+    border-top: 1px solid #EDEDED;
+  }
+
+  .lastBox {
+    margin-bottom: 50px;
   }
 `;

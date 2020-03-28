@@ -138,5 +138,8 @@
   "unbonding": "unbonding",
   "Start": "Start",
   "Overview": "Overview",
-  "Validators": "Validators"
+  "Validators": "Validators",
+  "Nominating": "Nominating",
+  "Account": "Account",
+  "Set on-chain identity": "Set on-chain identity"
 }

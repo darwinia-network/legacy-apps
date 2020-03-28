@@ -62,6 +62,7 @@ export default function ({ address, onClose }: Props): React.ReactElement<Props>
     <Modal
       className='app--accounts-Modal'
       header={t('Backup account')}
+      onCancel={onClose}
     >
       <Content
         address={address}

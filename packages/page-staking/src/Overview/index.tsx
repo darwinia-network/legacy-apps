@@ -35,7 +35,7 @@ export default function Overview({ hasQueries, isVisible, className, recentlyOnl
         <CurrentList
           authorsMap={byAuthor}
           hasQueries={hasQueries}
-          isIntentions={isIntentions}
+          isIntentions={false}
           isVisible={isVisible}
           lastAuthors={lastBlockAuthors}
           next={next}

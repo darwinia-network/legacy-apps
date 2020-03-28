@@ -66,7 +66,11 @@ function Claim ({ button, className, ethereumAddress, chain }: Props): React.Rea
       isSuccess={!!hasClaim}
     >
       <div className={className}>
-        {t(`Your ${chainToName[chain]} account`)}
+        {t(`Your {{chain}} account`, {
+            replace: {
+              chain: chainToName[chain]
+            }
+          })}
         <h3>{addrToChecksum(claimAddress.toString())}</h3>
         {hasClaim && claimValue
           ? (

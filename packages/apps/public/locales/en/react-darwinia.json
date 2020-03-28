@@ -7,5 +7,12 @@
   "1. You need to stake some {{KTON}} or {{RING}} to get power for nominate.": "1. You need to stake some {{KTON}} or {{RING}} to get power for nominate.",
   "2. Please make sure that you have some excess {{RING}} in this account as gas fee.": "2. Please make sure that you have some excess {{RING}} in this account as gas fee.",
   "3. After you choose to become a nominee, this account does not support to upgrade to node for now, we will support the upgrade of the account in the future.": "3. After you choose to become a nominee, this account does not support to upgrade to node for now, we will support the upgrade of the account in the future.",
-  "Staking now": "Staking now"
+  "Staking now": "Staking now",
+  "My Nomination": "My Nomination",
+  "New stake": "New stake",
+  "Power Manager": "Power Manager",
+  "Start": "Start",
+  "Get Power": "Get Power",
+  "1. You need to stake some {{KTON}} or {{RING}} to get POWER. The higher the POWER, the greater the share of reward.": "1. You need to stake some {{KTON}} or {{RING}} to get POWER. The higher the POWER, the greater the share of reward.",
+  "Account": "Account"
 }

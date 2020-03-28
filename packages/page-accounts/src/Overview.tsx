@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import keyring from '@polkadot/ui-keyring';
 import { getLedger, isLedger } from '@polkadot/react-api';
-import { useAccounts, useFavorites, useToggle, useAccountChecked } from '@polkadot/react-hooks';
+import { useAccounts, useFavorites, useToggle, useAccountChecked, useApi, useCall } from '@polkadot/react-hooks';
 import { Button, Input, Table, Available, AvailableKton, Balance, BalanceKton } from '@polkadot/react-components';
 
 import CreateModal from './modals/Create';
@@ -47,6 +47,8 @@ async function queryLedger(): Promise<void> {
 
 function Overview ({ className, onStatusChange }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
+  const { api } = useApi();
+
   const { allAccounts, hasAccounts } = useAccounts();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
@@ -55,8 +57,10 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
   const [accountChecked, toggleAccountChecked] = useAccountChecked(STORE_CHECKED);
   const [sortedAccounts, setSortedAccounts] = useState<SortedAccount[]>([]);
   const [filter, setFilter] = useState<string>('');
+  const [controllerId, setControllerId] = useState<string>('');
   const [isTransferOpen, toggleTransfer] = useToggle();
   const [isTransferKtonOpen, toggleKtonTransfer] = useToggle();
+  const _accountChecked = accountChecked[0];
 
   useEffect((): void => {
     setSortedAccounts(
@@ -76,12 +80,17 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
               : -1
         )
     );
-  }, [allAccounts, favorites]);
+    api.derive.staking.estimateController(_accountChecked, (controllerId) => {
+      setControllerId(controllerId?.toString())
+    });
+  }, [allAccounts, favorites, _accountChecked]);
 
   const _toggleCreate = (): void => setIsCreateOpen(!isCreateOpen);
   const _toggleImport = (): void => setIsImportOpen(!isImportOpen);
   const _toggleQr = (): void => setIsQrOpen(!isQrOpen);
-  const _accountChecked = accountChecked[0];
+
+  // const controllerId = useCall<AccountId>(api.derive.staking.estimateController, [_accountChecked]);
+ 
   return (
     <div className={className}>
       {hasAccounts ? <>
@@ -148,7 +157,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
         </div>
         <StakingList
           account={_accountChecked}
-          controllerId={""}
+          controllerId={controllerId}
         />
       </>
         : <div className='noAccount'>

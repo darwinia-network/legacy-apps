@@ -51,7 +51,7 @@ module.exports = {
     trans: {
       component: 'Trans'
     },
-    lngs: ['en'],
+    lngs: ['en', 'zh'],
     defaultLng: 'en',
     ns: findPackages().map(({ dir }) => dir),
     defaultNs: 'ui',

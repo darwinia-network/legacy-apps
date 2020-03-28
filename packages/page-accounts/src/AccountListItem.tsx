@@ -14,7 +14,7 @@ import { useApi, useCall, useToggle } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
 import keyring from '@polkadot/ui-keyring';
 import { formatBalance, formatNumber } from '@polkadot/util';
-
+import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import Backup from './modals/Backup';
 import ChangePass from './modals/ChangePass';
 import Derive from './modals/Derive';
@@ -23,6 +23,7 @@ import RecoverAccount from './modals/RecoverAccount';
 import RecoverSetup from './modals/RecoverSetup';
 import Transfer from './modals/Transfer';
 import { useTranslation } from './translate';
+
 import store from 'store';
 
 import buttonChecked from './img/buttonChecked.svg';
@@ -174,6 +175,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
           onClickName={toggleEditName}
           toggle={isEditingName}
           value={address}
+          isLink
         />
         {isBackupOpen && (
           <Backup
@@ -240,7 +242,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
           withBalanceToggle
           withExtended={false}
         /> */}
-        <Balance className="accountBox--all" label={`${t('Ring')}: `} params={address} />
+        <Balance className="accountBox--all" label={`${RING_PROPERTIES.tokenSymbol}: `} params={address} />
 
       </td>
       <td className='middle'>
@@ -249,10 +251,10 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
           withBalance={false}
           withExtended
         /> */}
-        <BalanceKton className="accountBox--all" label={`${t('Kton')}: `} params={address} />
+        <BalanceKton className="accountBox--all" label={`${KTON_PROPERTIES.tokenSymbol}: `} params={address} />
 
       </td>
-      <td className='number middle'>
+      <td className='number middle samewidth'>
         {isAccountChecked ? <Button
           isPrimary
           label={t('')}
@@ -294,12 +296,12 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
             >
               {t('Set on-chain identity')}
             </Menu.Item>
-            <Menu.Item
+            {/* <Menu.Item
               disabled={!isEditable || isExternal}
               onClick={toggleDerive}
             >
               {t('Derive account via derivation path')}
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item
               disabled={!isEditable || isExternal || isDevelopment}
               onClick={toggleBackup}
@@ -318,7 +320,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
             >
               {t('Forget this account')}
             </Menu.Item>
-            {api.api.tx.recovery?.createRecovery && (
+            {/* {api.api.tx.recovery?.createRecovery && (
               <>
                 <Menu.Divider />
                 {!recoveryInfo && (
@@ -330,8 +332,8 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
                   {t('Initiate recovery for another')}
                 </Menu.Item>
               </>
-            )}
-            {!api.isDevelopment && (
+            )} */}
+            {/* {!api.isDevelopment && (
               <>
                 <Menu.Divider />
                 <ChainLock
@@ -341,7 +343,7 @@ function Account({ address, className, filter, isFavorite, toggleFavorite, isAcc
                   preventDefault
                 />
               </>
-            )}
+            )} */}
           </Menu>
         </Popup>
       </td>
@@ -366,5 +368,9 @@ export default styled(Account)`
 
   .name--input {
     width: 16rem;
+  }
+
+  .samewidth button:first-child {
+    min-width: 6.5rem;
   }
 `;

@@ -138,6 +138,7 @@ export default function Derive ({ className, from, onClose }: Props): React.Reac
     <Modal
       className={className}
       header={t('Derive account from pair')}
+      onCancel={onClose}
     >
       {address && isConfirmationOpen && (
         <CreateConfirmation

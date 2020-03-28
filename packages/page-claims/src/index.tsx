@@ -29,13 +29,13 @@ enum Step {
   Claim = 2,
 }
 
-interface Props extends AppProps, ApiProps, I18nProps, TxModalProps {}
+interface Props extends AppProps, ApiProps, I18nProps, TxModalProps { }
 
 interface State extends TxModalState {
   didCopy: boolean;
   ethereumAddress: EthereumAddress | null;
   claim?: Balance | null;
-  signature?: {tron: EcdsaSignature} |  {eth: EcdsaSignature} | null;
+  signature?: { tron: EcdsaSignature } | { eth: EcdsaSignature } | null;
   step: Step;
   chain: ChainType;
 }
@@ -75,7 +75,7 @@ const Signature = styled.textarea`
 `;
 
 class ClaimsApp extends TxModal<Props, State> {
-  constructor (props: Props) {
+  constructor(props: Props) {
     super(props);
 
     this.defaultState = {
@@ -90,7 +90,7 @@ class ClaimsApp extends TxModal<Props, State> {
     this.state = this.defaultState;
   }
 
-  public componentDidUpdate (): void {
+  public componentDidUpdate(): void {
     if (this.state.didCopy) {
       setTimeout((): void => {
         this.setState({ didCopy: false });
@@ -98,7 +98,7 @@ class ClaimsApp extends TxModal<Props, State> {
     }
   }
 
-  public render (): React.ReactNode {
+  public render(): React.ReactNode {
     const { api, systemChain = '', t } = this.props;
     const { accountId, didCopy, ethereumAddress, signature, step, chain } = this.state;
 
@@ -113,7 +113,11 @@ class ClaimsApp extends TxModal<Props, State> {
       <main>
         <header />
         <h1>
-          <Trans>claim your <em>{TokenUnit.abbr}</em> tokens</Trans>
+          {t('Claim your {{token}} tokens', {
+            replace: {
+              token: TokenUnit.abbr
+            }
+          })}
         </h1>
         <Columar>
           <Column>
@@ -143,7 +147,7 @@ class ClaimsApp extends TxModal<Props, State> {
             </Card>
             {(step >= Step.Sign && !!accountId) && (
               <Card>
-                <h3>{t('2. Sign ETH transaction')}</h3>
+                <h3>{t('2. Sign ETH/TRON transaction')}</h3>
                 <CopyToClipboard
                   onCopy={this.onCopy}
                   text={payload}
@@ -161,8 +165,14 @@ class ClaimsApp extends TxModal<Props, State> {
                   trigger='tx-payload'
                 />
                 <div>
-                  {t('Copy the above string and sign an Ethereum transaction with the account you used during the pre-sale in the wallet of your choice, using the string as the payload, and then paste the transaction signature object below')}
-                  :
+                  {t('Method 1:Copy the above string and sign an Ethereum/Tron transaction with the account that got airdrop in the wallet of your choice, using the string as the payload, and copy the transaction signature.')}
+                  <br/>
+                  {t('Method 2: Use the [cRING Claim Tool] generate and copy the transaction signature.')}
+                  <br/>
+                  <br/>
+                  <p>
+                  {t('Please paste the transaction signature object below')} :</p>
+                
                 </div>
                 <Signature
                   onChange={this.onChangeSignature}
@@ -214,7 +224,7 @@ class ClaimsApp extends TxModal<Props, State> {
 
     return [
       accountId ? accountId.toString() : null,
-      {[chain]: signature} || null
+      { [chain]: signature } || null
     ];
   }
 

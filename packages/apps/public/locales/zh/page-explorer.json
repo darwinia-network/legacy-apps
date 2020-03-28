@@ -40,5 +40,6 @@
   "best": "最好",
   "epoch": "时期",
   "session": "session",
-  "era": "时代"
+  "era": "时代",
+  "Unable to render extrinsic": "Unable to render extrinsic"
 }

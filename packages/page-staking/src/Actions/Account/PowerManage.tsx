@@ -18,7 +18,7 @@ import powerbg from '../../Assets/power-bg.svg';
 import ringIcon from '../../Assets/ring.svg';
 import ktonIcon from '../../Assets/kton.svg';
 import { Power } from '@polkadot/react-darwinia/components';
-import { AvailableKton, Available } from '@polkadot/react-components';
+import { AvailableKton, Available, Balance, BalanceKton } from '@polkadot/react-components';
 import { DerivedStakingAccount } from '@polkadot/api-derive/types'
 import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import { formatBalance } from '@polkadot/util';
@@ -55,6 +55,7 @@ type Props = BareProps & I18nProps & {
   // staking_ledger: StakingLedgers;
   stakingLedger?: StakingLedger;
   stakingAccount?: DerivedStakingAccount;
+  checkedAccount?: string;
 };
 
 class AddressInfoStaking extends React.PureComponent<Props> {
@@ -94,7 +95,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
   }
 
   private renderBalances (): React.ReactElement {
-    const { t, buttons, stakingLedger, stakingAccount } = this.props;
+    const { t, buttons, stakingLedger, stakingAccount, checkedAccount } = this.props;
     // const { staking_info, t, withBalance = true, kton_locks, balances_locks, buttons, isReadyStaking = false, staking_ledger, balances_all, kton_all, stashId } = this.props;
     // const balanceDisplay = withBalance === true
     //   ? { available: true, bonded: true, free: true, redeemable: true, unlocking: true }
@@ -121,22 +122,23 @@ class AddressInfoStaking extends React.PureComponent<Props> {
     //   }
     // }
 
-    // if (stakingLedger?.stash.isEmpty) {
-    //   return (
-    //     <div className='column'>
-    //       <div className="ui--address-value">
-    //         <div className="balance-box">
-    //           <p>{RING_PROPERTIES.tokenSymbol}</p>
-    //           <h1>{formatBalance(balances_all.availableBalance)}</h1>
-    //         </div>
-    //         <div className="balance-box">
-    //           <p>{KTON_PROPERTIES.tokenSymbol}</p>
-    //           <h1>{formatKtonBalance(kton_all.availableBalance)}</h1>
-    //         </div>
-    //       </div>
-    //     </div>
-    //   );
-    // }
+    if (!stakingLedger || stakingLedger.isEmpty && checkedAccount) {
+      return (
+        <div className='token-box'>
+          <div className="empty-staking-box">
+            <div className="balance-box">
+              <p>{RING_PROPERTIES.tokenSymbol}</p>
+              <h1><Balance className="accountBox--all" label={''} params={checkedAccount} /></h1>
+            </div>
+            <div className="balance-box">
+              <p>{KTON_PROPERTIES.tokenSymbol}</p>
+              <h1><BalanceKton className="accountBox--all" label={''} params={checkedAccount} /></h1>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     if (!stakingLedger || stakingLedger.isEmpty) {
       return null;
     }
@@ -240,6 +242,24 @@ export default withMulti(
           font-size: 14px;
           font-weight: bold;
           color: #302B3C;
+        }
+      }
+      .empty-staking-box{
+        display: flex;
+        align-items: center;
+        .balance-box{
+          width: 200px;
+          text-align: center;
+          p {
+            margin-bottom: 0;
+          }
+          h1{
+            margin-top: 0;
+          }
+          .accountBox--all{
+            font-size: 18px;
+            color: #302B3C;
+          }
         }
       }
       .nominate-balance-box {

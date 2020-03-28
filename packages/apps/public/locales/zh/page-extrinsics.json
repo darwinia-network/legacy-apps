@@ -1,0 +1,10 @@
+{
+  "Extrinsic submission": "交易",
+  "using the selected account": "发送账户",
+  "with an account balance": "with an account balance",
+  "with a transaction nonce": "with a transaction nonce",
+  "submit the following extrinsic": "交易",
+  "Submit Unsigned": "不签名发送",
+  "Submit Transaction": "签名并发送",
+  "free balance": "手续费"
+}

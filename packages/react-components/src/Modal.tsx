@@ -24,10 +24,11 @@ interface ActionsProps extends BareProps {
   cancelLabel?: string;
   children: React.ReactNode;
   withOr?: boolean;
+  withCancel?: boolean;
   onCancel: () => void;
 }
 
-function Modal (props: ModalProps): React.ReactElement<ModalProps> {
+function Modal(props: ModalProps): React.ReactElement<ModalProps> {
   const { className, children, header, open = true, onCancel } = props;
 
   return (
@@ -47,13 +48,13 @@ function Modal (props: ModalProps): React.ReactElement<ModalProps> {
   );
 }
 
-function Actions ({ cancelLabel, className, children, withOr = true, onCancel }: ActionsProps): React.ReactElement<ActionsProps> {
+function Actions({ cancelLabel, className, children, withOr = true, withCancel = true, onCancel }: ActionsProps): React.ReactElement<ActionsProps> {
   return (
     <SUIModal.Actions>
       <Button.Group className={className}>
         {/* {withOr && <Button.Or />} */}
         {children}
-        <ButtonCancel label={cancelLabel} onClick={onCancel} />
+        {withCancel && <ButtonCancel label={cancelLabel} onClick={onCancel} />}
       </Button.Group>
     </SUIModal.Actions>
   );

@@ -152,7 +152,7 @@ class Unbond extends TxComponent<Props, State> {
 
     const { active_ring, active_kton } = staking_ledger.unwrap();
     this.nextState({
-      maxBalance: currencyType === 'ring' ? active_ring.unwrap() : active_kton.unwrap()
+      maxBalance: currencyType === 'kton' ? active_kton.unwrap() : active_ring.unwrap()
     });
   }
 

@@ -121,10 +121,10 @@ class EarningsDetail extends React.PureComponent<Props, State> {
           className='staking--Unbond'
           dimmer='inverted'
           open
-          onClose={onClose}
+          onCancel={onClose}
         >
           {this.renderContent()}
-          <Modal.Actions>
+          <Modal.Actions withCancel={false}>
             <ReactPaginate
               previousLabel={'<'}
               nextLabel={'>'}

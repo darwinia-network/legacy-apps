@@ -82,7 +82,6 @@ function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stak
 
   useEffect((): void => {
     setFoundStashes(getStashes(allAccounts, stashTypes, queryBonded, queryLedger));
-    console.log(22222)
   }, [allAccounts, queryBonded, queryLedger, stashTypes]);
 
   useEffect((): void => {
@@ -127,14 +126,14 @@ function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stak
           </>
         )
         : <div>
-              <RowTitle title={t('My Nomination')} />
+              <RowTitle title={t('Account')} />
               <Box className="Actions--Nomination">
                 <AddressSmall value={accountChecked} />
               </Box>
               <RowTitle title={t('Power Manager')} />
               <Box>
                 <PowerManage
-                  stakingAccount={accountChecked}
+                  checkedAccount={accountChecked}
                 />
               </Box>
               <RowTitle title={t('Start')} />

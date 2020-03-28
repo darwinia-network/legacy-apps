@@ -14,14 +14,14 @@ const UIMODE_DEFAULT = !isPolkadot && typeof window !== 'undefined' && window.lo
 
 const UIMODES: Option[] = [
   {
-    info: 'full',
-    text: 'Fully featured',
-    value: 'full'
+    info: 'light',
+    text: 'Basic features',
+    value: 'light'
   },
   {
-    info: 'light',
-    text: 'Basic features only',
-    value: 'light'
+    info: 'full',
+    text: 'Developer features',
+    value: 'full'
   }
 ];
 
@@ -52,7 +52,8 @@ const ICONS: Option[] = [
   {
     info: 'default',
     text: 'Default for the connected node',
-    value: 'default'
+    value: 'default',
+    withI18n: true
   },
   {
     info: 'polkadot',
