@@ -7,6 +7,7 @@ import store from 'store';
 import { availableEndpoints } from '@polkadot/apps-config/settings';
 import { registry } from '@polkadot/react-api';
 import settings from '@polkadot/ui-settings';
+import { DARWINIA_CRAB_TYPES, INIT_VERSION } from '@polkadot/react-darwinia';
 
 // we split here so that both these forms are allowed
 //  - http://localhost:3000/?rpc=wss://substrate-rpc.parity.io/#/explorer
@@ -30,8 +31,15 @@ settings.set({ apiUrl });
 console.log('WS endpoint=', apiUrl);
 
 try {
-  const types = store.get('types') || {};
+  const version = store.get('darwinia_types_version');
+  let types = store.get('types') || {};
   const names = Object.keys(types);
+
+  if(!version || version.toString() < INIT_VERSION) {
+    types = DARWINIA_CRAB_TYPES;
+    store.set('types', types);
+    store.set('darwinia_types_version', INIT_VERSION);
+  }
 
   if (names.length) {
     registry.register(types);

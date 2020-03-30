@@ -111,7 +111,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakin
   const [isValidateOpen, toggleValidate] = useToggle();
   const [isIdentityOpen, toggleIdentity] = useToggle();
   const stakingInfo = useCall<DerivedStakingQuery>(api.derive.staking.query as any, ['5HCHa72m91dgJbo3gLRK1SUVyPcyqKy7eVTSbEZB9gLDz9Xm']);
-  console.log(111, stakingInfo);
+
   useEffect((): void => {
     if (stakingAccount && validateInfo) {
       const state = getStakeState(allAccounts, allStashes, stakingAccount, stashId, validateInfo);

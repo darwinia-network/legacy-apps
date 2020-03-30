@@ -15,7 +15,7 @@ import { Api } from '@polkadot/react-api';
 import Queue from '@polkadot/react-components/Status/Queue';
 import { BlockAuthors, Events } from '@polkadot/react-query';
 import settings from '@polkadot/ui-settings';
-import store from 'store';
+
 import Apps from './Apps';
 
 const rootId = 'root';
