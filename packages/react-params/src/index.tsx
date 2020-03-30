@@ -23,6 +23,7 @@ interface Props extends I18nProps {
   overrides?: ComponentMap;
   params: ParamDef[];
   values?: RawParams | null;
+  channel?: string;
 }
 
 interface State {
@@ -73,7 +74,7 @@ class Params extends React.PureComponent<Props, State> {
   }
 
   public render (): React.ReactNode {
-    const { className, isDisabled, onEnter, onEscape, overrides, params, style } = this.props;
+    const { className, isDisabled, onEnter, onEscape, overrides, params, style, channel } = this.props;
     const { values = this.props.values } = this.state;
 
     if (!values || !values.length) {
@@ -99,6 +100,7 @@ class Params extends React.PureComponent<Props, State> {
                 onEscape={onEscape}
                 overrides={overrides}
                 type={type}
+                channel={channel}
               />
             ))}
           </div>

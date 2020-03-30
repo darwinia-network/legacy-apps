@@ -52,6 +52,7 @@ export default function Transaction ({ children, hideDetails, isSendable, onErro
             <Call
               onError={onError}
               value={extrinsic}
+              channel="signer"
             />
           </>
         )}
