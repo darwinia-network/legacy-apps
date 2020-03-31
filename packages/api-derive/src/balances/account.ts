@@ -15,17 +15,17 @@ import { memo } from '../util';
 
 type Result = [Balance, Balance, Balance, Balance, Balance, Balance, Index];
 
-function calcBalances (api: ApiInterfaceRx, [accountId, [free_ring, free_kton, reserved_ring, reserved_kton, fee_frozen, misc_frozen, accountNonce]]: [AccountId, Result]): DerivedBalancesAccount {
+function calcBalances (api: ApiInterfaceRx, [accountId, [free, free_kton, reserved, reserved_kton, fee_frozen, misc_frozen, accountNonce]]: [AccountId, Result]): DerivedBalancesAccount {
   return {
     accountId,
     accountNonce,
-    freeBalance: free_ring,
+    freeBalance: free,
     freeBalanceKton: free_kton,
     frozenFee: fee_frozen,
     frozenMisc: misc_frozen,
-    reservedBalance: reserved_ring,
+    reservedBalance: reserved,
     reservedBalanceKton: reserved_kton,
-    votingBalance: api.registry.createType('Balance', free_ring.add(reserved_ring)),
+    votingBalance: api.registry.createType('Balance', free.add(reserved)),
     votingBalanceKton: api.registry.createType('Balance', free_kton.add(reserved_kton))
   };
 }
@@ -58,12 +58,12 @@ function queryCurrent (api: ApiInterfaceRx, accountId: AccountId): Observable<Re
   // AccountInfo is current, support old, eg. Edgeware
   return api.query.system.account<AccountInfo | ITuple<[Index, AccountData]>>(accountId).pipe(
     map((infoOrTuple): Result => {
-      const { free_ring, free_kton, reserved_ring, reserved_kton, misc_frozen, fee_frozen } = (infoOrTuple as AccountInfo).nonce
+      const { free, free_kton, reserved, reserved_kton, misc_frozen, fee_frozen } = (infoOrTuple as AccountInfo).nonce
         ? (infoOrTuple as AccountInfo).data
         : (infoOrTuple as [Index, AccountData])[1];
       const accountNonce = (infoOrTuple as AccountInfo).nonce || (infoOrTuple as [Index, AccountData])[0];
 
-      return [free_ring, free_kton, reserved_ring, reserved_kton, fee_frozen, misc_frozen, accountNonce];
+      return [free, free_kton, reserved, reserved_kton, fee_frozen, misc_frozen, accountNonce];
     })
   );
 }

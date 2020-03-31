@@ -117,9 +117,7 @@ export default {
     },
   
     "AccountData": {
-      "free_ring": "Balance",
       "free_kton": "Balance",
-      "reserved_ring": "Balance",
       "reserved_kton": "Balance",
       "free": "Balance",
       "reserved": "Balance",

@@ -9,9 +9,7 @@ import { UnlockChunk } from '@polkadot/types/interfaces/staking';
 
 /** @name AccountData */
 export interface AccountData extends Struct {
-  readonly free_ring: Balance;
   readonly free_kton: Balance;
-  readonly reserved_ring: Balance;
   readonly reserved_kton: Balance;
   readonly free: Balance;
   readonly reserved: Balance;
