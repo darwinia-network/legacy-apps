@@ -108,7 +108,7 @@ async function loadOnReady (api: ApiPromise): Promise<State> {
 
   // finally load the keyring
   keyring.loadAll({
-    genesisHash: api.genesisHash,
+    // genesisHash: api.genesisHash,
     isDevelopment,
     ss58Format,
     type: 'ed25519'

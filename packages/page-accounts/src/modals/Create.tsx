@@ -194,7 +194,7 @@ function Create ({ className, onClose, onStatusChange, seed: propsSeed, type: pr
       return;
     }
 
-    const options = { genesisHash: isDevelopment ? undefined : api.genesisHash.toString(), name: name.trim() };
+    const options = { genesisHash: undefined, name: name.trim() };
     const status = createAccount(`${seed}${derivePath}`, pairType, options, password, t('created account'));
 
     _toggleConfirmation();
