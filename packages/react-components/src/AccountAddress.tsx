@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useApi, useCall } from '@polkadot/react-hooks';
 
-import { getAddressName } from './util';
+import { toShortAddress } from './util';
 
 interface Props extends BareProps {
   children?: React.ReactNode;
@@ -19,7 +19,8 @@ interface Props extends BareProps {
 }
 
 function AccountAddress ({ children, className, defaultValue, label, style, value }: Props): React.ReactElement<Props> | null {
-  const [isAddressExtracted,, extracted] = getAddressName(value.toString(), null, '');
+  const address = toShortAddress(value.toString());
+
 
   if (!value) {
     return null;
@@ -30,7 +31,7 @@ function AccountAddress ({ children, className, defaultValue, label, style, valu
       className={`ui--AccountIndex ${className}`}
       style={style}
     >
-      {label || ''}<div className='account-index'>{extracted || defaultValue || '-'}</div>{children}
+      {label || ''}<div className='account-index'>{address || defaultValue || '-'}</div>{children}
     </div>
   );
 }
