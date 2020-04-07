@@ -26,6 +26,7 @@ import staking from './staking';
 import scan from './scan';
 import storage from './storage';
 import sudo from './sudo';
+import vanity from './vanity';
 // import techcomm from './techcomm';
 // import toolbox from './toolbox';
 // import transfer from './transfer';
@@ -43,6 +44,7 @@ const routes: Routes = appSettings.uiMode === 'light'
     // null,
     scan,
     staking,
+    vanity,
     // node,
     // democracy,
     // council,
@@ -73,6 +75,7 @@ const routes: Routes = appSettings.uiMode === 'light'
     storage,
     extrinsics,
     sudo,
+    vanity,
     null,
     settings
     // toolbox,

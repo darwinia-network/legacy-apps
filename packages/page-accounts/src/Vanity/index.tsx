@@ -314,6 +314,7 @@ class VanityApp extends TxComponent<Props, State> {
 
 export default translate(
   styled(VanityApp)`
+    padding-top: 2rem;
     .vanity--App-matches {
       padding: 1em 0;
     }
@@ -322,6 +323,10 @@ export default translate(
       padding: 1em 0 0 0;
       opacity: 0.45;
       text-align: center;
+    }
+
+    .ui--row{
+      margin-left: -2rem;
     }
   `
 );
