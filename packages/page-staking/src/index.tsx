@@ -10,9 +10,7 @@ import { AccountId } from '@polkadot/types/interfaces';
 import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { HelpOverlay } from '@polkadot/react-components';
-import Tabs from '@polkadot/react-components/Tabs';
-import { useCall, useAccounts, useApi, useAccountChecked } from '@polkadot/react-hooks';
+import { useCall, useAccounts, useApi, useAccountChecked, useOwnEraRewards } from '@polkadot/react-hooks';
 import AccountStatus from '@polkadot/app-accounts/AccountStatus';
 
 import Actions from './Actions';
@@ -31,6 +29,8 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
   const { api } = useApi();
   const { allAccounts, hasAccounts } = useAccounts();
   const { pathname } = useLocation();
+  const { allRewards, rewardCount } = useOwnEraRewards();
+
   const [next, setNext] = useState<string[]>([]);
   const allStashes = useCall<string[]>(api.derive.staking.stashes, [], {
     transform: (stashes: AccountId[]): string[] =>
@@ -50,7 +50,6 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
       allStashes.filter((address): boolean => !stakingOverview.validators.includes(address as any))
     );
   }, [allStashes, stakingOverview]);
-
   return (
     <main className={`staking--App ${className}`}>
       {hasAccounts ? <>
@@ -60,6 +59,7 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
           accountChecked={_accountChecked}
         />
         <Actions
+          allRewards={allRewards}
           allStashes={allStashes}
           isVisible={pathname === `${basePath}`}
           recentlyOnline={recentlyOnline}

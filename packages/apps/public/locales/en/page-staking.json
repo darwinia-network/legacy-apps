@@ -141,5 +141,10 @@
   "Validators": "Validators",
   "Nominating": "Nominating",
   "Account": "Account",
-  "Set on-chain identity": "Set on-chain identity"
+  "Set on-chain identity": "Set on-chain identity",
+  "Claim": "Claim",
+  "Payout reward": "Payout reward",
+  "No nominators": "No nominators",
+  "Reward History": "Reward History",
+  "Claim Reward": "Claim Reward"
 }

@@ -10,7 +10,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useCall, useAccounts, useApi, useToggle } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
-import { SUBSCAN_URL } from '@polkadot/react-darwinia';
+import { SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
 
 import { useTranslation } from './translate';
 import { getAddressName } from './util';
@@ -77,7 +77,7 @@ function renderLinkIcon(address) {
   return (
     <Button
       onClick={() => {
-        window.open(`${SUBSCAN_URL}/account/${address}`)
+        window.open(`${SUBSCAN_URL_CRAB}/account/${address}`)
       }}
       className='icon-button'
       icon='external alternate'

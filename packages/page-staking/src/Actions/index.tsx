@@ -3,7 +3,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedHeartbeats, DerivedStakingOverview } from '@polkadot/api-derive/types';
+import { DerivedHeartbeats, DerivedStakingOverview, DeriveStakerReward } from '@polkadot/api-derive/types';
 import { AccountId, StakingLedger } from '@polkadot/types/interfaces';
 
 import React, { useEffect, useState } from 'react';
@@ -19,6 +19,7 @@ import { RowTitle, Box, ActionNote } from '@polkadot/react-darwinia/components';
 import PowerManage from './Account/PowerManage';
 
 interface Props {
+  allRewards?: Record<string, DeriveStakerReward[]>;
   allStashes: string[];
   className?: string;
   isVisible: boolean;
@@ -65,7 +66,7 @@ function checkAccountType (allAccounts: string[], assumedControllerId: string, q
   return _assumedControllerId;
 }
 
-function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked }: Props): React.ReactElement<Props> {
+function Actions ({ allRewards, allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -117,6 +118,7 @@ function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stak
                   key={stashId}
                   next={next}
                   onUpdateType={_onUpdateType}
+                  rewards={allRewards && allRewards[stashId]}
                   recentlyOnline={recentlyOnline}
                   stakingOverview={stakingOverview}
                   stashId={stashId}

@@ -178,5 +178,10 @@
   "Account": "账号",
   "Set on-chain identity": "设置链上身份",
   "No fixed term": "不冻结",
-  "Month": "月"
+  "Month": "月",
+  "Claim": "Claim",
+  "Payout reward": "Payout reward",
+  "No nominators": "暂无投票者",
+  "Reward History": "收益历史",
+  "Claim Reward": "领取收益"
 }
