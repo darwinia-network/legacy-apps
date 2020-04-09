@@ -233,5 +233,6 @@ export default styled(Query)`
 
   pre {
     margin: 0;
+    white-space: pre-wrap;
   }
 `;
