@@ -30,19 +30,19 @@ function parseRewards (api: ApiInterfaceRx, stakerId: string, [erasPoints, erasP
       const valComm = allValPrefs[validatorId]?.commission.unwrap() || ZERO;
       const avail = eraReward.mul(valPoints).div(eraPoints);
       const valCut = valComm.mul(avail).div(COMM_DIV);
-      const expTotal = exposure.total.unwrap();
+      const expTotal = exposure.total_power;
       let value: BN | undefined;
 
       if (!expTotal.isZero() && !valPoints.isZero()) {
         let staked: BN;
 
         if (validatorId === stakerId) {
-          staked = exposure.own.unwrap();
+          staked = exposure.own_power;
         } else {
           const stakerExp = exposure.others.find(({ who }): boolean => who.eq(stakerId));
 
           staked = stakerExp
-            ? stakerExp.value.unwrap()
+            ? stakerExp.power
             : ZERO;
         }
 
@@ -82,11 +82,12 @@ export function stakerRewards (api: ApiInterfaceRx): (accountId: Uint8Array | st
 }
 
 export function stakerRewardsMulti (api: ApiInterfaceRx): (...params: [Uint8Array | string, BN | number][]) => Observable<DeriveStakerReward[][]> {
-  return memo((...params: [Uint8Array | string, BN | number][]): Observable<DeriveStakerReward[][]> =>
-    combineLatest(
+  return memo((...params: [Uint8Array | string, BN | number][]): Observable<DeriveStakerReward[][]> => {
+    return combineLatest(
       params.map(([accountId, startEra]) =>
         api.derive.staking.stakerRewards(accountId, startEra)
       )
     )
+  }
   );
 }

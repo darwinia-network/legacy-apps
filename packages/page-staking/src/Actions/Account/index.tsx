@@ -336,7 +336,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                             <Trans i18nKey='payoutEras'>
                               {t('Claim Reward')}&nbsp;{
                                 payoutEras.length
-                                  ? <>(<FormatBalance value={payoutTotal} />)</>
+                                  ? <>(<FormatBalance value={payoutTotal} withSi={false} withUnit/>)</>
                                   : ''
                               }
                             </Trans>

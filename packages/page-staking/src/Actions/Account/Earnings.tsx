@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { ColorButton } from '@polkadot/react-darwinia/components';
 import EarningsDetail from './EarningsDetail';
 import translate from '../../translate';
-import { formatFloat } from '@polkadot/util';
+import { formatFloat, formatBalance } from '@polkadot/util';
 import { RING_PROPERTIES, getStakingHistory, SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
 
 type Props = I18nProps & {
@@ -123,11 +123,11 @@ class Earnings extends React.PureComponent<Props, State> {
         <div className="content">
           <div className="earings-item">
             <p>{t('Earnings')}</p>
-            <h1>{sum === '--' ? '--' : formatFloat(sum)} {RING_PROPERTIES.tokenSymbol}</h1>
+            <h1>{sum === '--' ? '--' : formatBalance(sum)}</h1>
           </div>
           <div className="earings-item">
             <p>{t('Today')}</p>
-            <h1>{today === '--' ? '--' : formatFloat(today)} {RING_PROPERTIES.tokenSymbol}</h1>
+            <h1>{today === '--' ? '--' : formatBalance(today)}</h1>
           </div>
           <div className="button-box">
             <ColorButton
