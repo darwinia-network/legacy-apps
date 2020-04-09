@@ -184,10 +184,10 @@ export default function Address ({ address, className, filter, filterName, hasQu
       </td>
       <td className='number'>
         {stakeOwn && (
-          <FormatBalance
-            label={<label>{t('own stake')}</label>}
-            value={stakeOwn}
-          />
+          <div className={`ui--FormatBalance ${className}`}>
+            <label>{t('own stake')}</label>
+             {stakeOwn.toString()}
+          </div>
         )}
       </td>
       {/* <td className={'number'} colSpan={5}>
