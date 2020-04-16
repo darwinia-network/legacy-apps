@@ -111,11 +111,11 @@ export default styled(BlockHeader)`
     }
 
     > .number {
-      font-size: 2.25rem;
+      font-size: 1.25rem;
     }
 
     .hash {
-      font-size: 1.5rem;
+      font-size: 1rem;
       font-family: sans-serif;
     }
   }

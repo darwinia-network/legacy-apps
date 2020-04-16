@@ -5,7 +5,7 @@
 import { useTranslation as useTranslationBase, UseTranslationResponse, withTranslation } from 'react-i18next';
 
 export function useTranslation (): UseTranslationResponse {
-  return useTranslationBase('app-explorer');
+  return useTranslationBase('page-explorer');
 }
 
-export default withTranslation(['app-explorer']);
+export default withTranslation(['page-explorer']);

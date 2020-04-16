@@ -14,7 +14,7 @@ import claims from './claims';
 // import council from './council';
 // import dashboard from './dashboard';
 // import democracy from './democracy';
-// import explorer from './explorer';
+import explorer from './explorer';
 import extrinsics from './extrinsics';
 // import genericAsset from './generic-asset';
 import js from './js';
@@ -54,7 +54,7 @@ const routes: Routes = appSettings.uiMode === 'light'
   )
   : ([] as Routes).concat(
     // dashboard,
-    // explorer,
+    
     accounts,
     // addressbook,
     claims,
@@ -74,6 +74,7 @@ const routes: Routes = appSettings.uiMode === 'light'
     // contracts,
     vanity,
     null,
+    explorer,
     storage,
     extrinsics,
     sudo,

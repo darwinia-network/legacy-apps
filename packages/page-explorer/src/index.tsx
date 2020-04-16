@@ -7,7 +7,7 @@ import { KeyedEvent } from './types';
 
 import React, { useContext, useMemo } from 'react';
 import { Route, Switch } from 'react-router';
-// import styled from 'styled-components';
+import styled from 'styled-components';
 import Tabs from '@polkadot/react-components/Tabs';
 import { useApi } from '@polkadot/react-hooks';
 import { BlockAuthorsContext, EventsContext } from '@polkadot/react-query';
@@ -69,6 +69,7 @@ function ExplorerApp ({ basePath, className }: Props): React.ReactElement<Props>
         <Route path={`${basePath}/node`} component={NodeInfo} />
         <Route render={(): React.ReactElement<{}> => (
           <Main
+            className={className}
             events={events}
             headers={lastHeaders}
           />
@@ -78,32 +79,56 @@ function ExplorerApp ({ basePath, className }: Props): React.ReactElement<Props>
   );
 }
 
-export default ExplorerApp;
+// export default ExplorerApp;
 
-// export default styled(ExplorerApp)`
-//   .explorer--Container {
-//     color: inherit;
+export default styled(ExplorerApp)`
+  /* .explorer--Container { */
+    color: inherit;
 
-//     .header {
-//       position: relative;
-//       vertical-align: middle;
+    .SummaryBox--outer {
+      padding:0;
+      .ui--Labelled {
+        label {
+          margin-top: 1rem;
+          font-size: 1rem;
+        }
+      }
+      section  div .ui--Labelled-content {
+        font-size: 1.5rem;
+        margin-top: 0.5rem;
+      }
+    }
 
-//       h3 {
-//         margin: 0;
-//       }
-//     }
+    .header {
+      position: relative;
+      vertical-align: middle;
 
-//     .description {
-//       color: rgba(0, 0, 0, 0.6);
-//       margin: 0rem 0 0.5rem 0;
-//       overflow: hidden;
-//       text-overflow: ellipsis;
-//       vertical-align: middle;
-//       white-space: nowrap;
-//     }
+      h3 {
+        margin: 0;
+      }
+    }
 
-//     > .details {
-//       word-break: break-all;
-//     }
-//   }
-// `;
+    article {
+      padding: 0.75rem;
+    }
+
+    /* .ui--Collection-header { */
+      h1,h3 {
+        font-weight: 200; 
+      }
+    /* } */
+
+    .description {
+      color: rgba(0, 0, 0, 0.6);
+      margin: 0rem 0 0.5rem 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    > .details {
+      word-break: break-all;
+    }
+  /* } */
+`;

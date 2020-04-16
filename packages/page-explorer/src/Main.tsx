@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/react-components/types';
+import { I18nProps, BareProps } from '@polkadot/react-components/types';
 import { KeyedEvent } from './types';
 
 import React from 'react';
@@ -15,16 +15,17 @@ import Query from './Query';
 import Summary from './Summary';
 import translate from './translate';
 
-interface Props extends I18nProps {
+interface Props extends I18nProps, BareProps {
   events: KeyedEvent[];
   headers: HeaderExtended[];
 }
 
-function Main ({ events, headers, t }: Props): React.ReactElement<Props> {
+function Main ({ events, headers, t, className }: Props): React.ReactElement<Props> {
+  console.log(111,className)
   return (
     <>
       <Query />
-      <Summary />
+      <Summary className={className}/>
       <Columar>
         <Column headerText={t('recent blocks')}>
           <BlockHeaders headers={headers} />
