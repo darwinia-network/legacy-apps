@@ -19,7 +19,10 @@ import Account from './Account';
 import { useTranslation } from './translate';
 import noAccountImg from './img/noAccount.svg';
 import ringImg from './img/ring.svg';
+import cringImg from './img/cring.png';
+
 import ktonImg from './img/kton.svg';
+import cktonImg from './img/ckton.png';
 import AccountStatus from './AccountStatus';
 import StakingList from './StakingList';
 import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
@@ -105,7 +108,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
             <div>
               <div className="allvalueBox ring">
                 <div className="logoBox">
-                  <img className="logo" src={ringImg} />
+                   {RING_PROPERTIES.tokenSymbol.toLocaleLowerCase() === 'ring' ? <img className="logo" src={ringImg} /> : <img className="logo" src={cringImg} /> }
                 </div>
                 <div>
                   <h1>{RING_PROPERTIES.tokenSymbol}</h1>
@@ -133,7 +136,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
             <div>
               <div className="allvalueBox kton">
                 <div className="logoBox">
-                  <img className="logo" src={ktonImg} />
+                  {KTON_PROPERTIES.tokenSymbol.toLocaleLowerCase() === 'kton' ? <img className="logo" src={ktonImg} /> : <img className="logo" src={cktonImg} /> }
                 </div>
                 <div>
                   <h1>{KTON_PROPERTIES.tokenSymbol}</h1>
@@ -409,11 +412,11 @@ export default styled(Overview)`
       }
 
       .allvalueBox.ring {
-        background:linear-gradient(315deg,#B8C2EB 0%,#6E809E 100%);
+        background:linear-gradient(270deg, #FE3876 0%,#7C30DD 70%, #3A30DD 100%);;
       }
 
       .allvalueBox.kton {
-        background:linear-gradient(315deg,rgba(74,202,120,1) 0%,rgba(79,164,105,1) 100%);
+        background:linear-gradient(270deg, #FE3876 0%,#7C30DD 70%, #3A30DD 100%);;
       }
       
       .allvalueBox {
