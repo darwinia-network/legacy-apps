@@ -50,7 +50,7 @@ export default function General ({ className, isModalContent, onClose }: Props):
   useEffect((): void => {
     const prev = uiSettings.get();
     const hasChanges = Object.entries(settings).some(([key, value]): boolean => (prev as any)[key] !== value);
-    const needsReload = prev.apiUrl !== settings.apiUrl || prev.prefix !== settings.prefix;
+    const needsReload = prev.apiUrl !== settings.apiUrl || prev.prefix !== settings.prefix || prev.uiMode !== settings.uiMode;
 
     setChanged(
       hasChanges

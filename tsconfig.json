@@ -71,7 +71,9 @@
       "@polkadot/ui-settings": [ "packages/ui-settings/src" ],
       "@polkadot/ui-settings/*": [ "packages/ui-settings/src/*" ],
       "@polkadot/api/augment": ["packages/react-darwinia/src/interfaces/augment/augment-api.ts"],
-      "@polkadot/types/augment": ["packages/react-darwinia/src/interfaces/augment/augment-types.ts"]
+      "@polkadot/types/augment": ["packages/react-darwinia/src/interfaces/augment/augment-types.ts"],
+      "@polkadot/app-js": [ "packages/page-js/src" ],
+      "@polkadot/app-js/*": [ "packages/page-js/src/*" ]
     },
     "skipLibCheck": true,
     "typeRoots": [

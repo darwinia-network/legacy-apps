@@ -14,10 +14,10 @@ import claims from './claims';
 // import council from './council';
 // import dashboard from './dashboard';
 // import democracy from './democracy';
-// import explorer from './explorer';
+import explorer from './explorer';
 import extrinsics from './extrinsics';
 // import genericAsset from './generic-asset';
-// import js from './js';
+import js from './js';
 // import parachains from './parachains';
 import settings from './settings';
 // import society from './society';
@@ -26,8 +26,9 @@ import staking from './staking';
 import scan from './scan';
 import storage from './storage';
 import sudo from './sudo';
+import vanity from './vanity';
 // import techcomm from './techcomm';
-// import toolbox from './toolbox';
+import toolbox from './toolbox';
 // import transfer from './transfer';
 // import treasury from './treasury';
 
@@ -43,6 +44,7 @@ const routes: Routes = appSettings.uiMode === 'light'
     // null,
     scan,
     staking,
+    vanity,
     // node,
     // democracy,
     // council,
@@ -52,7 +54,7 @@ const routes: Routes = appSettings.uiMode === 'light'
   )
   : ([] as Routes).concat(
     // dashboard,
-    // explorer,
+    
     accounts,
     // addressbook,
     claims,
@@ -70,13 +72,15 @@ const routes: Routes = appSettings.uiMode === 'light'
     // society,
     // null,
     // contracts,
+    vanity,
+    null,
+    explorer,
     storage,
     extrinsics,
     sudo,
-    null,
-    settings
-    // toolbox,
-    // js,
+    toolbox,
+    js,
+    settings,
     // template
   );
 

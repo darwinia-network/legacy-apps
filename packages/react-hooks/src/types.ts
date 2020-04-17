@@ -16,6 +16,7 @@ export interface CallOptions <T> {
   isSingle?: boolean;
   paramMap?: (params: any) => CallParams;
   transform?: (value: any) => T;
+  withParams?: boolean;
 }
 
 export type TxDef = [string, any[] | ConstructTxFn];

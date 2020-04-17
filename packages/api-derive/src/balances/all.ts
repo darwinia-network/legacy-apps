@@ -15,7 +15,7 @@ import { bnMax } from '@polkadot/util';
 
 import { memo } from '../util';
 
-type ResultBalance = [VestingInfo | null, (BalanceLock | BalanceLockTo212)[], (BalanceLock | BalanceLockTo212)[]];
+type ResultBalance = [(BalanceLock | BalanceLockTo212)[], (BalanceLock | BalanceLockTo212)[]];
 type Result = [DerivedBalancesAccount, BlockNumber, ResultBalance];
 
 function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock | BalanceLockTo212)[], bestNumber: BlockNumber): [Balance, (DerivedBalanceLock | BalanceLockTo212)[]] {
@@ -40,7 +40,7 @@ function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock | BalanceLockTo212)
   return [lockedBalance, lockedBreakdown];
 }
 
-function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBalance, freeBalanceKton, frozenFee, frozenMisc, reservedBalance, reservedBalanceKton, votingBalance, votingBalanceKton }, bestNumber, [vesting, locks, locksKton]]: Result): DerivedBalancesAll {
+function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBalance, freeBalanceKton, frozenFee, frozenMisc, reservedBalance, reservedBalanceKton, votingBalance, votingBalanceKton }, bestNumber, [locks, locksKton]]: Result): DerivedBalancesAll {
   let lockedBalance = api.registry.createType('Balance');
   let lockedBalanceKton = api.registry.createType('Balance');
   let lockedBreakdown: (DerivedBalanceLock | BalanceLockTo212)[] = [];
@@ -57,10 +57,10 @@ function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBala
   // Calculate the vesting balances,
   //  - offset = balance locked at startingBlock
   //  - perBlock is the unlock amount
-  const { locked: vestingTotal, perBlock, startingBlock } = vesting || api.registry.createType('VestingInfo');
-  const isStarted = bestNumber.gt(startingBlock);
-  const vestedBalance = api.registry.createType('Balance', isStarted ? perBlock.mul(bestNumber.sub(startingBlock)) : 0);
-  const isVesting = isStarted && vestedBalance.lt(vestingTotal);
+  // const { locked: vestingTotal, perBlock, startingBlock } = vesting || api.registry.createType('VestingInfo');
+  // const isStarted = bestNumber.gt(startingBlock);
+  // const vestedBalance = api.registry.createType('Balance', isStarted ? perBlock.mul(bestNumber.sub(startingBlock)) : 0);
+  // const isVesting = isStarted && vestedBalance.lt(vestingTotal);
 
   // The available balance & vested has an interplay here
   // "
@@ -70,12 +70,16 @@ function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBala
   // i.e. (balance >= 200 && balance >= 300) == (balance >= 300)
   // ""
   const floating = freeBalance.sub(lockedBalance);
-  const extraReceived = isVesting ? freeBalance.sub(vestingTotal) : new BN(0);
-  const availableBalance = api.registry.createType('Balance', bnMax(new BN(0), isVesting && floating.gt(vestedBalance) ? vestedBalance.add(extraReceived) : floating));
+  // const extraReceived = isVesting ? freeBalance.sub(vestingTotal) : new BN(0);
+  const availableBalance = api.registry.createType('Balance', bnMax(new BN(0), floating));
 
   // kton has no vesting module
   const floatingKton = freeBalanceKton.sub(lockedBalanceKton);
   const availableBalanceKton = api.registry.createType('Balance', bnMax(new BN(0), floatingKton));
+
+  const isVesting = false;
+  const vestedBalance = api.registry.createType('Balance',new BN(0));
+  const vestingTotal = api.registry.createType('Balance',new BN(0));
 
   return {
     accountId,
@@ -123,14 +127,13 @@ function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBala
 // current (balances  vesting)
 function queryCurrent (api: ApiInterfaceRx, accountId: AccountId): Observable<ResultBalance> {
   return (
-    api.queryMulti<[Vec<BalanceLock>, Vec<BalanceLock>, Option<VestingInfo>]>([
+    api.queryMulti<[Vec<BalanceLock>, Vec<BalanceLock>]>([
       [api.query.balances.locks, accountId],
       [api.query.kton.locks, accountId],
-      [api.query.vesting.vesting, accountId]
     ])
   ).pipe(
-    map(([locks, locksKton, optVesting]): ResultBalance =>
-      [optVesting.unwrapOr(null), locks, locksKton]
+    map(([locks, locksKton]): ResultBalance =>
+      [locks, locksKton]
     )
   );
 }
@@ -160,7 +163,7 @@ export function all (api: ApiInterfaceRx): (address: AccountIndex | AccountId | 
             api.derive.chain.bestNumber(),
             queryCurrent(api, account.accountId)
           ])
-          : of([account, api.registry.createType('BlockNumber'), [null, api.registry.createType('Vec<BalanceLock>'), api.registry.createType('Vec<BalanceLock>')]])
+          : of([account, api.registry.createType('BlockNumber'), [api.registry.createType('Vec<BalanceLock>'), api.registry.createType('Vec<BalanceLock>')]])
         )
       ),
       map((result): DerivedBalancesAll => calcBalances(api, result))

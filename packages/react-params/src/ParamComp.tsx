@@ -20,9 +20,10 @@ interface Props {
   overrides?: ComponentMap;
   type: TypeDef;
   values?: RawParams | null;
+  channel?: string;
 }
 
-export default function ParamComp ({ defaultValue, index, isDisabled, name, onChange, onEnter, onEscape, overrides, type }: Props): React.ReactElement<Props> {
+export default function ParamComp ({ defaultValue, index, isDisabled, name, onChange, onEnter, onEscape, overrides, type, channel }: Props): React.ReactElement<Props> {
   const _onChange = (value: RawParamOnChangeValue): void =>
     onChange(index, value);
 
@@ -38,6 +39,7 @@ export default function ParamComp ({ defaultValue, index, isDisabled, name, onCh
         onEscape={onEscape}
         overrides={overrides}
         type={type}
+        channel={channel}
       />
     </div>
   );

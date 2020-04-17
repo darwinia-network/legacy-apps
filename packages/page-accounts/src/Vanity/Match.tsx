@@ -32,7 +32,7 @@ function Match ({ address, className, count, offset, onCreateToggle, onRemove, s
       <div className='vanity--Match-item'>
         <IdentityIcon
           className='vanity--Match-icon'
-          size={48}
+          size={32}
           value={address}
         />
         <div className='vanity--Match-data'>
@@ -64,13 +64,15 @@ function Match ({ address, className, count, offset, onCreateToggle, onRemove, s
 
 export default styled(Match)`
   text-align: center;
+  background: #fff;
+  border-bottom: 1px solid #f3f3f3;
 
   &:hover {
     background: #f9f9f9;
   }
 
   .vanity--Match-addr {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     padding: 0 1rem;
 
     .no {

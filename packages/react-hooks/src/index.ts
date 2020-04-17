@@ -14,6 +14,7 @@ export { default as useAccountChecked } from './useAccountChecked';
 export { default as useIsMountedRef } from './useIsMountedRef';
 export { default as useMembers } from './useMembers';
 export { default as useModal } from './useModal';
+export { default as useOwnEraRewards } from './useOwnEraRewards';
 export { default as usePassword } from './usePassword';
 export { default as useToggle } from './useToggle';
 export { default as useTx } from './useTx';

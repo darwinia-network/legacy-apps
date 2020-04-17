@@ -8,8 +8,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 import AccountIndex from './AccountIndex';
+import AccountAddress from './AccountAddress';
 import AccountName from './AccountName';
 import IdentityIcon from './IdentityIcon';
+
+function toIdString(id?: string | Address | AccountId | null | Uint8Array): string | null {
+  return id
+    ? id.toString()
+    : null;
+}
 
 interface Props {
   className?: string;
@@ -37,8 +44,9 @@ function AddressSmall ({ className, defaultName, onClickName, overrideName, togg
           toggle={toggle}
           value={value}
           isLink={isLink}
+          showAddress={false}
         />
-        <AccountIndex value={value} />
+        <AccountAddress value={value} />
       </div>
     </div>
   );

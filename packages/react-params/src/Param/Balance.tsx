@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { Props } from '../types';
+import { Props as BProps } from '../types';
 
 import BN from 'bn.js';
 import React from 'react';
@@ -10,8 +10,14 @@ import { InputBalance } from '@polkadot/react-components';
 
 import Bare from './Bare';
 
-export default function Balance ({ className, defaultValue: { value }, isDisabled, isError, label, onChange, onEnter, onEscape, style, withLabel }: Props): React.ReactElement<Props> {
+interface Props extends BProps {
+  isSiShow?: boolean;
+  channel?: string;
+}
+
+export default function Balance ({ className, defaultValue: { value }, isDisabled, isError, label, onChange, onEnter, onEscape, style, withLabel, isSiShow, channel }: Props): React.ReactElement<Props> {
   const defaultValue = new BN((value as BN || '0').toString()).toString(10);
+  const isSigner = channel === 'signer';
   const _onChange = (value?: BN): void =>
     onChange && onChange({
       isValid: !isError && !!value,
@@ -34,6 +40,7 @@ export default function Balance ({ className, defaultValue: { value }, isDisable
         onEnter={onEnter}
         onEscape={onEscape}
         withLabel={withLabel}
+        isSiShow={isSiShow || !isSigner}
       />
     </Bare>
   );

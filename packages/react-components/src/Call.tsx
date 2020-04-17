@@ -25,6 +25,7 @@ export interface Props extends BareProps {
   value: IExtrinsic | IMethod;
   withHash?: boolean;
   tip?: BN;
+  channel?: string;
 }
 
 interface Param {
@@ -37,7 +38,7 @@ interface Value {
   value: Codec;
 }
 
-function Call ({ children, className, labelHash, mortality, onError, style, tip, value, withHash }: Props): React.ReactElement<Props> {
+function Call ({ children, className, labelHash, mortality, onError, style, tip, value, withHash, channel }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const [{ hash, params, values }, setExtracted] = useState<{ hash: Hash | null; params: Param[]; values: Value[] }>({ hash: null, params: [], values: [] });
 
@@ -67,6 +68,7 @@ function Call ({ children, className, labelHash, mortality, onError, style, tip,
         onError={onError}
         params={params}
         values={values}
+        channel={channel}
       />
       {children}
       <div className='ui--Extrinsic--toplevel'>

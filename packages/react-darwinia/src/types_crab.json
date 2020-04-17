@@ -1,32 +1,8 @@
 {
-	"H": "Hash",
-	"DigestItem": {
-		"_enum": {
-			"Other": "Bytes",
-			"AuthoritiesChange": "Vec<AuthorityId>",
-			"ChangesTrieRoot": "Hash",
-			"SealV0": "SealV0",
-			"Consensus": "Consensus",
-			"Seal": "Seal",
-			"PreRuntime": "PreRuntime",
-			"Unknown7": "Bytes",
-			"Unknown8": "Bytes",
-			"Unknown9": "Bytes",
-			"Unknown10": "Bytes",
-			"Unknown11": "Bytes",
-			"Unknown12": "Bytes",
-			"Unknown13": "Bytes",
-			"Unknown14": "Bytes",
-			"Unknown15": "Bytes",
-			"Unknown16": "Bytes",
-			"Unknown17": "Bytes",
-			"MerkleMountainRangeRoot": "Hash"
-		}
-	},
-
+	"Address": "AccountId",
 	"RingBalance": "Balance",
 	"KtonBalance": "Balance",
-	"MomentT": "Moment",
+	"TsInMs": "u64",
 	"Power": "u32",
 	"DepositId": "U256",
 	"StakingBalanceT": "StakingBalance",
@@ -45,14 +21,12 @@
 		"deposit_items": "Vec<TimeDepositItem>",
 		"ring_staking_lock": "StakingLock",
 		"kton_staking_lock": "StakingLock",
-		"total": "Compact<Balance>",
-		"active": "Compact<Balance>",
-		"unlocking": "Vec<UnlockChunk>"
+		"last_reward": "Option<EraIndex>"
 	},
 	"TimeDepositItem": {
 		"value": "Compact<Balance>",
-		"start_time": "Compact<Moment>",
-		"expire_time": "Compact<Moment>"
+		"start_time": "Compact<TsInMs>",
+		"expire_time": "Compact<TsInMs>"
 	},
 	"RewardDestination": {
 		"_enum": {
@@ -62,8 +36,9 @@
 		}
 	},
 	"Staked": {
-		"promise_month": "Moment"
+		"promise_month": "u8"
 	},
+	"ExposureT": "Exposure",
 	"Exposure": {
 		"own_ring_balance": "Compact<Balance>",
 		"own_kton_balance": "Compact<Balance>",
@@ -76,15 +51,6 @@
 		"ring_balance": "Compact<Balance>",
 		"kton_balance": "Compact<Balance>",
 		"power": "Power"
-	},
-	"ValidatorReward": {
-		"who": "AccountId",
-		"amount": "Compact<Balance>",
-		"nominators_reward": "Vec<NominatorReward>"
-	},
-	"NominatorReward": {
-		"who": "AccountId",
-		"amount": "Compact<Balance>"
 	},
 	"RKT": "RK",
 	"RK": {
@@ -121,14 +87,10 @@
 		"moment": "BlockNumber"
 	},
 	"AccountData": {
-		"free_ring": "Balance",
-		"free_kton": "Balance",
-		"reserved_ring": "Balance",
-		"reserved_kton": "Balance",
 		"free": "Balance",
 		"reserved": "Balance",
-		"misc_frozen": "Balance",
-		"fee_frozen": "Balance"
+		"free_kton": "Balance",
+		"reserved_kton": "Balance"
 	},
 	"EthBlockNumber": "u64",
 	"EthAddress": "H160",
@@ -143,7 +105,7 @@
 		"timestamp": "u64",
 		"number": "EthBlockNumber",
 		"author": "EthAddress",
-		"transaction_root": "H256",
+		"transactions_root": "H256",
 		"uncles_hash": "H256",
 		"extra_data": "Bytes",
 		"state_root": "H256",
@@ -169,6 +131,12 @@
 		"proof": "Bytes",
 		"header_hash": "H256"
 	},
+	"EthNetworkType": {
+		"_enum": {
+			"Mainnet": null,
+			"Ropsten": null
+		}
+	},
 	"RedeemFor": {
 		"_enum": {
 			"Ring": "EthReceiptProof",
@@ -190,5 +158,11 @@
 			"Tron": "EthereumAddress"
 		}
 	},
-	"EcdsaSignature": "[u8; 65]"
+	"EcdsaSignature": {
+		"_struct": "[u8; 65]"
+	},
+	"MerkleMountainRangeRootLog": {
+		"prefix": "[u8; 4]",
+		"mmr_root": "Hash"
+	}
 }

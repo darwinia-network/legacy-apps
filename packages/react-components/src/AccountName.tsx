@@ -10,7 +10,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useCall, useAccounts, useApi, useToggle } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
-import { SUBSCAN_URL } from '@polkadot/react-darwinia';
+import { SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
 
 import { useTranslation } from './translate';
 import { getAddressName } from './util';
@@ -29,6 +29,7 @@ interface Props extends BareProps {
   toggle?: any;
   value: AccountId | AccountIndex | Address | string | Uint8Array | null | undefined;
   isLink?: boolean;
+  showAddress?: boolean;
 }
 
 const DISPLAY_KEYS = ['display', 'legal', 'email', 'web', 'twitter', 'riot'];
@@ -43,6 +44,7 @@ function defaultOrAddr (defaultName = '', _address: AccountId | AccountIndex | A
   }
 
   const [isAddressExtracted,, extracted] = getAddressName(accountId, null, defaultName);
+
   const [isAddressCached, nameCached] = nameCache.get(accountId) || [false, [null, null]];
 
   if (extracted && isAddressCached && !isAddressExtracted) {
@@ -54,19 +56,18 @@ function defaultOrAddr (defaultName = '', _address: AccountId | AccountIndex | A
 
     return [[accountIndex, null], false, true];
   }
-
   return [[extracted, null], !isAddressExtracted, isAddressExtracted];
 }
 
-function extractName (address: AccountId | string, accountIndex?: AccountIndex, defaultName?: string): React.ReactNode {
+function extractName (address: AccountId | string, accountIndex?: AccountIndex, defaultName?: string, showAddress: boolean = true): React.ReactNode {
   const [[displayFirst, displaySecond], isLocal, isAddress] = defaultOrAddr(defaultName, address, accountIndex);
 
   return (
     <div className='via-identity'>
       <span className={`name ${isLocal ? 'isLocal' : (isAddress ? 'isAddress' : '')}`}>{
         displaySecond
-          ? <><span className='top'>{displayFirst}</span><span className='sub'>/{displaySecond}</span></>
-          : displayFirst
+          ? <><span className='top'>{(!showAddress && isAddress) ? '-' : displayFirst}</span><span className='sub'>/{displaySecond}</span></>
+          : (!showAddress && isAddress) ? '-' : displayFirst
       }</span>
     </div>
   );
@@ -76,7 +77,7 @@ function renderLinkIcon(address) {
   return (
     <Button
       onClick={() => {
-        window.open(`${SUBSCAN_URL}/account/${address}`)
+        window.open(`${SUBSCAN_URL_CRAB}/account/${address}`)
       }}
       className='icon-button'
       icon='external alternate'
@@ -87,7 +88,7 @@ function renderLinkIcon(address) {
   );
 }
 
-function AccountName ({ children, className, defaultName, label, onClick, override, style, toggle, value, isLink }: Props): React.ReactElement<Props> {
+function AccountName ({ children, className, defaultName, label, onClick, override, style, toggle, value, isLink, showAddress = true }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -96,7 +97,7 @@ function AccountName ({ children, className, defaultName, label, onClick, overri
   const info = useCall<DeriveAccountInfo>(api.derive.accounts.info as any, [value]);
   const [isRegistrar, setIsRegistrar] = useState(false);
   const address = useMemo((): string => (value || '').toString(), [value]);
-  const [name, setName] = useState<React.ReactNode>((): React.ReactNode => extractName((value || '').toString(), undefined, defaultName));
+  const [name, setName] = useState<React.ReactNode>((): React.ReactNode => extractName((value || '').toString(), undefined, defaultName, showAddress));
 
   // determine if we have a registrar or not - registrars are allowed to approve
   useEffect((): void => {
@@ -200,7 +201,7 @@ function AccountName ({ children, className, defaultName, label, onClick, overri
         nameCache.set((accountId || address).toString(), [false, displayParent ? [displayParent, displayName] : [displayName, null]]);
         setName((): React.ReactNode => name);
       } else {
-        setName((): React.ReactNode => extractName(accountId || address, accountIndex));
+        setName((): React.ReactNode => extractName(accountId || address, accountIndex, '', showAddress));
       }
     } else if (nickname) {
       nameCache.set((accountId || address).toString(), [false, [nickname, null]]);
@@ -245,8 +246,8 @@ export default styled(AccountName)`
 
     .name {
       font-weight: normal !important;
-      filter: grayscale(100%);
-      opacity: 0.6;
+      /* filter: grayscale(100%); */
+      /* opacity: 0.6; */
       text-transform: uppercase;
 
       &.isAddress {

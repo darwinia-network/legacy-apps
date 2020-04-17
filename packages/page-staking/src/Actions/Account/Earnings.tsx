@@ -9,12 +9,14 @@ import styled from 'styled-components';
 import { ColorButton } from '@polkadot/react-darwinia/components';
 import EarningsDetail from './EarningsDetail';
 import translate from '../../translate';
-import { formatFloat } from '@polkadot/util';
-import { RING_PROPERTIES, getStakingHistory } from '@polkadot/react-darwinia';
+import { formatFloat, formatBalance } from '@polkadot/util';
+import { RING_PROPERTIES, getStakingHistory, SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
 
 type Props = I18nProps & {
   stashId: string;
   address: string;
+  doPayout: () => void;
+  doPayoutIsDisabled: boolean;
 };
 
 type State = {
@@ -113,7 +115,7 @@ class Earnings extends React.PureComponent<Props, State> {
   }
 
   render () {
-    const { t, address } = this.props;
+    const { t, address, doPayout, doPayoutIsDisabled } = this.props;
     const { isEarningsDetailOpen, sum, today, history } = this.state;
 
     return (
@@ -121,18 +123,28 @@ class Earnings extends React.PureComponent<Props, State> {
         <div className="content">
           <div className="earings-item">
             <p>{t('Earnings')}</p>
-            <h1>{sum === '--' ? '--' : formatFloat(sum)} {RING_PROPERTIES.tokenSymbol}</h1>
+            <h1>{sum === '--' ? '--' : formatBalance(sum)}</h1>
           </div>
           <div className="earings-item">
             <p>{t('Today')}</p>
-            <h1>{today === '--' ? '--' : formatFloat(today)} {RING_PROPERTIES.tokenSymbol}</h1>
+            <h1>{today === '--' ? '--' : formatBalance(today)}</h1>
           </div>
           <div className="button-box">
             <ColorButton
-              isDisabled={history.length <= 0}
+              // isDisabled={history.length <= 0}
               key='detail'
-              onClick={this.toggleEarningsDetail}
-            >{t('Detail')}</ColorButton>
+              onClick={
+                () => {
+                  window.open(`${SUBSCAN_URL_CRAB}/account/${address}`)
+                } 
+              }
+            >{t('Reward History')}</ColorButton>
+
+            <ColorButton
+              isDisabled={doPayoutIsDisabled}
+              key='claim'
+              onClick={doPayout}
+            >{t('Claim Reward')}</ColorButton>
           </div>
         </div>
         {address ? <EarningsDetail

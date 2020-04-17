@@ -1,7 +1,7 @@
 // Auto-generated via `yarn polkadot-types-from-defs`, do not edit
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
-import { ITuple } from '@polkadot/types/types';
+import { ITuple, EraIndex } from '@polkadot/types/types';
 import { Compact, Enum, Option, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
 import { Bytes, U256, u32, u64 } from '@polkadot/types/primitive';
 import { AccountId, Balance, BlockNumber, H160, H256, LockIdentifier, Moment } from '@polkadot/types/interfaces/runtime';
@@ -9,9 +9,7 @@ import { UnlockChunk } from '@polkadot/types/interfaces/staking';
 
 /** @name AccountData */
 export interface AccountData extends Struct {
-  readonly free_ring: Balance;
   readonly free_kton: Balance;
-  readonly reserved_ring: Balance;
   readonly reserved_kton: Balance;
   readonly free: Balance;
   readonly reserved: Balance;
@@ -188,6 +186,7 @@ export interface StakingLedger extends Struct {
   readonly total: Compact<Balance>;
   readonly active: Compact<Balance>;
   readonly unlocking: Vec<UnlockChunk>;
+  readonly lastReward: Option<EraIndex>;
 }
 
 /** @name StakingLedgerT */

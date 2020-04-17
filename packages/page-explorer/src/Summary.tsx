@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps as Props } from '@polkadot/react-components/types';
+import { I18nProps, BareProps } from '@polkadot/react-components/types';
 
 import React from 'react';
 import { SummaryBox, CardSummary } from '@polkadot/react-components';
@@ -11,9 +11,13 @@ import { BestFinalized, BestNumber, TimeNow, TimePeriod, TotalIssuance } from '@
 import SummarySession from './SummarySession';
 import translate from './translate';
 
-function Summary ({ t }: Props): React.ReactElement<Props> {
+interface Props extends I18nProps, BareProps {
+
+}
+
+function Summary ({ t, className }: Props): React.ReactElement<Props> {
   return (
-    <SummaryBox>
+    <SummaryBox className={`${className} SummaryBox--outer`}>
       <section>
         <CardSummary label={t('last block')}>
           <TimeNow />

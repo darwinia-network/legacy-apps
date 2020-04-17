@@ -2,9 +2,9 @@ import axios from 'axios';
 import { i18nT } from './types';
 import DARWINIA_CRAB_TYPES from './types_crab.json';
 
-const SUBSCAN_URL = 'https://crab.subscan.io';
+const SUBSCAN_URL_CRAB = 'https://crab.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
-const INIT_VERSION = 'version-2019-12-30';
+const INIT_VERSION = 'version-2020-04-1501';
 let KTON_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CKTON' };
 let RING_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CRING' };
 
@@ -23,7 +23,7 @@ const setKtonProperties = (properties) => {
 };
 
 const instance = axios.create({
-  baseURL: SUBSCAN_URL,
+  baseURL: SUBSCAN_URL_CRAB,
   // baseURL: 'http://localhost:8000',
   timeout: 30000
 });
@@ -76,7 +76,7 @@ const lockLimitOptionsMaker = (t: i18nT): Array<object> => {
 };
 
 export {
-  SUBSCAN_URL,
+  SUBSCAN_URL_CRAB,
   RING_PROPERTIES,
   KTON_PROPERTIES,
   setRingProperties,

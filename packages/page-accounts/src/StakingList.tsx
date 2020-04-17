@@ -15,7 +15,7 @@ import translate from './translate';
 import { formatBalance, formatBalance as formatKtonBalance, formatNumber, ringToKton } from '@polkadot/util';
 import dayjs from 'dayjs';
 import ReactPaginate from 'react-paginate';
-import { getBondList, SUBSCAN_URL } from '@polkadot/react-darwinia';
+import { getBondList, SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
 
 const PAGE_SIZE = 10;
 
@@ -209,7 +209,7 @@ class Overview extends React.PureComponent<Props, State> {
             </tr>
             {bondList.list.map((item, index) => {
               return (<tr key={`${index}${item.Id}`}>
-                <td><a className="stakingLink" target="_blank" rel="noopener noreferrer" href={`${SUBSCAN_URL}/extrinsic/${item.extrinsic_index}`}>{item.extrinsic_index}</a></td>
+                <td><a className="stakingLink" target="_blank" rel="noopener noreferrer" href={`${SUBSCAN_URL_CRAB}/extrinsic/${item.extrinsic_index}`}>{item.extrinsic_index}</a></td>
                 <td>
                   <p className="stakingRange">{`${this.formatDate(item.start_at)} - ${this.formatDate(item.expired_at)}`}</p>
                   <div className="stakingProcess">
@@ -303,7 +303,7 @@ class Overview extends React.PureComponent<Props, State> {
             </tr>
             {bondList.list.map((item, index) => {
               return (<tr key={`${index}${item.Id}`}>
-                <td><a className="stakingLink" target="_blank" rel="noopener noreferrer" href={`${SUBSCAN_URL}/extrinsic/${item.extrinsic_index}`}>{item.extrinsic_index}</a></td>
+                <td><a className="stakingLink" target="_blank" rel="noopener noreferrer" href={`${SUBSCAN_URL_CRAB}/extrinsic/${item.extrinsic_index}`}>{item.extrinsic_index}</a></td>
                 <td>
                   <p className="stakingRange">{`${this.formatDate(item.unbonding_at)} - ${this.formatDate(this.getUnbondingEndTime(item.unbonding_at))}`}</p>
                   <div className="stakingProcess">
@@ -377,7 +377,7 @@ class Overview extends React.PureComponent<Props, State> {
             </tr>
             {bondList.list.map((item, index) => {
               return (<tr key={`${index}${item.Id}`}>
-                <td><a className="stakingLink" target="_blank" rel="noopener noreferrer" href={`${SUBSCAN_URL}/extrinsic/${item.extrinsic_index}`}>{item.extrinsic_index}</a></td>
+                <td><a className="stakingLink" target="_blank" rel="noopener noreferrer" href={`${SUBSCAN_URL_CRAB}/extrinsic/${item.extrinsic_index}`}>{item.extrinsic_index}</a></td>
                 <td>
                   {this.formatDate(item.mapping_at)}
                 </td>
@@ -386,7 +386,7 @@ class Overview extends React.PureComponent<Props, State> {
                   {item.mapping_type}
                 </td>
                 <td>
-                  <a className="stakingLink" target="_blank" rel="noopener noreferrer" href={`${SUBSCAN_URL}/tx/${item.from_tx}`}>{item.from_tx}</a>
+                  <a className="stakingLink" target="_blank" rel="noopener noreferrer" href={`${SUBSCAN_URL_CRAB}/tx/${item.from_tx}`}>{item.from_tx}</a>
                 </td>
               </tr>);
             })}

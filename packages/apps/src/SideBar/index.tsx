@@ -110,6 +110,26 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
                 )
             ))}
             <Menu.Divider hidden />
+            <Menu.Item className='apps--SideBar-Item'>
+              <a
+                className='apps--SideBar-Item-NavLink'
+                href='https://github.com/darwinia-network/'
+                rel='noopener noreferrer'
+                target='_blank'
+              >
+                <Icon name='github' /><span className='text'>{t('GitHub')}</span>
+              </a>
+            </Menu.Item>
+            <Menu.Item className='apps--SideBar-Item'>
+              <a
+                className='apps--SideBar-Item-NavLink'
+                href='https://docs.darwinia.network'
+                rel='noopener noreferrer'
+                target='_blank'
+              >
+                <Icon name='book' /><span className='text'>{t('Wiki')}</span>
+              </a>
+            </Menu.Item>
             {/* {
               isCollapsed
                 ? undefined
