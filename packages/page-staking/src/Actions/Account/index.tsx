@@ -441,7 +441,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
       </Box>
       <RowTitle title={t('Earnings')} />
       <Box>
-        <Earnings address={stashId} doPayout={_doPayout} unClaimedReward={payoutTotal} doPayoutIsDisabled={!payoutEras.length}/>
+        <Earnings address={stashId} doPayout={_doPayout} destinationId={destination === 2 ? controllerId : stashId} unClaimedReward={payoutTotal} doPayoutIsDisabled={!payoutEras.length}/>
       </Box>
       {/* <AddressMini
         className='mini-nopad'

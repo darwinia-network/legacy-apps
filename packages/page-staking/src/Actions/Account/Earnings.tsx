@@ -16,6 +16,7 @@ import BN from 'bn.js';
 type Props = I18nProps & {
   stashId: string;
   address: string;
+  destinationId: string;
   unClaimedReward: BN;
   doPayout: () => void;
   doPayoutIsDisabled: boolean;
@@ -117,7 +118,7 @@ class Earnings extends React.PureComponent<Props, State> {
   }
 
   render () {
-    const { t, address, doPayout, doPayoutIsDisabled, unClaimedReward } = this.props;
+    const { t, address, doPayout, doPayoutIsDisabled, unClaimedReward, destinationId } = this.props;
     const { isEarningsDetailOpen, sum, today, history } = this.state;
 
     return (
@@ -137,7 +138,7 @@ class Earnings extends React.PureComponent<Props, State> {
               key='detail'
               onClick={
                 () => {
-                  window.open(`${SUBSCAN_URL_CRAB}/account/${address}`)
+                  window.open(`${SUBSCAN_URL_CRAB}/account/${destinationId}`)
                 } 
               }
             >{t('Reward History')}</ColorButton>
