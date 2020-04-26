@@ -26,8 +26,7 @@ To get started -
 1. Clone the repo locally, via `git clone https://github.com/darwinia-network/apps <optional local path>`
 2. Ensure that you have a recent LTS version of Node.js, for development purposes [Node >=10.13.0](https://nodejs.org/en/) is recommended.
 3. Ensure that you have a recent version of Yarn, for development purposes [Yarn >=1.10.1](https://yarnpkg.com/docs/install) is required.
-4. (Optional) `node-gyp` may be preinstalled depending on your OS.
-5. Install the dependencies by running `yarn`
-6. Ready! Now you can launch the UI (assuming you have a local Darwinia Node running), via `yarn run start`
-7. Access the UI via [http://localhost:3001](http://localhost:3001)
+4. Install the dependencies by running `yarn`
+5. Ready! Now you can launch the UI (assuming you have a local Darwinia Node running), via `yarn run start`
+6. Access the UI via [http://localhost:3001](http://localhost:3001)
 

@@ -11,10 +11,13 @@ import EarningsDetail from './EarningsDetail';
 import translate from '../../translate';
 import { formatFloat, formatBalance } from '@polkadot/util';
 import { RING_PROPERTIES, getStakingHistory, SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
+import BN from 'bn.js';
 
 type Props = I18nProps & {
   stashId: string;
   address: string;
+  destinationId: string;
+  unClaimedReward: BN;
   doPayout: () => void;
   doPayoutIsDisabled: boolean;
 };
@@ -115,19 +118,19 @@ class Earnings extends React.PureComponent<Props, State> {
   }
 
   render () {
-    const { t, address, doPayout, doPayoutIsDisabled } = this.props;
+    const { t, address, doPayout, doPayoutIsDisabled, unClaimedReward, destinationId } = this.props;
     const { isEarningsDetailOpen, sum, today, history } = this.state;
 
     return (
       <StyledWrapper>
         <div className="content">
           <div className="earings-item">
-            <p>{t('Earnings')}</p>
+            <p>{t('Claimed')}</p>
             <h1>{sum === '--' ? '--' : formatBalance(sum)}</h1>
           </div>
           <div className="earings-item">
-            <p>{t('Today')}</p>
-            <h1>{today === '--' ? '--' : formatBalance(today)}</h1>
+            <p>{t('Unclaimed')}</p>
+            <h1>{formatBalance(unClaimedReward)}</h1>
           </div>
           <div className="button-box">
             <ColorButton
@@ -135,7 +138,7 @@ class Earnings extends React.PureComponent<Props, State> {
               key='detail'
               onClick={
                 () => {
-                  window.open(`${SUBSCAN_URL_CRAB}/account/${address}`)
+                  window.open(`${SUBSCAN_URL_CRAB}/account/${destinationId}`)
                 } 
               }
             >{t('Reward History')}</ColorButton>

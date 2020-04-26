@@ -21,7 +21,6 @@ interface Props extends I18nProps, BareProps {
 }
 
 function Main ({ events, headers, t, className }: Props): React.ReactElement<Props> {
-  console.log(111,className)
   return (
     <>
       <Query />

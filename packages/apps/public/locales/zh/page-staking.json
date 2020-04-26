@@ -98,7 +98,7 @@
   "Aye": "Aye",
   "Nay": "Nay",
   "blocks per session": "块/session",
-  "transferrable": "可转账可转账",
+  "transferrable": "可转账",
   "Validator stats": "验证者统计",
   "block hash or number to query": "要查询的区块哈希或块高",
   "Display overview information for the selected validator, including blocks produced.": "Display overview information for the selected validator, including blocks produced.",
@@ -183,5 +183,7 @@
   "Payout reward": "Payout reward",
   "No nominators": "暂无投票者",
   "Reward History": "收益历史",
-  "Claim Reward": "领取收益"
+  "Claim Reward": "领取收益",
+  "Claimed": "已领取",
+  "Unclaimed": "待领取"
 }

@@ -167,7 +167,7 @@ class ClaimsApp extends TxModal<Props, State> {
                 <div>
                   {t('Method 1:Copy the above string and sign an Ethereum/Tron transaction with the account that got airdrop in the wallet of your choice, using the string as the payload, and copy the transaction signature.')}
                   <br/>
-                  {t('Method 2: Use the [cRING Claim Tool] generate and copy the transaction signature.')}
+                  {t('Method 2: Use the [')}<a style={{textDecoration: 'underline'}} href="https://claim.darwinia.network" target="_blank" ref="nnoopener noreferrer">{t('cRING Claim Tool')}</a>{t('] generate and copy the transaction signature.')}
                   <br/>
                   <br/>
                   <p>
@@ -176,7 +176,7 @@ class ClaimsApp extends TxModal<Props, State> {
                 </div>
                 <Signature
                   onChange={this.onChangeSignature}
-                  placeholder='{\n  "address": "0x ...",\n  "msg": "Pay KSMs to the Kusama account: ...",\n  "sig": "0x ...",\n  "version": "2"\n}'
+                  placeholder='{\n  "address": "0x ...",\n  "msg": "Pay RINGs to the Crab account: ...",\n  "sig": "0x ...",\n  "version": "2"\n}'
                   rows={10}
                 />
                 {(step === Step.Sign) && (

@@ -9,7 +9,7 @@ import { AccountId, AccountIndex, Address } from '@polkadot/types/interfaces';
 import React from 'react';
 import { useApi, useCall } from '@polkadot/react-hooks';
 
-import FormatBalance from './FormatBalance';
+import FormatKtonBalance from './FormatKtonBalance';
 
 interface Props extends BareProps {
   children?: React.ReactNode;
@@ -23,13 +23,13 @@ export default function AvailableDisplay ({ children, className, label, params, 
   const allBalances = useCall<DerivedBalancesAll>(api.derive.balances.all as any, [params]);
 
   return (
-    <FormatBalance
+    <FormatKtonBalance
       className={className}
       label={label}
       value={allBalances?.availableBalanceKton}
       withUnit={withUnit}
     >
       {children}
-    </FormatBalance>
+    </FormatKtonBalance>
   );
 }
