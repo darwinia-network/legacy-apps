@@ -5,6 +5,5 @@
 export const UNSAFE_CHAINS = ['Development', 'Kusama CC1', 'Kusama CC2', 'Kusama CC3', 'Kusama', 'Crab'];
 
 export default function detectUnsafe (chain: Text | string): boolean {
-  console.log(111, chain.toString())
   return UNSAFE_CHAINS.includes(chain.toString());
 }
