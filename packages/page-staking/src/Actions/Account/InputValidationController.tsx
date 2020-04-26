@@ -45,9 +45,9 @@ export default function ValidateController ({ accountId, controllerId, defaultCo
       let newError: string | null = null;
 
       if (controllerId === accountId) {
-        newError = isUnsafeChain
-          ? t(`${DISTINCT} You will be allowed to make the transaction, but take care to not tie up all funds, only use a portion of the available funds during this period.`)
-          : t(DISTINCT);
+        if(!isUnsafeChain) {
+          newError = t(DISTINCT);
+        }
       } else if (bondedId) {
         newError = t('A controller account should not map to another stash. This selected controller is a stash, controlled by {{bondedId}}', { replace: { bondedId } });
       } else if (stashId) {
