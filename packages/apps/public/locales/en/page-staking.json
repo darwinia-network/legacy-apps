@@ -146,5 +146,7 @@
   "Payout reward": "Payout reward",
   "No nominators": "No nominators",
   "Reward History": "Reward History",
-  "Claim Reward": "Claim Reward"
+  "Claim Reward": "Claim Reward",
+  "Claimed": "Claimed",
+  "Unclaimed": "Unclaimed"
 }

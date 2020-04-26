@@ -19,5 +19,8 @@
   "2. Sign ETH/TRON transaction": "2. Sign ETH/TRON transaction",
   "Method 1:Copy the above string and sign an Ethereum/Tron transaction with the account that got airdrop in the wallet of your choice, using the string as the payload, and copy the transaction signature.": "Method 1:Copy the above string and sign an Ethereum/Tron transaction with the account that got airdrop in the wallet of your choice, using the string as the payload, and copy the transaction signature.",
   "Method 2: Use the [cRING Claim Tool] generate and copy the transaction signature.": "Method 2: Use the [cRING Claim Tool] generate and copy the transaction signature.",
-  "Please paste the transaction signature object below": "Please paste the transaction signature object below"
+  "Please paste the transaction signature object below": "Please paste the transaction signature object below",
+  "Method 2: Use the [": "Method 2: Use the [",
+  "cRING Claim Tool": "cRING Claim Tool",
+  "] generate and copy the transaction signature.": "] generate and copy the transaction signature."
 }

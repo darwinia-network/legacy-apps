@@ -183,5 +183,7 @@
   "Payout reward": "Payout reward",
   "No nominators": "暂无投票者",
   "Reward History": "收益历史",
-  "Claim Reward": "领取收益"
+  "Claim Reward": "领取收益",
+  "Claimed": "已领取",
+  "Unclaimed": "待领取"
 }

@@ -939,5 +939,10 @@
   "Payout reward": "",
   "No nominators": "",
   "Reward History": "",
-  "Claim Reward": ""
+  "Claim Reward": "",
+  "Claimed": "",
+  "Unclaimed": "",
+  "Method 2: Use the [": "",
+  "cRING Claim Tool": "",
+  "] generate and copy the transaction signature.": ""
 }

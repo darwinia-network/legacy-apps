@@ -19,5 +19,8 @@
   "2. Sign ETH/TRON transaction": "2. 签名ETH / TRON 交易",
   "Method 1:Copy the above string and sign an Ethereum/Tron transaction with the account that got airdrop in the wallet of your choice, using the string as the payload, and copy the transaction signature.": "方法一：在钱包中选定已获取空投的地址，复制上方字符串作为签名内容发送签名交易，并复制交易签名。",
   "Method 2: Use the [cRING Claim Tool] generate and copy the transaction signature.": "方法二：使用【cRING领取工具】生成并复制交易签名。",
-  "Please paste the transaction signature object below": "在此处粘贴交易签名"
+  "Please paste the transaction signature object below": "在此处粘贴交易签名",
+  "Method 2: Use the [": "方法二：使用【",
+  "cRING Claim Tool": "cRING领取工具",
+  "] generate and copy the transaction signature.": "】生成并复制交易签名。"
 }
