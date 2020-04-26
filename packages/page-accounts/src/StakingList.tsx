@@ -12,7 +12,7 @@ import { withMulti } from '@polkadot/react-api/hoc';
 import { TxButton, Button } from '@polkadot/react-components';
 import { Button as SButton, Checkbox } from 'semantic-ui-react';
 import translate from './translate';
-import { formatBalance, formatBalance as formatKtonBalance, formatNumber, ringToKton } from '@polkadot/util';
+import { formatBalance, formatKtonBalance, formatNumber, ringToKton } from '@polkadot/util';
 import dayjs from 'dayjs';
 import ReactPaginate from 'react-paginate';
 import { getBondList, SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
