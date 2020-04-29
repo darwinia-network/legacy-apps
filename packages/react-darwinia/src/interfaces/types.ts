@@ -2,10 +2,13 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 
 import { ITuple, EraIndex } from '@polkadot/types/types';
-import { Compact, Enum, Option, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
+import { Compact, Enum, Option, Struct, U8aFixed, Vec, Int } from '@polkadot/types/codec';
 import { Bytes, U256, u32, u64 } from '@polkadot/types/primitive';
 import { AccountId, Balance, BlockNumber, H160, H256, LockIdentifier, Moment } from '@polkadot/types/interfaces/runtime';
 import { UnlockChunk } from '@polkadot/types/interfaces/staking';
+
+/** @name Fixed64 */
+export interface Fixed64 extends Int {}
 
 /** @name AccountData */
 export interface AccountData extends Struct {

@@ -26,7 +26,7 @@ import { Kind, OffenceDetails, Offender, OpaqueTimeSlot, ReportIdOf, Reporter } 
 import { AttestedCandidate, AuctionIndex, Bidder, CandidateReceipt, CollatorId, CollatorSignature, EgressQueueRoot, HeadData, IncomingParachain, IncomingParachainDeploy, IncomingParachainFixed, LeasePeriod, LeasePeriodOf, NewBidder, ParaId, ParaIdOf, ParaInfo, ParaScheduling, ParachainDispatchOrigin, Retriable, SlotRange, SubId, UpwardMessage, ValidityAttestation, WinningData, WinningDataEntry } from '@polkadot/types/interfaces/parachains';
 import { ActiveRecovery, RecoveryConfig } from '@polkadot/types/interfaces/recovery';
 import { ApiId, BlockHash, ChainProperties, ExtrinsicOrHash, ExtrinsicStatus, Health, KeyValueOption, NetworkState, NetworkStatePeerset, NetworkStatePeersetInfo, NotConnectedPeer, Peer, PeerEndpoint, PeerEndpointAddr, PeerInfo, PeerPing, RpcMethods, RuntimeDispatchInfo, RuntimeVersion, RuntimeVersionApi, StorageChangeSet } from '@polkadot/types/interfaces/rpc';
-import { AccountId, AccountIdOf, AccountIndex, Address, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, ChangesTrieConfiguration, Consensus, ConsensusEngineId, Digest, DigestItem, DispatchClass, DispatchInfo, DispatchInfoTo190, Fixed64, H160, H256, H512, Hash, Header, Index, Justification, KeyTypeId, KeyValue, LockIdentifier, LookupSource, LookupTarget, Moment, Origin, Perbill, Percent, Permill, Perquintill, Phantom, PhantomData, PreRuntime, Seal, SealV0, SignedBlock, StorageData, ValidatorId, Weight, WeightMultiplier } from '@polkadot/types/interfaces/runtime';
+import { AccountId, AccountIdOf, AccountIndex, Address, AssetId, Balance, BalanceOf, Block, BlockNumber, Call, ChangesTrieConfiguration, Consensus, ConsensusEngineId, Digest, DigestItem, DispatchClass, DispatchInfo, DispatchInfoTo190, Fixed64, H160, H256, H512, Hash, Header, Index, Justification, KeyTypeId, KeyValue, LockIdentifier, LookupSource, LookupTarget, Moment, Origin, Perbill, Percent, Permill, Perquintill, Phantom, PhantomData, PreRuntime, Seal, SealV0, SignedBlock, StorageData, ValidatorId, Weight, WeightMultiplier, RuntimeDbWeight, ModuleId } from '@polkadot/types/interfaces/runtime';
 import { FullIdentification, IdentificationTuple, Keys, SessionIndex, SessionKeys1, SessionKeys2, SessionKeys3, SessionKeys4, SessionKeys5, SessionKeys6 } from '@polkadot/types/interfaces/session';
 import { Bid, BidKind, SocietyJudgement, SocietyVote, StrikeCount, VouchingStatus } from '@polkadot/types/interfaces/society';
 import { ActiveEraInfo, CompactAssignments, CompactScore, ElectionCompute, ElectionResult, ElectionStatus, EraIndex, EraPoints, EraRewardPoints, EraRewards, Exposure, Forcing, IndividualExposure, KeyType, MomentOf, Nominations, PhragmenScore, Points, ReleasesStaking, RewardDestination, RewardPoint, SlashJournalEntry, SlashingSpans, SlashingSpansTo204, SpanIndex, SpanRecord, StakingLedger, StakingLedgerTo223, UnappliedSlash, UnappliedSlashOther, UnlockChunk, ValidatorIndex, ValidatorPrefs, ValidatorPrefsTo145, ValidatorPrefsTo196 } from '@polkadot/types/interfaces/staking';
@@ -213,6 +213,8 @@ declare module '@polkadot/types/types/registry' {
     LookupTarget: LookupTarget;
     'Option<LookupTarget>': Option<LookupTarget>;
     'Vec<LookupTarget>': Vec<LookupTarget>;
+    ModuleId: ModuleId;
+    'Option<ModuleId>': Option<ModuleId>;
     Moment: Moment;
     'Compact<Moment>': Compact<Moment>;
     'Option<Moment>': Option<Moment>;
@@ -242,6 +244,9 @@ declare module '@polkadot/types/types/registry' {
     PhantomData: PhantomData;
     'Option<PhantomData>': Option<PhantomData>;
     'Vec<PhantomData>': Vec<PhantomData>;
+    RuntimeDbWeight: RuntimeDbWeight;
+    'Option<RuntimeDbWeight>': Option<RuntimeDbWeight>;
+    'Vec<RuntimeDbWeight>': Vec<RuntimeDbWeight>;
     SignedBlock: SignedBlock;
     'Option<SignedBlock>': Option<SignedBlock>;
     'Vec<SignedBlock>': Vec<SignedBlock>;
