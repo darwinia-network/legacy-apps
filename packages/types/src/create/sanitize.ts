@@ -3,9 +3,13 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
-type Mapper = (value: string) => string;
+type Mapper = (value: string, options?: SanitizeOptions) => string;
 
-const ALLOWED_BOXES = ['BTreeMap', 'BTreeSet', 'Compact', 'HashMap', 'Int', 'Linkage', 'Result', 'Option', 'UInt', 'Vec'];
+interface SanitizeOptions {
+  allowNamespaces?: boolean;
+}
+
+const ALLOWED_BOXES = ['BTreeMap', 'BTreeSet', 'Compact', 'DoNotConstruct', 'HashMap', 'Int', 'Linkage', 'Result', 'Option', 'UInt', 'Vec'];
 const BOX_PRECEDING = ['<', '(', '[', '"', ',', ' ']; // start of vec, tuple, fixed array, part of struct def or in tuple
 
 const mappings: Mapper[] = [
@@ -32,12 +36,10 @@ const mappings: Mapper[] = [
   alias(['Lookup::Target'], 'LookupTarget'),
   // HACK duplication between contracts & primitives, however contracts prefixed with exec
   alias(['exec::StorageKey'], 'ContractStorageKey'),
-  // alias for internal module mappings
-  alias(['exec', 'grandpa', 'marker', 'session', 'slashing'].map((s) => `${s}::`), ''),
   // flattens tuples with one value, `(AccountId)` -> `AccountId`
   flattenSingleTuple(),
   // converts ::Type to Type, <T as Trait<I>>::Proposal -> Proposal
-  removeColonPrefix()
+  removeColons()
 ];
 
 // given a starting index, find the closing >
@@ -98,9 +100,31 @@ export function flattenSingleTuple (): Mapper {
   };
 }
 
-export function removeColonPrefix (): Mapper {
-  return (value: string): string => {
-    return value.replace(/^::/, '');
+export function removeColons (): Mapper {
+  return (value: string, { allowNamespaces }: SanitizeOptions = {}): string => {
+    let index = 0;
+
+    while (index !== -1) {
+      index = value.indexOf('::');
+
+      if (index === 0) {
+        value = value.substr(2);
+      } else if (index !== -1) {
+        if (allowNamespaces) {
+          return value;
+        }
+
+        let start = index;
+
+        while (start !== -1 && !BOX_PRECEDING.includes(value[start])) {
+          start--;
+        }
+
+        value = `${value.substr(0, start + 1)}${value.substr(index + 2)}`;
+      }
+    }
+
+    return value;
   };
 }
 
@@ -155,7 +179,7 @@ export function removeTraits (): Mapper {
       // remove all whitespaces
       .replace(/\s/g, '')
       // anything `T::<type>` to end up as `<type>`
-      .replace(/(T|Self|wasm)::/g, '')
+      .replace(/(T|Self)::/g, '')
       // replace `<T as Trait>::` (whitespaces were removed above)
       .replace(/<(T|Self)asTrait>::/g, '')
       // replace `<T as something::Trait>::` (whitespaces were removed above)
@@ -163,9 +187,7 @@ export function removeTraits (): Mapper {
       // replace <Lookup as StaticLookup>
       .replace(/<LookupasStaticLookup>/g, 'Lookup')
       // replace `<...>::Type`
-      .replace(/::Type/g, '')
-      // `sr_std::marker::`
-      .replace(/(sp_std|sr_std|rstd)::/g, '');
+      .replace(/::Type/g, '');
   };
 }
 
@@ -191,8 +213,8 @@ export function removeWrap (_check: string): Mapper {
   };
 }
 
-export default function sanitize (value: string): string {
+export default function sanitize (value: string, options?: SanitizeOptions): string {
   return mappings.reduce((result, fn): string => {
-    return fn(result);
+    return fn(result, options);
   }, value).trim();
 }

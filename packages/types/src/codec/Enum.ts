@@ -172,7 +172,7 @@ export default class Enum extends Base<Codec> {
    * @description The length of the value when encoded as a Uint8Array
    */
   public get encodedLength (): number {
-    return 1 + this.raw.encodedLength;
+    return 1 + this._raw.encodedLength;
   }
 
   /**
@@ -200,7 +200,7 @@ export default class Enum extends Base<Codec> {
    * @description Checks if the Enum points to a [[Null]] type (deprecated, use isNone)
    */
   public get isNull (): boolean {
-    return this.raw instanceof Null;
+    return this._raw instanceof Null;
   }
 
   /**
@@ -228,7 +228,7 @@ export default class Enum extends Base<Codec> {
    * @description The value of the enum
    */
   public get value (): Codec {
-    return this.raw;
+    return this._raw;
   }
 
   /**
@@ -267,7 +267,7 @@ export default class Enum extends Base<Codec> {
   public toHuman (isExtended?: boolean): AnyJson {
     return this._isBasic
       ? this.type
-      : { [this.type]: this.raw.toHuman(isExtended) };
+      : { [this.type]: this._raw.toHuman(isExtended) };
   }
 
   /**
@@ -276,7 +276,7 @@ export default class Enum extends Base<Codec> {
   public toJSON (): AnyJson {
     return this._isBasic
       ? this.type
-      : { [this.type]: this.raw.toJSON() };
+      : { [this.type]: this._raw.toJSON() };
   }
 
   /**
@@ -289,7 +289,7 @@ export default class Enum extends Base<Codec> {
   /**
    * @description Returns a raw struct representation of the enum types
    */
-  protected toRawStruct (): string[] | Record<string, string> {
+  protected _toRawStruct (): string[] | Record<string, string> {
     return this._isBasic
       ? this.defKeys
       : Struct.typesToMap(this.registry, this._def);
@@ -299,7 +299,7 @@ export default class Enum extends Base<Codec> {
    * @description Returns the base runtime type name for this instance
    */
   public toRawType (): string {
-    return JSON.stringify({ _enum: this.toRawStruct() });
+    return JSON.stringify({ _enum: this._toRawStruct() });
   }
 
   /**
@@ -320,7 +320,7 @@ export default class Enum extends Base<Codec> {
 
     return u8aConcat(
       new Uint8Array([index]),
-      this.raw.toU8a(isBare)
+      this._raw.toU8a(isBare)
     );
   }
 }

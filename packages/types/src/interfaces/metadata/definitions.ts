@@ -2,7 +2,26 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+// order important in structs... :)
+/* eslint-disable sort-keys */
+
+import { Definitions } from '../../types';
+
+const AllHashers = {
+  Blake2_128: null, // eslint-disable-line @typescript-eslint/camelcase
+  Blake2_256: null, // eslint-disable-line @typescript-eslint/camelcase
+  Blake2_128Concat: null, // eslint-disable-line @typescript-eslint/camelcase
+  Twox128: null,
+  Twox256: null,
+  Twox64Concat: null,
+  // new in v11
+  Identity: null
+};
+
+export { AllHashers };
+
 export default {
+  rpc: {},
   types: {
     // v0
     CallMetadataV0: {
@@ -486,16 +505,7 @@ export default {
       items: 'Vec<StorageEntryMetadataV11>'
     },
     StorageHasherV11: {
-      _enum: {
-        Blake2_128: null, // eslint-disable-line @typescript-eslint/camelcase
-        Blake2_256: null, // eslint-disable-line @typescript-eslint/camelcase
-        Blake2_128Concat: null, // eslint-disable-line @typescript-eslint/camelcase
-        Twox128: null,
-        Twox256: null,
-        Twox64Concat: null,
-        // new in v11
-        Identity: null
-      }
+      _enum: AllHashers
     },
 
     // This always maps to the latest
@@ -533,4 +543,4 @@ export default {
       }
     }
   }
-};
+} as Definitions;

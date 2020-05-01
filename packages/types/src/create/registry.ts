@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 // Copyright 2017-2020 @polkadot/types authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 import { ChainProperties, DispatchErrorModule } from '../interfaces/types';
 import { CallFunction, Codec, Constructor, InterfaceTypes, RegistryError, RegistryTypes, Registry, RegistryMetadata, RegisteredTypes, TypeDef } from '../types';
@@ -12,7 +13,7 @@ import { assert, formatBalance, isFunction, isString, isU8a, isUndefined, string
 import Raw from '../codec/Raw';
 import { defaultExtensions, expandExtensionTypes, findUnknownExtensions } from '../extrinsic/signedExtensions';
 import { EventData } from '../generic/Event';
-import Unconstructable from '../primitive/Unconstructable';
+import DoNotConstruct from '../primitive/DoNotConstruct';
 import { createClass, getTypeClass } from './createClass';
 import { createType } from './createType';
 import { getTypeDef } from './getTypeDef';
@@ -23,7 +24,7 @@ function decorateErrors (_: Registry, metadata: RegistryMetadata, metadataErrors
   metadata.asLatest.modules.forEach((section, sectionIndex): void => {
     const sectionName = stringCamelCase(section.name.toString());
 
-    section.errors.forEach(({ name, documentation }, index): void => {
+    section.errors.forEach(({ documentation, name }, index): void => {
       const eventIndex = new Uint8Array([sectionIndex, index]);
 
       metadataErrors[u8aToHex(eventIndex)] = {
@@ -193,10 +194,10 @@ export class TypeRegistry implements Registry {
       if (definition) {
         BaseType = createClass(this, definition);
       } else if (withUnknown) {
-        console.warn(`Unable to resolve type ${name}, it will fail on constrution`);
+        console.warn(`Unable to resolve type ${name}, it will fail on construction`);
 
         this.#unknownTypes.set(name, true);
-        BaseType = Unconstructable.with(name);
+        BaseType = DoNotConstruct.with(name);
       }
 
       if (BaseType) {
@@ -269,11 +270,11 @@ export class TypeRegistry implements Registry {
 
       this.#classes.set(arg1, arg2);
     } else {
-      this.registerObject(arg1);
+      this._registerObject(arg1);
     }
   }
 
-  private registerObject (obj: RegistryTypes): void {
+  private _registerObject (obj: RegistryTypes): void {
     Object.entries(obj).forEach(([name, type]): void => {
       if (isFunction(type)) {
         // This _looks_ a bit funny, but `typeof Clazz === 'function'
@@ -318,7 +319,7 @@ export class TypeRegistry implements Registry {
     const unknown = findUnknownExtensions(this.#metadataExtensions);
 
     if (unknown.length) {
-      console.warn(`Unknown signed extensions [${unknown.join(', ')}] found, treating them as no-efect`);
+      console.warn(`Unknown signed extensions ${unknown.join(', ')} found, treating them as no-efect`);
     }
   }
 }

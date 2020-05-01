@@ -3,11 +3,11 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { StorageEntryMetadataLatest, StorageEntryTypeLatest, StorageHasher } from '../interfaces/metadata';
-import { AnyU8a, Codec, InterfaceTypes, Registry } from '../types';
+import { AnyJson, AnyU8a, Codec, InterfaceTypes, Registry } from '../types';
 
 import { assert, isFunction, isString, isU8a } from '@polkadot/util';
 
-import metadataDefs from '../interfaces/metadata/definitions';
+import { AllHashers } from '@polkadot/types/interfaces/metadata/definitions';
 import Bytes from './Bytes';
 
 export interface StorageEntry {
@@ -32,17 +32,15 @@ interface StorageKeyExtra {
   section: string;
 }
 
-const HASHER_MAP: Record<keyof typeof metadataDefs.types.StorageHasherV11._enum, [number, boolean]> = {
+const HASHER_MAP: Record<keyof typeof AllHashers, [number, boolean]> = {
   // opaque
   Blake2_128: [16, false], // eslint-disable-line @typescript-eslint/camelcase
+  Blake2_128Concat: [16, true], // eslint-disable-line @typescript-eslint/camelcase
   Blake2_256: [32, false], // eslint-disable-line @typescript-eslint/camelcase
+  Identity: [0, true],
   Twox128: [16, false],
   Twox256: [32, false],
-
-  // can decode
-  Blake2_128Concat: [16, true], // eslint-disable-line @typescript-eslint/camelcase
-  Twox64Concat: [8, true],
-  Identity: [0, true]
+  Twox64Concat: [8, true]
 };
 
 function getStorageType (type: StorageEntryTypeLatest, isOptionalLinked?: boolean): [boolean, string] {
@@ -160,9 +158,9 @@ export default class StorageKey extends Bytes {
 
   private _meta?: StorageEntryMetadataLatest;
 
-  private readonly _method?: string;
+  private _outputType: string;
 
-  private readonly _outputType: string;
+  private readonly _method?: string;
 
   private readonly _section?: string;
 
@@ -171,13 +169,12 @@ export default class StorageKey extends Bytes {
 
     super(registry, key);
 
-    this._meta = StorageKey.getMeta(value as StorageKey);
     this._method = override.method || method;
-    this._outputType = StorageKey.getType(value as StorageKey);
     this._section = override.section || section;
+    this._outputType = StorageKey.getType(value as StorageKey);
 
     // decode the args (as applicable based on the key and the hashers, after all init)
-    this.decodeArgsFromMeta();
+    this.setMeta(StorageKey.getMeta(value as StorageKey));
   }
 
   public static getMeta (value: StorageKey | StorageEntry | [StorageEntry, any]): StorageEntryMetadataLatest | undefined {
@@ -252,19 +249,32 @@ export default class StorageKey extends Bytes {
   public setMeta (meta?: StorageEntryMetadataLatest): this {
     this._meta = meta;
 
-    return this.decodeArgsFromMeta();
-  }
+    if (meta) {
+      this._outputType = unwrapStorageType(meta.type);
+    }
 
-  /**
-   * @description Decode the args embedded in the key (assuming we have decodable hashers)
-   */
-  public decodeArgsFromMeta (meta?: StorageEntryMetadataLatest): this {
     try {
-      this._args = decodeArgsFromMeta(this.registry, this.toU8a(true), meta || this.meta);
+      this._args = decodeArgsFromMeta(this.registry, this.toU8a(true), this.meta);
     } catch (error) {
       // ignore...
     }
 
     return this;
+  }
+
+  /**
+   * @description Returns the Human representation for this type
+   */
+  public toHuman (): AnyJson {
+    return this._args.length
+      ? this._args.map((arg) => arg.toHuman())
+      : super.toHuman();
+  }
+
+  /**
+   * @description Returns the raw type for this
+   */
+  public toRawType (): string {
+    return 'StorageKey';
   }
 }

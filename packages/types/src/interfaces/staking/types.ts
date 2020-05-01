@@ -1,11 +1,10 @@
 // Auto-generated via `yarn polkadot-types-from-defs`, do not edit
-/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable */
 
 import { ITuple } from '@polkadot/types/types';
 import { BTreeMap, Compact, Enum, Option, Struct, Vec } from '@polkadot/types/codec';
 import { bool, u128, u16, u32 } from '@polkadot/types/primitive';
 import { AccountId, Balance, BlockNumber, Moment, Perbill } from '@polkadot/types/interfaces/runtime';
-export { RewardDestination, Exposure, IndividualExposure, StakingLedger } from '@polkadot/react-darwinia/interfaces';
 
 /** @name ActiveEraInfo */
 export interface ActiveEraInfo extends Struct {
@@ -15,26 +14,26 @@ export interface ActiveEraInfo extends Struct {
 
 /** @name CompactAssignments */
 export interface CompactAssignments extends Struct {
-  readonly votes1: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes2: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes3: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes4: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes5: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes6: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes7: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes8: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes9: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes10: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes11: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes12: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes13: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes14: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes15: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
-  readonly votes16: Vec<ITuple<[AccountId, Vec<CompactScore>, AccountId]>>;
+  readonly votes1: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes2: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes3: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes4: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes5: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes6: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes7: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes8: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes9: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes10: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes11: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes12: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes13: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes14: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes15: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
+  readonly votes16: Vec<ITuple<[ValidatorIndex, Vec<CompactScore>, NominatorIndex]>>;
 }
 
 /** @name CompactScore */
-export interface CompactScore extends ITuple<[AccountId, u128]> {}
+export interface CompactScore extends ITuple<[u16, OffchainAccuracy]> {}
 
 /** @name ElectionCompute */
 export interface ElectionCompute extends Enum {
@@ -79,7 +78,7 @@ export interface EraRewards extends Struct {
   readonly rewards: Vec<u32>;
 }
 
-/** @name Exposure */
+// /** @name Exposure */
 // export interface Exposure extends Struct {
 //   readonly total: Compact<Balance>;
 //   readonly own: Compact<Balance>;
@@ -95,10 +94,10 @@ export interface Forcing extends Enum {
 }
 
 /** @name IndividualExposure */
-// export interface IndividualExposure extends Struct {
-//   readonly who: AccountId;
-//   readonly value: Compact<Balance>;
-// }
+export interface IndividualExposure extends Struct {
+  readonly who: AccountId;
+  readonly value: Compact<Balance>;
+}
 
 /** @name KeyType */
 export interface KeyType extends AccountId {}
@@ -113,6 +112,15 @@ export interface Nominations extends Struct {
   readonly suppressed: bool;
 }
 
+/** @name NominatorIndex */
+export interface NominatorIndex extends u32 {}
+
+/** @name OffchainAccuracy */
+export interface OffchainAccuracy extends PerU16 {}
+
+/** @name PerU16 */
+export interface PerU16 extends u16 {}
+
 /** @name PhragmenScore */
 export interface PhragmenScore extends Vec<u128> {}
 
@@ -123,14 +131,15 @@ export interface Points extends u32 {}
 export interface ReleasesStaking extends Enum {
   readonly isV100: boolean;
   readonly isV200: boolean;
+  readonly isV300: boolean;
 }
 
 /** @name RewardDestination */
-// export interface RewardDestination extends Enum {
-//   readonly isStaked: boolean;
-//   readonly isStash: boolean;
-//   readonly isController: boolean;
-// }
+export interface RewardDestination extends Enum {
+  readonly isStaked: boolean;
+  readonly isStash: boolean;
+  readonly isController: boolean;
+}
 
 /** @name RewardPoint */
 export interface RewardPoint extends u32 {}
@@ -166,13 +175,13 @@ export interface SpanRecord extends Struct {
   readonly paidOut: Balance;
 }
 
-/** @name StakingLedger */
+// /** @name StakingLedger */
 // export interface StakingLedger extends Struct {
 //   readonly stash: AccountId;
 //   readonly total: Compact<Balance>;
 //   readonly active: Compact<Balance>;
 //   readonly unlocking: Vec<UnlockChunk>;
-//   readonly lastReward: Option<EraIndex>;
+//   readonly claimedRewards: Vec<EraIndex>;
 // }
 
 /** @name StakingLedgerTo223 */
@@ -181,6 +190,15 @@ export interface StakingLedgerTo223 extends Struct {
   readonly total: Compact<Balance>;
   readonly active: Compact<Balance>;
   readonly unlocking: Vec<UnlockChunk>;
+}
+
+/** @name StakingLedgerTo240 */
+export interface StakingLedgerTo240 extends Struct {
+  readonly stash: AccountId;
+  readonly total: Compact<Balance>;
+  readonly active: Compact<Balance>;
+  readonly unlocking: Vec<UnlockChunk>;
+  readonly lastReward: Option<EraIndex>;
 }
 
 /** @name UnappliedSlash */
@@ -197,8 +215,8 @@ export interface UnappliedSlashOther extends ITuple<[AccountId, Balance]> {}
 
 /** @name UnlockChunk */
 export interface UnlockChunk extends Struct {
-  readonly value: Compact<Balance>;
-  readonly era: Compact<BlockNumber>;
+  readonly amount: Balance;
+  readonly moment: BlockNumber;
 }
 
 /** @name ValidatorIndex */
@@ -219,3 +237,5 @@ export interface ValidatorPrefsTo145 extends Struct {
 export interface ValidatorPrefsTo196 extends Struct {
   readonly validatorPayment: Compact<Balance>;
 }
+
+export type PHANTOM_STAKING = 'staking';

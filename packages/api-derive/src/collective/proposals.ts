@@ -4,17 +4,19 @@
 
 import { ApiInterfaceRx } from '@polkadot/api/types';
 import { Hash, Proposal, Votes } from '@polkadot/types/interfaces';
-import { DerivedCollectiveProposal } from '../types';
+import { DeriveCollectiveProposal } from '../types';
 
 import { Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Option } from '@polkadot/types';
 
+import { memo } from '../util';
+
 type Result = [Hash[], Option<Proposal>[], Option<Votes>[]];
 
-function parse ([hashes, proposals, votes]: Result): DerivedCollectiveProposal[] {
+function parse ([hashes, proposals, votes]: Result): DeriveCollectiveProposal[] {
   return proposals
-    .map((proposalOpt, index): DerivedCollectiveProposal | null =>
+    .map((proposalOpt, index): DeriveCollectiveProposal | null =>
       proposalOpt.isSome
         ? {
           hash: hashes[index],
@@ -23,11 +25,11 @@ function parse ([hashes, proposals, votes]: Result): DerivedCollectiveProposal[]
         }
         : null
     )
-    .filter((proposal): proposal is DerivedCollectiveProposal => !!proposal);
+    .filter((proposal): proposal is DeriveCollectiveProposal => !!proposal);
 }
 
-export function proposals (api: ApiInterfaceRx, section: 'council' | 'technicalCommittee'): () => Observable<DerivedCollectiveProposal[]> {
-  return (): Observable<DerivedCollectiveProposal[]> =>
+export function proposals (api: ApiInterfaceRx, section: 'council' | 'technicalCommittee'): () => Observable<DeriveCollectiveProposal[]> {
+  return memo((): Observable<DeriveCollectiveProposal[]> =>
     api.query[section]?.proposals
       ? api.query[section].proposals().pipe(
         switchMap((hashes: Hash[]): Observable<Result> =>
@@ -41,5 +43,6 @@ export function proposals (api: ApiInterfaceRx, section: 'council' | 'technicalC
         ),
         map(parse)
       )
-      : of([] as DerivedCollectiveProposal[]);
+      : of([] as DeriveCollectiveProposal[])
+  );
 }

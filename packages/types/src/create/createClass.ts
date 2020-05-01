@@ -23,6 +23,8 @@ import U8aFixed, { BitLength as U8aFixedBitLength } from '../codec/U8aFixed';
 import UInt from '../codec/UInt';
 import Vec from '../codec/Vec';
 import VecFixed from '../codec/VecFixed';
+import DoNotConstruct from '../primitive/DoNotConstruct';
+
 import { getTypeDef } from './getTypeDef';
 
 export function createClass<T extends Codec = Codec, K extends string = string> (registry: Registry, type: K): Constructor<FromReg<T, K>> {
@@ -97,6 +99,8 @@ const infoMapping: Record<TypeDefInfo, (registry: Registry, value: TypeDef) => C
 
   [TypeDefInfo.Compact]: (registry: Registry, value: TypeDef): Constructor => Compact.with(getSubType(value)),
 
+  [TypeDefInfo.DoNotConstruct]: (registry: Registry, value: TypeDef): Constructor => DoNotConstruct.with(value.displayName),
+
   [TypeDefInfo.Enum]: (registry: Registry, value: TypeDef): Constructor => Enum.with(getTypeClassMap(value)),
 
   [TypeDefInfo.HashMap]: (registry: Registry, value: TypeDef): Constructor => createHashMap(value, HashMap),
@@ -106,6 +110,7 @@ const infoMapping: Record<TypeDefInfo, (registry: Registry, value: TypeDef) => C
   // We have circular deps between Linkage & Struct
   [TypeDefInfo.Linkage]: (registry: Registry, value: TypeDef): Constructor => {
     const type = `Option<${getSubType(value)}>`;
+    // eslint-disable-next-line sort-keys
     const Clazz = Struct.with({ previous: type, next: type } as any);
 
     ClassOf.prototype.toRawType = function (): string {
@@ -127,14 +132,14 @@ const infoMapping: Record<TypeDefInfo, (registry: Registry, value: TypeDef) => C
     const [Ok, Error] = getTypeClassArray(value);
 
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    return Result.with({ Ok, Error });
+    return Result.with({ Error, Ok });
   },
 
   [TypeDefInfo.Set]: (registry: Registry, value: TypeDef): Constructor => {
     const result: Record<string, number> = {};
 
     return CodecSet.with(
-      getSubDefArray(value).reduce((result, { name, index }): Record<string, number> => {
+      getSubDefArray(value).reduce((result, { index, name }): Record<string, number> => {
         result[name as string] = index as number;
 
         return result;

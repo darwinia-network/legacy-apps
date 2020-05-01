@@ -1,16 +1,17 @@
-/* eslint-disable no-dupe-class-members */
 // Copyright 2017-2020 @polkadot/api authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+
+/* eslint-disable no-dupe-class-members */
 
 import { Address, Call, Extrinsic, ExtrinsicEra, ExtrinsicStatus, Hash, Header, Index, RuntimeDispatchInfo } from '@polkadot/types/interfaces';
 import { Callback, Codec, Constructor, IKeyringPair, Registry, SignatureOptions, ISubmittableResult } from '@polkadot/types/types';
 import { ApiInterfaceRx, ApiTypes, SignerResult } from '../types';
 import { AddressOrPair, SignerOptions, SubmittableExtrinsic, SubmittablePaymentResult, SubmittableResultResult, SubmittableResultSubscription, SubmittableThis } from './types';
 
-import { Observable, combineLatest, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { first, map, mapTo, mergeMap, switchMap, tap } from 'rxjs/operators';
-import { assert, isBn, isFunction, isNumber, isUndefined } from '@polkadot/util';
+import { assert, isBn, isFunction, isNumber } from '@polkadot/util';
 
 import { filterEvents, isKeyringPair } from '../util';
 import ApiBase from '../base';
@@ -19,15 +20,8 @@ import SubmittableResult from './Result';
 interface SubmittableOptions<ApiType extends ApiTypes> {
   api: ApiInterfaceRx;
   apiType: ApiTypes;
-  decorateMethod: ApiBase<ApiType>['decorateMethod'];
+  decorateMethod: ApiBase<ApiType>['_decorateMethod'];
 }
-
-// The default for 6s allowing for 5min eras. When translating this to faster blocks -
-//   - 4s = (10 / 15) * 5 = 3.33m
-//   - 2s = (10 / 30) * 5 = 1.66m
-const BLOCKTIME = 6;
-const ONE_MINUTE = 60 / BLOCKTIME;
-const DEFAULT_MORTAL_LENGTH = 5 * ONE_MINUTE;
 
 export default function createClass <ApiType extends ApiTypes> ({ api, apiType, decorateMethod }: SubmittableOptions<ApiType>): Constructor<SubmittableExtrinsic<ApiType>> {
   // an instance of the base extrinsic for us to extend
@@ -49,11 +43,11 @@ export default function createClass <ApiType extends ApiTypes> ({ api, apiType, 
 
       return decorateMethod(
         (): Observable<RuntimeDispatchInfo> =>
-          this.#getPrelimState(address, allOptions).pipe(
+          api.derive.tx.signingInfo(address, allOptions.nonce, allOptions.era).pipe(
             first(),
-            switchMap(([nonce, header]): Observable<RuntimeDispatchInfo> => {
+            switchMap((signingInfo): Observable<RuntimeDispatchInfo> => {
               // setup our options (same way as in signAndSend)
-              const eraOptions = this.#makeEraOptions(allOptions, { header, nonce });
+              const eraOptions = this.#makeEraOptions(allOptions, signingInfo);
               const signOptions = this.#makeSignOptions(eraOptions, {});
 
               // add a fake signature to the extrinsic
@@ -125,23 +119,7 @@ export default function createClass <ApiType extends ApiTypes> ({ api, apiType, 
       )(statusCb);
     }
 
-    #getPrelimState = (address: string, options: Partial<SignerOptions>): Observable<[Index, Header | null]> => {
-      return combineLatest([
-        // if we have a nonce already, don't retrieve the latest, use what is there
-        isUndefined(options.nonce)
-          ? api.derive.balances.account(address).pipe(
-            map(({ accountNonce }): Index => accountNonce)
-          )
-          : of(this.registry.createType('Index', options.nonce)),
-        // if we have an era provided already or eraLength is <= 0 (immortal)
-        // don't get the latest block, just pass null, handle in mergeMap
-        (isUndefined(options.era) || (isNumber(options.era) && options.era > 0))
-          ? api.rpc.chain.getHeader()
-          : of(null)
-      ]);
-    }
-
-    #makeEraOptions = (options: Partial<SignerOptions>, { header, nonce }: { header: Header | null; nonce: Index }): SignatureOptions => {
+    #makeEraOptions = (options: Partial<SignerOptions>, { header, mortalLength, nonce }: { header: Header | null; mortalLength: number; nonce: Index }): SignatureOptions => {
       if (!header) {
         if (isNumber(options.era)) {
           // since we have no header, it is immortal, remove any option overrides
@@ -157,7 +135,7 @@ export default function createClass <ApiType extends ApiTypes> ({ api, apiType, 
         blockHash: header.hash,
         era: this.registry.createType('ExtrinsicEra', {
           current: header.number,
-          period: options.era || DEFAULT_MORTAL_LENGTH
+          period: options.era || mortalLength
         }),
         nonce
       });
@@ -191,15 +169,15 @@ export default function createClass <ApiType extends ApiTypes> ({ api, apiType, 
       const options = this.#optionsOrNonce(optionsOrNonce);
       let updateId: number | undefined;
 
-      return this.#getPrelimState(address, options).pipe(
+      return api.derive.tx.signingInfo(address, options.nonce, options.era).pipe(
         first(),
-        mergeMap(async ([nonce, header]): Promise<void> => {
-          const eraOptions = this.#makeEraOptions(options, { header, nonce });
+        mergeMap(async (signingInfo): Promise<void> => {
+          const eraOptions = this.#makeEraOptions(options, signingInfo);
 
           if (isKeyringPair(account)) {
             this.sign(account, eraOptions);
           } else {
-            updateId = await this.#signViaSigner(address, eraOptions, header);
+            updateId = await this.#signViaSigner(address, eraOptions, signingInfo.header);
           }
         }),
         mapTo(updateId)
@@ -215,13 +193,10 @@ export default function createClass <ApiType extends ApiTypes> ({ api, apiType, 
         ? status.asInBlock
         : status.asFinalized;
 
-      return combineLatest([
-        api.rpc.chain.getBlock(blockHash),
-        api.query.system.events.at(blockHash)
-      ]).pipe(
-        map(([signedBlock, allEvents]): ISubmittableResult =>
+      return api.derive.tx.events(blockHash).pipe(
+        map(({ block, events }): ISubmittableResult =>
           new SubmittableResult({
-            events: filterEvents(this.hash, signedBlock, allEvents, status),
+            events: filterEvents(this.hash, block, events, status),
             status
           })
         )
@@ -229,26 +204,22 @@ export default function createClass <ApiType extends ApiTypes> ({ api, apiType, 
     }
 
     #observeSend = (updateId = -1): Observable<Hash> => {
-      return api.rpc.author
-        .submitExtrinsic(this)
-        .pipe(
-          tap((hash): void => {
-            this.#updateSigner(updateId, hash);
-          })
-        );
+      return api.rpc.author.submitExtrinsic(this).pipe(
+        tap((hash): void => {
+          this.#updateSigner(updateId, hash);
+        })
+      );
     }
 
     #observeSubscribe = (updateId = -1): Observable<ISubmittableResult> => {
-      return api.rpc.author
-        .submitAndWatchExtrinsic(this)
-        .pipe(
-          switchMap((status): Observable<ISubmittableResult> =>
-            this.#observeStatus(status)
-          ),
-          tap((status): void => {
-            this.#updateSigner(updateId, status);
-          })
-        );
+      return api.rpc.author.submitAndWatchExtrinsic(this).pipe(
+        switchMap((status): Observable<ISubmittableResult> =>
+          this.#observeStatus(status)
+        ),
+        tap((status): void => {
+          this.#updateSigner(updateId, status);
+        })
+      );
     }
 
     // NOTE here we actually override nonce if it was specified (backwards compat for
@@ -267,8 +238,8 @@ export default function createClass <ApiType extends ApiTypes> ({ api, apiType, 
       const payload = this.registry.createType('SignerPayload', {
         ...options,
         address,
-        method: this.method,
-        blockNumber: header ? header.number : 0
+        blockNumber: header ? header.number : 0,
+        method: this.method
       });
       let result: SignerResult;
 

@@ -14,22 +14,23 @@ import Struct from '@polkadot/types/codec/Struct';
 import UInt from '@polkadot/types/codec/UInt';
 import Vec from '@polkadot/types/codec/Vec';
 import Tuple from '@polkadot/types/codec/Tuple';
+import { AllConvictions } from '@polkadot/types/interfaces/democracy/definitions';
 import GenericAccountId from '@polkadot/types/generic/AccountId';
 import GenericAddress from '@polkadot/types/generic/Address';
-import Vote, { convictionNames as _voteConvictions } from '@polkadot/types/generic/Vote';
+import Vote from '@polkadot/types/generic/Vote';
 import Null from '@polkadot/types/primitive/Null';
 import * as primitiveClasses from '@polkadot/types/primitive';
-import { isChildClass, stringLowerFirst } from '@polkadot/util';
+import { isChildClass } from '@polkadot/util';
 
 import { isCompactEncodable } from './class';
 import { formatType } from './formatting';
 import { setImports, TypeImports } from './imports';
 
 function arrayToStrType (arr: string[]): string {
-  return `(${arr.map((c): string => `'${c}'`).join(' | ')})`;
+  return `${arr.map((c): string => `'${c}'`).join(' | ')}`;
 }
 
-const voteConvictions = arrayToStrType(_voteConvictions);
+const voteConvictions = arrayToStrType(AllConvictions);
 
 // From `T`, generate `Compact<T>, Option<T>, Vec<T>`
 /** @internal */
@@ -43,24 +44,26 @@ export function getDerivedTypes (definitions: object, type: string, primitiveNam
   const types = [
     {
       info: TypeDefInfo.Option,
-      type,
-      sub: def
+      sub: def,
+      type
     },
     {
       info: TypeDefInfo.Vec,
-      type,
-      sub: def
+      sub: def,
+      type
     }
   ];
+
   if (isCompact) {
     types.unshift({
       info: TypeDefInfo.Compact,
-      type,
-      sub: def
+      sub: def,
+      type
     });
   }
 
-  const result = types.map(t => formatType(definitions, t, imports)).map(t => `'${t}': ${t};`);
+  const result = types.map((t) => formatType(definitions, t, imports)).map((t) => `'${t}': ${t};`);
+
   result.unshift(`${type}: ${type};`);
 
   return result;
@@ -77,6 +80,7 @@ export function getSimilarTypes (definitions: object, registry: Registry, _type:
 
   if (type === 'Extrinsic') {
     setImports(definitions, imports, ['IExtrinsic']);
+
     return ['IExtrinsic'];
   } else if (type === 'StorageKey') {
     // TODO We can do better
@@ -108,7 +112,7 @@ export function getSimilarTypes (definitions: object, registry: Registry, _type:
       possibleTypes.push(arrayToStrType(e.defKeys), 'number');
     } else {
       // TODO We don't really want any here, these should be expanded
-      possibleTypes.push(...e.defKeys.map((key): string => `{ ${stringLowerFirst(key)}: any }`), 'string');
+      possibleTypes.push(...e.defKeys.map((key): string => `{ ${key}: any }`), 'string');
     }
 
     possibleTypes.push('Uint8Array');

@@ -37,6 +37,7 @@ function extractArgs (args: any[], needsCallback: boolean): [any[], Callback<Cod
 // a Promise completion tracker, wrapping an isComplete variable that ensures the promise only resolves once
 function promiseTracker (resolve: (value: () => void) => void, reject: (value: Error) => void): Tracker {
   let isCompleted = false;
+
   const complete = (fn: Function, value: any): void => {
     if (!isCompleted) {
       isCompleted = true;
@@ -78,7 +79,7 @@ export function decorateMethod<Method extends AnyFunction> (method: Method, opti
           catchError((error): Observable<never> =>
             tracker.reject(error)
           ),
-          // upon the first result, resolve the with the unsub function
+          // upon the first result, resolve with the unsub function
           tap((): void =>
             tracker.resolve((): void => subscription.unsubscribe())
           )
@@ -263,7 +264,7 @@ export default class ApiPromise extends ApiBase<'promise'> {
    * ```
    */
   // eslint-disable-next-line @typescript-eslint/require-await
-  public async combineLatest (fns: (CombinatorFunction | [CombinatorFunction, ...any[]])[], callback: CombinatorCallback): UnsubscribePromise {
+  public async combineLatest <T extends any[] = any[]> (fns: (CombinatorFunction | [CombinatorFunction, ...any[]])[], callback: CombinatorCallback<T>): UnsubscribePromise {
     const combinator = new Combinator(fns, callback);
 
     return (): void => {

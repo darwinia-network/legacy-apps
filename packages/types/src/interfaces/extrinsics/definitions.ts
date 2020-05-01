@@ -2,7 +2,13 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+// order important in structs... :)
+/* eslint-disable sort-keys */
+
+import { Definitions } from '../../types';
+
 export default {
+  rpc: {},
   types: {
     Extrinsic: 'GenericExtrinsic',
     ExtrinsicEra: 'GenericExtrinsicEra',
@@ -40,4 +46,4 @@ export default {
     Ed25519Signature: 'H512',
     Sr25519Signature: 'H512'
   }
-};
+} as Definitions;

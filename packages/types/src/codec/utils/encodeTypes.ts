@@ -21,7 +21,7 @@ export function paramsNotation (outer: string, inner?: string | any[], transform
 }
 
 function encodeWithParams (typeDef: Pick<TypeDef, any>, outer = typeDef.displayName || typeDef.type): string {
-  const { info, sub, params } = typeDef;
+  const { info, params, sub } = typeDef;
 
   switch (info) {
     case TypeDefInfo.BTreeMap:
@@ -41,6 +41,10 @@ function encodeWithParams (typeDef: Pick<TypeDef, any>, outer = typeDef.displayN
     default:
       return outer;
   }
+}
+
+function encodeDoNotConstruct ({ displayName }: TypeDef): string {
+  return `DoNotEncode<${displayName}>`;
 }
 
 function encodeSubTypes (sub: TypeDef[], asEnum?: boolean): string {
@@ -122,6 +126,7 @@ const encoders: Record<TypeDefInfo, (typeDef: TypeDef) => string> = {
   [TypeDefInfo.BTreeMap]: (typeDef: TypeDef): string => encodeWithParams(typeDef, 'BTreeMap'),
   [TypeDefInfo.BTreeSet]: (typeDef: TypeDef): string => encodeWithParams(typeDef, 'BTreeSet'),
   [TypeDefInfo.Compact]: (typeDef: TypeDef): string => encodeWithParams(typeDef, 'Compact'),
+  [TypeDefInfo.DoNotConstruct]: (typeDef: TypeDef): string => encodeDoNotConstruct(typeDef),
   [TypeDefInfo.Enum]: (typeDef: TypeDef): string => encodeEnum(typeDef),
   [TypeDefInfo.HashMap]: (typeDef: TypeDef): string => encodeWithParams(typeDef, 'HashMap'),
   [TypeDefInfo.Int]: (typeDef: TypeDef): string => encodeUInt(typeDef, 'Int'),

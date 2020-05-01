@@ -1,8 +1,9 @@
 // Auto-generated via `yarn polkadot-types-from-defs`, do not edit
-/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable */
 
-import { Enum, Option, Struct, U8aFixed } from '@polkadot/types/codec';
+import { Enum, Option, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
 import { u32, u64 } from '@polkadot/types/primitive';
+import { Hash } from '@polkadot/types/interfaces/runtime';
 
 /** @name BabeAuthorityWeight */
 export interface BabeAuthorityWeight extends u64 {}
@@ -13,8 +14,17 @@ export interface BabeBlockWeight extends u32 {}
 /** @name BabeWeight */
 export interface BabeWeight extends u64 {}
 
+/** @name EpochAuthorship */
+export interface EpochAuthorship extends Struct {
+  readonly primary: Vec<u64>;
+  readonly secondary: Vec<u64>;
+}
+
 /** @name MaybeVrf */
 export interface MaybeVrf extends Option<VrfData> {}
+
+/** @name Randomness */
+export interface Randomness extends Hash {}
 
 /** @name RawBabePreDigest */
 export interface RawBabePreDigest extends Enum {
@@ -81,3 +91,5 @@ export interface VrfData extends U8aFixed {}
 
 /** @name VrfProof */
 export interface VrfProof extends U8aFixed {}
+
+export type PHANTOM_BABE = 'babe';

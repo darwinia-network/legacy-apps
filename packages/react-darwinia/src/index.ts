@@ -4,7 +4,7 @@ import DARWINIA_CRAB_TYPES from './types_crab.json';
 
 const SUBSCAN_URL_CRAB = 'https://crab.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
-const INIT_VERSION = 'version-2020-04-2101';
+const INIT_VERSION = 'version-2020-05-0101';
 let KTON_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CKTON' };
 let RING_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CRING' };
 

@@ -1,9 +1,9 @@
 // Auto-generated via `yarn polkadot-types-from-defs`, do not edit
-/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable */
 
 import { Struct } from '@polkadot/types/codec';
 import { bool } from '@polkadot/types/primitive';
-import { BlockHash } from '@polkadot/types/interfaces/rpc';
+import { BlockHash } from '@polkadot/types/interfaces/chain';
 
 /** @name CreatedBlock */
 export interface CreatedBlock extends Struct {
@@ -20,3 +20,5 @@ export interface ImportedAux extends Struct {
   readonly needsFinalityProof: bool;
   readonly isNewBest: bool;
 }
+
+export type PHANTOM_ENGINE = 'engine';

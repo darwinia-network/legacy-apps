@@ -9,7 +9,7 @@ import { paramsNotation } from '@polkadot/types/codec/utils';
 
 import { setImports, TypeImports } from './imports';
 
-export const HEADER = (type: 'chain' | 'defs'): string => `// Auto-generated via \`yarn polkadot-types-from-${type}\`, do not edit\n/* eslint-disable @typescript-eslint/no-empty-interface */\n\n`;
+export const HEADER = (type: 'chain' | 'defs'): string => `// Auto-generated via \`yarn polkadot-types-from-${type}\`, do not edit\n/* eslint-disable */\n\n`;
 export const FOOTER = '\n';
 
 const TYPES_NON_PRIMITIVE = ['Metadata'];
@@ -98,6 +98,14 @@ function formatCompact (inner: string): string {
 }
 
 /**
+ * Simple return
+ */
+/** @internal */
+function formatDoNoConstruct (): string {
+  return 'DoNotConstruct';
+}
+
+/**
  * Given the inner `K` & `V`, return a `BTreeMap<K, V>`  string
  */
 /** @internal */
@@ -173,19 +181,29 @@ export function formatType (definitions: object, type: string | TypeDef, imports
 
       return formatCompact(formatType(definitions, (typeDef.sub as TypeDef).type, imports));
     }
+
+    case TypeDefInfo.DoNotConstruct: {
+      setImports(definitions, imports, ['DoNotConstruct']);
+
+      return formatDoNoConstruct();
+    }
+
     case TypeDefInfo.Option: {
       setImports(definitions, imports, ['Option']);
 
       return formatOption(formatType(definitions, (typeDef.sub as TypeDef).type, imports));
     }
+
     case TypeDefInfo.Plain: {
       return typeDef.type;
     }
+
     case TypeDefInfo.Vec: {
       setImports(definitions, imports, ['Vec']);
 
       return formatVec(formatType(definitions, (typeDef.sub as TypeDef).type, imports));
     }
+
     case TypeDefInfo.Tuple: {
       setImports(definitions, imports, ['ITuple']);
 
@@ -195,6 +213,7 @@ export function formatType (definitions: object, type: string | TypeDef, imports
           .map((sub): string => formatType(definitions, sub.type, imports)))
       );
     }
+
     case TypeDefInfo.VecFixed: {
       const type = (typeDef.sub as TypeDef).type;
 
@@ -208,6 +227,7 @@ export function formatType (definitions: object, type: string | TypeDef, imports
 
       return formatVec(formatType(definitions, type, imports));
     }
+
     case TypeDefInfo.BTreeMap: {
       setImports(definitions, imports, ['BTreeMap']);
 
@@ -215,6 +235,7 @@ export function formatType (definitions: object, type: string | TypeDef, imports
 
       return formatBTreeMap(formatType(definitions, keyDef.type, imports), formatType(definitions, valDef.type, imports));
     }
+
     case TypeDefInfo.BTreeSet: {
       setImports(definitions, imports, ['BTreeSet']);
 
@@ -222,6 +243,7 @@ export function formatType (definitions: object, type: string | TypeDef, imports
 
       return formatBTreeSet(formatType(definitions, valDef.type, imports));
     }
+
     case TypeDefInfo.HashMap: {
       setImports(definitions, imports, ['HashMap']);
 
@@ -229,6 +251,7 @@ export function formatType (definitions: object, type: string | TypeDef, imports
 
       return formatHashMap(formatType(definitions, keyDef.type, imports), formatType(definitions, valDef.type, imports));
     }
+
     case TypeDefInfo.Linkage: {
       const type = (typeDef.sub as TypeDef).type;
 
@@ -236,6 +259,7 @@ export function formatType (definitions: object, type: string | TypeDef, imports
 
       return formatLinkage(formatType(definitions, type, imports));
     }
+
     case TypeDefInfo.Result: {
       setImports(definitions, imports, ['Result']);
 
@@ -243,6 +267,7 @@ export function formatType (definitions: object, type: string | TypeDef, imports
 
       return formatResult(formatType(definitions, okDef.type, imports), formatType(definitions, errorDef.type, imports));
     }
+
     default: {
       throw new Error(`Cannot format ${JSON.stringify(type)}`);
     }
