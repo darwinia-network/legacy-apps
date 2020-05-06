@@ -4,7 +4,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { AccountId, AccountIndex, Address, Balance, BalanceLockTo212, BlockNumber, VestingInfo, VestingSchedule } from '@polkadot/types/interfaces';
-import { DeriveBalancesAccount as DerivedBalancesAccount, DeriveBalancesAll as DerivedBalancesAll, DerivedBalanceLock } from '../types';
+import { DeriveBalancesAccount, DeriveBalancesAll as DeriveBalancesAll, DerivedBalanceLock } from '../types';
 import { BalanceLock } from '@polkadot/react-darwinia/interfaces/types';
 import BN from 'bn.js';
 import { combineLatest, of, Observable } from 'rxjs';
@@ -16,7 +16,7 @@ import { bnMax } from '@polkadot/util';
 import { memo } from '../util';
 
 type ResultBalance = [(BalanceLock)[], (BalanceLock)[]];
-type Result = [DerivedBalancesAccount, BlockNumber, ResultBalance];
+type Result = [DeriveBalancesAccount, BlockNumber, ResultBalance];
 
 function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock)[], bestNumber: BlockNumber): [Balance, (DerivedBalanceLock)[]] {
   let lockedBn = new BN(0);
@@ -40,7 +40,7 @@ function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock)[], bestNumber: Blo
   return [lockedBalance, lockedBreakdown];
 }
 
-function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBalance, freeBalanceKton, frozenFee, frozenMisc, reservedBalance, reservedBalanceKton, votingBalance, votingBalanceKton }, bestNumber, [locks, locksKton]]: Result): DerivedBalancesAll {
+function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBalance, freeBalanceKton, frozenFee, frozenMisc, reservedBalance, reservedBalanceKton, votingBalance, votingBalanceKton }, bestNumber, [locks, locksKton]]: Result): DeriveBalancesAll {
   let lockedBalance = api.registry.createType('Balance');
   let lockedBalanceKton = api.registry.createType('Balance');
   let lockedBreakdown: (DerivedBalanceLock)[] = [];
@@ -152,8 +152,8 @@ function queryCurrent (api: ApiInterfaceRx, accountId: AccountId): Observable<Re
  * });
  * ```
  */
-export function all (api: ApiInterfaceRx): (address: AccountIndex | AccountId | Address | string) => Observable<DerivedBalancesAll> {
-  return memo((address: AccountIndex | AccountId | Address | string): Observable<DerivedBalancesAll> =>
+export function all (api: ApiInterfaceRx): (address: AccountIndex | AccountId | Address | string) => Observable<DeriveBalancesAll> {
+  return memo((address: AccountIndex | AccountId | Address | string): Observable<DeriveBalancesAll> =>
     api.derive.balances.account(address).pipe(
       switchMap((account): Observable<Result> =>
         (!account.accountId.isEmpty
@@ -165,6 +165,6 @@ export function all (api: ApiInterfaceRx): (address: AccountIndex | AccountId | 
           : of([account, api.registry.createType('BlockNumber'), [api.registry.createType('Vec<BalanceLock>'), api.registry.createType('Vec<BalanceLock>')]])
         )
       ),
-      map((result): DerivedBalancesAll => calcBalances(api, result))
+      map((result): DeriveBalancesAll => calcBalances(api, result))
     ));
 }

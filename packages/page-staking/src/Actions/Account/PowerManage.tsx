@@ -19,7 +19,7 @@ import ringIcon from '../../Assets/ring.svg';
 import ktonIcon from '../../Assets/kton.svg';
 import { Power } from '@polkadot/react-darwinia/components';
 import { AvailableKton, Available, Balance, BalanceKton } from '@polkadot/react-components';
-import { DeriveStakingAccount as DerivedStakingAccount } from '@polkadot/api-derive/types'
+import { DeriveStakingAccount } from '@polkadot/api-derive/types'
 import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import { formatBalance } from '@polkadot/util';
 import { FormatBalance } from '@polkadot/react-query';
@@ -54,7 +54,7 @@ type Props = BareProps & I18nProps & {
   // isReadyStaking: boolean;
   // staking_ledger: StakingLedgers;
   stakingLedger?: StakingLedger;
-  stakingAccount?: DerivedStakingAccount;
+  stakingAccount?: DeriveStakingAccount;
   checkedAccount?: string;
 };
 

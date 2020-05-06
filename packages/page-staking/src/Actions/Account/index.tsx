@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { DeriveBalancesAll as DerivedBalancesAll, DeriveStakingAccount as DerivedStakingAccount, DeriveStakingOverview as DerivedStakingOverview, DeriveHeartbeats as DerivedHeartbeats, DeriveStakingQuery as DerivedStakingQuery, DeriveStakerReward } from '@polkadot/api-derive/types';
+import { DeriveBalancesAll, DeriveStakingAccount, DeriveStakingOverview as DerivedStakingOverview, DeriveHeartbeats as DerivedHeartbeats, DeriveStakingQuery as DerivedStakingQuery, DeriveStakerReward } from '@polkadot/api-derive/types';
 import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs, Power } from '@polkadot/types/interfaces';
 import { Codec, ITuple } from '@polkadot/types/types';
 
@@ -31,7 +31,7 @@ import Validate from './Validate';
 import useInactives from './useInactives';
 import PowerManage from './PowerManage';
 import Earnings from './Earnings';
-import { PayoutStash, PayoutValidator } from '../../Payouts/types';
+import { PayoutValidator } from '../../Payouts/types';
 import useStakerPayouts from '../../Payouts/useStakerPayouts';
 
 type ValidatorInfo = ITuple<[ValidatorPrefs, Codec]>;
@@ -74,7 +74,7 @@ function toIdString(id?: AccountId | null): string | null {
     : null;
 }
 
-function getStakeState(allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DerivedStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
+function getStakeState(allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DeriveStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
   const isStashNominating = !!(nominators?.length);
   const isStashValidating = !(Array.isArray(validateInfo) ? validateInfo[1].isEmpty : validateInfo.isEmpty) || !!allStashes?.includes(stashId);
   const nextConcat = u8aConcat(...nextSessionIds.map((id): Uint8Array => id.toU8a()));
@@ -174,8 +174,8 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
   const { api } = useApi();
   const { allAccounts } = useAccounts();
   const validateInfo = useCall<ValidatorInfo>(api.query.staking.validators, [stashId]);
-  const balancesAll = useCall<DerivedBalancesAll>(api.derive.balances.all as any, [stashId]);
-  const stakingAccount = useCall<DerivedStakingAccount>(api.derive.staking.account as any, [stashId]);
+  const balancesAll = useCall<DeriveBalancesAll>(api.derive.balances.all as any, [stashId]);
+  const stakingAccount = useCall<DeriveStakingAccount>(api.derive.staking.account as any, [stashId]);
   const [[payoutRewards, payoutEras, payoutTotal], setStakingRewards] = useState<[DeriveStakerReward[], EraIndex[], BN]>([[], [], new BN(0)]);
   const stakingInfo = useCall<DerivedStakingQuery>(api.derive.staking.query as any, [stashId]);
   const [{ controllerId, destination, hexSessionIdQueue, hexSessionIdNext, isLoading, isOwnController, isStashNominating, isStashValidating, nominees, sessionIds, stakingLedger, validatorPrefs }, setStakeState] = useState<StakeState>({ controllerId: null, destination: 0, hexSessionIdNext: null, hexSessionIdQueue: null, isLoading: true, isOwnController: false, isStashNominating: false, isStashValidating: false, stakingLedger: null, sessionIds: [] });
@@ -324,6 +324,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
           onClose={toggleIdentity}
         />
       )}
+
       <RowTitle title={t('Account')} />
       <Box className="staking--Account-mynomination">
         {isLoading

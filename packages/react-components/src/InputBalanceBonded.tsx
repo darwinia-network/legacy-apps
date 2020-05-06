@@ -4,7 +4,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { BareProps, BitLength } from './types';
-import { DerivedFees, DerivedBalancesAll } from '@polkadot/api-derive/types';
+import { DeriveFees, DeriveBalancesAll } from '@polkadot/api-derive/types';
 
 import BN from 'bn.js';
 import React from 'react';
@@ -20,8 +20,8 @@ import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
 
 interface Props extends BareProps, ApiProps {
   autoFocus?: boolean;
-  balances_fees?: DerivedFees;
-  balances_all?: DerivedBalancesAll;
+  balances_fees?: DeriveFees;
+  balances_all?: DeriveBalancesAll;
   controllerId: string;
   defaultValue?: BN | string;
   destination?: number;
