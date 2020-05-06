@@ -66,10 +66,7 @@ export default {
       "deposit_items": "Vec<TimeDepositItem>",
       "ring_staking_lock": "StakingLock",
       "kton_staking_lock": "StakingLock",
-      "lastReward": "Option<EraIndex>",
-      "total": "Compact<Balance>",
-      "active": "Compact<Balance>",
-      "unlocking": "Vec<UnlockChunk>"
+      "claimedRewards": "Vec<EraIndex>"
     },
     "TimeDepositItem": {
       "value": "Compact<Balance>",

@@ -238,10 +238,7 @@ export interface StakingLedgerT extends Struct {
   readonly deposit_items: Vec<TimeDepositItem>;
   readonly ring_staking_lock: StakingLock;
   readonly kton_staking_lock: StakingLock;
-  readonly lastReward: Option<EraIndex>;
-  readonly total: Compact<Balance>;
-  readonly active: Compact<Balance>;
-  readonly unlocking: Vec<UnlockChunk>;
+  readonly claimedRewards: Vec<EraIndex>;
 }
 
 /** @name StakingLedger */
