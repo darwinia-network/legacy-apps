@@ -10,9 +10,7 @@ export default {
     "BalanceLock": {
       "id": "LockIdentifier",
       "lock_for": "LockFor",
-      "lock_reasons": "LockReasons",
-      "amount": "Balance",
-      "reasons": "Reasons"
+      "lock_reasons": "LockReasons"
     },
     "LockFor": {
       "_enum": {
@@ -88,16 +86,13 @@ export default {
       "own_kton_balance": "Compact<Balance>",
       "own_power": "Power",
       "total_power": "Power",
-      "others": "Vec<IndividualExposure>",
-      "total": "Compact<Balance>",
-      "own": "Compact<Balance>"
+      "others": "Vec<IndividualExposure>"
     },
     "IndividualExposure": {
       "who": "AccountId",
       "ring_balance": "Compact<Balance>",
       "kton_balance": "Compact<Balance>",
-      "power": "Power",
-      "value": "Compact<Balance>"
+      "power": "Power"
     },
     "RKT": {
       "r": "Balance",

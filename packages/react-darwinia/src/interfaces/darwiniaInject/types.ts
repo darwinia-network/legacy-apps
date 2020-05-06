@@ -33,8 +33,6 @@ export interface BalanceLock extends Struct {
   readonly id: LockIdentifier;
   readonly lock_for: LockFor;
   readonly lock_reasons: LockReasons;
-  readonly amount: Balance;
-  readonly reasons: Reasons;
 }
 
 /** @name Bloom */
@@ -116,8 +114,6 @@ export interface ExposureT extends Struct {
   readonly own_power: Power;
   readonly total_power: Power;
   readonly others: Vec<IndividualExposure>;
-  readonly total: Compact<Balance>;
-  readonly own: Compact<Balance>;
 }
 
 /** @name StakingLedger */
@@ -132,7 +128,6 @@ export interface IndividualExposure extends Struct {
   readonly ring_balance: Compact<Balance>;
   readonly kton_balance: Compact<Balance>;
   readonly power: Power;
-  readonly value: Compact<Balance>;
 }
 
 /** @name KtonBalance */
