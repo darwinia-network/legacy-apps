@@ -132,9 +132,9 @@ function filterRewards (api: ApiInterfaceRx, rewards: DeriveStakerReward[], stak
             if (index !== -1) {
               const valLedger = queryValidators[index].stakingLedger;
 
-              // if (valLedger?.claimedRewards.some((era) => reward.era.eq(era))) {
-              //   rm.push(validatorId);
-              // }
+              if (valLedger?.claimedRewards.some((era) => reward.era.eq(era))) {
+                rm.push(validatorId);
+              }
             }
           });
 

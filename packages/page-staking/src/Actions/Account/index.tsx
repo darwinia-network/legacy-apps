@@ -3,14 +3,14 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { SubmittableExtrinsic } from '@polkadot/api/types';
-import { DerivedBalancesAll, DerivedStakingAccount, DerivedStakingOverview, DerivedHeartbeats, DerivedStakingQuery, DeriveStakerReward } from '@polkadot/api-derive/types';
+import { DeriveBalancesAll as DerivedBalancesAll, DeriveStakingAccount as DerivedStakingAccount, DeriveStakingOverview as DerivedStakingOverview, DeriveHeartbeats as DerivedHeartbeats, DeriveStakingQuery as DerivedStakingQuery, DeriveStakerReward } from '@polkadot/api-derive/types';
 import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs, Power } from '@polkadot/types/interfaces';
 import { Codec, ITuple } from '@polkadot/types/types';
 
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { AddressInfo, AddressMini, AddressSmall, Button, Menu, Popup, TxButton, Table, StatusContext } from '@polkadot/react-components';
-import { useAccounts, useApi, useCall, useToggle } from '@polkadot/react-hooks';
+import { useAccounts, useApi, useCall, useToggle, useOwnEraRewards } from '@polkadot/react-hooks';
 import { u8aConcat, u8aToHex, formatNumber } from '@polkadot/util';
 import { RowTitle, Box } from '@polkadot/react-darwinia/components';
 import Identity from '@polkadot/app-accounts/modals/Identity';
@@ -31,6 +31,8 @@ import Validate from './Validate';
 import useInactives from './useInactives';
 import PowerManage from './PowerManage';
 import Earnings from './Earnings';
+import { PayoutStash, PayoutValidator } from '../../Payouts/types';
+import useStakerPayouts from '../../Payouts/useStakerPayouts';
 
 type ValidatorInfo = ITuple<[ValidatorPrefs, Codec]>;
 
@@ -60,6 +62,10 @@ interface StakeState {
   sessionIds: string[];
   stakingLedger?: StakingLedger;
   validatorPrefs?: ValidatorPrefs;
+}
+
+interface Available {
+  validators?: PayoutValidator[];
 }
 
 function toIdString(id?: AccountId | null): string | null {
@@ -96,17 +102,69 @@ function getStakeState(allAccounts: string[], allStashes: string[] | undefined, 
   };
 }
 
-function createPayout (api: ApiPromise, payoutRewards: DeriveStakerReward[]): SubmittableExtrinsic<'promise'> {
-  return payoutRewards.length === 1
-    ? payoutRewards[0].isValidator
-      ? api.tx.staking.payoutValidator(payoutRewards[0].era)
-      : api.tx.staking.payoutNominator(payoutRewards[0].era, payoutRewards[0].nominating)
+function groupByValidator (allRewards: Record<string, DeriveStakerReward[]>, stakerPayoutsAfter: BN): PayoutValidator[] {
+  return Object
+    .entries(allRewards)
+    .reduce((grouped: PayoutValidator[], [stashId, rewards]): PayoutValidator[] => {
+      rewards
+        .filter(({ era }) => era.gte(stakerPayoutsAfter))
+        .forEach((reward): void => {
+          Object
+            .entries(reward.validators)
+            .forEach(([validatorId, { value }]): void => {
+              const entry = grouped.find((entry) => entry.validatorId === validatorId);
+
+              if (entry) {
+                const eraEntry = entry.eras.find((entry) => entry.era.eq(reward.era));
+
+                if (eraEntry) {
+                  eraEntry.stashes[stashId] = value;
+                } else {
+                  entry.eras.push({
+                    era: reward.era,
+                    stashes: { [stashId]: value }
+                  });
+                }
+
+                entry.available = entry.available.add(value);
+              } else {
+                grouped.push({
+                  available: value,
+                  eras: [{
+                    era: reward.era,
+                    stashes: { [stashId]: value }
+                  }],
+                  validatorId
+                });
+              }
+            });
+        });
+
+      return grouped;
+    }, [])
+    .sort((a, b) => b.available.cmp(a.available));
+}
+
+function createPayout (api: ApiPromise, payout: PayoutValidator | PayoutValidator[]): SubmittableExtrinsic<'promise'> {
+  if (Array.isArray(payout)) {
+    if (payout.length === 1) {
+      return createPayout(api, payout[0]);
+    }
+
+    return api.tx.utility.batch(
+      payout.reduce((calls: SubmittableExtrinsic<'promise'>[], { eras, validatorId }): SubmittableExtrinsic<'promise'>[] =>
+        calls.concat(
+          ...eras.map(({ era }) => api.tx.staking.payoutStakers(validatorId, era))
+        ), [])
+    );
+  }
+
+  const { eras, validatorId } = payout;
+
+  return eras.length === 1
+    ? api.tx.staking.payoutStakers(validatorId, eras[0].era)
     : api.tx.utility.batch(
-      payoutRewards.map(({ era, isValidator, nominating }): SubmittableExtrinsic<'promise'> =>
-        isValidator
-          ? api.tx.staking.payoutValidator(era)
-          : api.tx.staking.payoutNominator(era, nominating)
-      )
+      eras.map(({ era }) => api.tx.staking.payoutStakers(validatorId, era))
     );
 }
 
@@ -134,6 +192,21 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
   const [isValidateOpen, toggleValidate] = useToggle();
   const [isIdentityOpen, toggleIdentity] = useToggle();
   const [nominators, setNominators] = useState<[string, Power][]>([]);
+
+  const [{ validators }, setPayouts] = useState<Available>({});
+  const stakerPayoutsAfter = useStakerPayouts();
+  const { allRewards } = useOwnEraRewards();
+
+  const isPayoutEmpty = !validators || (Array.isArray(validators) && validators.length === 0);
+
+
+  useEffect((): void => {
+    if (allRewards) {
+      setPayouts({
+        validators: groupByValidator(allRewards, stakerPayoutsAfter)
+      });
+    }
+  }, [allRewards, stakerPayoutsAfter]);
 
   useEffect((): void => {
     if (stakingAccount && validateInfo) {
@@ -176,11 +249,12 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
   }, [stakingInfo])
 
   const _doPayout = useCallback(
-    (): void => queueExtrinsic({
+    (): void => {
+      return queueExtrinsic({
       accountId: controllerId,
-      extrinsic: createPayout(api, payoutRewards)
-    }),
-    [api, controllerId, payoutRewards, queueExtrinsic]
+      extrinsic: createPayout(api, validators)
+    })},
+    [api, controllerId, validators, queueExtrinsic]
   );
 
   return (
@@ -330,7 +404,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                       >
                         {api.query.staking.activeEra && (
                           <Menu.Item
-                            disabled={payoutEras.length === 0}
+                            disabled={isPayoutEmpty}
                             onClick={_doPayout}
                           >
                             <Trans i18nKey='payoutEras'>
@@ -441,7 +515,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
       </Box>
       <RowTitle title={t('Earnings')} />
       <Box>
-        <Earnings address={stashId} doPayout={_doPayout} destinationId={destination === 2 ? controllerId : stashId} unClaimedReward={payoutTotal} doPayoutIsDisabled={!payoutEras.length}/>
+        <Earnings address={stashId} doPayout={_doPayout} destinationId={destination === 2 ? controllerId : stashId} unClaimedReward={payoutTotal} doPayoutIsDisabled={isPayoutEmpty}/>
       </Box>
       {/* <AddressMini
         className='mini-nopad'
