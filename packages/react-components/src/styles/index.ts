@@ -65,6 +65,10 @@ export default createGlobalStyle`
       margin-left: 2rem;
     }
 
+    &.nomargin {
+      margin-left: 0;
+    }
+
     &.error {
       background: #fff6f6;
       border-color: #e0b4b4;

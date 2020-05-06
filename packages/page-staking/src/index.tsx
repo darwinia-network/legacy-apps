@@ -3,9 +3,10 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedHeartbeats, DerivedStakingOverview } from '@polkadot/api-derive/types';
+import { DeriveHeartbeats, DeriveStakingOverview } from '@polkadot/api-derive/types';
 import { AppProps as Props } from '@polkadot/react-components/types';
 import { AccountId } from '@polkadot/types/interfaces';
+import { ElectionStatus } from '@polkadot/types/interfaces';
 
 import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -36,14 +37,17 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
     transform: (stashes: AccountId[]): string[] =>
       stashes.map((accountId): string => accountId.toString())
   });
-  const recentlyOnline = useCall<DerivedHeartbeats>(api.derive.imOnline?.receivedHeartbeats, []);
-  const stakingOverview = useCall<DerivedStakingOverview>(api.derive.staking.overview, []);
+  const recentlyOnline = useCall<DeriveHeartbeats>(api.derive.imOnline?.receivedHeartbeats, []);
+  const stakingOverview = useCall<DeriveStakingOverview>(api.derive.staking.overview, []);
   const sessionRewards = useSessionRewards(MAX_SESSIONS);
   const hasQueries = hasAccounts && !!(api.query.imOnline?.authoredBlocks);
   const [nominators, dispatchNominators] = useReducer(reduceNominators, [] as string[]);
   const [accountChecked, toggleAccountChecked] = useAccountChecked(STORE_CHECKED);
   const onStatusChange = () => {};
   const _accountChecked = accountChecked[0];
+  const isInElection = useCall<boolean>(api.query.staking?.eraElectionStatus, [], {
+    transform: (status: ElectionStatus) => status.isOpen
+  });
 
   useEffect((): void => {
     allStashes && stakingOverview && setNext(
@@ -61,6 +65,7 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
         <Actions
           allRewards={allRewards}
           allStashes={allStashes}
+          isInElection={isInElection}
           isVisible={pathname === `${basePath}`}
           recentlyOnline={recentlyOnline}
           next={next}
