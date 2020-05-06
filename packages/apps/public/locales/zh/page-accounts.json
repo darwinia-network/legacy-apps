@@ -159,5 +159,7 @@
   "Status": "状态",
   "No Data": "暂无信息",
   "Type": "类型",
-  "Tx Hash": "交易哈希"
+  "Tx Hash": "交易哈希",
+  "network": "网络",
+  "Network": "网络"
 }

@@ -117,7 +117,7 @@ function AccountStatus({ className, onStatusChange, onToggleAccountChecked, acco
           <StyledWrapper>
             <div className="ui--AccountStatus-Box">
               <div className="ui--AccountStatus-Network">
-              <span>•</span><span>{systemChain}</span>
+              <span>•</span><span>{systemChain} {t('Network')}</span>
               </div>
               <AddressRow
                 isEditable={true}
