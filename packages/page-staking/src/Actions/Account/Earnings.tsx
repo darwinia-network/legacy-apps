@@ -96,7 +96,7 @@ class Earnings extends React.PureComponent<Props, State> {
     this.getStakingHistory();
   }
 
-  componentWillReceiveProps (nextProps: Props) {
+  UNSAFE_componentWillReceiveProps (nextProps: Props) {
     if (nextProps.address !== this.props.address) {
       this.getStakingHistory(0, nextProps.address);
       return true;

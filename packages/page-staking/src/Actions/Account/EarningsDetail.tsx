@@ -85,7 +85,7 @@ class EarningsDetail extends React.PureComponent<Props, State> {
     this.getStakingHistory();
   }
 
-  componentWillReceiveProps (nextProps: Props) {
+  UNSAFE_componentWillReceiveProps (nextProps: Props) {
     if (nextProps.isOpen === true && this.props.isOpen === false) {
       this.setState({
         history: []
