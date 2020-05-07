@@ -30,7 +30,7 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
   const { api } = useApi();
   const { allAccounts, hasAccounts } = useAccounts();
   const { pathname } = useLocation();
-  const { allRewards, rewardCount } = useOwnEraRewards();
+  // const { allRewards, rewardCount } = useOwnEraRewards();
 
   const [next, setNext] = useState<string[]>([]);
   const allStashes = useCall<string[]>(api.derive.staking.stashes, [], {
@@ -54,6 +54,7 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
       allStashes.filter((address): boolean => !stakingOverview.validators.includes(address as any))
     );
   }, [allStashes, stakingOverview]);
+
   return (
     <main className={`staking--App ${className}`}>
       {hasAccounts ? <>
@@ -63,7 +64,7 @@ function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
           accountChecked={_accountChecked}
         />
         <Actions
-          allRewards={allRewards}
+          // allRewards={allRewards}
           allStashes={allStashes}
           isInElection={isInElection}
           isVisible={pathname === `${basePath}`}

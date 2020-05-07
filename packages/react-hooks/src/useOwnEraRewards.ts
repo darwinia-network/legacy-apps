@@ -28,10 +28,10 @@ function getRewards ([[stashIds], available]: [[string[]], DeriveStakerReward[][
   };
 }
 
-export default function useOwnEraRewards (): OwnRewards {
+export default function useOwnEraRewards (_stashIds?: string[]): OwnRewards {
   const { api } = useApi();
   const mountedRef = useIsMountedRef();
-  const stashIds = useOwnStashIds();
+  const stashIds = _stashIds || useOwnStashIds();
   const available = useCall<[[string[]], DeriveStakerReward[][]]>(stashIds && api.derive.staking?.stakerRewardsMulti, [stashIds], { withParams: true });
   const [state, setState] = useState<OwnRewards>({ rewardCount: 0 });
   useEffect((): void => {

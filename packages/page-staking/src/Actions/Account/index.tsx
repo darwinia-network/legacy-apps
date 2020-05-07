@@ -43,9 +43,9 @@ interface Props {
   next: string[];
   onUpdateType: (stashId: string, type: 'validator' | 'nominator' | 'started' | 'other') => void;
   recentlyOnline?: DerivedHeartbeats;
-  rewards?: DeriveStakerReward[];
   stakingOverview?: DerivedStakingOverview;
   stashId: string;
+  isInElection: boolean;
 }
 
 interface StakeState {
@@ -168,7 +168,7 @@ function createPayout (api: ApiPromise, payout: PayoutValidator | PayoutValidato
     );
 }
 
-function Account({ allStashes, className, isOwnStash, next, onUpdateType, rewards, stakingOverview, stashId }: Props): React.ReactElement<Props> {
+function Account({ allStashes, className, isOwnStash, next, onUpdateType, stakingOverview, stashId, isInElection }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { queueExtrinsic } = useContext(StatusContext);
   const { api } = useApi();
@@ -176,7 +176,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
   const validateInfo = useCall<ValidatorInfo>(api.query.staking.validators, [stashId]);
   const balancesAll = useCall<DeriveBalancesAll>(api.derive.balances.all as any, [stashId]);
   const stakingAccount = useCall<DeriveStakingAccount>(api.derive.staking.account as any, [stashId]);
-  const [[payoutRewards, payoutEras, payoutTotal], setStakingRewards] = useState<[DeriveStakerReward[], EraIndex[], BN]>([[], [], new BN(0)]);
+  const [[payoutEras, payoutTotal], setStakingRewards] = useState<[EraIndex[], BN]>([[], new BN(0)]);
   const stakingInfo = useCall<DerivedStakingQuery>(api.derive.staking.query as any, [stashId]);
   const [{ controllerId, destination, hexSessionIdQueue, hexSessionIdNext, isLoading, isOwnController, isStashNominating, isStashValidating, nominees, sessionIds, stakingLedger, validatorPrefs }, setStakeState] = useState<StakeState>({ controllerId: null, destination: 0, hexSessionIdNext: null, hexSessionIdQueue: null, isLoading: true, isOwnController: false, isStashNominating: false, isStashValidating: false, stakingLedger: null, sessionIds: [] });
   const [activeNoms, setActiveNoms] = useState<string[]>([]);
@@ -195,18 +195,17 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
 
   const [{ validators }, setPayouts] = useState<Available>({});
   const stakerPayoutsAfter = useStakerPayouts();
-  const { allRewards } = useOwnEraRewards();
+  const { allRewards: rewards  } = useOwnEraRewards([stashId]);
 
   const isPayoutEmpty = !validators || (Array.isArray(validators) && validators.length === 0);
 
-
   useEffect((): void => {
-    if (allRewards) {
+    if (rewards) {
       setPayouts({
-        validators: groupByValidator(allRewards, stakerPayoutsAfter)
+        validators: groupByValidator(rewards, stakerPayoutsAfter)
       });
     }
-  }, [allRewards, stakerPayoutsAfter]);
+  }, [rewards, stakerPayoutsAfter]);
 
   useEffect((): void => {
     if (stakingAccount && validateInfo) {
@@ -232,9 +231,8 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
 
   useEffect((): void => {
     rewards && setStakingRewards([
-      rewards,
-      rewards.map(({ era }): EraIndex => era),
-      rewards.reduce((result, { total }) => result.iadd(total), new BN(0))
+      rewards[stashId].map(({ era }): EraIndex => era),
+      rewards[stashId].reduce((result, { total }) => result.iadd(total), new BN(0))
     ]);
   }, [rewards]);
 
@@ -341,6 +339,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                       ? (
                         <TxButton
                           accountId={controllerId}
+                          isDisabled={isInElection}
                           isBasic
                           label={
                             isStashNominating
@@ -362,6 +361,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                                 key='set'
                                 onClick={toggleSetSession}
                                 label={t('Session Key')}
+                                isDisabled={isInElection}
                               // icon='sign-in'
                               />
                             )
@@ -369,6 +369,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                               <Button
                                 isBasic
                                 key='validate'
+                                isDisabled={isInElection}
                                 onClick={toggleValidate}
                                 label={t('Validate')}
                               // icon='check circle outline'
@@ -380,6 +381,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                             isBasic
                             key='nominate'
                             onClick={toggleNominate}
+                            isDisabled={isInElection}
                             label={t('Nominate')}
                           // icon='hand paper outline'
                           />
@@ -405,7 +407,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                       >
                         {api.query.staking.activeEra && (
                           <Menu.Item
-                            disabled={isPayoutEmpty}
+                            disabled={isPayoutEmpty || isInElection}
                             onClick={_doPayout}
                           >
                             <Trans i18nKey='payoutEras'>
@@ -420,32 +422,33 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                         {balancesAll?.freeBalance.gtn(0) && (
                           <Menu.Item
                             // disabled={!isOwnStash}
+                            disabled={isInElection}
                             onClick={toggleBondExtra}
                           >
                             {t('Bond more funds')}
                           </Menu.Item>
                         )}
                         <Menu.Item
-                          disabled={!isOwnController}
+                          disabled={!isOwnController || isInElection}
                           onClick={toggleUnbond}
                         >
                           {t('Unbond funds')}
                         </Menu.Item>
                         <Menu.Item
-                          // disabled={!isOwnStash}
+                          disabled={isInElection}
                           onClick={toggleSetController}
                         >
                           {t('Change controller account')}
                         </Menu.Item>
                         <Menu.Item
-                          disabled={!isOwnController}
+                          disabled={!isOwnController || isInElection}
                           onClick={toggleRewardDestination}
                         >
                           {t('Change reward destination')}
                         </Menu.Item>
                         {isStashValidating &&
                           <Menu.Item
-                            disabled={!isOwnController}
+                            disabled={!isOwnController || isInElection}
                             onClick={toggleValidate}
                           >
                             {t('Change validator preferences')}
@@ -453,7 +456,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                         }
                         {!isStashNominating &&
                           <Menu.Item
-                            disabled={!isOwnController}
+                            disabled={!isOwnController || isInElection}
                             onClick={toggleSetSession}
                           >
                             {t('Change session keys')}
@@ -461,14 +464,14 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                         }
                         {isStashNominating &&
                           <Menu.Item
-                            disabled={!isOwnController}
+                            disabled={!isOwnController || isInElection}
                             onClick={toggleNominate}
                           >
                             {t('Set nominees')}
                           </Menu.Item>
                         }
                         <Menu.Item
-                          disabled={!api.tx.identity?.setIdentity && isStashValidating}
+                          disabled={(!api.tx.identity?.setIdentity && isStashValidating) || isInElection}
                           onClick={toggleIdentity}
                         >
                           {t('Set on-chain identity')}
@@ -500,6 +503,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                 isBasic
                 key='bondmore'
                 onClick={toggleBondExtra}
+                isDisabled={isInElection}
                 label={t('Bond More')}
               // icon='check circle outline'
               />
@@ -508,6 +512,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
                 isBasic
                 key='unbond'
                 onClick={toggleUnbond}
+                isDisabled={isInElection}
                 label={t('Unbond')}
               // icon='hand paper outline'
               />
@@ -516,7 +521,7 @@ function Account({ allStashes, className, isOwnStash, next, onUpdateType, reward
       </Box>
       <RowTitle title={t('Earnings')} />
       <Box>
-        <Earnings address={stashId} doPayout={_doPayout} destinationId={destination === 2 ? controllerId : stashId} unClaimedReward={payoutTotal} doPayoutIsDisabled={isPayoutEmpty}/>
+        <Earnings address={stashId} doPayout={_doPayout} destinationId={destination === 2 ? controllerId : stashId} unClaimedReward={payoutTotal} doPayoutIsDisabled={isPayoutEmpty || isInElection}/>
       </Box>
       {/* <AddressMini
         className='mini-nopad'

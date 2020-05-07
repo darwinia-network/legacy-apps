@@ -20,7 +20,7 @@ import PowerManage from './Account/PowerManage';
 import ElectionBanner from '../ElectionBanner';
 
 interface Props {
-  allRewards?: Record<string, DeriveStakerReward[]>;
+  // allRewards?: Record<string, DeriveStakerReward[]>;
   allStashes: string[];
   className?: string;
   isVisible: boolean;
@@ -68,7 +68,7 @@ function checkAccountType (allAccounts: string[], assumedControllerId: string, q
   return _assumedControllerId;
 }
 
-function Actions ({ allRewards, allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked, isInElection }: Props): React.ReactElement<Props> {
+function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked, isInElection }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -122,10 +122,11 @@ function Actions ({ allRewards, allStashes, className, isVisible, next, recently
                   key={stashId}
                   next={next}
                   onUpdateType={_onUpdateType}
-                  rewards={allRewards && allRewards[stashId]}
+                  // rewards={allRewards && allRewards[stashId]}
                   recentlyOnline={recentlyOnline}
                   stakingOverview={stakingOverview}
                   stashId={stashId}
+                  isInElection={isInElection}
                 />
               </>
             ))}
