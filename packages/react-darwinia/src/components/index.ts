@@ -6,3 +6,4 @@ export { default as ColorButton } from './ColorButton/Button';
 export { default as Power } from './Power';
 export { default as PowerTelemetry } from './PowerTelemetry';
 export { default as PowerManageEmpty } from './PowerManageEmpty';
+export { default as TokenIcon } from './TokenIcon/TokenIcon';
