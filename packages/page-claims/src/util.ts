@@ -26,7 +26,7 @@ interface SignatureParts {
 }
 
 // converts an Ethereum address to a checksum representation
-export function addrToChecksum (_address: string, type: ChainType): string {
+export function addrToChecksum (_address: string, type?: ChainType): string {
   const address = _address.toLowerCase();
 
   if(type === 'tron') {
