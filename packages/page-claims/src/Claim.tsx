@@ -71,7 +71,7 @@ function Claim ({ button, className, ethereumAddress, chain }: Props): React.Rea
               chain: chainToName[chain]
             }
           })}
-        <h3>{addrToChecksum(claimAddress.toString())}</h3>
+        <h3>{addrToChecksum(claimAddress.toString(), chain)}</h3>
         {hasClaim && claimValue
           ? (
             <>
