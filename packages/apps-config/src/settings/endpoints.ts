@@ -8,12 +8,12 @@ export default [
   {
     info: 'Crab Network',
     text: 'Crab Network (hosted by Darwinia)',
-    value: 'ws://35.234.33.88:9944/'
+    value: 'wss://crab.darwinia.network'
   },
   {
     info: 'Darwinia Network',
     text: 'Darwinia Network (hosted by Darwinia)',
-    value: 'ws://35.234.33.88:9944/'
+    value: 'wss://crab.darwinia.network'
   },
   {
     info: 'Local',

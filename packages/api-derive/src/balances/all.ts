@@ -3,9 +3,9 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AccountId, AccountIndex, Address, Balance, BalanceLock, BalanceLockTo212, BlockNumber, VestingInfo, VestingSchedule } from '@polkadot/types/interfaces';
-import { DerivedBalancesAccount, DerivedBalancesAll, DerivedBalanceLock } from '../types';
-
+import { AccountId, AccountIndex, Address, Balance, BalanceLockTo212, BlockNumber, VestingInfo, VestingSchedule } from '@polkadot/types/interfaces';
+import { DeriveBalancesAccount, DeriveBalancesAll as DeriveBalancesAll, DerivedBalanceLock } from '../types';
+import { BalanceLock } from '@polkadot/react-darwinia/interfaces/types';
 import BN from 'bn.js';
 import { combineLatest, of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -15,24 +15,24 @@ import { bnMax } from '@polkadot/util';
 
 import { memo } from '../util';
 
-type ResultBalance = [(BalanceLock | BalanceLockTo212)[], (BalanceLock | BalanceLockTo212)[]];
-type Result = [DerivedBalancesAccount, BlockNumber, ResultBalance];
+type ResultBalance = [(BalanceLock)[], (BalanceLock)[]];
+type Result = [DeriveBalancesAccount, BlockNumber, ResultBalance];
 
-function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock | BalanceLockTo212)[], bestNumber: BlockNumber): [Balance, (DerivedBalanceLock | BalanceLockTo212)[]] {
+function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock)[], bestNumber: BlockNumber): [Balance, (DerivedBalanceLock)[]] {
   let lockedBn = new BN(0);
   let lockedBalance = api.registry.createType('Balance');
-  let lockedBreakdown: (DerivedBalanceLock | BalanceLockTo212)[] = [];
-  lockedBn = locks.reduce((total, { lock_for }) => {
+  let lockedBreakdown: (DerivedBalanceLock)[] = [];
+  lockedBn = locks.reduce((total, { id, lock_for, reasons }) => {
     if (lock_for.isStaking) {
       total = total.add(lock_for.asStaking?.staking_amount);
       const _lockedBreakdown = lock_for.asStaking?.unbondings.filter(({ moment }): boolean => !moment || (bestNumber && moment.gt(bestNumber)));
       lockedBreakdown = lockedBreakdown.concat(_lockedBreakdown.map(({ amount, moment }): DerivedBalanceLock => ({
-        id: lock_for.id,
+        id: id,
         amount,
         until: moment,
-        reasons: lock_for.asStaking?.lock_reasons
+        reasons: reasons
       })));
-      _lockedBreakdown.reduce((total, { amount }) => (total.add(amount)), total);
+      _lockedBreakdown.forEach(({ amount }) => {total = total.add(amount)});
     }
     return total;
   }, new BN(0));
@@ -40,11 +40,11 @@ function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock | BalanceLockTo212)
   return [lockedBalance, lockedBreakdown];
 }
 
-function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBalance, freeBalanceKton, frozenFee, frozenMisc, reservedBalance, reservedBalanceKton, votingBalance, votingBalanceKton }, bestNumber, [locks, locksKton]]: Result): DerivedBalancesAll {
+function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBalance, freeBalanceKton, frozenFee, frozenMisc, reservedBalance, reservedBalanceKton, votingBalance, votingBalanceKton }, bestNumber, [locks, locksKton]]: Result): DeriveBalancesAll {
   let lockedBalance = api.registry.createType('Balance');
   let lockedBalanceKton = api.registry.createType('Balance');
-  let lockedBreakdown: (DerivedBalanceLock | BalanceLockTo212)[] = [];
-  let lockedBreakdownKton: (DerivedBalanceLock | BalanceLockTo212)[] = [];
+  let lockedBreakdown: (DerivedBalanceLock)[] = [];
+  let lockedBreakdownKton: (DerivedBalanceLock)[] = [];
   if (Array.isArray(locks)) {
     [lockedBalance, lockedBreakdown] = calcLocks(api, locks, bestNumber);
   }
@@ -72,7 +72,6 @@ function calcBalances (api: ApiInterfaceRx, [{ accountId, accountNonce, freeBala
   const floating = freeBalance.sub(lockedBalance);
   // const extraReceived = isVesting ? freeBalance.sub(vestingTotal) : new BN(0);
   const availableBalance = api.registry.createType('Balance', bnMax(new BN(0), floating));
-
   // kton has no vesting module
   const floatingKton = freeBalanceKton.sub(lockedBalanceKton);
   const availableBalanceKton = api.registry.createType('Balance', bnMax(new BN(0), floatingKton));
@@ -153,8 +152,8 @@ function queryCurrent (api: ApiInterfaceRx, accountId: AccountId): Observable<Re
  * });
  * ```
  */
-export function all (api: ApiInterfaceRx): (address: AccountIndex | AccountId | Address | string) => Observable<DerivedBalancesAll> {
-  return memo((address: AccountIndex | AccountId | Address | string): Observable<DerivedBalancesAll> =>
+export function all (api: ApiInterfaceRx): (address: AccountIndex | AccountId | Address | string) => Observable<DeriveBalancesAll> {
+  return memo((address: AccountIndex | AccountId | Address | string): Observable<DeriveBalancesAll> =>
     api.derive.balances.account(address).pipe(
       switchMap((account): Observable<Result> =>
         (!account.accountId.isEmpty
@@ -166,6 +165,6 @@ export function all (api: ApiInterfaceRx): (address: AccountIndex | AccountId | 
           : of([account, api.registry.createType('BlockNumber'), [api.registry.createType('Vec<BalanceLock>'), api.registry.createType('Vec<BalanceLock>')]])
         )
       ),
-      map((result): DerivedBalancesAll => calcBalances(api, result))
+      map((result): DeriveBalancesAll => calcBalances(api, result))
     ));
 }

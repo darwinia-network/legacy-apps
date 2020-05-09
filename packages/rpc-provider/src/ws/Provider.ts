@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/camelcase */
 // Copyright 2017-2020 @polkadot/rpc-provider authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
+
+/* eslint-disable @typescript-eslint/camelcase */
 
 import { JsonRpcResponse, ProviderInterface, ProviderInterfaceCallback, ProviderInterfaceEmitted, ProviderInterfaceEmitCb } from '../types';
 
@@ -74,7 +75,7 @@ export default class WsProvider implements WSProviderInterface {
 
   readonly #waitingForId: Record<string, JsonRpcResponse> = {};
 
-  #autoConnect: boolean;
+  #autoConnectMs: number;
 
   #isConnected = false;
 
@@ -86,16 +87,16 @@ export default class WsProvider implements WSProviderInterface {
    * @param {string}  endpoint    The endpoint url. Usually `ws://ip:9944` or `wss://ip:9944`
    * @param {boolean} autoConnect Whether to connect automatically or not.
    */
-  constructor (endpoint: string = defaults.WS_URL, autoConnect = true) {
+  constructor (endpoint: string = defaults.WS_URL, autoConnectMs: number | false = 1000) {
     assert(/^(wss|ws):\/\//.test(endpoint), `Endpoint should start with 'ws://', received '${endpoint}'`);
 
     this.#eventemitter = new EventEmitter();
-    this.#autoConnect = autoConnect;
+    this.#autoConnectMs = autoConnectMs || 0;
     this.#coder = new Coder();
     this.#endpoint = endpoint;
     this.#websocket = null;
 
-    if (autoConnect) {
+    if (autoConnectMs > 0) {
       this.connect();
     }
   }
@@ -142,7 +143,7 @@ export default class WsProvider implements WSProviderInterface {
     }
 
     // switch off autoConnect, we are in manual mode now
-    this.#autoConnect = false;
+    this.#autoConnectMs = 0;
 
     // 1000 - Normal closure; the connection successfully completed
     this.#websocket.close(1000);
@@ -182,6 +183,7 @@ export default class WsProvider implements WSProviderInterface {
       try {
         const json = this.#coder.encodeJson(method, params);
         const id = this.#coder.getId();
+
         const callback = (error?: Error | null, result?: any): void => {
           error
             ? reject(error)
@@ -265,17 +267,17 @@ export default class WsProvider implements WSProviderInterface {
   }
 
   #onSocketClose = (event: CloseEvent): void => {
-    if (this.#autoConnect) {
+    if (this.#autoConnectMs > 0) {
       l.error(`disconnected from ${this.#endpoint} code: '${event.code}' reason: '${event.reason}'`);
     }
 
     this.#isConnected = false;
     this.#emit('disconnected');
 
-    if (this.#autoConnect) {
+    if (this.#autoConnectMs > 0) {
       setTimeout((): void => {
         this.connect();
-      }, 1000);
+      }, this.#autoConnectMs);
     }
   }
 
@@ -299,6 +301,7 @@ export default class WsProvider implements WSProviderInterface {
 
     if (!handler) {
       l.debug((): string => `Unable to find handler for id=${response.id}`);
+
       return;
     }
 
@@ -341,6 +344,7 @@ export default class WsProvider implements WSProviderInterface {
       this.#waitingForId[subId] = response;
 
       l.debug((): string => `Unable to find handler for subscription=${subId}`);
+
       return;
     }
 

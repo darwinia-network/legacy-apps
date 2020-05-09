@@ -21,7 +21,9 @@ export default class ExtrinsicSignatureV2 extends Struct implements IExtrinsicSi
   constructor (registry: Registry, value: ExtrinsicSignatureV2 | Uint8Array | undefined, { isSigned }: ExtrinsicSignatureOptions = {}) {
     super(registry, {
       signer: 'Address',
+      // eslint-disable-next-line sort-keys
       signature: 'Signature',
+      // eslint-disable-next-line sort-keys
       era: 'ExtrinsicEra',
       nonce: 'Compact<Index>',
       tip: 'Compact<Balance>'
@@ -92,7 +94,7 @@ export default class ExtrinsicSignatureV2 extends Struct implements IExtrinsicSi
     return this.get('tip') as Compact<Balance>;
   }
 
-  protected injectSignature (signer: Address, signature: Signature, { era, nonce, tip }: ExtrinsicPayloadV2): IExtrinsicSignature {
+  protected _injectSignature (signer: Address, signature: Signature, { era, nonce, tip }: ExtrinsicPayloadV2): IExtrinsicSignature {
     this.set('era', era);
     this.set('nonce', nonce);
     this.set('signer', signer);
@@ -106,7 +108,7 @@ export default class ExtrinsicSignatureV2 extends Struct implements IExtrinsicSi
    * @description Adds a raw signature
    */
   public addSignature (signer: Address | Uint8Array | string, signature: Uint8Array | string, payload: ExtrinsicPayloadValue | Uint8Array | string): IExtrinsicSignature {
-    return this.injectSignature(
+    return this._injectSignature(
       this.registry.createType('Address', signer),
       this.registry.createType('Signature', signature),
       new ExtrinsicPayloadV2(this.registry, payload)
@@ -136,7 +138,7 @@ export default class ExtrinsicSignatureV2 extends Struct implements IExtrinsicSi
     const payload = this.createPayload(method, options);
     const signature = this.registry.createType('Signature', payload.sign(account));
 
-    return this.injectSignature(signer, signature, payload);
+    return this._injectSignature(signer, signature, payload);
   }
 
   /**
@@ -147,7 +149,7 @@ export default class ExtrinsicSignatureV2 extends Struct implements IExtrinsicSi
     const payload = this.createPayload(method, options);
     const signature = this.registry.createType('Signature', new Uint8Array(64).fill(0x42));
 
-    return this.injectSignature(signer, signature, payload);
+    return this._injectSignature(signer, signature, payload);
   }
 
   /**

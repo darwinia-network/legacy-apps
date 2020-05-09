@@ -21,8 +21,11 @@ export default class Linkage<T extends Codec> extends Struct {
   constructor (registry: Registry, Type: Constructor | keyof InterfaceTypes, value?: any) {
     super(registry, {
       previous: Option.with(Type),
+      // eslint-disable-next-line sort-keys
       next: Option.with(Type)
     }, value);
+
+    console.error([...this.entries()]);
   }
 
   public static withKey<O extends Codec> (Type: Constructor | keyof InterfaceTypes): Constructor<Linkage<O>> {

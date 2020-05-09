@@ -3,7 +3,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedHeartbeats, DerivedStakingOverview, DeriveStakerReward } from '@polkadot/api-derive/types';
+import { DeriveHeartbeats, DeriveStakingOverview, DeriveStakerReward } from '@polkadot/api-derive/types';
 import { AccountId, StakingLedger } from '@polkadot/types/interfaces';
 
 import React, { useEffect, useState } from 'react';
@@ -17,16 +17,18 @@ import StartStaking from './NewStake';
 import { useTranslation } from '../translate';
 import { RowTitle, Box, ActionNote } from '@polkadot/react-darwinia/components';
 import PowerManage from './Account/PowerManage';
+import ElectionBanner from '../ElectionBanner';
 
 interface Props {
-  allRewards?: Record<string, DeriveStakerReward[]>;
+  // allRewards?: Record<string, DeriveStakerReward[]>;
   allStashes: string[];
   className?: string;
   isVisible: boolean;
-  recentlyOnline?: DerivedHeartbeats;
+  recentlyOnline?: DeriveHeartbeats;
   next: string[];
-  stakingOverview?: DerivedStakingOverview;
+  stakingOverview?: DeriveStakingOverview;
   accountChecked: string;
+  isInElection?: boolean;
 }
 
 function getStashes (allAccounts: string[], stashTypes: Record<string, number>, queryBonded?: Option<AccountId>[], queryLedger?: Option<StakingLedger>): [string, boolean][] | null {
@@ -66,7 +68,7 @@ function checkAccountType (allAccounts: string[], assumedControllerId: string, q
   return _assumedControllerId;
 }
 
-function Actions ({ allRewards, allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked }: Props): React.ReactElement<Props> {
+function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked, isInElection }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -106,6 +108,8 @@ function Actions ({ allRewards, allStashes, className, isVisible, next, recently
       {isNewStakeOpen && (
         <StartStaking onClose={_toggleNewStake} accountId={accountChecked} />
       )}
+      
+      <ElectionBanner isInElection={isInElection} />
 
       {foundStashes?.length
         ? (
@@ -118,10 +122,11 @@ function Actions ({ allRewards, allStashes, className, isVisible, next, recently
                   key={stashId}
                   next={next}
                   onUpdateType={_onUpdateType}
-                  rewards={allRewards && allRewards[stashId]}
+                  // rewards={allRewards && allRewards[stashId]}
                   recentlyOnline={recentlyOnline}
                   stakingOverview={stakingOverview}
                   stashId={stashId}
+                  isInElection={isInElection}
                 />
               </>
             ))}

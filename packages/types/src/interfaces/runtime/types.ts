@@ -1,10 +1,10 @@
 // Auto-generated via `yarn polkadot-types-from-defs`, do not edit
-/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable */
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Int, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId, GenericDigest, GenericOrigin } from '@polkadot/types/generic';
-import { Bytes, Null, StorageKey, bool, u128, u32, u64, u8 } from '@polkadot/types/primitive';
+import { GenericAccountId, GenericAccountIndex, GenericAddress, GenericBlock, GenericCall, GenericConsensusEngineId } from '@polkadot/types/generic';
+import { Bytes, DoNotConstruct, Null, StorageKey, bool, u128, u32, u64, u8 } from '@polkadot/types/primitive';
 import { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import { Signature } from '@polkadot/types/interfaces/extrinsics';
 
@@ -51,7 +51,9 @@ export interface Consensus extends ITuple<[ConsensusEngineId, Bytes]> {}
 export interface ConsensusEngineId extends GenericConsensusEngineId {}
 
 /** @name Digest */
-export interface Digest extends GenericDigest {}
+export interface Digest extends Struct {
+  readonly logs: Vec<DigestItem>;
+}
 
 /** @name DigestItem */
 export interface DigestItem extends Enum {
@@ -75,6 +77,7 @@ export interface DigestItem extends Enum {
 export interface DispatchClass extends Enum {
   readonly isNormal: boolean;
   readonly isOperational: boolean;
+  readonly isMandatory: boolean;
 }
 
 /** @name DispatchInfo */
@@ -89,6 +92,9 @@ export interface DispatchInfoTo190 extends Struct {
   readonly weight: Weight;
   readonly class: DispatchClass;
 }
+
+/** @name Fixed128 */
+export interface Fixed128 extends Int {}
 
 /** @name Fixed64 */
 export interface Fixed64 extends Int {}
@@ -135,11 +141,14 @@ export interface LookupSource extends Address {}
 /** @name LookupTarget */
 export interface LookupTarget extends AccountId {}
 
+/** @name ModuleId */
+export interface ModuleId extends LockIdentifier {}
+
 /** @name Moment */
 export interface Moment extends u64 {}
 
 /** @name Origin */
-export interface Origin extends GenericOrigin {}
+export interface Origin extends DoNotConstruct {}
 
 /** @name Perbill */
 export interface Perbill extends u32 {}
@@ -162,6 +171,12 @@ export interface PhantomData extends Null {}
 /** @name PreRuntime */
 export interface PreRuntime extends ITuple<[ConsensusEngineId, Bytes]> {}
 
+/** @name RuntimeDbWeight */
+export interface RuntimeDbWeight extends Struct {
+  readonly read: Weight;
+  readonly write: Weight;
+}
+
 /** @name Seal */
 export interface Seal extends ITuple<[ConsensusEngineId, Bytes]> {}
 
@@ -181,7 +196,9 @@ export interface StorageData extends Bytes {}
 export interface ValidatorId extends AccountId {}
 
 /** @name Weight */
-export interface Weight extends u32 {}
+export interface Weight extends u64 {}
 
 /** @name WeightMultiplier */
 export interface WeightMultiplier extends Fixed64 {}
+
+export type PHANTOM_RUNTIME = 'runtime';

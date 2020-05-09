@@ -24,7 +24,7 @@ interface Props {
 const ZERO = new BN(0);
 
 // TODO Re-enable when we have proper fee calculation (incl. weights)
-// async function calcMax (api: ApiPromise, balances_fees: DerivedFees | undefined, senderId: string, recipientId: string): Promise<BN> {
+// async function calcMax (api: ApiPromise, balances_fees: DeriveFees | undefined, senderId: string, recipientId: string): Promise<BN> {
 //   let maxBalance = new BN(1);
 
 //   if (!balances_fees) {

@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedHeartbeats, DerivedStakingOverview } from '@polkadot/api-derive/types';
+import { DeriveHeartbeats, DeriveStakingOverview } from '@polkadot/api-derive/types';
 import { AccountId } from '@polkadot/types/interfaces';
 import { ValidatorFilter } from '../types';
 import { AddressDetails } from './types';
@@ -22,9 +22,9 @@ interface Props {
   isVisible: boolean;
   lastAuthors?: string[];
   next: string[];
-  recentlyOnline?: DerivedHeartbeats;
+  recentlyOnline?: DeriveHeartbeats;
   setNominators: (nominators: string[]) => void;
-  stakingOverview?: DerivedStakingOverview;
+  stakingOverview?: DeriveStakingOverview;
 }
 
 type AccountExtend = [string, boolean, boolean];

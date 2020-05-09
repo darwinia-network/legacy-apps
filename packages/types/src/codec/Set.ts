@@ -60,7 +60,7 @@ function decodeSet (setValues: SetValues, value: string[] | Set<string> | Uint8A
   } else if (isU8a(value)) {
     return value.length === 0
       ? []
-      : decodeSetNumber(setValues, u8aToBn(value.subarray(0, byteLength), { isLe: false }));
+      : decodeSetNumber(setValues, u8aToBn(value.subarray(0, byteLength), { isLe: true }));
   } else if (value instanceof Set || Array.isArray(value)) {
     const input = Array.isArray(value)
       ? value
@@ -228,6 +228,9 @@ export default class CodecSet extends Set<string> implements Codec {
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public toU8a (isBare?: boolean): Uint8Array {
-    return bnToU8a(this.valueEncoded, { isLe: false, bitLength: this.#byteLength * 8 });
+    return bnToU8a(this.valueEncoded, {
+      bitLength: this.#byteLength * 8,
+      isLe: true
+    });
   }
 }

@@ -150,5 +150,7 @@
   "Status": "Status",
   "No Data": "No Data",
   "Type": "Type",
-  "Tx Hash": "Tx Hash"
+  "Tx Hash": "Tx Hash",
+  "network": "network",
+  "Network": "Network"
 }

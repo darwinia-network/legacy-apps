@@ -11,6 +11,7 @@ import { createType } from '@polkadot/types';
 import { assert, hexToU8a, stringToU8a, u8aToBuffer, u8aConcat } from '@polkadot/util';
 import { keccakAsHex, keccakAsU8a } from '@polkadot/util-crypto';
 import { ChainType } from './types';
+import { hexAddress2tronAddress } from './tronaddress';
 
 interface RecoveredSignature {
   error: Error | null;
@@ -25,8 +26,13 @@ interface SignatureParts {
 }
 
 // converts an Ethereum address to a checksum representation
-export function addrToChecksum (_address: string): string {
+export function addrToChecksum (_address: string, type?: ChainType): string {
   const address = _address.toLowerCase();
+
+  if(type === 'tron') {
+    return hexAddress2tronAddress('41' + address.substr(2, 40));
+  }
+
   const hash = keccakAsHex(address.substr(2)).substr(2);
   let result = '0x';
 

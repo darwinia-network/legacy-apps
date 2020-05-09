@@ -2,6 +2,11 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+// order important in structs... :)
+/* eslint-disable sort-keys */
+
+import { Definitions } from '../../types';
+
 const deprecated = {
   Points: 'u32',
   EraPoints: {
@@ -11,6 +16,7 @@ const deprecated = {
 };
 
 export default {
+  rpc: {},
   types: {
     ...deprecated,
     ActiveEraInfo: {
@@ -18,24 +24,24 @@ export default {
       start: 'Option<Moment>'
     },
     CompactAssignments: {
-      votes1: 'Vec<(AccountId, [CompactScore; 0], AccountId)>',
-      votes2: 'Vec<(AccountId, [CompactScore; 1], AccountId)>',
-      votes3: 'Vec<(AccountId, [CompactScore; 2], AccountId)>',
-      votes4: 'Vec<(AccountId, [CompactScore; 3], AccountId)>',
-      votes5: 'Vec<(AccountId, [CompactScore; 4], AccountId)>',
-      votes6: 'Vec<(AccountId, [CompactScore; 5], AccountId)>',
-      votes7: 'Vec<(AccountId, [CompactScore; 6], AccountId)>',
-      votes8: 'Vec<(AccountId, [CompactScore; 7], AccountId)>',
-      votes9: 'Vec<(AccountId, [CompactScore; 8], AccountId)>',
-      votes10: 'Vec<(AccountId, [CompactScore; 9], AccountId)>',
-      votes11: 'Vec<(AccountId, [CompactScore; 10], AccountId)>',
-      votes12: 'Vec<(AccountId, [CompactScore; 11], AccountId)>',
-      votes13: 'Vec<(AccountId, [CompactScore; 12], AccountId)>',
-      votes14: 'Vec<(AccountId, [CompactScore; 13], AccountId)>',
-      votes15: 'Vec<(AccountId, [CompactScore; 14], AccountId)>',
-      votes16: 'Vec<(AccountId, [CompactScore; 15], AccountId)>'
+      votes1: 'Vec<(ValidatorIndex, [CompactScore; 0], NominatorIndex)>',
+      votes2: 'Vec<(ValidatorIndex, [CompactScore; 1], NominatorIndex)>',
+      votes3: 'Vec<(ValidatorIndex, [CompactScore; 2], NominatorIndex)>',
+      votes4: 'Vec<(ValidatorIndex, [CompactScore; 3], NominatorIndex)>',
+      votes5: 'Vec<(ValidatorIndex, [CompactScore; 4], NominatorIndex)>',
+      votes6: 'Vec<(ValidatorIndex, [CompactScore; 5], NominatorIndex)>',
+      votes7: 'Vec<(ValidatorIndex, [CompactScore; 6], NominatorIndex)>',
+      votes8: 'Vec<(ValidatorIndex, [CompactScore; 7], NominatorIndex)>',
+      votes9: 'Vec<(ValidatorIndex, [CompactScore; 8], NominatorIndex)>',
+      votes10: 'Vec<(ValidatorIndex, [CompactScore; 9], NominatorIndex)>',
+      votes11: 'Vec<(ValidatorIndex, [CompactScore; 10], NominatorIndex)>',
+      votes12: 'Vec<(ValidatorIndex, [CompactScore; 11], NominatorIndex)>',
+      votes13: 'Vec<(ValidatorIndex, [CompactScore; 12], NominatorIndex)>',
+      votes14: 'Vec<(ValidatorIndex, [CompactScore; 13], NominatorIndex)>',
+      votes15: 'Vec<(ValidatorIndex, [CompactScore; 14], NominatorIndex)>',
+      votes16: 'Vec<(ValidatorIndex, [CompactScore; 15], NominatorIndex)>'
     },
-    CompactScore: '(AccountId, u128)',
+    CompactScore: '(u16, OffchainAccuracy)',
     ElectionCompute: {
       _enum: ['OnChain', 'Signed', 'Authority']
     },
@@ -84,10 +90,13 @@ export default {
       submittedIn: 'EraIndex',
       suppressed: 'bool'
     },
+    NominatorIndex: 'u32',
+    OffchainAccuracy: 'PerU16',
+    PerU16: 'u16',
     PhragmenScore: '[u128; 3]',
     Points: 'u32',
     ReleasesStaking: {
-      _enum: ['V1_0_0', 'V2_0_0']
+      _enum: ['V1_0_0', 'V2_0_0', 'V3_0_0']
     },
     RewardDestination: {
       _enum: [
@@ -124,13 +133,19 @@ export default {
       active: 'Compact<Balance>',
       unlocking: 'Vec<UnlockChunk>'
     },
-    // TODO Enable as default when new staking payouts go live
-    StakingLedger: {
+    StakingLedgerTo240: {
       stash: 'AccountId',
       total: 'Compact<Balance>',
       active: 'Compact<Balance>',
       unlocking: 'Vec<UnlockChunk>',
       lastReward: 'Option<EraIndex>'
+    },
+    StakingLedger: {
+      stash: 'AccountId',
+      total: 'Compact<Balance>',
+      active: 'Compact<Balance>',
+      unlocking: 'Vec<UnlockChunk>',
+      claimedRewards: 'Vec<EraIndex>'
     },
     UnappliedSlashOther: '(AccountId, Balance)',
     UnappliedSlash: {
@@ -156,4 +171,4 @@ export default {
       validatorPayment: 'Compact<Balance>'
     }
   }
-};
+} as Definitions;

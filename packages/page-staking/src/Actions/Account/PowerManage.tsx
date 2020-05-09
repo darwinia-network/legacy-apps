@@ -15,13 +15,10 @@ import translate from '../../translate';
 // import { Option, createType } from '@polkadot/types';
 import { StakingLedger } from '@polkadot/types/interfaces';
 import powerbg from '../../Assets/power-bg.svg';
-import ringIcon from '../../Assets/ring.svg';
-import ktonIcon from '../../Assets/kton.svg';
-import { Power } from '@polkadot/react-darwinia/components';
+import { Power, TokenIcon } from '@polkadot/react-darwinia/components';
 import { AvailableKton, Available, Balance, BalanceKton } from '@polkadot/react-components';
-import { DerivedStakingAccount } from '@polkadot/api-derive/types'
+import { DeriveStakingAccount } from '@polkadot/api-derive/types'
 import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
-import { formatBalance } from '@polkadot/util';
 import { FormatBalance } from '@polkadot/react-query';
 
 // true to display, or (for bonded) provided values [own, ...all extras]
@@ -54,7 +51,7 @@ type Props = BareProps & I18nProps & {
   // isReadyStaking: boolean;
   // staking_ledger: StakingLedgers;
   stakingLedger?: StakingLedger;
-  stakingAccount?: DerivedStakingAccount;
+  stakingAccount?: DeriveStakingAccount;
   checkedAccount?: string;
 };
 
@@ -148,7 +145,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
 
         <div className="nominate-balance-box">
           <div className="box-left">
-            <img src={ringIcon} />
+            <TokenIcon className="logo" type={RING_PROPERTIES.tokenSymbol.toLocaleLowerCase()} />
             <p>{RING_PROPERTIES.tokenSymbol}</p>
           </div>
           <div className="box-right">
@@ -170,7 +167,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
 
         <div className="nominate-balance-box">
           <div className="box-left">
-            <img src={ktonIcon} />
+            <TokenIcon className="logo" type={KTON_PROPERTIES.tokenSymbol.toLocaleLowerCase()} />
             <p>{KTON_PROPERTIES.tokenSymbol}</p>
           </div>
           <div className="box-right">

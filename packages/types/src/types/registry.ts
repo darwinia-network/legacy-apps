@@ -2,17 +2,22 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { ChainProperties } from '../interfaces/rpc';
-import { OverrideModuleType } from '../known/types';
-
-import BN from 'bn.js';
-
+import { ChainProperties } from '../interfaces/system';
 import { CallFunction } from './calls';
 import { Codec, Constructor } from './codec';
 import { AnyJson } from './helpers';
 
+import BN from 'bn.js';
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface InterfaceTypes { }
+
+export interface OverrideVersionedType {
+  minmax: [number?, number?]; // min (v >= min) and max (v <= max)
+  types: RegistryTypes;
+}
+
+export type OverrideModuleType = Record<string, string>;
 
 export type RegistryTypes = Record<string, Constructor | string | Record<string, string> | { _enum: string[] | Record<string, string | null> } | { _set: Record<string, number> }>;
 

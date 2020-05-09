@@ -15,18 +15,13 @@ import { Button, Input, Table, Available, AvailableKton, Balance, BalanceKton } 
 import CreateModal from './modals/Create';
 import ImportModal from './modals/Import';
 import QrModal from './modals/Qr';
-import Account from './Account';
+// import Account from './Account';
 import { useTranslation } from './translate';
 import noAccountImg from './img/noAccount.svg';
-import ringImg from './img/ring.svg';
-import cringImg from './img/cring.png';
-
-import ktonImg from './img/kton.svg';
-import cktonImg from './img/ckton.png';
 import AccountStatus from './AccountStatus';
 import StakingList from './StakingList';
 import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
-import { RowTitle } from '@polkadot/react-darwinia/components';
+import { RowTitle, TokenIcon } from '@polkadot/react-darwinia/components';
 import Transfer from './modals/Transfer';
 import TransferKton from './modals/TransferKton';
 
@@ -108,7 +103,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
             <div>
               <div className="allvalueBox ring">
                 <div className="logoBox">
-                   {RING_PROPERTIES.tokenSymbol.toLocaleLowerCase() === 'ring' ? <img className="logo" src={ringImg} /> : <img className="logo" src={cringImg} /> }
+                  <TokenIcon className="logo" type={RING_PROPERTIES.tokenSymbol.toLocaleLowerCase()} />
                 </div>
                 <div>
                   <h1>{RING_PROPERTIES.tokenSymbol}</h1>
@@ -136,7 +131,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
             <div>
               <div className="allvalueBox kton">
                 <div className="logoBox">
-                  {KTON_PROPERTIES.tokenSymbol.toLocaleLowerCase() === 'kton' ? <img className="logo" src={ktonImg} /> : <img className="logo" src={cktonImg} /> }
+                  <TokenIcon className="logo" type={KTON_PROPERTIES.tokenSymbol.toLocaleLowerCase()} />
                 </div>
                 <div>
                   <h1>{KTON_PROPERTIES.tokenSymbol}</h1>

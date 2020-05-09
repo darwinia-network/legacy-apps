@@ -19,6 +19,7 @@ import { formatBalance, formatKtonBalance, isTestChain } from '@polkadot/util';
 import { setSS58Format } from '@polkadot/util-crypto';
 import addressDefaults from '@polkadot/util-crypto/address/defaults';
 import { setRingProperties, setKtonProperties } from '@polkadot/react-darwinia';
+import * as definitions from '@polkadot/react-darwinia/interfaces/definitions';
 
 import ApiContext from './ApiContext';
 import registry from './typeRegistry';
@@ -68,7 +69,6 @@ async function loadOnReady (api: ApiPromise): Promise<State> {
     : uiSettings.prefix;
   const tokenSymbol = properties.tokenSymbol.unwrapOr(undefined)?.toString();
   const tokenDecimals = properties.tokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
-
   const ktonTokenSymbol = properties.ktonTokenSymbol.unwrapOr(undefined)?.toString();
   const ktonTokenDecimals = properties.ktonTokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
 
@@ -138,13 +138,14 @@ export default function Api ({ children, url }: Props): React.ReactElement<Props
   const [isApiConnected, setIsApiConnected] = useState(false);
   const [isWaitingInjected, setIsWaitingInjected] = useState(isWeb3Injected);
   const [isInitialized, setIsInitialized] = useState(false);
+  const types = Object.values(definitions).reduce((res, { types }): object => ({ ...res, ...types }), {});
 
   // initial initialization
   useEffect((): void => {
     const provider = new WsProvider(url);
     const signer = new ApiSigner(queuePayload, queueSetTxStatus);
 
-    api = new ApiPromise({ provider, registry, signer, typesChain, typesSpec });
+    api = new ApiPromise({ provider, registry, signer, typesChain, typesSpec, types });
 
     api.on('connected', (): void => setIsApiConnected(true));
     api.on('disconnected', (): void => setIsApiConnected(false));

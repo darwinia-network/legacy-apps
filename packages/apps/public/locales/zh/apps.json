@@ -1,5 +1,5 @@
 {
-  "sidebar.explorer": "浏览",
+  "sidebar.explorer": "节点信息",
   "sidebar.settings": "设置",
   "sidebar.vanity": "美化账号",
   "sidebar.accounts": "账户",
@@ -13,7 +13,7 @@
   "sidebar.parachains": "平行链",
   "sidebar.staking": "抵押",
   "sidebar.chainstate": "链状态",
-  "sidebar.sudo": "撤销",
+  "sidebar.sudo": "管理员",
   "sidebar.techcomm": "技术委员会",
   "sidebar.toolbox": "工具箱",
   "sidebar.transfer": "转账",

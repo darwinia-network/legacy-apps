@@ -4,7 +4,7 @@
 
 import { AccountId, Balance, RewardPoint, Power } from '@polkadot/types/interfaces';
 
-import { DeriveAccountInfo, DerivedStakingQuery, DerivedHeartbeatAuthor } from '@polkadot/api-derive/types';
+import { DeriveAccountInfo, DeriveStakingQuery, DeriveHeartbeatAuthor } from '@polkadot/api-derive/types';
 import { ValidatorFilter } from '../types';
 
 import BN from 'bn.js';
@@ -25,7 +25,7 @@ interface Props {
   filter: ValidatorFilter;
   filterName: string;
   hasQueries: boolean;
-  heartbeat?: DerivedHeartbeatAuthor;
+  heartbeat?: DeriveHeartbeatAuthor;
   isAuthor?: boolean;
   isElected: boolean;
   isFavorite: boolean;
@@ -49,7 +49,7 @@ interface StakingState {
   stakeOwn?: BN;
 }
 
-function expandInfo ({ controllerId, exposure, nextSessionIds, validatorPrefs }: DerivedStakingQuery, myAccounts: string[], withNominations = true): StakingState {
+function expandInfo ({ controllerId, exposure, nextSessionIds, validatorPrefs }: DeriveStakingQuery, myAccounts: string[], withNominations = true): StakingState {
   const nominators = withNominations && exposure
     ? exposure.others.map(({ who, power }): [AccountId, Power] => [who, power])
     : [];
@@ -75,7 +75,7 @@ function expandInfo ({ controllerId, exposure, nextSessionIds, validatorPrefs }:
   };
 }
 
-function checkFilter (filter: string, hasNominators: boolean, isElected: boolean, isNominatorMe: boolean, heartbeat?: DerivedHeartbeatAuthor): boolean {
+function checkFilter (filter: string, hasNominators: boolean, isElected: boolean, isNominatorMe: boolean, heartbeat?: DeriveHeartbeatAuthor): boolean {
   return (filter === 'hasNominators' && !hasNominators) ||
     (filter === 'noNominators' && hasNominators) ||
     (filter === 'hasWarnings' && heartbeat?.isOnline) ||
@@ -120,7 +120,7 @@ export default function Address ({ address, className, filter, filterName, hasQu
   const { api } = useApi();
   // FIXME Any horrors, caused by derive type mismatches
   const info = useCall<DeriveAccountInfo>(api.derive.accounts.info as any, [address]);
-  const stakingInfo = useCall<DerivedStakingQuery>(api.derive.staking.query as any, [address]);
+  const stakingInfo = useCall<DeriveStakingQuery>(api.derive.staking.query as any, [address]);
   const [{ commission, hasNominators, isNominatorMe, nominators, stakeOwn, stakeOther }, setStakingState] = useState<StakingState>({ hasNominators: false, isNominatorMe: false, nominators: [] });
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(true);

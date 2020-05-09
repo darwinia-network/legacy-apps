@@ -17,9 +17,9 @@ import { memo } from '../util';
 function dataAsString (data: Data): string | undefined {
   return data.isRaw
     ? u8aToString(data.asRaw.toU8a(true))
-    : data.isSha256
-      ? data.asSha256.toHex()
-      : undefined;
+    : data.isNone
+      ? undefined
+      : data.toHex();
 }
 
 function retrieveNick (api: ApiInterfaceRx, accountId?: AccountId): Observable<string | undefined> {
@@ -53,6 +53,7 @@ function extractIdentity (identityOfOpt?: Option<Registration>, superOf?: [Accou
       : undefined,
     email: dataAsString(info.email),
     image: dataAsString(info.image),
+    judgements,
     legal: dataAsString(info.legal),
     other: info.additional.reduce((other: Record<string, string>, [_key, _value]): Record<string, string> => {
       const key = dataAsString(_key);
@@ -72,8 +73,7 @@ function extractIdentity (identityOfOpt?: Option<Registration>, superOf?: [Accou
       : undefined,
     riot: dataAsString(info.riot),
     twitter: dataAsString(info.twitter),
-    web: dataAsString(info.web),
-    judgements
+    web: dataAsString(info.web)
   };
 }
 

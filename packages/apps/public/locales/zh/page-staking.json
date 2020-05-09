@@ -185,5 +185,18 @@
   "Reward History": "收益历史",
   "Claim Reward": "领取收益",
   "Claimed": "已领取",
-  "Unclaimed": "待领取"
+  "Unclaimed": "待领取",
+  "There is currently an ongoing election for new validator candidates. As such staking operations are not permitted.": "目前，正在进行新的验证人候选人选举。 因此，不允许进行抵押等操作。",
+  "payout/stash": "payout/stash",
+  "eras": "eras",
+  "payout/validator": "payout/validator",
+  "Payout all stakers": "Payout all stakers",
+  "request payout from": "request payout from",
+  "Any account can request payout for stakers, this is not limited to accounts that will be rewarded.": "Any account can request payout for stakers, this is not limited to accounts that will be rewarded.",
+  "payout stakers for (multiple)": "payout stakers for (multiple)",
+  "payout stakers for (single)": "payout stakers for (single)",
+  "All the listed validators and all their nominators will receive their rewards.": "All the listed validators and all their nominators will receive their rewards.",
+  "Payout": "Payout",
+  "Payout all": "Payout all",
+  "{{count}} own stashes": "{{count}} own stashes"
 }

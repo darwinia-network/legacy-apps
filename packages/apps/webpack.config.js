@@ -14,7 +14,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { WebpackPluginServe } = require('webpack-plugin-serve');
 
 const findPackages = require('../../scripts/findPackages');
-var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const ENV = process.env.NODE_ENV || 'development';
 
 function createWebpack({ alias = {}, context, name = 'index' }) {

@@ -3,10 +3,10 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AccountId, AccountData, AccountIndex, AccountInfo, Address, Balance, Index } from '@polkadot/types/interfaces';
+import { AccountId, AccountIndex, AccountInfo, Address, Balance, Index } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
-import { DerivedBalancesAccount } from '../types';
-
+import { DeriveBalancesAccount as DerivedBalancesAccount } from '../types';
+import { AccountData } from '@polkadot/react-darwinia/interfaces/darwiniaInject/types';
 import { combineLatest, of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ApiInterfaceRx } from '@polkadot/api/types';

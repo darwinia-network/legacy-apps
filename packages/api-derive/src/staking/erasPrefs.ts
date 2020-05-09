@@ -6,7 +6,6 @@ import { ApiInterfaceRx } from '@polkadot/api/types';
 import { EraIndex, ValidatorPrefs } from '@polkadot/types/interfaces';
 import { DeriveEraPrefs, DeriveEraValPrefs } from '../types';
 
-import BN from 'bn.js';
 import { Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { StorageKey } from '@polkadot/types';
@@ -31,16 +30,18 @@ export function eraPrefs (api: ApiInterfaceRx): (era: EraIndex) => Observable<De
   );
 }
 
-export function erasPrefs (api: ApiInterfaceRx): (withActive?: boolean | BN | number) => Observable<DeriveEraPrefs[]> {
-  return memo((withActive?: boolean | BN | number): Observable<DeriveEraPrefs[]> =>
+export function _erasPrefs (api: ApiInterfaceRx): (eras: EraIndex[]) => Observable<DeriveEraPrefs[]> {
+  return memo((eras: EraIndex[]): Observable<DeriveEraPrefs[]> =>
+    eras.length
+      ? combineLatest(eras.map((era) => api.derive.staking.eraPrefs(era)))
+      : of([])
+  );
+}
+
+export function erasPrefs (api: ApiInterfaceRx): (withActive?: boolean) => Observable<DeriveEraPrefs[]> {
+  return memo((withActive?: boolean): Observable<DeriveEraPrefs[]> =>
     api.derive.staking.erasHistoric(withActive).pipe(
-      switchMap((eras): Observable<DeriveEraPrefs[]> =>
-        eras.length
-          ? combineLatest(
-            eras.map((era) => api.derive.staking.eraPrefs(era))
-          )
-          : of([])
-      )
+      switchMap((eras) => api.derive.staking._erasPrefs(eras))
     )
   );
 }

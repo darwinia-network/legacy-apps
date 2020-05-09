@@ -2,7 +2,13 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+// order important in structs... :)
+/* eslint-disable sort-keys */
+
+import { Definitions } from '../../types';
+
 export default {
+  rpc: {},
   types: {
     AttestedCandidate: {
       candidate: 'CandidateReceipt',
@@ -29,6 +35,19 @@ export default {
     },
     CollatorId: 'H256',
     CollatorSignature: 'Signature',
+    DoubleVoteReport: {
+      identity: 'ValidatorId',
+      first: 'DoubleVoteReportStatement',
+      second: 'DoubleVoteReportStatement',
+      proof: 'DoubleVoteReportProof',
+      signingContext: 'SigningContext'
+    },
+    // session::historical::Proof
+    DoubleVoteReportProof: {
+      session: 'SessionIndex',
+      trieNodes: 'Vec<Bytes>'
+    },
+    DoubleVoteReportStatement: '(Statement, ValidatorSignature)',
     EgressQueueRoot: '(ParaId, Hash)',
     HeadData: 'Bytes',
     IncomingParachainDeploy: {
@@ -57,6 +76,10 @@ export default {
     ParaInfo: {
       scheduling: 'ParaScheduling'
     },
+    ParaPastCodeMeta: {
+      upgradeTimes: 'Vec<BlockNumber>',
+      lastPruned: 'Option<BlockNumber>'
+    },
     ParachainDispatchOrigin: {
       _enum: ['Signed', 'Parachain']
     },
@@ -68,6 +91,10 @@ export default {
         Never: 'Null',
         WithRetries: 'u32'
       }
+    },
+    SigningContext: {
+      sessionIndex: 'SessionIndex',
+      parentHash: 'Hash'
     },
     SlotRange: {
       _enum: [
@@ -83,21 +110,31 @@ export default {
         'ThreeThree' // 9
       ]
     },
+    Statement: {
+      _enum: {
+        // This Null is not in the original, however indexes start at 1
+        Never: 'Null',
+        Candidate: 'Hash',
+        Valid: 'Hash',
+        Invalid: 'Hash'
+      }
+    },
     SubId: 'u32',
     UpwardMessage: {
       origin: 'ParachainDispatchOrigin',
       data: 'Bytes'
     },
+    ValidationCode: 'Bytes',
     ValidityAttestation: {
       _enum: {
-        // This Null is not in the original, however indexes start at 1, so add a
-        // placeholder in the first position (which is basically non-valid)
-        None: 'Null',
-        Implicit: 'CollatorSignature', // 1
-        Explicit: 'CollatorSignature' // 2
+        // This Null is not in the original, however indexes start at 1
+        Never: 'Null',
+        Implicit: 'ValidatorSignature', // 1
+        Explicit: 'ValidatorSignature' // 2
       }
     },
+    ValidatorSignature: 'Signature',
     WinningDataEntry: '(AccountId, ParaIdOf, BalanceOf)',
     WinningData: '[WinningDataEntry; 10]'
   }
-};
+} as Definitions;

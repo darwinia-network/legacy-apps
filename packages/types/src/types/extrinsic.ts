@@ -2,8 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { ExtrinsicStatus } from '../interfaces/author';
 import { EcdsaSignature, Ed25519Signature, Sr25519Signature } from '../interfaces/extrinsics';
-import { ExtrinsicStatus } from '../interfaces/rpc';
 import { Address, Balance, Call, H256, Index } from '../interfaces/runtime';
 import { EventRecord } from '../interfaces/system';
 import { Codec } from './codec';
@@ -18,6 +18,7 @@ export interface ISubmittableResult {
   readonly isError: boolean;
   readonly isFinalized: boolean;
   readonly isInBlock: boolean;
+  readonly isWarning: boolean;
 
   filterRecords (section: string, method: string): EventRecord[];
   findRecord (section: string, method: string): EventRecord | undefined;

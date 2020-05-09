@@ -16,6 +16,7 @@ import Enum from './Enum';
 export default class Result<O extends Codec, E extends Codec> extends Enum {
   constructor (registry: Registry, Ok: Constructor<O> | keyof InterfaceTypes, Error: Constructor<E> | keyof InterfaceTypes, value?: any) {
     // NOTE This is order-dependent, Ok (with index 0) needs to be first
+    // eslint-disable-next-line sort-keys
     super(registry, { Ok, Error }, value);
   }
 
@@ -49,7 +50,7 @@ export default class Result<O extends Codec, E extends Codec> extends Enum {
    * @description Checks if the Result has no value
    */
   public get isEmpty (): boolean {
-    return this.isOk && this.raw.isEmpty;
+    return this.isOk && this._raw.isEmpty;
   }
 
   /**
@@ -70,7 +71,7 @@ export default class Result<O extends Codec, E extends Codec> extends Enum {
    * @description Returns the base runtime type name for this instance
    */
   public toRawType (): string {
-    const Types = this.toRawStruct() as { Ok: any; Error: any };
+    const Types = this._toRawStruct() as { Ok: any; Error: any };
 
     return `Result<${Types.Ok},${Types.Error}>`;
   }
