@@ -138,8 +138,8 @@ class Earnings extends React.PureComponent<Props, State> {
               key='detail'
               onClick={
                 () => {
-                  window.open(`${SUBSCAN_URL_CRAB}/account/${destinationId}`)
-                } 
+                  window.open(`${SUBSCAN_URL_CRAB}/account/${destinationId}?tab=reward`)
+                }
               }
             >{t('Reward History')}</ColorButton>
 
