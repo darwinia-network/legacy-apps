@@ -152,5 +152,7 @@
   "Type": "Type",
   "Tx Hash": "Tx Hash",
   "network": "network",
-  "Network": "Network"
+  "Network": "Network",
+  "No account": "No account",
+  "Please add an account and open your Darwinia Network Surfing": "Please add an account and open your Darwinia Network Surfing"
 }

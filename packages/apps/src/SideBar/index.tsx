@@ -298,7 +298,9 @@ export default styled(SideBar)`
     top: 0px;
     transition: opacity 0.2s ease-in, top 0.2s ease-in;
     width: 2.75rem;
-
+    height: 2.75rem;
+    background: #000;
+    border-radius: 1.375rem;
     &.delayed {
       transition-delay: 0.4s;
     }

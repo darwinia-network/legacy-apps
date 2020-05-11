@@ -1,25 +1,13 @@
-FROM ubuntu:18.04 as builder
+FROM node:12.16.3 as builder
+WORKDIR /www
 
-# Install any needed packages
-RUN apt-get update && apt-get install -y curl git gnupg
-
-# install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN apt-get install -y nodejs
-
-WORKDIR /apps
-COPY . .
-
-RUN npm install yarn -g
+COPY package.json /www
 RUN yarn
-RUN NODE_ENV=production yarn build:www
 
-FROM ubuntu:18.04
+COPY . /www
+RUN yarn run build
 
-RUN apt-get update && apt-get -y install nginx
+FROM nginx:latest
+COPY --from=builder /www/packages /usr/share/nginx/html
+COPY --from=builder /www/www.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=builder /apps/packages/apps/build /var/www/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
