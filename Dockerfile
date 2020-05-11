@@ -1,10 +1,10 @@
 FROM node:12.16.3 as builder
 WORKDIR /www
 
-COPY package.json /www
+COPY . /www
+
 RUN yarn
 
-COPY . /www
 RUN yarn run build
 
 FROM nginx:latest
