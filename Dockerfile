@@ -1,8 +1,7 @@
-FROM node:11.14.0 as builder
+FROM node:12.16.3 as builder
 WORKDIR /www
 
 COPY package.json /www
-COPY yarn.lock /www
 RUN yarn
 
 COPY . /www
