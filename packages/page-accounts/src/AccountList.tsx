@@ -169,8 +169,8 @@ function AccountList ({ className, onStatusChange, onClose, accountChecked, onTo
           )
           : <div className='noAccount'>
             <img src={noAccountImg} />
-            <p className='h1'>No account</p>
-            <p>Please add an account and open your Darwinia Network Surfing</p>
+            <p className='h1'>{t('No account')}</p>
+            <p>{t('Please add an account and open your Darwinia Network Surfing')}</p>
 
             <Button
               isPrimary
