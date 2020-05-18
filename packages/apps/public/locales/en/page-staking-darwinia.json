@@ -1,4 +1,5 @@
 {
+  " ": " ",
   "A controller account should not be set to manages multiple stashes. The selected controller is already controlling {{stashId}}": "A controller account should not be set to manages multiple stashes. The selected controller is already controlling {{stashId}}",
   "A controller account should not map to another stash. This selected controller is a stash, controlled by {{bondedId}}": "A controller account should not map to another stash. This selected controller is a stash, controlled by {{bondedId}}",
   "Account": "Account",

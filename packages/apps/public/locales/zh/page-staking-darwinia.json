@@ -1,4 +1,5 @@
 {
+  " ": " ",
   "A controller account should not be set to manages multiple stashes. The selected controller is already controlling {{stashId}}": "控制器帐户不应设置为管理多个存储。 所选的控制器已经在控制{{stashId}}",
   "A controller account should not map to another stash. This selected controller is a stash, controlled by {{bondedId}}": "控制器帐户不应映射到其他存储。 此选定的控制器是一个存储区，由{{bondedId}}控制",
   "Account": "账号",

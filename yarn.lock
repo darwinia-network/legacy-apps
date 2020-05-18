@@ -3182,9 +3182,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@polkadot/dev@npm:^0.52.15":
-  version: 0.52.15
-  resolution: "@polkadot/dev@npm:0.52.15"
+"@polkadot/dev@^0.52.15, @polkadot/dev@workspace:packages/dev":
+  version: 0.0.0-use.local
+  resolution: "@polkadot/dev@workspace:packages/dev"
   dependencies:
     "@babel/cli": ^7.8.4
     "@babel/core": ^7.9.6
@@ -3206,6 +3206,10 @@ __metadata:
     "@babel/preset-typescript": ^7.9.0
     "@babel/register": ^7.9.0
     "@babel/runtime": ^7.9.6
+    "@types/jest": ^25.2.1
+    "@types/node": ^13.13.5
+    "@types/react": ^16.9.34
+    "@types/yargs": ^15.0.4
     "@typescript-eslint/eslint-plugin": 2.31.0
     "@typescript-eslint/parser": 2.31.0
     "@vue/component-compiler-utils": ^3.1.2
@@ -3237,6 +3241,7 @@ __metadata:
     lerna: ^3.20.2
     madge: ^3.8.0
     mkdirp: ^1.0.4
+    react: ^16.13.1
     rimraf: ^3.0.2
     typedoc: ^0.17.6
     typedoc-plugin-markdown: ^2.2.17
@@ -3247,27 +3252,26 @@ __metadata:
     webpack-cli: ^3.3.11
     yargs: ^15.3.1
   bin:
-    polkadot-ci-ghact-build: scripts/polkadot-ci-ghact-build.js
-    polkadot-ci-ghact-docs: scripts/polkadot-ci-ghact-docs.js
-    polkadot-ci-ghpages-force: scripts/polkadot-ci-ghpages-force.js
-    polkadot-dev-build-docs: scripts/polkadot-dev-build-docs.js
-    polkadot-dev-build-ts: scripts/polkadot-dev-build-ts.js
-    polkadot-dev-circular: scripts/polkadot-dev-circular.js
-    polkadot-dev-clean-build: scripts/polkadot-dev-clean-build.js
-    polkadot-dev-run-lint: scripts/polkadot-dev-run-lint.js
-    polkadot-dev-run-test: scripts/polkadot-dev-run-test.js
-    polkadot-dev-version: scripts/polkadot-dev-version.js
-    polkadot-dev-yarn-only: scripts/polkadot-dev-yarn-only.js
-    polkadot-exec-eslint: scripts/polkadot-exec-eslint.js
-    polkadot-exec-ghpages: scripts/polkadot-exec-ghpages.js
-    polkadot-exec-lerna: scripts/polkadot-exec-lerna.js
-    polkadot-exec-tsc: scripts/polkadot-exec-tsc.js
-    polkadot-exec-typedoc: scripts/polkadot-exec-typedoc.js
-    polkadot-exec-vuepress: scripts/polkadot-exec-vuepress.js
-    polkadot-exec-webpack: scripts/polkadot-exec-webpack.js
-  checksum: 2/ae1664775e5fc90ecc7cb8b8e179272bb0057cb1cb2231d782ef47ea001dffffe1a231ffdcc89e60b55649990eba6f466d2154027da7b66084266d3b39edc5c9
-  languageName: node
-  linkType: hard
+    polkadot-ci-ghact-build: ./scripts/polkadot-ci-ghact-build.js
+    polkadot-ci-ghact-docs: ./scripts/polkadot-ci-ghact-docs.js
+    polkadot-ci-ghpages-force: ./scripts/polkadot-ci-ghpages-force.js
+    polkadot-dev-build-docs: ./scripts/polkadot-dev-build-docs.js
+    polkadot-dev-build-ts: ./scripts/polkadot-dev-build-ts.js
+    polkadot-dev-circular: ./scripts/polkadot-dev-circular.js
+    polkadot-dev-clean-build: ./scripts/polkadot-dev-clean-build.js
+    polkadot-dev-run-lint: ./scripts/polkadot-dev-run-lint.js
+    polkadot-dev-run-test: ./scripts/polkadot-dev-run-test.js
+    polkadot-dev-version: ./scripts/polkadot-dev-version.js
+    polkadot-dev-yarn-only: ./scripts/polkadot-dev-yarn-only.js
+    polkadot-exec-eslint: ./scripts/polkadot-exec-eslint.js
+    polkadot-exec-ghpages: ./scripts/polkadot-exec-ghpages.js
+    polkadot-exec-lerna: ./scripts/polkadot-exec-lerna.js
+    polkadot-exec-tsc: ./scripts/polkadot-exec-tsc.js
+    polkadot-exec-typedoc: ./scripts/polkadot-exec-typedoc.js
+    polkadot-exec-vuepress: ./scripts/polkadot-exec-vuepress.js
+    polkadot-exec-webpack: ./scripts/polkadot-exec-webpack.js
+  languageName: unknown
+  linkType: soft
 
 "@polkadot/extension-dapp@npm:^0.25.0-beta.4":
   version: 0.25.0-beta.4
@@ -4084,6 +4088,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^13.13.5":
+  version: 13.13.6
+  resolution: "@types/node@npm:13.13.6"
+  checksum: 2/633afca5ab4872f1c9d4d1ad29c39f2decd32091f69fd132e42922e4ccaf46f71a9c7fbd958ed61c167984715e02ac4f4f295d7fdaa2ae90239cb719c8adbbbe
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.0
   resolution: "@types/normalize-package-data@npm:2.4.0"
@@ -4202,6 +4213,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react@npm:^16.9.34":
+  version: 16.9.35
+  resolution: "@types/react@npm:16.9.35"
+  dependencies:
+    "@types/prop-types": "*"
+    csstype: ^2.2.0
+  checksum: 2/17c41e59d76634d3c9e21d30bda9afe311e99d2dd37274c8763a9ae3e20d775ee0220d456f11cc0de2ec337306ae7d9f329177b40c2ef299b35881620e7703c2
+  languageName: node
+  linkType: hard
+
 "@types/source-list-map@npm:*":
   version: 0.1.2
   resolution: "@types/source-list-map@npm:0.1.2"
@@ -4306,6 +4327,15 @@ __metadata:
   dependencies:
     "@types/yargs-parser": "*"
   checksum: 2/03117288be47750740fd8bb670cf987360fc49b374348ce0c17efa743dcfdb52aa97ce001c606924fb062fe24800f680d0db78e1e5bc32c5e3a9f0248050d4d7
+  languageName: node
+  linkType: hard
+
+"@types/yargs@npm:^15.0.4":
+  version: 15.0.5
+  resolution: "@types/yargs@npm:15.0.5"
+  dependencies:
+    "@types/yargs-parser": "*"
+  checksum: 2/2133c8cb5878d13959844f98e546e69dacdf44cd9baf87d84c828a1a093febfc97c8f4df19cffd34a4a4f726a3cdb1851da4391176accf56534c5f8a1c271f46
   languageName: node
   linkType: hard
 
