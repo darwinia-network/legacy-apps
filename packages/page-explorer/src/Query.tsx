@@ -2,16 +2,15 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/react-components/types';
-
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { Button, FilterOverlay, Input } from '@polkadot/react-components';
 import { isHex } from '@polkadot/util';
 
-import translate from './translate';
+import { useTranslation } from './translate';
 
-interface Props extends I18nProps {
+interface Props {
+  className?: string;
   value?: string;
 }
 
@@ -21,24 +20,29 @@ interface State {
 }
 
 function stateFromValue (value: string): State {
-  const isValidHex = isHex(value, 256);
-  const isNumber = !isValidHex && /^\d+$/.test(value);
-
   return {
-    value,
-    isValid: isValidHex || isNumber
+    isValid: isHex(value, 256) || /^\d+$/.test(value),
+    value
   };
 }
 
-function Query ({ className, t, value: propsValue }: Props): React.ReactElement<Props> {
-  const [{ value, isValid }, setState] = useState(stateFromValue(propsValue || ''));
+function Query ({ className, value: propsValue }: Props): React.ReactElement<Props> {
+  const { t } = useTranslation();
+  const [{ isValid, value }, setState] = useState(stateFromValue(propsValue || ''));
 
-  const _setHash = (value: string): void => setState(stateFromValue(value));
-  const _onQuery = (): void => {
-    if (isValid && value.length !== 0) {
-      window.location.hash = `/explorer/query/${value}`;
-    }
-  };
+  const _setHash = useCallback(
+    (value: string): void => setState(stateFromValue(value)),
+    []
+  );
+
+  const _onQuery = useCallback(
+    (): void => {
+      if (isValid && value.length !== 0) {
+        window.location.hash = `/explorer/query/${value}`;
+      }
+    },
+    [isValid, value]
+  );
 
   return (
     <FilterOverlay className={className}>
@@ -46,9 +50,9 @@ function Query ({ className, t, value: propsValue }: Props): React.ReactElement<
         className='explorer--query'
         defaultValue={propsValue}
         isError={!isValid && value.length !== 0}
-        placeholder={t('block hash or number to query')}
         onChange={_setHash}
         onEnter={_onQuery}
+        placeholder={t('block hash or number to query')}
         withLabel={false}
       >
         <Button
@@ -60,7 +64,7 @@ function Query ({ className, t, value: propsValue }: Props): React.ReactElement<
   );
 }
 
-export default translate(styled(Query)`
+export default React.memo(styled(Query)`
   .explorer--query {
     width: 20em;
   }

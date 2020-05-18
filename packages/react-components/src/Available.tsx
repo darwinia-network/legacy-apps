@@ -13,10 +13,9 @@ import { classes } from './util';
 export interface Props extends BareProps {
   label?: React.ReactNode;
   params?: AccountId | AccountIndex | Address | string | Uint8Array | null;
-  withUnit?: boolean;
 }
 
-export default function AvailableDisplay ({ params, className, label, style, withUnit }: Props): React.ReactElement<Props> | null {
+function AvailableDisplay ({ className, label, params, style }: Props): React.ReactElement<Props> | null {
   if (!params) {
     return null;
   }
@@ -27,7 +26,8 @@ export default function AvailableDisplay ({ params, className, label, style, wit
       label={label}
       params={params}
       style={style}
-      withUnit={withUnit}
     />
   );
 }
+
+export default React.memo(AvailableDisplay);

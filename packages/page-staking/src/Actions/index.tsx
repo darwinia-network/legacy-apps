@@ -1,162 +1,99 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 // Copyright 2017-2020 @polkadot/app-staking authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DeriveHeartbeats, DeriveStakingOverview, DeriveStakerReward } from '@polkadot/api-derive/types';
-import { AccountId, StakingLedger } from '@polkadot/types/interfaces';
+import { ActiveEraInfo, EraIndex } from '@polkadot/types/interfaces';
+import { StakerState } from '@polkadot/react-hooks/types';
+import { SortedTargets } from '../types';
 
-import React, { useEffect, useState } from 'react';
-import { Button, AddressSmall } from '@polkadot/react-components';
-import { useCall, useApi, useAccounts } from '@polkadot/react-hooks';
+import BN from 'bn.js';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Table } from '@polkadot/react-components';
+import { useCall, useApi } from '@polkadot/react-hooks';
+import { FormatBalance } from '@polkadot/react-query';
 import { Option } from '@polkadot/types';
-import styled from 'styled-components';
 
-import Account from './Account';
-import StartStaking from './NewStake';
-import { useTranslation } from '../translate';
-import { RowTitle, Box, ActionNote } from '@polkadot/react-darwinia/components';
-import PowerManage from './Account/PowerManage';
 import ElectionBanner from '../ElectionBanner';
+import { useTranslation } from '../translate';
+import Account from './Account';
+import NewStake from './NewStake';
 
 interface Props {
-  // allRewards?: Record<string, DeriveStakerReward[]>;
-  allStashes: string[];
   className?: string;
-  isVisible: boolean;
-  recentlyOnline?: DeriveHeartbeats;
-  next: string[];
-  stakingOverview?: DeriveStakingOverview;
-  accountChecked: string;
   isInElection?: boolean;
+  ownStashes?: StakerState[];
+  next?: string[];
+  validators?: string[];
+  targets: SortedTargets;
 }
 
-function getStashes (allAccounts: string[], stashTypes: Record<string, number>, queryBonded?: Option<AccountId>[], queryLedger?: Option<StakingLedger>): [string, boolean][] | null {
-  let result: [string, boolean][] = [];
-
-  if (!queryBonded || !queryLedger) {
-    return null;
-  }
-
-  queryBonded.forEach((value, index): void => {
-    value.isSome && (result = [[value.unwrap().toString(), true]]);
-  });
-
-  if (queryLedger.isSome) {
-    const stashId = queryLedger.unwrap().stash.toString();
-
-    !result.some(([accountId]): boolean => accountId === stashId) && (result = [[stashId, false]]);
-  }
-
-  return result.sort((a, b): number =>
-    (stashTypes[a[0]] || 99) - (stashTypes[b[0]] || 99)
-  );
+interface State {
+  bondedTotal?: BN;
+  foundStashes?: StakerState[];
 }
 
-function checkAccountType (allAccounts: string[], assumedControllerId: string, queryBonded?: Option<AccountId>[], queryLedger?: Option<StakingLedger>): string {
-  let _assumedControllerId = assumedControllerId;
-  if (queryBonded && queryLedger) {
-    queryBonded.forEach((value, index): void => {
-      value.isSome && (_assumedControllerId = value.unwrap().toString());
-    });
-
-    // if (queryLedger.isSome) {
-    //   const stashId = queryLedger.unwrap().stash.toString();
-    //   _assumedControllerId === stashId;
-    // }
-  }
-  return _assumedControllerId;
-}
-
-function Actions ({ allStashes, className, isVisible, next, recentlyOnline, stakingOverview, accountChecked, isInElection }: Props): React.ReactElement<Props> {
+function Actions ({ className, isInElection, next, ownStashes, targets, validators }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { allAccounts } = useAccounts();
-  const [assumedControllerId, setassumedControllerId] = useState<string>(accountChecked);
-  const queryAssumedBonded = useCall<Option<AccountId>[]>(api.query.staking.bonded.multi as any, [[accountChecked]]);
-  const queryAssumedLedger = useCall<Option<StakingLedger>>(api.query.staking.ledger as any, [accountChecked]);
-
-  const queryBonded = useCall<Option<AccountId>[]>(api.query.staking.bonded.multi as any, [[assumedControllerId]]);
-  const queryLedger = useCall<Option<StakingLedger>>(api.query.staking.ledger as any, [assumedControllerId]);
-
-  const [isNewStakeOpen, setIsNewStateOpen] = useState(false);
-  const [foundStashes, setFoundStashes] = useState<[string, boolean][] | null>(null);
-  const [stashTypes, setStashTypes] = useState<Record<string, number>>({});
+  const activeEra = useCall<EraIndex | undefined>(api.query.staking?.activeEra, [], {
+    transform: (activeEra: Option<ActiveEraInfo>) => activeEra.unwrapOr({ index: undefined }).index
+  });
+  const [{ bondedTotal, foundStashes }, setState] = useState<State>({});
 
   useEffect((): void => {
-    setFoundStashes(getStashes(allAccounts, stashTypes, queryBonded, queryLedger));
-  }, [allAccounts, queryBonded, queryLedger, stashTypes]);
-
-  useEffect((): void => {
-    const _assumedControllerId: string = checkAccountType(allAccounts, accountChecked, queryAssumedBonded, queryAssumedLedger);
-    setassumedControllerId(_assumedControllerId);
-  }, [allAccounts, queryAssumedBonded, queryAssumedLedger]);
-
-  const _toggleNewStake = (): void => setIsNewStateOpen(!isNewStakeOpen);
-  const _onUpdateType = (stashId: string, type: 'validator' | 'nominator' | 'started' | 'other'): void =>
-    setStashTypes({
-      ...stashTypes,
-      [stashId]: type === 'validator'
-        ? 1
-        : type === 'nominator'
-          ? 5
-          : 9
+    ownStashes && setState({
+      bondedTotal: ownStashes.reduce((total: BN, { stakingLedger }) =>
+        stakingLedger
+          ? total.add(stakingLedger.total.unwrap())
+          : total,
+      new BN(0)),
+      foundStashes: ownStashes.sort((a, b) =>
+        (a.isStashValidating ? 1 : (a.isStashNominating ? 5 : 99)) - (b.isStashValidating ? 1 : (b.isStashNominating ? 5 : 99))
+      )
     });
+  }, [ownStashes]);
+
+  const header = useMemo(() => [
+    [t('stashes'), 'start'],
+    [t('controller'), 'address'],
+    [t('rewards'), 'number'],
+    [t('bonded'), 'number'],
+    [undefined, undefined, 2]
+  ], [t]);
+
+  const footer = useMemo(() => (
+    <tr>
+      <td colSpan={3} />
+      <td className='number'>
+        {bondedTotal && <FormatBalance value={bondedTotal} />}
+      </td>
+      <td colSpan={2} />
+    </tr>
+  ), [bondedTotal]);
 
   return (
-    <div className={`staking--Actions ${className} ${!isVisible && 'staking--hidden'}`}>
-      {isNewStakeOpen && (
-        <StartStaking onClose={_toggleNewStake} accountId={accountChecked} />
-      )}
-      
+    <div className={className}>
+      <NewStake />
       <ElectionBanner isInElection={isInElection} />
-
-      {foundStashes?.length
-        ? (
-          <>
-            {foundStashes.map(([stashId, isOwnStash]): React.ReactNode => (
-              <>
-                <Account
-                  allStashes={allStashes}
-                  isOwnStash={isOwnStash}
-                  key={stashId}
-                  next={next}
-                  onUpdateType={_onUpdateType}
-                  // rewards={allRewards && allRewards[stashId]}
-                  recentlyOnline={recentlyOnline}
-                  stakingOverview={stakingOverview}
-                  stashId={stashId}
-                  isInElection={isInElection}
-                />
-              </>
-            ))}
-          </>
-        )
-        : <div>
-              <RowTitle title={t('Account')} />
-              <Box className="Actions--Nomination">
-                <AddressSmall value={accountChecked} />
-              </Box>
-              <RowTitle title={t('Power Manager')} />
-              <Box>
-                <PowerManage
-                  checkedAccount={accountChecked}
-                />
-              </Box>
-              <RowTitle title={t('Start')} />
-              <ActionNote onStart={_toggleNewStake} type="nominate" />
-          </div>
-      }
+      <Table
+        empty={foundStashes && t('No funds staked yet. Bond funds to validate or nominate a validator')}
+        footer={footer}
+        header={header}
+      >
+        {foundStashes?.map((info): React.ReactNode => (
+          <Account
+            activeEra={activeEra}
+            info={info}
+            isDisabled={isInElection}
+            key={info.stashId}
+            next={next}
+            targets={targets}
+            validators={validators}
+          />
+        ))}
+      </Table>
     </div>
   );
 }
 
-export default styled(Actions)`
-  .Actions--Nomination {
-    .ui--Box{
-      display: flex;
-      justify-content: space-between;
-      padding: 1.25rem 0.625rem;
-    }
-  }
-`;
+export default React.memo(Actions);

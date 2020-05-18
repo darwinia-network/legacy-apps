@@ -24,6 +24,7 @@ function transform (file, enc, done) {
     const parserHandler = (key, options) => {
       options.defaultValue = key;
       options.ns = /packages\/(.*?)\/src/g.exec(file.path)[1];
+
       this.parser.set(key, options);
     };
 
@@ -41,28 +42,27 @@ module.exports = {
     '!packages/*/src/i18n/**',
     '!**/node_modules/**'
   ],
-  output: './',
   options: {
     debug: true,
+    defaultLng: 'en',
     func: {
-      list: ['t', 'i18next.t', 'i18n.t'],
-      extensions: ['.tsx', '.ts']
+      extensions: ['.tsx', '.ts'],
+      list: ['t', 'i18next.t', 'i18n.t']
+    },
+    keySeparator: false, // key separator
+    lngs: ['en', 'zh'],
+    ns: findPackages().map(({ dir }) => dir),
+    nsSeparator: false, // namespace separator
+    resource: {
+      jsonIndent: 2,
+      lineEnding: '\n',
+      loadPath: 'packages/apps/public/locales/{{lng}}/{{ns}}.json',
+      savePath: 'packages/apps/public/locales/{{lng}}/{{ns}}.json'
     },
     trans: {
       component: 'Trans'
-    },
-    lngs: ['en', 'zh'],
-    defaultLng: 'en',
-    ns: findPackages().map(({ dir }) => dir),
-    defaultNs: 'ui',
-    resource: {
-      loadPath: 'packages/apps/public/locales/{{lng}}/{{ns}}.json',
-      savePath: 'packages/apps/public/locales/{{lng}}/{{ns}}.json',
-      jsonIndent: 2,
-      lineEnding: '\n'
-    },
-    nsSeparator: false, // namespace separator
-    keySeparator: false // key separator
+    }
   },
+  output: './',
   transform
 };

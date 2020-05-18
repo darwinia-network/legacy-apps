@@ -2,22 +2,23 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps, BareProps } from '@polkadot/react-components/types';
-
+import BN from 'bn.js';
 import React from 'react';
+import { useApi } from '@polkadot/react-hooks';
 import { SummaryBox, CardSummary } from '@polkadot/react-components';
-import { BestFinalized, BestNumber, TimeNow, TimePeriod, TotalIssuance } from '@polkadot/react-query';
+import { BestFinalized, BestNumber, BlockToTime, TimeNow, TotalIssuance } from '@polkadot/react-query';
 
 import SummarySession from './SummarySession';
-import translate from './translate';
+import { useTranslation } from './translate';
 
-interface Props extends I18nProps, BareProps {
+const ONE_BLOCK = new BN(1);
 
-}
+function Summary (): React.ReactElement<{}> {
+  const { t } = useTranslation();
+  const { api } = useApi();
 
-function Summary ({ t, className }: Props): React.ReactElement<Props> {
   return (
-    <SummaryBox className={`${className} SummaryBox--outer`}>
+    <SummaryBox>
       <section>
         <CardSummary label={t('last block')}>
           <TimeNow />
@@ -26,14 +27,16 @@ function Summary ({ t, className }: Props): React.ReactElement<Props> {
           className='ui--media-small'
           label={t('target')}
         >
-          <TimePeriod />
+          <BlockToTime blocks={ONE_BLOCK} />
         </CardSummary>
-        <CardSummary
-          className='ui--media-small'
-          label={t('total issuance')}
-        >
-          <TotalIssuance />
-        </CardSummary>
+        {api.query.balances && (
+          <CardSummary
+            className='ui--media-small'
+            label={t('total issuance')}
+          >
+            <TotalIssuance />
+          </CardSummary>
+        )}
       </section>
       <section className='ui--media-large'>
         <SummarySession withEra={false} />
@@ -50,4 +53,4 @@ function Summary ({ t, className }: Props): React.ReactElement<Props> {
   );
 }
 
-export default translate(Summary);
+export default React.memo(Summary);

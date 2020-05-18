@@ -2,7 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AccountId, Balance, EraIndex, Exposure, Keys, RewardDestination, RewardPoint, StakingLedgerT as StakingLedger, ValidatorPrefs } from '@polkadot/types/interfaces';
+import { AccountId, Balance, EraIndex, Keys, RewardDestination, RewardPoint, ValidatorPrefs } from '@polkadot/types/interfaces';
+import { ExposureT as Exposure, StakingLedgerT as StakingLedger } from '@polkadot/react-darwinia/interfaces';
 import { DeriveSessionIndexes } from '../session/types';
 
 import BN from 'bn.js';

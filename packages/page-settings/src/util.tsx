@@ -6,10 +6,19 @@ import { Option } from '@polkadot/apps-config/settings/types';
 import { SettingsStruct } from '@polkadot/ui-settings/types';
 
 import React from 'react';
-import { ChainImg, IdentityIcon } from '@polkadot/react-components';
+import { ChainImg, Dropdown, IdentityIcon } from '@polkadot/react-components';
 import uiSettings from '@polkadot/ui-settings';
 
-export function createOption (t: (input: any) => string, { info, text, value, withI18n }: Option, overrides: string[] = [], override = 'empty'): Option {
+export function createOption ({ info, isHeader, text, value }: Option, overrides: string[] = [], override = 'empty'): Option | React.ReactNode {
+  if (isHeader) {
+    return (
+      <Dropdown.Header
+        content={text}
+        key={text as string}
+      />
+    );
+  }
+
   return {
     text: (
       <div
@@ -24,14 +33,14 @@ export function createOption (t: (input: any) => string, { info, text, value, wi
               : info
           }
         />
-        <div className='ui--Dropdown-name'>{withI18n ? t(text) : text}</div>
+        <div className='ui--Dropdown-name'>{text}</div>
       </div>
     ),
     value
   };
 }
 
-export function createIdenticon (t: (input: any) => string, { info, text, value, withI18n }: Option, overrides: string[] = [], override = 'empty'): Option {
+export function createIdenticon ({ info, text, value }: Option, overrides: string[] = [], override = 'empty'): Option {
   return {
     text: (
       <div
@@ -48,7 +57,7 @@ export function createIdenticon (t: (input: any) => string, { info, text, value,
           }
           value='5F9999K9UgTUgSsbXZQcEmRMvQqwJoBUHMv9e1k2MdgghuRA'
         />
-        <div className='ui--Dropdown-name'>{withI18n ? t(text) : text}</div>
+        <div className='ui--Dropdown-name'>{text}</div>
       </div>
     ),
     value

@@ -15,10 +15,10 @@ interface Props {
   onChange: (fees: State) => void;
 }
 
-export default function ContractDeploy ({ endowment, fees, onChange }: Props): React.ReactElement<Props> | null {
-  const [state, setState] = useState<State>({
-    extraFees: new BN(0),
+function ContractDeploy ({ endowment, fees, onChange }: Props): React.ReactElement<Props> | null {
+  const [, setState] = useState<State>({
     extraAmount: new BN(0),
+    extraFees: new BN(0),
     extraWarn: false
   });
 
@@ -34,12 +34,16 @@ export default function ContractDeploy ({ endowment, fees, onChange }: Props): R
       extraWarn: false
     };
 
-    if (!update.extraAmount.eq(state.extraAmount) || !update.extraFees.eq(state.extraFees)) {
-      onChange(update);
-    }
+    setState((state): State => {
+      if (!update.extraAmount.eq(state.extraAmount) || !update.extraFees.eq(state.extraFees)) {
+        onChange(update);
+      }
 
-    setState(update);
-  }, [endowment, fees]);
+      return update;
+    });
+  }, [endowment, fees, onChange]);
 
   return null;
 }
+
+export default React.memo(ContractDeploy);

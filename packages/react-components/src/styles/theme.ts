@@ -5,25 +5,27 @@
 import { css } from 'styled-components';
 
 /* default buttons, dark gray */
-const colorBtnDefault = '#666';
+export const colorBtnDefault = '#666';
 
 /* highlighted buttons, orange */
-const colorBtnHighlight = '#666';
+export const colorBtnHighlight = '#666';
 
 /* primary buttons, blue */
-const colorBtnPrimary = '#302B3C';
+export const colorBtnPrimary = '#302B3C'; // '#2e86ab';
 
 /* button text color */
-const colorBtnText = '#f9f9f9';
+export const colorBtnText = '#f9f9f9';
+
+export const colorLink = '#2e86ab';
 
 export default css`
   .theme--default {
     a {
-      color: ${colorBtnPrimary};
+      color: ${colorLink};
 
       &:hover,
       a:visited {
-        color: ${colorBtnPrimary};
+        color: ${colorLink};
       }
     }
 
@@ -31,8 +33,7 @@ export default css`
     .ui.buttons .button {
       background-color: ${colorBtnDefault};
       color: ${colorBtnText};
-      border-radius: 2px;
-      font-size: 1rem;
+
       &.active,
       &:active,
       &:focus,
@@ -42,38 +43,44 @@ export default css`
       }
 
       &:hover {
-        opacity: 0.8;
+        filter: brightness(120%);
+      }
+
+      &.isIcon {
+        i.icon {
+          color: ${colorLink};
+        }
       }
     }
 
     .ui.basic.negative.button {
-      box-shadow: 0 0 0 1px ${colorBtnHighlight} inset !important;
-      color: ${colorBtnHighlight} !important;
+      // box-shadow: 0 0 0 1px ${colorBtnHighlight} inset !important;
+      // color: ${colorBtnHighlight} !important;
     }
 
     .ui.negative.button,
     .ui.buttons .negative.button {
-      background-color: ${colorBtnHighlight};
+      // background-color: ${colorBtnHighlight};
 
-      &.active,
-      &:active,
-      &:focus,
-      &:hover {
-        background-color: ${colorBtnHighlight};
-      }
+      // &.active,
+      // &:active,
+      // &:focus,
+      // &:hover {
+      //   background-color: ${colorBtnHighlight};
+      // }
     }
 
     .ui.primary.button,
     .ui.buttons .primary.button
     /*, .ui.primary.buttons .button (for dropdowns) */ {
-      background-color: ${colorBtnPrimary};
+      // background-color: ${colorBtnPrimary};
 
-      &.active,
-      &:active,
-      &:focus,
-      &:hover {
-        background-color: ${colorBtnPrimary};
-      }
+      // &.active,
+      // &:active,
+      // &:focus,
+      // &:hover {
+      //   background-color: ${colorBtnPrimary};
+      // }
     }
 
     .ui.blue.progress .bar {
@@ -96,34 +103,13 @@ export default css`
       }
 
       > .text:not(.default) {
-        color: ${colorBtnPrimary};
+        color: ${colorBtnText};
       }
-    }
-
-    
-    .ui.basic.button {
-      box-shadow: 0 0 0 1px #302B3C inset;
-      color: ${colorBtnPrimary}!important;
-    }
-
-    .ui.button {
-      padding: 0.57em 1.5em 0.57em
     }
 
     .ui.toggle.checkbox input:checked~.box:before,
     .ui.toggle.checkbox input:checked~label:before {
-      background-color: ${colorBtnHighlight} !important;
-    }
-  }
-
-  .ui--Modal {
-    .close-btn {
-      width: 48px;
-      height: 48px;
-      position: absolute;
-      top: 0;
-      right: -68px;
-      cursor: pointer;
+      // background-color: ${colorBtnHighlight} !important;
     }
   }
 `;

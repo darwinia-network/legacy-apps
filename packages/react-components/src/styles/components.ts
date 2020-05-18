@@ -33,7 +33,7 @@ export default css`
   }
 
   .ui--Button-Group .button {
-    border-radius: 2px!important;
+    border-radius: .28571429rem !important;
   }
 
   header .ui--Button-Group {
@@ -84,7 +84,7 @@ export default css`
     }
 
     .ui--SiDropdown {
-      width: 6.7rem;
+      width: 6rem;
       text-align: center;
     }
 

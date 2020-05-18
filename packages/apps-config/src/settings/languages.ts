@@ -4,24 +4,24 @@
 
 import { Option } from './types';
 
-export default [
-  {
-    text: 'Default browser language (auto-detect)',
-    value: 'default',
-    withI18n: true
-  },
-  {
-    text: 'English',
-    value: 'en'
-  },
-  {
-    text: '简体中文',
-    value: 'zh'
-  }
-  // For ja, we only have the settings page, remove until comprehensive
-  // ,
-  // {
-  //   text: '日本語',
-  //   value: 'ja'
-  // }
-] as Option[];
+export default function create (t: (key: string, text: string, options: { ns: string }) => string): Option[] {
+  return [
+    {
+      text: t('lng.detect', 'Default browser language (auto-detect)', { ns: 'apps-config' }),
+      value: 'default'
+    },
+    {
+      text: 'English',
+      value: 'en'
+    },
+    {
+      text: '中文',
+      value: 'zh'
+    }
+    // For ja, we only have the settings page, remove until comprehensive
+    // , {
+    //   text: '日本語',
+    //   value: 'ja'
+    // }
+  ];
+}

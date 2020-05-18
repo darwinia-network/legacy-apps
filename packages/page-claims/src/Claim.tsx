@@ -19,20 +19,18 @@ interface Props {
   button: React.ReactNode;
   className?: string;
   ethereumAddress: EthereumAddress | null;
-  chain: ChainType
+  chain: ChainType;
 }
 
-
-
-function Claim ({ button, className, ethereumAddress, chain }: Props): React.ReactElement<Props> | null {
+function Claim ({ button, chain, className, ethereumAddress }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const { api } = useApi();
   const [claimValue, setClaimValue] = useState<BalanceOf | null>(null);
   const [claimAddress, setClaimAddress] = useState<EthereumAddress | null>(null);
   const [isBusy, setIsBusy] = useState(false);
   const chainToName = {
-    'eth': t('Ethereum'),
-    'tron': t('Tron')
+    eth: t('Ethereum'),
+    tron: t('Tron')
   };
 
   const _fetchClaim = (address: EthereumAddress, chain: ChainType): void => {
@@ -66,11 +64,11 @@ function Claim ({ button, className, ethereumAddress, chain }: Props): React.Rea
       isSuccess={!!hasClaim}
     >
       <div className={className}>
-        {t(`Your {{chain}} account`, {
-            replace: {
-              chain: chainToName[chain]
-            }
-          })}
+        {t('Your {{chain}} account', {
+          replace: {
+            chain: chainToName[chain]
+          }
+        })}
         <h3>{addrToChecksum(claimAddress.toString(), chain)}</h3>
         {hasClaim && claimValue
           ? (

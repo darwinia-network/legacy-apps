@@ -2,22 +2,20 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { RuntimeVersion } from '@polkadot/types/interfaces';
-import { SIDEBAR_MENU_THRESHOLD } from '../constants';
+import { Routes } from '@polkadot/apps-routing/types';
 
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Responsive } from 'semantic-ui-react';
-import routing from '@polkadot/apps-routing';
-import { Button, ChainImg, Icon, Menu, media } from '@polkadot/react-components';
-import { useCall, useApi } from '@polkadot/react-hooks';
+import createRoutes from '@polkadot/apps-routing';
+import { Button, Icon, Menu, media } from '@polkadot/react-components';
+import { ChainImg } from '@polkadot/react-components-darwinia';
 import { classes } from '@polkadot/react-components/util';
-import { BestNumber, Chain } from '@polkadot/react-query';
 
+import { SIDEBAR_MENU_THRESHOLD } from '../constants';
+import NetworkModal from '../modals/Network';
 import { useTranslation } from '../translate';
 import Item from './Item';
-import NodeInfo from './NodeInfo';
-import NetworkModal from '../modals/Network';
 
 interface Props {
   className?: string;
@@ -30,10 +28,8 @@ interface Props {
 
 function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, toggleMenu }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { api } = useApi();
-  const runtimeVersion = useCall<RuntimeVersion>(api.rpc.state.subscribeRuntimeVersion, []);
   const [modals, setModals] = useState<Record<string, boolean>>(
-    routing.routes.reduce((result: Record<string, boolean>, route): Record<string, boolean> => {
+    createRoutes(t).reduce((result: Record<string, boolean>, route): Record<string, boolean> => {
       if (route && route.Modal) {
         result[route.name] = false;
       }
@@ -42,20 +38,31 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
     }, { network: false })
   );
 
-  const _toggleModal = (name: string): () => void =>
-    (): void => setModals({ ...modals, [name]: !modals[name] });
+  const routing = useMemo<Routes>(
+    () => createRoutes(t),
+    [t]
+  );
+
+  const _toggleModal = useCallback(
+    (name: string): () => void =>
+      (): void => setModals((modals: Record<string, boolean>) => ({
+        ...modals,
+        [name]: !modals[name]
+      })),
+    []
+  );
 
   return (
     <Responsive
-      onUpdate={handleResize}
       className={classes(className, 'apps--SideBar-Wrapper', isCollapsed ? 'collapsed' : 'expanded')}
+      onUpdate={handleResize}
     >
       <ChainImg
         className={`toggleImg ${isMenuOpen ? 'closed' : 'open delayed'}`}
         onClick={toggleMenu}
       />
-      {routing.routes.map((route): React.ReactNode => (
-        route && route.Modal
+      {routing.map((route): React.ReactNode => (
+        route?.Modal
           ? route.Modal && modals[route.name]
             ? (
               <route.Modal
@@ -88,18 +95,18 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
                 <BestNumber label='#' />
               </div> */}
             </div>
-            {routing.routes.map((route, index): React.ReactNode => (
+            {routing.map((route, index): React.ReactNode => (
               route
                 ? (
                   <Item
                     isCollapsed={isCollapsed}
                     key={route.name}
-                    route={route}
                     onClick={
                       route.Modal
                         ? _toggleModal(route.name)
                         : handleResize
                     }
+                    route={route}
                   />
                 )
                 : (
@@ -137,8 +144,8 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
             } */}
           </div>
           <Responsive
-            minWidth={SIDEBAR_MENU_THRESHOLD}
             className={`apps--SideBar-collapse ${isCollapsed ? 'collapsed' : 'expanded'}`}
+            minWidth={SIDEBAR_MENU_THRESHOLD}
           >
             <Button
               icon={`angle double ${isCollapsed ? 'right' : 'left'}`}
@@ -299,8 +306,9 @@ export default styled(SideBar)`
     transition: opacity 0.2s ease-in, top 0.2s ease-in;
     width: 2.75rem;
     height: 2.75rem;
-    background: #000;
+    background-color: #000;
     border-radius: 1.375rem;
+
     &.delayed {
       transition-delay: 0.4s;
     }

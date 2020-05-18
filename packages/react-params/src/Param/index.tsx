@@ -16,10 +16,9 @@ interface Props extends BaseProps {
   isDisabled?: boolean;
   isOptional?: boolean;
   overrides?: ComponentMap;
-  channel?: string;
 }
 
-export default function Param ({ className, defaultValue, isDisabled, isOptional, name, onChange, onEnter, onEscape, overrides, style, type, channel }: Props): React.ReactElement<Props> | null {
+function Param ({ className, defaultValue, isDisabled, isOptional, name, onChange, onEnter, onEscape, overrides, style, type }: Props): React.ReactElement<Props> | null {
   const compRef = useRef<React.ComponentType<CProps> | null>(findComponent(type, overrides));
 
   if (!compRef.current) {
@@ -42,8 +41,8 @@ export default function Param ({ className, defaultValue, isDisabled, isOptional
       <compRef.current
         className={classes('ui--Param', className)}
         defaultValue={defaultValue}
-        key={`${name}:${type}`}
         isDisabled={isDisabled}
+        key={`${name}:${type}`}
         label={label}
         name={name}
         onChange={onChange}
@@ -52,7 +51,8 @@ export default function Param ({ className, defaultValue, isDisabled, isOptional
         overrides={overrides}
         style={style}
         type={type}
-        channel={channel}
       />
     );
 }
+
+export default React.memo(Param);

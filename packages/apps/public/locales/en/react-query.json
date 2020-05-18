@@ -1,16 +1,17 @@
 {
-  "display": "display",
-  "legal": "legal",
-  "email": "email",
-  "www": "www",
-  "riot": "riot",
-  "all available": "all available",
-  "{{d}} days": "{{d}} days",
   "1 day": "1 day",
-  "{{h}} hrs": "{{h}} hrs",
   "1 hr": "1 hr",
-  "{{m}} mins": "{{m}} mins",
   "1 min": "1 min",
-  "{{s}} s": "{{s}} s",
-  "1 s": "1 s"
+  "1 s": "1 s",
+  "all available": "all available",
+  "display": "display",
+  "email": "email",
+  "everything": "everything",
+  "legal": "legal",
+  "riot": "riot",
+  "www": "www",
+  "{{d}} days": "{{d}} days",
+  "{{h}} hrs": "{{h}} hrs",
+  "{{m}} mins": "{{m}} mins",
+  "{{s}} s": "{{s}} s"
 }

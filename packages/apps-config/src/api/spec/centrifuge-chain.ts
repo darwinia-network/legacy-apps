@@ -2,6 +2,9 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+// structs need to be in order
+/* eslint-disable sort-keys */
+
 export default {
   // chain-specific
   AnchorData: {
@@ -21,8 +24,5 @@ export default {
   Proof: {
     leafHash: 'H256',
     sortedHashes: 'H256'
-  },
-  // Non-current Substrate types
-  BalanceLock: 'BalanceLockTo212',
-  StakingLedger: 'StakingLedgerTo223'
+  }
 };

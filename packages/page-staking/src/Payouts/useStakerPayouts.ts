@@ -7,6 +7,7 @@ import { EraIndex } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import { useEffect, useState } from 'react';
 import { useApi, useCall } from '@polkadot/react-hooks';
+import { Option } from '@polkadot/types';
 
 export default function useStakerPayouts (): BN {
   const { api } = useApi();
@@ -15,6 +16,11 @@ export default function useStakerPayouts (): BN {
       ? new BN(0)
       : new BN(1_000_000_000)
   );
+  const migrateEraOpt = useCall<Option<EraIndex>>(api.query.staking?.migrateEra, []);
+
+  useEffect((): void => {
+    migrateEraOpt?.isSome && setState(migrateEraOpt.unwrap());
+  }, [migrateEraOpt]);
 
   return stakerPayoutAfter;
 }

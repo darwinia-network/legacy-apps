@@ -3,7 +3,6 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { BlockNumber } from '@polkadot/types/interfaces';
-import { BareProps as Props } from '@polkadot/react-components/types';
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -14,19 +13,20 @@ import Query from '../Query';
 import BlockByHash from './ByHash';
 import BlockByNumber from './ByNumber';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function Entry (props: Props): React.ReactElement<Props> | null {
+function Entry (): React.ReactElement<{}> | null {
   const { api } = useApi();
   const bestNumber = useCall<BlockNumber>(api.derive.chain.bestNumber, []);
   const { value } = useParams();
   const [stateValue, setStateValue] = useState<string | undefined>(value);
 
   useEffect((): void => {
-    if (value && value !== stateValue) {
-      setStateValue(value);
-    } else if (!stateValue && bestNumber) {
-      setStateValue(bestNumber.toString());
-    }
+    setStateValue((stateValue) =>
+      value && value !== stateValue
+        ? value
+        : !stateValue && bestNumber
+          ? bestNumber.toString()
+          : stateValue
+    );
   }, [bestNumber, value]);
 
   if (!stateValue) {
@@ -47,3 +47,5 @@ export default function Entry (props: Props): React.ReactElement<Props> | null {
     </>
   );
 }
+
+export default React.memo(Entry);

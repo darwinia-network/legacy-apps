@@ -32,19 +32,19 @@ const styles = `
   }
 `;
 
-function SorryNote ({ className, children, type }: Props): React.ReactElement<Props> {
+function SorryNote ({ children, className, type }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
 
   return (
     <div className={className}>
       <Box className={className}>
-        {type === 'nominate' ? <div className="ui--SorryNote">
+        {type === 'nominate' ? <div className='ui--SorryNote'>
           <h1>{t('Sorry！')}</h1>
           <p>{t('You are in the status of a nominators and cannot be a node for now.')}</p>
           <p>{t('We will develop the upgrade to be a node function in future.')}</p>
           {children}
         </div>
-          : <div className="ui--SorryNote">
+          : <div className='ui--SorryNote'>
             <h1>{t('Sorry！')}</h1>
             <p>{t('You are in the status of a nominators and cannot be a node for now.')}</p>
             <p>{t('We will develop the upgrade to be a node function in future.')}</p>

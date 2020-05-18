@@ -29,7 +29,7 @@ interface SignatureParts {
 export function addrToChecksum (_address: string, type?: ChainType): string {
   const address = _address.toLowerCase();
 
-  if(type === 'tron') {
+  if (type === 'tron') {
     return hexAddress2tronAddress('41' + address.substr(2, 40));
   }
 
@@ -86,6 +86,7 @@ export function sigToParts (_signature: string): SignatureParts {
 export function recoverAddress (message: string, { recovery, signature }: SignatureParts): string {
   const msgHash = hashMessage(message);
   const senderPubKey = secp256k1.recover(msgHash, signature, recovery);
+
   return publicToAddr(
     secp256k1.publicKeyConvert(senderPubKey, false).slice(1)
   );
@@ -94,18 +95,18 @@ export function recoverAddress (message: string, { recovery, signature }: Signat
 // recover an address from a signature JSON (as supplied by e.g. MyCrypto)
 export function recoverFromJSON (signatureJson: string | null): RecoveredSignature {
   try {
-    const { msg, sig, address } = JSON.parse(signatureJson || '{}');
+    const { address, msg, sig } = JSON.parse(signatureJson || '{}');
 
     if (!msg || !sig) {
       throw new Error('Invalid signature object');
     }
 
     const parts = sigToParts(sig);
-    
+
     return {
       error: null,
       ethereumAddress: createType(registry, 'EthereumAddress', '0x' + address.substr(2, 40)),
-      chain: address.substr(0, 2) == '0x' ? 'eth' : 'tron',
+      chain: address.substr(0, 2) === '0x' ? 'eth' : 'tron',
       signature: createType(registry, 'EcdsaSignature', u8aConcat(parts.signature, new Uint8Array([parts.recovery])))
     };
   } catch (error) {

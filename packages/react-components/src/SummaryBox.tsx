@@ -20,16 +20,13 @@ function SummaryBox ({ children, className }: Props): React.ReactElement<Props> 
   );
 }
 
-export default styled(SummaryBox)`
+export default React.memo(styled(SummaryBox)`
   align-items: stretch;
+  border-radius: 4px;
   display: flex;
   flex-wrap: no-wrap;
   justify-content: space-between;
-  margin-bottom: 1.4rem;
-  background: #fff;
-  border-radius: 2px;
-  border:1px solid #EDEDED;
-  padding: 28px 16px;
+
   > section {
     display: flex;
     flex: 0 1 auto;
@@ -60,7 +57,7 @@ export default styled(SummaryBox)`
   }
 
   @media(min-width: 768px) {
-    margin-bottom: 2.8rem;
+    margin-bottom: 1.5rem;
   }
 
   .ui.label {
@@ -68,4 +65,4 @@ export default styled(SummaryBox)`
     padding-right: 0;
     padding-top: 0;
   }
-`;
+`);

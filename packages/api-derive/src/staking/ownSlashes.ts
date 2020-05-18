@@ -28,8 +28,8 @@ export function ownSlashes (api: ApiInterfaceRx): (accountId: Uint8Array | strin
         result.map(([era, optNom, optVal]): DeriveStakerSlashes => ({
           era,
           total: optVal.isSome
-            ? optVal.unwrap()[1]
-            : optNom.unwrapOrDefault()
+            ? optVal.unwrap()[1].r
+            : optNom.unwrapOrDefault().r
         }))
       )
     );

@@ -27,13 +27,13 @@ interface State extends ExtraFees {
   isNoEffect: boolean;
 }
 
-export default function Transfer ({ amount, fees, onChange, recipientId }: Props): React.ReactElement<Props> {
+function Transfer ({ amount, fees, onChange, recipientId }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
-  const allBalances = useCall<DeriveBalancesAll>(api.derive.balances.all as any, [recipientId]);
+  const allBalances = useCall<DeriveBalancesAll>(api.derive.balances.all, [recipientId]);
   const [{ isCreation, isNoEffect }, setState] = useState<State>({
-    extraFees: new BN(0),
     extraAmount: new BN(0),
+    extraFees: new BN(0),
     extraWarn: false,
     isCreation: false,
     isNoEffect: false
@@ -61,7 +61,7 @@ export default function Transfer ({ amount, fees, onChange, recipientId }: Props
         isNoEffect
       });
     }
-  }, [amount, allBalances, fees]);
+  }, [amount, allBalances, fees, onChange]);
 
   return (
     <>
@@ -88,3 +88,5 @@ export default function Transfer ({ amount, fees, onChange, recipientId }: Props
     </>
   );
 }
+
+export default React.memo(Transfer);

@@ -20,8 +20,3 @@ export interface ModalProps {
   onClose: () => void;
   onStatusChange: (status: ActionStatus) => void;
 }
-
-export type bondList = {
-  count?: number;
-  list?: Array<any>;
-}

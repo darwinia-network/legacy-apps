@@ -2,25 +2,20 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { Routes } from './types';
+import { Route } from './types';
 
-import Scan from '@polkadot/app-staking/explorer';
+import Scan from '@polkadot/app-staking-darwinia/explorer';
 
-export default ([
-  {
+export default function create (t: (key: string, text: string, options: { ns: string }) => string): Route {
+  return {
     Component: Scan,
     display: {
       needsApi: [
-        [
-          'tx.staking.bond' // current bonding API
-          // 'tx.staking.stake' // previous staking API
-        ]
+        ['tx.staking.bond']
       ]
     },
-    i18n: {
-      defaultValue: 'Staking Scan'
-    },
     icon: 'bullseye',
-    name: 'stakingscan'
-  }
-] as Routes);
+    name: 'scan',
+    text: t('nav.scan', 'Staking Scan', { ns: 'apps-routing' })
+  };
+}

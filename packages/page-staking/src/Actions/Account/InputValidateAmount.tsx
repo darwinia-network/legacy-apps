@@ -1,26 +1,26 @@
-// Copyright 2017-2020 @polkadot/ui-staking authors & contributors
+// Copyright 2017-2020 @polkadot/app-staking authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { DeriveBalancesAll } from '@polkadot/api-derive/types';
-import { I18nProps } from '@polkadot/react-components/types';
 
 import BN from 'bn.js';
 import React, { useEffect, useState } from 'react';
 import { Icon } from '@polkadot/react-components';
 import { useApi, useCall } from '@polkadot/react-hooks';
 
-import translate from '../../translate';
+import { useTranslation } from '../../translate';
 
-interface Props extends I18nProps {
+interface Props {
   accountId: string | null;
   onError: (error: string | null) => void;
   value?: BN | null;
 }
 
-function ValidateAmount ({ accountId, onError, value, t }: Props): React.ReactElement<Props> | null {
+function ValidateAmount ({ accountId, onError, value }: Props): React.ReactElement<Props> | null {
+  const { t } = useTranslation();
   const { api } = useApi();
-  const allBalances = useCall<DeriveBalancesAll>(api.derive.balances.all as any, [accountId]);
+  const allBalances = useCall<DeriveBalancesAll>(api.derive.balances.all, [accountId]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect((): void => {
@@ -33,12 +33,10 @@ function ValidateAmount ({ accountId, onError, value, t }: Props): React.ReactEl
         newError = t('The specified value is greater than your free balance. The node will bond the maximum amount available.');
       }
 
-      if (error !== newError) {
-        onError(newError);
-        setError(newError);
-      }
+      onError(newError);
+      setError((error) => error !== newError ? newError : error);
     }
-  }, [allBalances, value]);
+  }, [allBalances, onError, t, value]);
 
   if (!error) {
     return null;
@@ -51,4 +49,4 @@ function ValidateAmount ({ accountId, onError, value, t }: Props): React.ReactEl
   );
 }
 
-export default translate(ValidateAmount);
+export default React.memo(ValidateAmount);
