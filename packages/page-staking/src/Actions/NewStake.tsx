@@ -1,316 +1,159 @@
-/* eslint-disable @typescript-eslint/camelcase */
-// Copyright 2017-2020 @polkadot/ui-staking authors & contributors
+// Copyright 2017-2020 @polkadot/app-staking authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/react-components/types';
-import { ApiProps } from '@polkadot/react-api/types';
-import { CalculateBalanceProps } from '../types';
-import { Balance } from '@polkadot/types/interfaces/runtime';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 
 import BN from 'bn.js';
-import React from 'react';
-import { Checkbox } from 'semantic-ui-react';
-import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { Dropdown, InputAddress, InputBalanceBonded, Modal, TxButton, TxComponent } from '@polkadot/react-components';
-import { withApi, withMulti } from '@polkadot/react-api/hoc';
-import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
-import { lockLimitOptionsMaker, KTON_PROPERTIES } from '@polkadot/react-darwinia';
-import { PowerTelemetry } from '@polkadot/react-darwinia/components';
-import styled from 'styled-components';
-import { formatBalance, ringToKton } from '@polkadot/util';
+import React, { useEffect, useState } from 'react';
+import { Button, Dropdown, InputAddress, InputBalance, Modal, TxButton, Static } from '@polkadot/react-components';
+import { useApi, useToggle } from '@polkadot/react-hooks';
+import { Available, BlockToTime } from '@polkadot/react-query';
 
-import translate from '../translate';
-import detectUnsafe from '../unsafeChains';
+import { useTranslation } from '../translate';
 import InputValidateAmount from './Account/InputValidateAmount';
 import InputValidationController from './Account/InputValidationController';
 import { rewardDestinationOptions } from './constants';
+import useUnbondDuration from './useUnbondDuration';
 
-interface Props extends ApiProps, I18nProps, CalculateBalanceProps {
-  onClose: () => void;
-  accountId: string;
-  staking_ktonPool: Balance;
-  staking_ringPool: Balance;
+interface Props {
+  className?: string;
+  isInElection?: boolean;
 }
 
-interface State {
-  amountError: string | null;
-  bondValue?: BN;
-  controllerError: string | null;
-  controllerId: string | null;
-  destination: number;
-  extrinsic: SubmittableExtrinsic | null;
-  stashId: string | null;
-  currencyType: currencyType;
-  promiseMonth: promiseMonth;
-  accept: boolean;
-}
+function NewStake ({ className, isInElection }: Props): React.ReactElement<Props> {
+  const { t } = useTranslation();
+  const { api } = useApi();
+  const [isVisible, toggleVisible] = useToggle();
+  const [amount, setAmount] = useState<BN | undefined>();
+  const [amountError, setAmountError] = useState<string | null>(null);
+  const [, setControllerError] = useState<string | null>(null);
+  const [controllerId, setControllerId] = useState<string | null>(null);
+  const [destination, setDestination] = useState(0);
+  const [extrinsic, setExtrinsic] = useState<SubmittableExtrinsic<'promise'> | null>(null);
+  const [stashId, setStashId] = useState<string | null>(null);
+  const bondedBlocks = useUnbondDuration();
 
-const ZERO = new BN(0);
-
-class NewStake extends TxComponent<Props, State> {
-  public state: State;
-
-  constructor (props: Props) {
-    super(props);
-
-    this.state = {
-      amountError: null,
-      controllerError: null,
-      controllerId: null,
-      destination: 0,
-      extrinsic: null,
-      stashId: null,
-      currencyType: 'ring',
-      promiseMonth: 0,
-      accept: false
-    };
-  }
-
-  public render (): React.ReactNode {
-    const { onClose, systemChain, accountId, t } = this.props;
-    const { amountError, bondValue, controllerError, controllerId, destination, extrinsic, stashId, currencyType, promiseMonth, accept } = this.state;
-    const hasValue = !!bondValue && bondValue.gtn(0);
-    const isUnsafeChain = detectUnsafe(systemChain);
-    const canSubmit = (hasValue && (isUnsafeChain || (!controllerError && !!controllerId))) && (promiseMonth && currencyType === 'ring' ? accept : true);
-
-    return (
-      <Modal
-        className='staking--Bonding'
-        header={t('Bonding Preferences')}
-        size='small'
-        onCancel={onClose}
-      >
-        <Modal.Content className='ui--signer-Signer-Content'>
-          <InputAddress
-            className='medium'
-            label={t('stash account')}
-            onChange={this.onChangeStash}
-            isDisabled
-            type='account'
-            // value={stashId}
-            defaultValue={accountId}
-          />
-          <InputAddress
-            className='medium'
-            help={t('The controller is the account that will be used to control any nominating or validating actions. Should not match another stash or controller.')}
-            isError={!isUnsafeChain && !!controllerError}
-            label={t('controller account')}
-            onChange={this.onChangeController}
-            type='account'
-            value={controllerId}
-          />
-          {/* <InputValidationController
-            accountId={stashId}
-            controllerId={controllerId}
-            isUnsafeChain={isUnsafeChain}
-            onError={this.onControllerError}
-          /> */}
-          <InputBalanceBonded
-            autoFocus
-            className='medium'
-            controllerId={controllerId}
-            destination={destination}
-            extrinsicProp={'staking.bond'}
-            help={t('The total amount of the stash balance that will be at stake in any forthcoming rounds (should be less than the total amount available)')}
-            isError={!hasValue || !!amountError}
-            label={t('value bonded')}
-            onChange={this.onChangeValue}
-            onChangeType={this.onChangeType}
-            onEnter={this.sendTx}
-            stashId={stashId}
-            withMax={!isUnsafeChain}
-            currencyType={currencyType}
-            isType
-            isSiShow={false}
-          />
-          <InputValidateAmount
-            accountId={stashId}
-            onError={this.onAmountError}
-            value={bondValue}
-          />
-          <Dropdown
-            className='medium'
-            defaultValue={0}
-            help={t('The destination account for any payments as either a nominator or validator')}
-            label={t('payment destination')}
-            onChange={this.onChangeDestination}
-            options={rewardDestinationOptions}
-            value={destination}
-          />
-          {currencyType === 'ring' ? <Dropdown
-            className='medium'
-            defaultValue={promiseMonth}
-            help={t('lock limit')}
-            label={t('lock limit')}
-            onChange={this.onChangePromiseMonth}
-            options={lockLimitOptionsMaker(t)}
-          /> : null}
-          {promiseMonth ? <KtonTipStyledWrapper>
-            <div>
-              <p>{t('After setting a lock limit, you will receive an additional {{KTON}} bonus; if you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the {{KTON}} reward.', {
-                replace: {
-                  KTON: KTON_PROPERTIES.tokenSymbol
-                }
-              })}</p>
-              <Checkbox checked={accept} onChange={this.toggleAccept} label={t('I Accept')} />
-            </div>
-          </KtonTipStyledWrapper> : null}
-
-          <GetPowerStyledWrapper>
-            <p>{t('You will get')}: <span>{this.getPowerAmount()} POWER</span></p>
-            {promiseMonth ? <p><span>{this.getKtonAmount()} {KTON_PROPERTIES.tokenSymbol}</span></p> : null}
-          </GetPowerStyledWrapper>
-        </Modal.Content>
-        <Modal.Actions onCancel={onClose}>
-          <TxButton
-            accountId={stashId}
-            isDisabled={!canSubmit}
-            isPrimary
-            label={t('Bond')}
-            icon='sign-in'
-            onStart={onClose}
-            extrinsic={extrinsic}
-            withSpinner
-          />
-        </Modal.Actions>
-      </Modal>
+  useEffect((): void => {
+    setExtrinsic(
+      () => (amount && controllerId)
+        ? api.tx.staking.bond(controllerId, amount, destination)
+        : null
     );
-  }
+  }, [api, amount, controllerId, destination]);
 
-  private onChangeType = (currencyType?: currencyType): void => {
-    this.nextState({ currencyType, promiseMonth: 0 });
-  }
+  const hasValue = !!amount?.gtn(0);
+  const canSubmit = hasValue && !!controllerId;
 
-  private onChangePromiseMonth = (promiseMonth: promiseMonth): void => {
-    this.nextState({ promiseMonth });
-  }
-
-  private toggleAccept = (): void => {
-    const { accept } = this.state;
-    this.nextState({ accept: !accept });
-  }
-
-  private getKtonAmount = (): string => {
-    const { currencyType, bondValue = ZERO, promiseMonth } = this.state;
-    const parsedBondValue = bondValue;
-    if (currencyType === 'ring' && promiseMonth !== 0) {
-      return formatBalance(new BN(ringToKton(parsedBondValue.toString(), promiseMonth)), false);
-    }
-    return '0';
-  };
-
-  private getPowerAmount = (): React.ReactElement => {
-    const { staking_ringPool, staking_ktonPool } = this.props;
-    const { currencyType, bondValue = ZERO } = this.state;
-
-    const ktonBonded = new BN(0);
-    const ringBonded = new BN(0);
-
-    return <PowerTelemetry
-      ringAmount={ringBonded}
-      ktonAmount={ktonBonded}
-      ringPool={staking_ringPool}
-      ktonPool={staking_ktonPool}
-      ringExtraAmount={currencyType === 'ring' ? bondValue : new BN(0)}
-      ktonExtraAmount={currencyType === 'kton' ? bondValue : new BN(0)}
-    />;
-  }
-
-  private nextState (newState: Partial<State>): void {
-    this.setState((prevState: State): State => {
-      const { api } = this.props;
-      const { amountError = prevState.amountError, bondValue = prevState.bondValue, controllerError = prevState.controllerError, controllerId = prevState.controllerId, destination = prevState.destination, stashId = prevState.stashId, currencyType = prevState.currencyType, promiseMonth = prevState.promiseMonth, accept = prevState.accept } = newState;
-      // const typeKey = currencyType.charAt(0).toUpperCase() + currencyType.slice(1) + 'Balance';
-      const typeKey = currencyType + 'balance';
-      const extrinsic = (bondValue && controllerId)
-        ? api.tx.staking.bond(controllerId, { [typeKey]: bondValue }, destination, promiseMonth)
-        : null;
-
-      return {
-        amountError,
-        bondValue,
-        controllerError,
-        controllerId,
-        destination,
-        extrinsic,
-        stashId,
-        currencyType,
-        promiseMonth,
-        accept
-      };
-    });
-  }
-
-  private onAmountError = (amountError: string | null): void => {
-    this.nextState({ amountError });
-  }
-
-  private onChangeController = (controllerId: string | null): void => {
-    this.nextState({ controllerId });
-  }
-
-  private onChangeDestination = (destination: number): void => {
-    this.nextState({ destination });
-  }
-
-  private onChangeStash = (stashId: string | null): void => {
-    this.nextState({ stashId });
-  }
-
-  private onChangeValue = (bondValue?: BN): void => {
-    this.nextState({ bondValue });
-  }
-
-  private onControllerError = (controllerError: string | null): void => {
-    this.setState({ controllerError });
-  }
+  return (
+    <div className={className}>
+      <Button.Group>
+        <Button
+          icon='add'
+          isDisabled={isInElection}
+          key='new-stake'
+          label={t('New stake')}
+          onClick={toggleVisible}
+        />
+      </Button.Group>
+      {isVisible && (
+        <Modal
+          className='staking--Bonding'
+          header={t('Bonding Preferences')}
+          size='large'
+        >
+          <Modal.Content className='ui--signer-Signer-Content'>
+            <Modal.Columns>
+              <Modal.Column>
+                <InputAddress
+                  label={t('stash account')}
+                  onChange={setStashId}
+                  type='account'
+                  value={stashId}
+                />
+                <InputAddress
+                  help={t('The controller is the account that will be used to control any nominating or validating actions. Should not match another stash or controller.')}
+                  label={t('controller account')}
+                  onChange={setControllerId}
+                  type='account'
+                  value={controllerId}
+                />
+                <InputValidationController
+                  accountId={stashId}
+                  controllerId={controllerId}
+                  onError={setControllerError}
+                />
+              </Modal.Column>
+              <Modal.Column>
+                <p>{t('Think of the stash as your cold wallet and the controller as your hot wallet. Funding operations are controlled by the stash, any other non-funding actions by the controller itself.')}</p>
+                <p>{t('To ensure optimal fund security using the same stash/controller is strongly discouraged, but not forbidden.')}</p>
+              </Modal.Column>
+            </Modal.Columns>
+            <Modal.Columns>
+              <Modal.Column>
+                <InputBalance
+                  autoFocus
+                  help={t('The total amount of the stash balance that will be at stake in any forthcoming rounds (should be less than the total amount available)')}
+                  isError={!hasValue || !!amountError}
+                  label={t('value bonded')}
+                  labelExtra={
+                    <Available
+                      label={<span className='label'>{t('available')}</span>}
+                      params={stashId}
+                    />
+                  }
+                  onChange={setAmount}
+                />
+                {bondedBlocks?.gtn(0) && (
+                  <Static
+                    help={t('The bonding duration for any staked funds. Needs to be unlocked and withdrawn to become available.')}
+                    label={t('on-chain bonding duration')}
+                  >
+                    <BlockToTime blocks={bondedBlocks} />
+                  </Static>
+                )}
+                <InputValidateAmount
+                  accountId={stashId}
+                  onError={setAmountError}
+                  value={amount}
+                />
+              </Modal.Column>
+              <Modal.Column>
+                <p>{t('The amount placed at-stake should be no more that 95% of your available amount to protect against slashing events.')}</p>
+                <p>{t('Once bonded, it wil need to be unlocked/withdrawn and will be locked for at least the bonding duration.')}</p>
+              </Modal.Column>
+            </Modal.Columns>
+            <Modal.Columns>
+              <Modal.Column>
+                <Dropdown
+                  defaultValue={0}
+                  help={t('The destination account for any payments as either a nominator or validator')}
+                  label={t('payment destination')}
+                  onChange={setDestination}
+                  options={rewardDestinationOptions}
+                  value={destination}
+                />
+              </Modal.Column>
+              <Modal.Column>
+                <p>{t('Rewards (once paid) can be deposited to either the stash or controller, with different effects.')}</p>
+              </Modal.Column>
+            </Modal.Columns>
+          </Modal.Content>
+          <Modal.Actions onCancel={toggleVisible}>
+            <TxButton
+              accountId={stashId}
+              extrinsic={extrinsic}
+              icon='sign-in'
+              isDisabled={!canSubmit}
+              isPrimary
+              label={t('Bond')}
+              onStart={toggleVisible}
+            />
+          </Modal.Actions>
+        </Modal>
+      )}
+    </div>
+  );
 }
 
-const KtonTipStyledWrapper = styled.div`
-  display: flex;
-  margin-top: -4px;
-  padding-left: 2rem;
-  label{
-    flex: 0 0 15rem;
-  }
-  &>div{
-    border: 1px solid #DEDEDF;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    p{
-      color: #98959F;
-      font-size: 12px;
-    }
-    
-    padding: 10px 20px;
-    background: #FBFBFB;
-  }
-`;
-
-const GetPowerStyledWrapper = styled.div`
-  font-size: 0;
-  margin-top: 20px;
-  p{
-    text-align: right;
-    font-size: 16px;
-    color: #302B3C;
-    margin-bottom: 10px;
-  }
-
-  p:last-child{
-    margin-top: 0;
-    margin-bottom: 0;
-  }
-
-  span{
-    color: #5930DD;
-    font-weight: bold;
-  }
-`;
-
-export default withMulti(
-  NewStake,
-  translate,
-  withApi
-);
+export default React.memo(NewStake);

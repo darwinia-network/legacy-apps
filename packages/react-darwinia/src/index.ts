@@ -28,7 +28,7 @@ const instance = axios.create({
   timeout: 30000
 });
 
-async function getBondList ({ page = 0, row = 10, status = 'bonded', locked = 0, address }) {
+async function getBondList ({ address, locked = 0, page = 0, row = 10, status = 'bonded' }) {
   if (status === 'map') {
     return await instance.post('/api/wallet/mapping_history', {
       row: row,
@@ -36,6 +36,7 @@ async function getBondList ({ page = 0, row = 10, status = 'bonded', locked = 0,
       address: address
     });
   }
+
   return await instance.post('/api/wallet/bond_list', {
     row: row,
     page: page,
@@ -45,7 +46,7 @@ async function getBondList ({ page = 0, row = 10, status = 'bonded', locked = 0,
   });
 }
 
-async function getStakingHistory ({ page = 0, row = 10, address }, callback) {
+function getStakingHistory ({ address, page = 0, row = 10 }, callback) {
   instance.post('/api/scan/staking_history', {
     page: page,
     row: 10,
@@ -64,7 +65,8 @@ async function getStakingHistory ({ page = 0, row = 10, address }, callback) {
 
 const lockLimitOptionsMaker = (t: i18nT): Array<object> => {
   const month = [0, 3, 6, 12, 18, 24, 30, 36];
-  const options = [];
+  const options: object[] = [];
+
   month.map((i) => {
     options.push({
       text: i === 0 ? t('No fixed term') : `${i} ${t('Month')}`,

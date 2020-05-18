@@ -3,7 +3,7 @@
 
 import { ITuple } from '@polkadot/types/types';
 import { Compact, Enum, Option, Struct, U8aFixed, Vec } from '@polkadot/types/codec';
-import { Bytes, U256, u32, u64, u8 } from '@polkadot/types/primitive';
+import { Bytes, U256, u32, u64, u8, Text } from '@polkadot/types/primitive';
 import { Reasons } from '@polkadot/types/interfaces/balances';
 import { EthereumAddress } from '@polkadot/types/interfaces/claims';
 import { AccountId, Balance, BlockNumber, H160, H256, H512, Hash, LockIdentifier } from '@polkadot/types/interfaces/runtime';
@@ -265,6 +265,20 @@ export interface TsInMs extends u64 {}
 export interface Unbonding extends Struct {
   readonly amount: Balance;
   readonly moment: BlockNumber;
+}
+
+/** @name ChainProperties */
+export interface ChainProperties extends Struct {
+  readonly ss58Format: Option<u8>;
+  readonly tokenDecimals: Option<u32>;
+  readonly tokenSymbol: Option<Text>;
+  readonly ktonTokenDecimals: Option<u32>;
+  readonly ktonTokenSymbol: Option<Text>;
+}
+
+/** @name usableBalance */
+export interface usableBalance extends Struct {
+  readonly usableBalance: Balance;
 }
 
 export type PHANTOM_DARWINIAINJECT = 'darwiniaInject';

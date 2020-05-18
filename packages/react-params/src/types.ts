@@ -44,7 +44,6 @@ export interface Props extends BaseProps {
   isReadOnly?: boolean;
   label?: React.ReactNode;
   withLabel?: boolean;
-  channel?: string;
 }
 
 export type Size = 'full' | 'large' | 'medium' | 'small';

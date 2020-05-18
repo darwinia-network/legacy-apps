@@ -32134,7 +32134,8 @@ body.dimmable > .dimmer {
 ---------------*/
 
 .ui.inverted.dimmer {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(48, 43, 60, 0.8);
+  padding: 0 1rem 1rem;
 }
 
 .ui.inverted.dimmer > .content > * {

@@ -82,7 +82,7 @@ function retrieveController (api: ApiInterfaceRx, stashId: AccountId, queuedKeys
     : of({ accountId: stashId, nextSessionIds: [], sessionIds: [] });
 }
 
-function resolveController(stashId: AccountId | string, [controller, ledger]: [AccountId, StakingLedger]): AccountId | string | null {
+function resolveController (stashId: AccountId | string, [controller, ledger]: [AccountId, StakingLedger]): AccountId | string | null {
   if (!controller.isEmpty) {
     return controller;
   }
@@ -112,15 +112,15 @@ export function queryWithQueued (api: ApiInterfaceRx): (accountId: Uint8Array | 
   });
 }
 
-export function estimateController(api: ApiInterfaceRx, accountId: AccountId): (AccountId: AccountId | string) => Observable<AccountId | string | null> {
+export function estimateController (api: ApiInterfaceRx, accountId: AccountId): (AccountId: AccountId | string) => Observable<AccountId | string | null> {
   return (accountId: AccountId | string) => (
     api.queryMulti<[AccountId, StakingLedger]>([
       [api.query.staking.bonded, accountId],
-      [api.query.staking.ledger, accountId],
+      [api.query.staking.ledger, accountId]
     ])
   ).pipe(
     map((result): AccountId | string | null => resolveController(accountId, result))
-  )
+  );
 }
 
 /**

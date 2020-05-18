@@ -6,11 +6,13 @@
 import './initSettings';
 import './style/semantic-ui-css/semantic.css';
 import '@polkadot/react-components/i18n';
+import '@polkadot/react-darwinia/interfaces/augment-api';
 
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
+import AccountSidebar from '@polkadot/app-accounts/Sidebar';
 import { Api } from '@polkadot/react-api';
 import Queue from '@polkadot/react-components/Status/Queue';
 import { BlockAuthors, Events } from '@polkadot/react-query';
@@ -23,24 +25,26 @@ const rootElement = document.getElementById(rootId);
 const theme = { theme: settings.uiTheme };
 
 if (!rootElement) {
-	throw new Error(`Unable to find element with id '${rootId}'`);
+  throw new Error(`Unable to find element with id '${rootId}'`);
 }
 
 ReactDOM.render(
-	<Suspense fallback='...'>
-		<ThemeProvider theme={theme}>
-			<Queue>
-				<Api url={settings.apiUrl}>
-					<BlockAuthors>
-						<Events>
-							<HashRouter>
-								<Apps />
-							</HashRouter>
-						</Events>
-					</BlockAuthors>
-				</Api>
-			</Queue>
-		</ThemeProvider>
-	</Suspense>,
-	rootElement
+  <Suspense fallback='...'>
+    <ThemeProvider theme={theme}>
+      <Queue>
+        <Api url={settings.apiUrl}>
+          <BlockAuthors>
+            <Events>
+              <AccountSidebar>
+                <HashRouter>
+                  <Apps />
+                </HashRouter>
+              </AccountSidebar>
+            </Events>
+          </BlockAuthors>
+        </Api>
+      </Queue>
+    </ThemeProvider>
+  </Suspense>,
+  rootElement
 );

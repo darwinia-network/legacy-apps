@@ -23,40 +23,11 @@ export default css`
   .ui.selection.dropdown,
   .ui.input > input {
     color: inherit;
-    border-radius: 2px;
-  }
-
-  .ui.compact.selection.dropdown {
-    color: #302B3C!important;
-    background-color: #fff!important;
-    border: 1px solid #302B3C!important;
-    font-weight: normal;
-  }
-
-  .ui.action.input:not([class*="left action"])>.button:last-child, .ui.action.input:not([class*="left action"])>.buttons:last-child>.button, .ui.action.input:not([class*="left action"])>.dropdown:last-child {
-    border-radius: 0 2px 2px 0;
-  }
-
-  .ui.action.input:not([class*="left action"])>input:focus {
-      border-right-color: rgba(34,36,38,.15)!important;
-  }
-
-  .ui.input.focus>input, .ui.input>input:focus {
-    border-color: rgba(34,36,38,.15);
-    background: #fff;
-    color: rgba(0,0,0,.8);
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-
-  .ui.selection.dropdown>.delete.icon, .ui.selection.dropdown>.dropdown.icon, .ui.selection.dropdown>.search.icon {
-    margin: -.78571429em -1.2em;
   }
 
   .ui.dropdown {
     &.disabled {
       background: transparent;
-      border-color: #eee;
       border-style: dashed;
       opacity: 1;
 
@@ -83,20 +54,20 @@ export default css`
   .ui.input {
     width: 100%;
 
-    &.disabled {
+    &.disabled:not(.retain-appearance) {
       opacity: 1;
 
       input {
         background: transparent;
-        border-color: #eee;
         border-style: dashed;
       }
 
       .ui.primary.buttons .ui.button {
-        background: #eee;
+        background-color: #666;
         border-color: transparent;
         border-left-color: transparent;
-        color: #4e4e4e;
+        color: #f9f9f9;
+        opacity: 0.5;
 
         .dropdown.icon {
           opacity: 0;
@@ -114,11 +85,6 @@ export default css`
     }
   }
 
-  .ui.inverted.dimmer {
-    background-color: rgba(48, 43, 60, 0.8);
-    padding: 0 1rem 1rem;
-  }
-
   .ui.label:not(.ui--Bubble) {
     background: transparent;
     font-weight: normal;
@@ -127,40 +93,37 @@ export default css`
   }
 
   .ui.modal {
-    background: #fff;
+    background: #f9f9f9;
+    box-shadow: none;
     color: #4e4e4e;
     font-family: sans-serif;
-    border-radius: 0;
+
     > .actions,
     > .content {
       background: transparent;
-      padding: 1.5rem 3rem;
     }
 
     > .actions {
       border-top: none;
       text-align: right;
-      padding: 1.875rem 3rem !important;
-      .ui.buttons .button {
-        padding: 0.78125rem 1.5rem 0.78125rem;
-      }
+      padding: 1rem !important;
     }
 
+    /* approx h1, color, size, font */
     > .header:not(.ui) {
-      background: #f5f5f5;
-      font-size: 1.25rem !important;
-      font-weight: normal;
+      background: #f9f9f9;
+      border-bottom: none;
+      color: rgba(0, 0, 0, .6);
+      font-family: sans-serif;
+      font-size: 1.75rem;
+      font-weight: 100;
       line-height: 1.25rem;
-      padding: 1rem 1.5rem;
+      padding: 1.5rem 1.75rem 0;
+      text-transform: lowercase;
 
       > label {
         margin-top: 0.5rem;
       }
-    }
-
-    > :first-child:not(.icon) {
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
     }
 
     .description {
@@ -204,8 +167,13 @@ export default css`
     opacity: 0.2 !important;
   }
 
+  .ui.button+.ui.button {
+    margin-left: 0.5rem;
+  }
+
   /* modals aligned to top, not center */
   .ui.dimmer {
+    background-color: rgba(0,0,0,0.5);
     justify-content: flex-start;
   }
 

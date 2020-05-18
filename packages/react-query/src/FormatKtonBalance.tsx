@@ -9,65 +9,68 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Compact } from '@polkadot/types';
 import { formatKtonBalance } from '@polkadot/util';
-import { Balance } from '@polkadot/types/interfaces';
 
 import { useTranslation } from './translate';
 
 interface Props extends BareProps {
   children?: React.ReactNode;
+  isShort?: boolean;
   label?: React.ReactNode;
-  value?: Compact<any> | BN | string | Balance | null | 'all';
+  labelPost?: React.ReactNode;
+  value?: Compact<any> | BN | string | null | 'all';
   withSi?: boolean;
-  withUnit?: boolean;
+  withCurrency?: boolean;
 }
 
 // for million, 2 * 3-grouping + comma
 const M_LENGTH = 6 + 1;
+const K_LENGTH = 3 + 1;
 
-function format (value: Compact<any> | BN | string | Balance, currency: string, withUnit: boolean): React.ReactNode {
+function format (value: Compact<any> | BN | string, currency: string, withSi?: boolean, _isShort?: boolean, withCurrency?: boolean): React.ReactNode {
   const [prefix, postfix] = formatKtonBalance(value, { forceUnit: '-', withSi: false }).split('.');
+  const isShort = _isShort || (withSi && prefix.length >= K_LENGTH);
 
-  if (prefix.length > M_LENGTH) {
-    // TODO Format with balance-postfix
-    return formatKtonBalance(value, withUnit);
-  }
+  // if (prefix.length > M_LENGTH) {
+  //   // TODO Format with balance-postfix
+  //   return formatKtonBalance(value);
+  // }
 
-  return <>{prefix}.<span className='balance-postfix'>{`000${postfix || ''}`.slice(-3)}</span> {currency}</>;
+  return <>{prefix}{!isShort && (<>.<span className='ui--FormatBalance-postfix'>{`000${postfix || ''}`.slice(-3)}</span></>)} {withCurrency ? currency : ''}</>;
 }
 
-function formatSi (value: Compact<any> | BN | string | Balance, withUnit?: boolean): React.ReactNode {
-  const strValue = ((value as Compact<any>).toBn ? (value as Compact<any>).toBn() : value).toString();
-  const [prefix, postfix] = strValue === '0'
-    ? ['0', '0']
-    : formatKtonBalance(value, { withSi: false }).split('.');
-  const unit = strValue === '0'
-    ? ''
-    : formatKtonBalance.calcSi(strValue).value;
+// function formatSi (value: Compact<any> | BN | string): React.ReactNode {
+//   const strValue = ((value as Compact<any>).toBn ? (value as Compact<any>).toBn() : value).toString();
+//   const [prefix, postfix] = strValue === '0'
+//     ? ['0', '0']
+//     : formatBalance(value, { withSi: false }).split('.');
+//   const unit = strValue === '0'
+//     ? ''
+//     : formatBalance.calcSi(strValue).value;
 
-  return <>{prefix}.<span className='balance-postfix'>{`000${postfix || ''}`.slice(-3)}</span>{unit === '-' || !withUnit ? '' : unit}</>;
-}
+//   return <>{prefix}.<span className='balance-postfix'>{`000${postfix || ''}`.slice(-3)}</span>{unit === '-' ? '' : unit}</>;
+// }
 
-function FormatBalance ({ children, className, label, value, withSi, withUnit = false }: Props): React.ReactElement<Props> {
+function FormatBalance ({ children, className, isShort, label, labelPost, value, withCurrency, withSi }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const [currency] = useState(withUnit ? formatKtonBalance.getDefaults().unit : '');
+  const [currency] = useState(withCurrency ? formatKtonBalance.getDefaults().unit : '');
+
   return (
     <div className={`ui--FormatBalance ${className}`}>
-      {label || ''}{
+      {label || ''}<span className='ui--FormatBalance-value'>{
         value
           ? value === 'all'
-            ? t('all available')
-            : withSi
-              ? formatSi(value)
-              : format(value, currency, withUnit)
+            ? t('everything')
+            : format(value, currency, withSi, isShort, withCurrency)
           : '-'
-      }{children}
+      }</span>{labelPost}{children}
     </div>
   );
 }
 
-export default styled(FormatBalance)`
+export default React.memo(styled(FormatBalance)`
   display: inline-block;
   vertical-align: baseline;
+  white-space: nowrap;
 
   * {
     vertical-align: baseline !important;
@@ -80,9 +83,13 @@ export default styled(FormatBalance)`
     vertical-align: baseline;
   }
 
-  > .balance-postfix {
-    font-weight: 100;
-    opacity: 0.75;
-    vertical-align: baseline;
+  .ui--FormatBalance-value {
+    text-align: right;
+
+    > .ui--FormatBalance-postfix {
+      font-weight: 100;
+      opacity: 0.75;
+      vertical-align: baseline;
+    }
   }
-`;
+`);

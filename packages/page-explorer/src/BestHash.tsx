@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 // Copyright 2017-2020 @polkadot/react-query authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
@@ -13,7 +12,7 @@ interface Props extends BareProps, CallProps {
   label?: React.ReactNode;
 }
 
-export default function BestHash ({ className, label, style }: Props): React.ReactElement<Props> {
+function BestHash ({ className, label, style }: Props): React.ReactElement<Props> {
   const { api } = useApi();
   const newHead = useCall<Header>(api.rpc.chain.subscribeNewHeads, []);
 
@@ -26,3 +25,5 @@ export default function BestHash ({ className, label, style }: Props): React.Rea
     </div>
   );
 }
+
+export default React.memo(BestHash);

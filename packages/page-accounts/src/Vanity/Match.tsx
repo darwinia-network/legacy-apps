@@ -4,7 +4,7 @@
 
 import { BareProps } from '@polkadot/react-components/types';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { Button, IdentityIcon } from '@polkadot/react-components';
 import { u8aToHex } from '@polkadot/util';
@@ -19,53 +19,59 @@ interface Props extends BareProps {
 }
 
 function Match ({ address, className, count, offset, onCreateToggle, onRemove, seed }: Props): React.ReactElement<Props> {
-  const [hexSeed, setHexSeed] = useState('');
-  const _onCreate = (): void => onCreateToggle(hexSeed);
-  const _onRemove = (): void => onRemove(address);
-
-  useEffect((): void => {
-    setHexSeed(u8aToHex(seed));
-  }, [seed]);
+  const hexSeed = useMemo(
+    () => u8aToHex(seed),
+    [seed]
+  );
+  const _onCreate = useCallback(
+    (): void => onCreateToggle(hexSeed),
+    [hexSeed, onCreateToggle]
+  );
+  const _onRemove = useCallback(
+    (): void => onRemove(address),
+    [address, onRemove]
+  );
 
   return (
-    <div className={className}>
-      <div className='vanity--Match-item'>
+    <tr className={className}>
+      <td
+        className='number'
+        colSpan={2}
+      >
         <IdentityIcon
           className='vanity--Match-icon'
           size={32}
           value={address}
         />
-        <div className='vanity--Match-data'>
-          <div className='vanity--Match-addr'>
-            <span className='no'>{address.slice(0, offset)}</span><span className='yes'>{address.slice(offset, count + offset)}</span><span className='no'>{address.slice(count + offset)}</span>
-          </div>
-          <div className='vanity--Match-seed'>
-            {hexSeed}
-          </div>
+      </td>
+      <td className='address all'>
+        <div className='vanity--Match-addr'>
+          <span className='no'>{address.slice(0, offset)}</span><span className='yes'>{address.slice(offset, count + offset)}</span><span className='no'>{address.slice(count + offset)}</span>
         </div>
-        <div className='vanity--Match-buttons'>
-          <Button
-            icon='plus'
-            isPrimary
-            onClick={_onCreate}
-            size='tiny'
-          />
-          <Button
-            icon='close'
-            isNegative
-            onClick={_onRemove}
-            size='tiny'
-          />
-        </div>
-      </div>
-    </div>
+      </td>
+      <td className='hash'>
+        {hexSeed}
+      </td>
+      <td className='button'>
+        <Button
+          icon='plus'
+          isPrimary
+          onClick={_onCreate}
+          size='tiny'
+        />
+        <Button
+          icon='close'
+          isNegative
+          onClick={_onRemove}
+          size='tiny'
+        />
+      </td>
+    </tr>
   );
 }
 
-export default styled(Match)`
+export default React.memo(styled(Match)`
   text-align: center;
-  background: #fff;
-  border-bottom: 1px solid #f3f3f3;
 
   &:hover {
     background: #f9f9f9;
@@ -73,7 +79,6 @@ export default styled(Match)`
 
   .vanity--Match-addr {
     font-size: 1.25rem;
-    padding: 0 1rem;
 
     .no {
       color: inherit;
@@ -103,4 +108,4 @@ export default styled(Match)`
     opacity: 0.45;
     padding: 0 1rem;
   }
-`;
+`);

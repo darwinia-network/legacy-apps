@@ -1,19 +1,17 @@
-/* eslint-disable @typescript-eslint/camelcase */
 // Copyright 2017-2020 @polkadot/app-explorer authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ApiProps } from '@polkadot/react-api/types';
-import { I18nProps } from '@polkadot/react-components/types';
 import { Header } from '@polkadot/types/interfaces';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { CardSummary, IdentityIcon, SummaryBox } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
 import { formatNumber } from '@polkadot/util';
 
-import translate from './translate';
+import { useTranslation } from './translate';
 
 interface LinkHeader {
   author: string | null;
@@ -33,7 +31,7 @@ interface Link {
   hdr: LinkHeader;
 }
 
-interface Props extends ApiProps, I18nProps {
+interface Props extends ApiProps {
   className?: string;
   finHead?: Header;
   newHead?: Header;
@@ -64,7 +62,7 @@ function calcWidth (children: LinkArray): number {
 
 // counts the height of a specific node
 function calcHeight (children: LinkArray): number {
-  return children.reduce((max, { hdr, arr }): number => {
+  return children.reduce((max, { arr, hdr }): number => {
     hdr.height = hdr.isEmpty
       ? 0
       : 1 + calcHeight(arr);
@@ -184,7 +182,10 @@ function renderRows (rows: Row[]): React.ReactNode[] {
         return (
           <tr key={bn}>
             <td key='blockNumber' />
-            <td className='header isLink' colSpan={cols[0].width}>
+            <td
+              className='header isLink'
+              colSpan={cols[0].width}
+            >
               <div className='link'>&#8942;</div>
             </td>
           </tr>
@@ -203,7 +204,8 @@ function renderRows (rows: Row[]): React.ReactNode[] {
   });
 }
 
-function Forks ({ className, t }: Props): React.ReactElement<Props> | null {
+function Forks ({ className }: Props): React.ReactElement<Props> | null {
+  const { t } = useTranslation();
   const { api } = useApi();
   const [tree, setTree] = useState<Link | null>(null);
   const childrenRef = useRef<Map<string, string[]>>(new Map([['root', []]]));
@@ -211,84 +213,91 @@ function Forks ({ className, t }: Props): React.ReactElement<Props> | null {
   const headersRef = useRef<Map<string, LinkHeader>>(new Map());
   const firstNumRef = useRef('');
 
-  const _finalize = (hash: string): void => {
-    const hdr = headersRef.current.get(hash);
-
-    if (hdr && !hdr.isFinalized) {
-      hdr.isFinalized = true;
-
-      _finalize(hdr.parent);
-    }
-  };
-
-  // adds children for a specific header, retrieving based on matching parent
-  const _addChildren = (base: LinkHeader, children: LinkArray): LinkArray => {
-    const hdrs = (childrenRef.current.get(base.hash) || [])
-      .map((hash): LinkHeader | null => headersRef.current.get(hash) || null)
-      .filter((hdr): boolean => !!hdr) as LinkHeader[];
-
-    hdrs.forEach((hdr): void => {
-      children.push({ arr: _addChildren(hdr, []), hdr });
-    });
-
-    // caclulate the max height/width for this entry
-    base.height = calcHeight(children);
-    base.width = calcWidth(children);
-
-    // place the active (larger, finalized) columns first for the pyramid display
-    children.sort((a, b): number => {
-      if (a.hdr.width > b.hdr.width || a.hdr.height > b.hdr.height || a.hdr.isFinalized) {
-        return -1;
-      } else if (a.hdr.width < b.hdr.width || a.hdr.height < b.hdr.height || b.hdr.isFinalized) {
-        return 1;
-      }
-
-      return 0;
-    });
-
-    return children;
-  };
-
-  // create a tree list from the available headers
-  const _generateTree = (): Link => {
-    const root = createLink();
-
-    // add all the root entries first, we iterate from these
-    // We add the root entry explicitly, it exists as per init
-    (childrenRef.current.get('root') as string[]).forEach((hash): void => {
+  const _finalize = useCallback(
+    (hash: string): void => {
       const hdr = headersRef.current.get(hash);
 
-      // if this fails, well, we have a bigger issue :(
-      if (hdr) {
-        root.arr.push({ arr: [], hdr: { ...hdr } });
+      if (hdr && !hdr.isFinalized) {
+        hdr.isFinalized = true;
+
+        _finalize(hdr.parent);
       }
-    });
+    },
+    []
+  );
 
-    // iterate through, adding the children for each of the root nodes
-    root.arr.forEach(({ arr, hdr }): void => {
-      _addChildren(hdr, arr);
-    });
+  // adds children for a specific header, retrieving based on matching parent
+  const _addChildren = useCallback(
+    (base: LinkHeader, children: LinkArray): LinkArray => {
+      // add the children
+      (childrenRef.current.get(base.hash) || [])
+        .map((hash): LinkHeader | undefined => headersRef.current.get(hash))
+        .filter((hdr): hdr is LinkHeader => !!hdr)
+        .forEach((hdr): void => {
+          children.push({ arr: _addChildren(hdr, []), hdr });
+        });
 
-    // align the columns with empty spacers - this aids in display
-    addColumnSpacers(root.arr);
+      // calculate the max height/width for this entry
+      base.height = calcHeight(children);
+      base.width = calcWidth(children);
 
-    root.hdr.height = calcHeight(root.arr);
-    root.hdr.width = calcWidth(root.arr);
+      // place the active (larger, finalized) columns first for the pyramid display
+      children.sort((a, b): number =>
+        (a.hdr.width > b.hdr.width || a.hdr.height > b.hdr.height || a.hdr.isFinalized)
+          ? -1
+          : (a.hdr.width < b.hdr.width || a.hdr.height < b.hdr.height || b.hdr.isFinalized)
+            ? 1
+            : 0
+      );
 
-    return root;
-  };
+      return children;
+    },
+    []
+  );
 
-  useEffect((): () => void => {
-    let _subFinHead: UnsubFn | null = null;
-    let _subNewHead: UnsubFn | null = null;
+  // create a tree list from the available headers
+  const _generateTree = useCallback(
+    (): Link => {
+      const root = createLink();
 
-    // callback when finalized
-    const _newFinalized = (header: Header): void => {
+      // add all the root entries first, we iterate from these
+      // We add the root entry explicitly, it exists as per init
+      (childrenRef.current.get('root') || []).forEach((hash): void => {
+        const hdr = headersRef.current.get(hash);
+
+        // if this fails, well, we have a bigger issue :(
+        if (hdr) {
+          root.arr.push({ arr: [], hdr: { ...hdr } });
+        }
+      });
+
+      // iterate through, adding the children for each of the root nodes
+      root.arr.forEach(({ arr, hdr }): void => {
+        _addChildren(hdr, arr);
+      });
+
+      // align the columns with empty spacers - this aids in display
+      addColumnSpacers(root.arr);
+
+      root.hdr.height = calcHeight(root.arr);
+      root.hdr.width = calcWidth(root.arr);
+
+      return root;
+    },
+    [_addChildren]
+  );
+
+  // callback when finalized
+  const _newFinalized = useCallback(
+    (header: Header): void => {
       _finalize(header.hash.toHex());
-    };
+    },
+    [_finalize]
+  );
 
-    // callback for the subscribe headers sub
-    const _newHeader = (header: Header): void => {
+  // callback for the subscribe headers sub
+  const _newHeader = useCallback(
+    (header: Header): void => {
       // formatted block info
       const bn = formatNumber(header.number);
       const hash = header.hash.toHex();
@@ -341,7 +350,13 @@ function Forks ({ className, t }: Props): React.ReactElement<Props> | null {
         // do the magic, extract the info into something useful and add to state
         setTree(_generateTree());
       }
-    };
+    },
+    [api, _generateTree]
+  );
+
+  useEffect((): () => void => {
+    let _subFinHead: UnsubFn | null = null;
+    let _subNewHead: UnsubFn | null = null;
 
     (async (): Promise<void> => {
       _subFinHead = await api.rpc.chain.subscribeFinalizedHeads(_newFinalized);
@@ -352,7 +367,7 @@ function Forks ({ className, t }: Props): React.ReactElement<Props> | null {
       _subFinHead && _subFinHead();
       _subNewHead && _subNewHead();
     };
-  }, []);
+  }, [api, _newFinalized, _newHeader]);
 
   if (!tree) {
     return null;
@@ -375,103 +390,73 @@ function Forks ({ className, t }: Props): React.ReactElement<Props> | null {
   );
 }
 
-export default translate(
-  styled(Forks)`
-    margin-bottom: 1.5rem;
+export default React.memo(styled(Forks)`
+  margin-bottom: 1.5rem;
 
-    table {
-      border-collapse: separate;
-      border-spacing: 0.25rem;
-      font-family: monospace;
+  table {
+    border-collapse: separate;
+    border-spacing: 0.25rem;
+    font-family: monospace;
 
-      /* tr {
-        opacity: 0.05;
+    td {
+      padding: 0.25rem 0.5rem;
+      text-align: center;
 
-        &:nth-child(1) { opacity: 1; }
-        &:nth-child(2) { opacity: 0.95; }
-        &:nth-child(3) { opacity: 0.9; }
-        &:nth-child(4) { opacity: 0.85; }
-        &:nth-child(5) { opacity: 0.8; }
-        &:nth-child(6) { opacity: 0.75; }
-        &:nth-child(7) { opacity: 0.70; }
-        &:nth-child(8) { opacity: 0.65; }
-        &:nth-child(9) { opacity: 0.6; }
-        &:nth-child(10) { opacity: 0.55; }
-        &:nth-child(11) { opacity: 0.6; }
-        &:nth-child(12) { opacity: 0.55; }
-        &:nth-child(13) { opacity: 0.5; }
-        &:nth-child(14) { opacity: 0.45; }
-        &:nth-child(15) { opacity: 0.4; }
-        &:nth-child(16) { opacity: 0.35; }
-        &:nth-child(17) { opacity: 0.3; }
-        &:nth-child(18) { opacity: 0.25; }
-        &:nth-child(19) { opacity: 0.2; }
-        &:nth-child(20) { opacity: 0.15; }
-        &:nth-child(21) { opacity: 0.1; }
-      } */
+      .author,
+      .contents {
+        display: inline-block;
+        vertical-align: middle;
+      }
 
-      td {
-        padding: 0.25rem 0.5rem;
-        text-align: center;
+      .author {
+        margin-right: 0.25rem;
+      }
 
-        .author,
-        .contents {
-          display: inline-block;
-          vertical-align: middle;
+      .contents {
+        .hash, .parent {
+          margin: 0 auto;
+          max-width: 6rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
-        .author {
-          margin-right: 0.25rem;
+        .parent {
+          font-size: 0.75rem;
+          line-height: 0.75rem;
+          max-width: 4.5rem;
+        }
+      }
+
+      &.blockNumber {
+        font-size: 1.25rem;
+      }
+
+      &.header {
+        background: #fff;
+        border: 1px solid #e6e6e6;
+        border-radius: 0.25rem;
+
+        &.isEmpty {
+          background: transparent;
+          border-color: transparent;
         }
 
-        .contents {
-          .hash, .parent {
-            margin: 0 auto;
-            max-width: 6rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-
-          .parent {
-            font-size: 0.75rem;
-            line-height: 0.75rem;
-            max-width: 4.5rem;
-          }
+        &.isFinalized {
+          background: rgba(0, 255, 0, 0.1);
         }
 
-        &.blockNumber {
-          font-size: 1.25rem;
+        &.isLink {
+          background: transparent;
+          border-color: transparent;
+          line-height: 1rem;
+          padding: 0;
         }
 
-        &.header {
-          background: #f5f5f5;
-          border: 1px solid #eee;
-          border-radius: 0.25rem;
-
-          &.isEmpty {
-            background: transparent;
-            border-color: transparent;
-          }
-
-          &.isFinalized {
-            background: rgba(0, 255, 0, 0.1);
-            border-color: rgba(0, 255, 0, 0.17);
-          }
-
-          &.isLink {
-            background: transparent;
-            border-color: transparent;
-            line-height: 1rem;
-            padding: 0;
-          }
-
-          &.isMissing {
-            background: rgba(255, 0, 0, 0.05);
-            border-color: rgba(255, 0, 0, 0.06);
-          }
+        &.isMissing {
+          background: rgba(255, 0, 0, 0.05);
         }
       }
     }
-  `
-);
+  }
+`);

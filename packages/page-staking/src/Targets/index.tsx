@@ -2,270 +2,165 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DerivedStakingElected } from '@polkadot/api-derive/types';
-import { ValidatorPrefs, ValidatorPrefsTo196 } from '@polkadot/types/interfaces';
-import { SessionRewards } from '../types';
-import { ValidatorInfo } from './types';
+import { StakerState } from '@polkadot/react-hooks/types';
+import { SortedTargets, TargetSortBy, ValidatorInfo } from '../types';
 
-import BN from 'bn.js';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { registry } from '@polkadot/react-api';
-import { Icon, InputBalance, Table } from '@polkadot/react-components';
-import { useAccounts, useApi, useDebounce, useFavorites, useCall } from '@polkadot/react-hooks';
-import { createType } from '@polkadot/types';
+import { Icon, InputBalance, Table, Button } from '@polkadot/react-components';
 
-import { STORE_FAVS_BASE } from '../constants';
+import { MAX_NOMINATIONS } from '../constants';
 import { useTranslation } from '../translate';
+import Nominate from './Nominate';
 import Summary from './Summary';
 import Validator from './Validator';
-
-const PERBILL = new BN(1000000000);
+import useOwnNominators from './useOwnNominators';
 
 interface Props {
   className?: string;
-  sessionRewards: SessionRewards[];
+  ownStashes?: StakerState[];
+  targets: SortedTargets;
 }
 
-interface AllInfo {
-  nominators: string[];
-  totalStaked: BN;
-  validators: ValidatorInfo[];
+function sort (sortBy: TargetSortBy, sortFromMax: boolean, validators: ValidatorInfo[]): number[] {
+  return [...Array(validators.length).keys()]
+    .sort((a, b) =>
+      sortFromMax
+        ? validators[a][sortBy] - validators[b][sortBy]
+        : validators[b][sortBy] - validators[a][sortBy]
+    )
+    .sort((a, b) =>
+      validators[a].isFavorite === validators[b].isFavorite
+        ? 0
+        : (validators[a].isFavorite ? -1 : 1)
+    );
 }
 
-type SortBy = 'rankOverall' | 'rankBondOwn' | 'rankBondOther' | 'rankBondTotal' | 'rankComm';
+function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nominators, setCalcWith, toggleFavorite, totalStaked, validators } }: Props): React.ReactElement<Props> {
+  const { t } = useTranslation();
+  const ownNominators = useOwnNominators(ownStashes);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [sorted, setSorted] = useState<number[] | undefined>();
+  const [{ sortBy, sortFromMax }, setSortBy] = useState<{ sortBy: TargetSortBy; sortFromMax: boolean }>({ sortBy: 'rankOverall', sortFromMax: true });
 
-function sortValidators (list: ValidatorInfo[]): ValidatorInfo[] {
-  return list
-    .sort((a, b): number => b.commissionPer - a.commissionPer)
-    .map((info, index): ValidatorInfo => {
-      info.rankComm = index + 1;
+  useEffect((): void => {
+    validators && setSorted(
+      sort(sortBy, sortFromMax, validators)
+    );
+  }, [sortBy, sortFromMax, validators]);
 
-      return info;
-    })
-    .sort((a, b): number => b.bondOther.cmp(a.bondOther))
-    .map((info, index): ValidatorInfo => {
-      info.rankBondOther = index + 1;
-
-      return info;
-    })
-    .sort((a, b): number => b.bondOwn.cmp(a.bondOwn))
-    .map((info, index): ValidatorInfo => {
-      info.rankBondOwn = index + 1;
-
-      return info;
-    })
-    .sort((a, b): number => b.bondTotal.cmp(a.bondTotal))
-    .map((info, index): ValidatorInfo => {
-      info.rankBondTotal = index + 1;
-
-      return info;
-    })
-    .sort((a, b): number => b.validatorPayment.cmp(a.validatorPayment))
-    .map((info, index): ValidatorInfo => {
-      info.rankPayment = index + 1;
-
-      return info;
-    })
-    .sort((a, b): number => a.rewardSplit.cmp(b.rewardSplit))
-    .map((info, index): ValidatorInfo => {
-      info.rankReward = index + 1;
-
-      return info;
-    })
-    .sort((a, b): number => {
-      const cmp = b.rewardPayout.cmp(a.rewardPayout);
-
-      return cmp !== 0
-        ? cmp
-        : a.rankReward === b.rankReward
-          ? a.rankPayment === b.rankPayment
-            ? b.rankBondTotal - a.rankBondTotal
-            : b.rankPayment - a.rankPayment
-          : b.rankReward - a.rankReward;
-    })
-    .map((info, index): ValidatorInfo => {
-      info.rankOverall = index + 1;
-
-      return info;
-    });
-}
-
-function extractInfo (allAccounts: string[], amount: BN = new BN(0), electedInfo: DerivedStakingElected, favorites: string[], lastReward: BN): AllInfo {
-  const nominators: string[] = [];
-  let totalStaked = new BN(0);
-  const perValidatorReward = lastReward.divn(electedInfo.info.length);
-  const validators = sortValidators(
-    electedInfo.info.map(({ accountId, exposure: _exposure, validatorPrefs }): ValidatorInfo => {
-      const exposure = _exposure || {
-        total: createType(registry, 'Compact<Balance>'),
-        own: createType(registry, 'Compact<Balance>'),
-        others: createType(registry, 'Vec<IndividualExposure>')
-      };
-      const prefs = (validatorPrefs as (ValidatorPrefs | ValidatorPrefsTo196)) || {
-        commission: createType(registry, 'Compact<Perbill>')
-      };
-      const bondOwn = exposure.own.unwrap();
-      const bondTotal = exposure.total.unwrap();
-      const validatorPayment = (prefs as ValidatorPrefsTo196).validatorPayment
-        ? (prefs as ValidatorPrefsTo196).validatorPayment.unwrap() as BN
-        : (prefs as ValidatorPrefs).commission.unwrap().mul(perValidatorReward).div(PERBILL);
-      const key = accountId.toString();
-      const rewardSplit = perValidatorReward.sub(validatorPayment);
-      const rewardPayout = rewardSplit.gtn(0)
-        ? amount.mul(rewardSplit).div(amount.add(bondTotal))
-        : new BN(0);
-      const isNominating = exposure.others.reduce((isNominating, indv): boolean => {
-        const nominator = indv.who.toString();
-
-        if (!nominators.includes(nominator)) {
-          nominators.push(nominator);
-        }
-
-        return isNominating || allAccounts.includes(nominator);
-      }, allAccounts.includes(key));
-
-      totalStaked = totalStaked.add(bondTotal);
-
-      return {
-        accountId,
-        bondOther: bondTotal.sub(bondOwn),
-        bondOwn,
-        bondShare: 0,
-        bondTotal,
-        isCommission: !!(prefs as ValidatorPrefs).commission,
-        isFavorite: favorites.includes(key),
-        isNominating,
-        key,
-        commissionPer: (((prefs as ValidatorPrefs).commission?.unwrap() || new BN(0)).muln(10000).div(PERBILL).toNumber() / 100),
-        numNominators: exposure.others.length,
-        rankBondOther: 0,
-        rankBondOwn: 0,
-        rankBondTotal: 0,
-        rankComm: 0,
-        rankOverall: 0,
-        rankPayment: 0,
-        rankReward: 0,
-        rewardPayout,
-        rewardSplit,
-        validatorPayment
-      };
-    })
+  const _sort = useCallback(
+    (newSortBy: TargetSortBy) => setSortBy(({ sortBy, sortFromMax }) => ({
+      sortBy: newSortBy,
+      sortFromMax: newSortBy === sortBy
+        ? !sortFromMax
+        : true
+    })),
+    []
   );
 
-  return { nominators, totalStaked, validators };
-}
+  const _toggleSelected = useCallback(
+    (address: string) => setSelected(
+      selected.includes(address)
+        ? selected.filter((accountId): boolean => address !== accountId)
+        : [...selected, address]
+    ),
+    [selected]
+  );
 
-function Targets ({ className, sessionRewards }: Props): React.ReactElement<Props> {
-  const { t } = useTranslation();
-  const { api } = useApi();
-  const { allAccounts } = useAccounts();
-  const [_amount, setAmount] = useState<BN | undefined>(new BN(1000));
-  const electedInfo = useCall<DerivedStakingElected>(api.derive.staking.electedInfo, []);
-  const [favorites, toggleFavorite] = useFavorites(STORE_FAVS_BASE);
-  const [lastReward, setLastReward] = useState(new BN(0));
-  const [{ nominators, validators, totalStaked }, setWorkable] = useState<AllInfo>({ nominators: [], totalStaked: new BN(0), validators: [] });
-  const [{ sorted, sortBy, sortFromMax }, setSorted] = useState<{ sorted: ValidatorInfo[]; sortBy: SortBy; sortFromMax: boolean }>({ sorted: [], sortBy: 'rankOverall', sortFromMax: true });
-  const amount = useDebounce(_amount);
+  const _selectProfitable = useCallback(
+    () => setSelected(
+      (validators || [])
+        .filter((_, index) => index < MAX_NOMINATIONS)
+        .map(({ key }) => key)
+    ),
+    [validators]
+  );
 
-  const _sort = (newSortBy: SortBy, unsorted = validators, isAdjust = true): void => {
-    const newSortFromMax = isAdjust && newSortBy === sortBy ? !sortFromMax : true;
+  const labels = useMemo(
+    (): Record<string, string> => ({
+      rankBondOther: t('other stake'),
+      rankBondOwn: t('own stake'),
+      rankBondTotal: t('total stake'),
+      rankComm: t('commission'),
+      rankOverall: t('profit/era est')
+    }),
+    [t]
+  );
 
-    setSorted({
-      sortBy: newSortBy,
-      sortFromMax: newSortFromMax,
-      sorted: unsorted
-        .sort((a, b): number =>
-          newSortFromMax
-            ? a[newSortBy] - b[newSortBy]
-            : b[newSortBy] - a[newSortBy]
-        )
-        .sort((a, b): number =>
-          a.isFavorite === b.isFavorite
-            ? 0
-            : a.isFavorite
-              ? -1
-              : 1
-        )
-    });
-  };
+  const header = useMemo(() => [
+    [t('validators'), 'start', 4],
+    ...['rankComm', 'rankBondTotal', 'rankBondOwn', 'rankBondOther', 'rankOverall'].map((header) => [
+      <>{labels[header]}<Icon name={sortBy === header ? (sortFromMax ? 'chevron down' : 'chevron up') : 'minus'} /></>,
+      sorted ? `isClickable ${sortBy === header && 'ui--highlight--border'} number` : 'number',
+      1,
+      (): void => _sort(header as 'rankComm')
+    ]),
+    []
+  ], [_sort, labels, sortBy, sorted, sortFromMax, t]);
 
-  useEffect((): void => {
-    if (sessionRewards && sessionRewards.length) {
-      const lastRewardSession = sessionRewards.filter(({ reward }): boolean => reward.gtn(0));
-
-      setLastReward(
-        lastRewardSession.length
-          ? lastRewardSession[lastRewardSession.length - 1].reward
-          : new BN(0)
-      );
-    }
-  }, [sessionRewards]);
-
-  useEffect((): void => {
-    if (electedInfo) {
-      const { nominators, totalStaked, validators } = extractInfo(allAccounts, amount, electedInfo, favorites, lastReward);
-
-      setWorkable({ nominators, totalStaked, validators });
-      _sort('rankOverall', validators, false);
-    }
-  }, [allAccounts, amount, electedInfo, favorites, lastReward]);
+  const filter = useMemo(() => (
+    sorted && (
+      <InputBalance
+        className='balanceInput'
+        help={t('The amount that will be used on a per-validator basis to calculate profits for that validator.')}
+        isFull
+        label={t('amount to use for estimation')}
+        onChange={setCalcWith}
+        value={calcWith}
+      />
+    )
+  ), [calcWith, setCalcWith, sorted, t]);
 
   return (
     <div className={className}>
       <Summary
         lastReward={lastReward}
-        numNominators={nominators.length}
-        numValidators={validators.length}
+        numNominators={nominators?.length}
+        numValidators={validators?.length}
         totalStaked={totalStaked}
       />
-      {sorted.length
-        ? (
-          <>
-            <InputBalance
-              className='balanceInput'
-              help={t('The amount that will be used on a per-validator basis to calculate rewards for that validator.')}
-              isFull
-              label={t('amount to use for estimation')}
-              onChange={setAmount}
-              value={_amount}
-            />
-            <Table>
-              <Table.Head>
-                <th>&nbsp;</th>
-                <th>&nbsp;</th>
-                <th>&nbsp;</th>
-                {['rankComm', 'rankBondTotal', 'rankBondOwn', 'rankBondOther', 'rankOverall'].map((header): React.ReactNode => (
-                  <th
-                    className={`isClickable ${sortBy === header && 'isSelected'}`}
-                    key={header}
-                    onClick={(): void => _sort(header as 'rankComm')}
-                  ><Icon name={sortBy === header ? (sortFromMax ? 'chevron down' : 'chevron up') : 'minus'} /></th>
-                ))}
-                <th>&nbsp;</th>
-              </Table.Head>
-              <Table.Body>
-                {sorted.map((info): React.ReactNode =>
-                  <Validator
-                    info={info}
-                    key={info.key}
-                    toggleFavorite={toggleFavorite}
-                  />
-                )}
-              </Table.Body>
-            </Table>
-          </>
-        )
-        : (
-          <div className='tableContainer'>
-            {t('Validator info not available')}
-          </div>
-        )
-      }
+      <Button.Group>
+        <Button
+          icon='check'
+          isDisabled={!validators?.length || !ownNominators?.length}
+          label={t('Select best')}
+          onClick={_selectProfitable}
+        />
+        <Nominate
+          ownNominators={ownNominators}
+          targets={selected}
+        />
+      </Button.Group>
+      <Table
+        empty={sorted && t('No active validators to check')}
+        filter={filter}
+        header={header}
+      >
+        {validators && sorted && (validators.length === sorted.length) && sorted.map((index): React.ReactNode =>
+          <Validator
+            canSelect={selected.length < MAX_NOMINATIONS}
+            info={validators[index]}
+            isSelected={selected.includes(validators[index].key)}
+            key={validators[index].key}
+            toggleFavorite={toggleFavorite}
+            toggleSelected={_toggleSelected}
+          />
+        )}
+      </Table>
     </div>
   );
 }
 
-export default styled(Targets)`
+export default React.memo(styled(Targets)`
   text-align: center;
-`;
+
+  th {
+    i.icon {
+      margin-left: 0.5rem;
+    }
+  }
+  .ui--Table {
+    overflow-x: auto;
+  }
+`);

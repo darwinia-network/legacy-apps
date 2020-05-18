@@ -9,14 +9,13 @@ import styled from 'styled-components';
 import SummarySession from '@polkadot/app-explorer/SummarySession';
 import { CardSummary, IdentityIcon, SummaryBox } from '@polkadot/react-components';
 import { BlockAuthorsContext } from '@polkadot/react-query';
-import { RowTitle, Box } from '@polkadot/react-darwinia/components';
 
 import { useTranslation } from '../translate';
 
 interface Props {
   className?: string;
   isVisible: boolean;
-  next: string[];
+  next?: string[];
   nominators: string[];
   stakingOverview?: DeriveStakingOverview;
   style?: any;
@@ -37,12 +36,12 @@ function Summary ({ className, isVisible, next, nominators, stakingOverview, sty
             {stakingOverview.validators.length}{`/${stakingOverview.validatorCount.toString()}`}
           </CardSummary>
         )}
-        {next && next.length !== 0 && (
+        {!!next?.length && (
           <CardSummary label={t('waiting')}>
             {next.length}
           </CardSummary>
         )}
-        {nominators.length !== 0 && (
+        {!!nominators.length && (
           <CardSummary label={t('nominators')}>
             {nominators.length}
           </CardSummary>
@@ -71,11 +70,9 @@ function Summary ({ className, isVisible, next, nominators, stakingOverview, sty
   );
 }
 
-export default styled(Summary)`
-  .summary--box {
-    width: 100%;
-  }
+export default React.memo(styled(Summary)`
   .validator--Account-block-icon {
+    display: inline-block;
     margin-right: 0.75rem;
     margin-top: -0.25rem;
     vertical-align: middle;
@@ -86,4 +83,4 @@ export default styled(Summary)`
       margin-left: -1.5rem;
     }
   }
-`;
+`);

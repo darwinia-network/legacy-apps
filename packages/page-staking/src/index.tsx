@@ -1,110 +1,176 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 // Copyright 2017-2020 @polkadot/app-staking authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DeriveHeartbeats, DeriveStakingOverview } from '@polkadot/api-derive/types';
+import { DeriveStakingOverview } from '@polkadot/api-derive/types';
 import { AppProps as Props } from '@polkadot/react-components/types';
-import { AccountId } from '@polkadot/types/interfaces';
 import { ElectionStatus } from '@polkadot/types/interfaces';
 
 import React, { useEffect, useMemo, useReducer, useState } from 'react';
+import { Route, Switch } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { useCall, useAccounts, useApi, useAccountChecked, useOwnEraRewards } from '@polkadot/react-hooks';
-import AccountStatus from '@polkadot/app-accounts/AccountStatus';
+import { HelpOverlay } from '@polkadot/react-components';
+import Tabs from '@polkadot/react-components/Tabs';
+import { useAccounts, useApi, useCall, useOwnStashInfos, useStashIds } from '@polkadot/react-hooks';
 
-import Actions from './Actions';
-import { MAX_SESSIONS } from './constants';
+import basicMd from './md/basic.md';
+// import Actions from './Actions';
+import Overview from './Overview';
+import Payouts from './Payouts';
+import Query from './Query';
+import Summary from './Overview/Summary';
+import Targets from './Targets';
 import { useTranslation } from './translate';
-import useSessionRewards from './useSessionRewards';
+import useSortedTargets from './useSortedTargets';
 
-const STORE_CHECKED = 'accounts:checked';
+interface Validators {
+  next?: string[];
+  validators?: string[];
+}
 
-function reduceNominators(nominators: string[], additional: string[]): string[] {
+function reduceNominators (nominators: string[], additional: string[]): string[] {
   return nominators.concat(...additional.filter((nominator): boolean => !nominators.includes(nominator)));
 }
 
-function StakingApp({ basePath, className }: Props): React.ReactElement<Props> {
+function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { allAccounts, hasAccounts } = useAccounts();
+  const { hasAccounts } = useAccounts();
   const { pathname } = useLocation();
-  // const { allRewards, rewardCount } = useOwnEraRewards();
-
-  const [next, setNext] = useState<string[]>([]);
-  const allStashes = useCall<string[]>(api.derive.staking.stashes, [], {
-    transform: (stashes: AccountId[]): string[] =>
-      stashes.map((accountId): string => accountId.toString())
-  });
-  const recentlyOnline = useCall<DeriveHeartbeats>(api.derive.imOnline?.receivedHeartbeats, []);
+  const [{ next, validators }, setValidators] = useState<Validators>({});
+  const allStashes = useStashIds();
+  const ownStashes = useOwnStashInfos();
+  const targets = useSortedTargets();
   const stakingOverview = useCall<DeriveStakingOverview>(api.derive.staking.overview, []);
-  const sessionRewards = useSessionRewards(MAX_SESSIONS);
-  const hasQueries = hasAccounts && !!(api.query.imOnline?.authoredBlocks);
-  const [nominators, dispatchNominators] = useReducer(reduceNominators, [] as string[]);
-  const [accountChecked, toggleAccountChecked] = useAccountChecked(STORE_CHECKED);
-  const onStatusChange = () => {};
-  const _accountChecked = accountChecked[0];
   const isInElection = useCall<boolean>(api.query.staking?.eraElectionStatus, [], {
     transform: (status: ElectionStatus) => status.isOpen
   });
+  const [nominators, dispatchNominators] = useReducer(reduceNominators, [] as string[]);
+  const hasQueries = useMemo(
+    (): boolean =>
+      hasAccounts && !!(api.query.imOnline?.authoredBlocks) && !!(api.query.staking.activeEra),
+    [api, hasAccounts]
+  );
+  const items = useMemo(() => [
+    {
+      isRoot: true,
+      name: 'overview',
+      text: t('Staking overview')
+    },
+    // {
+    //   name: 'actions',
+    //   text: t('Account actions')
+    // },
+    api.query.staking.activeEra
+      ? {
+        name: 'payout',
+        text: 'Payouts'
+      }
+      : null,
+    {
+      name: 'targets',
+      text: t('Targets')
+    },
+    {
+      name: 'waiting',
+      text: t('Waiting')
+    },
+    {
+      hasParams: true,
+      name: 'query',
+      text: t('Validator stats')
+    }
+  ].filter((q): q is { name: string; text: string } => !!q), [api, t]);
+  const hiddenTabs = useMemo(
+    (): string[] =>
+      !hasAccounts
+        ? ['actions', 'query']
+        : !hasQueries
+          ? ['returns', 'query']
+          : [],
+    [hasAccounts, hasQueries]
+  );
 
   useEffect((): void => {
-    allStashes && stakingOverview && setNext(
-      allStashes.filter((address): boolean => !stakingOverview.validators.includes(address as any))
-    );
+    allStashes && stakingOverview && setValidators({
+      next: allStashes.filter((address) => !stakingOverview.validators.includes(address as any)),
+      validators: stakingOverview.validators.map((a) => a.toString())
+    });
   }, [allStashes, stakingOverview]);
 
   return (
     <main className={`staking--App ${className}`}>
-      {hasAccounts ? <>
-        <AccountStatus
-          onStatusChange={onStatusChange}
-          onToggleAccountChecked={toggleAccountChecked}
-          accountChecked={_accountChecked}
+      <HelpOverlay md={basicMd} />
+      <header>
+        <Tabs
+          basePath={basePath}
+          hidden={hiddenTabs}
+          items={items}
         />
-        <Actions
-          // allRewards={allRewards}
-          allStashes={allStashes}
-          isInElection={isInElection}
-          isVisible={pathname === `${basePath}`}
-          recentlyOnline={recentlyOnline}
-          next={next}
-          stakingOverview={stakingOverview}
-          accountChecked={_accountChecked}
-        />
-      </> : null}
+      </header>
+      <Summary
+        isVisible={pathname === basePath}
+        next={next}
+        nominators={nominators}
+        stakingOverview={stakingOverview}
+      />
+      <Switch>
+        <Route path={`${basePath}/payout`}>
+          <Payouts isInElection={isInElection} />
+        </Route>
+        <Route path={[`${basePath}/query/:value`, `${basePath}/query`]}>
+          <Query />
+        </Route>
+        <Route path={`${basePath}/targets`}>
+          <Targets
+            ownStashes={ownStashes}
+            targets={targets}
+          />
+        </Route>
+        <Route path={`${basePath}/waiting`}>
+          <Overview
+            className={`${basePath}/waiting` === pathname ? '' : 'staking--hidden'}
+            hasQueries={hasQueries}
+            isIntentions
+            next={next}
+            stakingOverview={stakingOverview}
+          />
+        </Route>
+      </Switch>
+      {/* <Actions
+        className={pathname === `${basePath}/actions` ? '' : 'staking--hidden'}
+        isInElection={isInElection}
+        next={next}
+        ownStashes={ownStashes}
+        targets={targets}
+        validators={validators}
+      /> */}
+      <Overview
+        className={basePath === pathname ? '' : 'staking--hidden'}
+        hasQueries={hasQueries}
+        next={next}
+        setNominators={dispatchNominators}
+        stakingOverview={stakingOverview}
+      />
     </main>
   );
 }
 
-export default styled(StakingApp)`
+export default React.memo(styled(StakingApp)`
   .staking--hidden {
     display: none;
   }
 
-  .staking--queryInput {
-    margin-bottom: 1.5rem;
-  }
-
-  .staking--Chart h1 {
-    margin-bottom: 0.5rem;
-  }
-
-  .staking--Chart+.staking--Chart {
+  .staking--Chart {
     margin-top: 1.5rem;
-  }
 
-  .staking--Overview {
-    display: flex;
-    flex-wrap: wrap;
-    &>div {
-      flex: 1;
-      flex-basis: 430px;
+    h1 {
+      margin-bottom: 0.5rem;
+    }
+
+    .ui--Spinner {
+      margin: 2.5rem auto;
     }
   }
-
-  .staking--Actions {
-    
-  }
-`;
+`);

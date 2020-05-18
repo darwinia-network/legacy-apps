@@ -15,10 +15,10 @@ interface Props extends BareProps {
   children?: React.ReactNode;
   label?: React.ReactNode;
   params?: AccountId | AccountIndex | Address | string | Uint8Array | null;
-  withUnit?: boolean;
+  withCurrency?: boolean;
 }
 
-export default function AvailableDisplay ({ children, className, label, params, withUnit }: Props): React.ReactElement<Props> {
+export default function AvailableDisplay ({ children, className, label, params, withCurrency }: Props): React.ReactElement<Props> {
   const { api } = useApi();
   const allBalances = useCall<DeriveBalancesAll>(api.derive.balances.all as any, [params]);
 
@@ -27,7 +27,7 @@ export default function AvailableDisplay ({ children, className, label, params, 
       className={className}
       label={label}
       value={allBalances?.availableBalanceKton}
-      withUnit={withUnit}
+      withCurrency={withCurrency}
     >
       {children}
     </FormatKtonBalance>

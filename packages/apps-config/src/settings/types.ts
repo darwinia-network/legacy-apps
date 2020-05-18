@@ -4,7 +4,7 @@
 
 export interface Option {
   info?: string;
+  isHeader?: boolean;
   text: React.ReactNode;
   value: string | number;
-  withI18n?: boolean;
 }

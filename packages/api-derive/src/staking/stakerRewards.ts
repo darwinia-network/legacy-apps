@@ -106,6 +106,7 @@ function filterRewards (api: ApiInterfaceRx, rewards: DeriveStakerReward[], stak
   }
 
   const validators = uniqValidators(rewards);
+
   return combineLatest([
     of({ unwrapOr: () => api.tx.staking.payoutStakers ? ZERO : MAX_ERAS }),
     api.tx.staking.payoutStakers
@@ -114,6 +115,7 @@ function filterRewards (api: ApiInterfaceRx, rewards: DeriveStakerReward[], stak
   ]).pipe(
     map(([optMigrate, queryValidators]): DeriveStakerReward[] => {
       const migrateEra: BN = optMigrate.unwrapOr();
+
       return rewards
         .filter(({ isEmpty }) => !isEmpty)
         .filter((reward): boolean => {

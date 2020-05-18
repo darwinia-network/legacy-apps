@@ -1,0 +1,24 @@
+{
+  "name": "@polkadot/app-account",
+  "private": true,
+  "version": "0.40.0-beta.67",
+  "main": "index.js",
+  "repository": "https://github.com/polkadot-js/apps.git",
+  "author": "Jaco Greeff <jacogr@gmail.com>",
+  "maintainers": [
+    "Jaco Greeff <jacogr@gmail.com>"
+  ],
+  "contributors": [],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@babel/runtime": "^7.9.6",
+    "@polkadot/react-components": "0.42.0-beta.100",
+    "@polkadot/react-qr": "^0.53.0-beta.2",
+    "@polkadot/vanitygen": "^0.12.0-beta.0",
+    "dayjs": "1.8.21",
+    "detect-browser": "^5.0.0",
+    "file-saver": "^2.0.2",
+    "react-paginate": "6.3.2",
+    "yargs": "^15.1.0"
+  }
+}

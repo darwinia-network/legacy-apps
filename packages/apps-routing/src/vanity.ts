@@ -2,20 +2,19 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { Routes } from './types';
+import { Route } from './types';
 
-import Vanity from '@polkadot/app-accounts/vanityAccount';
+import Vanity from '@polkadot/app-account/vanityAccount';
 
-export default ([
-  {
+export default function create (t: (key: string, text: string, options: { ns: string }) => string): Route {
+  return {
     Component: Vanity,
     display: {
-      needsApi: []
-    },
-    i18n: {
-      defaultValue: 'Vanity'
+      needsApi: [
+      ]
     },
     icon: 'users',
-    name: 'vanity'
-  }
-] as Routes);
+    name: 'vanity',
+    text: t('nav.vanity', 'Vanity', { ns: 'apps-routing' })
+  };
+}

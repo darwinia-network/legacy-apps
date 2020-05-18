@@ -3,6 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { SiDef } from '../types';
+import { RING_PROPERTIES } from '@polkadot/react-darwinia';
 
 export const SI_MID = 0;
 
@@ -15,7 +16,7 @@ export const SI: SiDef[] = [
   // { power: -9, value: 'n', text: 'nano' },
   // { power: -6, value: 'µ', text: 'micro' },
   // { power: -3, value: 'm', text: 'milli' },
-  { power: 0, value: '-', text: 'Unit' } // position 8
+  { power: 0, value: '-', text: RING_PROPERTIES.tokenSymbol } // position 8
   // { power: 3, value: 'k', text: 'Kilo' },
   // { power: 6, value: 'M', text: 'Mega' },
   // { power: 9, value: 'G', text: 'Giga' },

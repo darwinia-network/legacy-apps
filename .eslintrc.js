@@ -11,6 +11,8 @@ module.exports = {
   },
   rules: {
     ...base.rules,
-    '@typescript-eslint/no-explicit-any': 'off'
+    '@typescript-eslint/no-explicit-any': 'off',
+    'header/header': 'off',
+    'sort-keys': 'off'
   }
 };

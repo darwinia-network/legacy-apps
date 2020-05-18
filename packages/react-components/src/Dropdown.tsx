@@ -133,10 +133,12 @@ const Dropdown = React.memo(styled(BaseDropdown)`
   .ui--Dropdown-item {
     position: relative;
     white-space: nowrap;
+
     .ui--Dropdown-icon,
     .ui--Dropdown-name {
       display: inline-block;
     }
+
     .ui--Dropdown-icon {
       height: 32px;
       left: 0;
@@ -144,10 +146,12 @@ const Dropdown = React.memo(styled(BaseDropdown)`
       top: -9px;
       width: 32px;
     }
+
     .ui--Dropdown-name {
       margin-left: 3rem;
     }
   }
+
   .ui.selection.dropdown {
     > .text > .ui--Dropdown-item {
       .ui--Dropdown-icon {
@@ -155,6 +159,7 @@ const Dropdown = React.memo(styled(BaseDropdown)`
         top: -1.15rem;
         opacity: 1;
       }
+
       .ui--Dropdown-name {
         margin-left: 0;
       }

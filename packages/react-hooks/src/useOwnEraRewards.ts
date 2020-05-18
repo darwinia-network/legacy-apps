@@ -18,6 +18,7 @@ interface OwnRewards {
 
 function getRewards ([[stashIds], available]: [[string[]], DeriveStakerReward[][]]): OwnRewards {
   const allRewards: Record<string, DeriveStakerReward[]> = {};
+
   stashIds.forEach((stashId, index): void => {
     allRewards[stashId] = available[index];
   });
@@ -31,9 +32,10 @@ function getRewards ([[stashIds], available]: [[string[]], DeriveStakerReward[][
 export default function useOwnEraRewards (_stashIds?: string[]): OwnRewards {
   const { api } = useApi();
   const mountedRef = useIsMountedRef();
-  const stashIds = _stashIds || useOwnStashIds();
-  const available = useCall<[[string[]], DeriveStakerReward[][]]>(stashIds && api.derive.staking?.stakerRewardsMulti, [stashIds], { withParams: true });
+  const stashIds = useOwnStashIds();
+  const available = useCall<[[string[]], DeriveStakerReward[][]]>((_stashIds || stashIds) && api.derive.staking?.stakerRewardsMulti, [_stashIds || stashIds], { withParams: true });
   const [state, setState] = useState<OwnRewards>({ rewardCount: 0 });
+
   useEffect((): void => {
     mountedRef.current && available && setState(
       getRewards(available)

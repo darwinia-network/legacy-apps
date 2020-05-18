@@ -1,1 +1,14 @@
-{}
+{
+  "lng.detect": "默认浏览器语言 (自动检测)",
+  "rpc.crab.darwinia": "Crab Network (hosted by Darwinia)",
+  "rpc.custom": "自定义环境",
+  "rpc.header.dev": "开发环境",
+  "rpc.header.live": "正式网络",
+  "rpc.header.test": "测试网络",
+  "rpc.kusama.w3f": "Darwinia Network (hosted by Darwinia)",
+  "rpc.local": "Local Node (Own, 127.0.0.1:9944)",
+  "ss58.crab": "Crab (live)",
+  "ss58.darwinia": "Darwinia (live)",
+  "ss58.default": "默认的节点配置",
+  "ss58.substrate": "Substrate (generic)"
+}
