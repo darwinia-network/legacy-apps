@@ -18,6 +18,7 @@ interface RecoveredSignature {
   ethereumAddress: EthereumAddress | null;
   signature: EcdsaSignature | null;
   chain: ChainType;
+  msg: string;
 }
 
 interface SignatureParts {
@@ -105,6 +106,7 @@ export function recoverFromJSON (signatureJson: string | null): RecoveredSignatu
 
     return {
       error: null,
+      msg,
       ethereumAddress: createType(registry, 'EthereumAddress', '0x' + address.substr(2, 40)),
       chain: address.substr(0, 2) === '0x' ? 'eth' : 'tron',
       signature: createType(registry, 'EcdsaSignature', u8aConcat(parts.signature, new Uint8Array([parts.recovery])))
@@ -114,6 +116,7 @@ export function recoverFromJSON (signatureJson: string | null): RecoveredSignatu
 
     return {
       error,
+      msg: '',
       ethereumAddress: null,
       signature: null,
       chain: 'eth'
