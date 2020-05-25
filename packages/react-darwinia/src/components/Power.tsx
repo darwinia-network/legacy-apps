@@ -9,7 +9,7 @@ import { I18nProps } from '@polkadot/react-components/types';
 import BN from 'bn.js';
 import React from 'react';
 import { withCalls, withApi, withMulti } from '@polkadot/react-api/hoc';
-import { assetToPower } from '@polkadot/util';
+import { assetToPower, formatNumber } from '@polkadot/util';
 import { Balance } from '@polkadot/types/interfaces';
 
 type Props = I18nProps & ApiProps & {
@@ -40,9 +40,10 @@ class Power extends React.PureComponent<Props, State> {
   render (): React.ReactElement {
     const { staking_ktonPool = ZERO, staking_ringPool = ZERO, ringAmount = ZERO, ktonAmount = ZERO } = this.props;
     const power = assetToPower(ringAmount, ktonAmount, staking_ringPool, staking_ktonPool);
+
     return (
       <>
-        {power.toFixed(0).toString()}
+        {formatNumber(new BN(power.toFixed(0)))}
       </>
     );
   }
