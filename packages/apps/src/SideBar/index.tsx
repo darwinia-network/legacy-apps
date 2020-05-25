@@ -16,6 +16,7 @@ import { SIDEBAR_MENU_THRESHOLD } from '../constants';
 import NetworkModal from '../modals/Network';
 import { useTranslation } from '../translate';
 import Item from './Item';
+import NodeInfo from './NodeInfo';
 
 interface Props {
   className?: string;
@@ -137,11 +138,11 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
                 <Icon name='book' /><span className='text'>{t('Wiki')}</span>
               </a>
             </Menu.Item>
-            {/* {
+            {
               isCollapsed
                 ? undefined
                 : <NodeInfo />
-            } */}
+            }
           </div>
           <Responsive
             className={`apps--SideBar-collapse ${isCollapsed ? 'collapsed' : 'expanded'}`}
