@@ -3,7 +3,8 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { InjectedExtension } from '@polkadot/extension-inject/types';
-import { ChainProperties, ChainType } from '@polkadot/types/interfaces';
+import { ChainType } from '@polkadot/types/interfaces';
+import { ChainProperties } from '@polkadot/react-darwinia/interfaces';
 import { ApiProps, ApiState } from './types';
 
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -12,8 +13,8 @@ import { typesChain, typesSpec } from '@polkadot/apps-config/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { StatusContext } from '@polkadot/react-components/Status';
-import { TokenUnit } from '@polkadot/react-components-darwinia/InputNumber';
-import { TokenKtonUnit } from '@polkadot/react-components-darwinia/InputNumber';
+import { TokenUnit, TokenKtonUnit } from '@polkadot/react-components-darwinia/InputNumber';
+import { TokenUnit as PolkadotTokenUnit } from '@polkadot/react-components/InputNumber';
 import keyring from '@polkadot/ui-keyring';
 import uiSettings from '@polkadot/ui-settings';
 import ApiSigner from '@polkadot/react-signer/ApiSigner';
@@ -121,6 +122,7 @@ async function loadOnReady (api: ApiPromise): Promise<ApiState> {
     unit: tokenSymbol
   });
   TokenUnit.setAbbr(tokenSymbol);
+  PolkadotTokenUnit.setAbbr(tokenSymbol);
 
   formatKtonBalance.setDefaults({
     decimals: ktonTokenDecimals,
@@ -200,6 +202,7 @@ function Api ({ children, url }: Props): React.ReactElement<Props> | null {
   if (!props.isApiInitialized) {
     return null;
   }
+
   return (
     <ApiContext.Provider value={props}>
       {children}
