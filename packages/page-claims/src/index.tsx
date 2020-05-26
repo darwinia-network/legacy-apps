@@ -40,6 +40,10 @@ interface State extends TxModalState {
   chain: ChainType;
 }
 
+const Error = styled.p`
+  color: #9f3a38;
+`;
+
 const Payload = styled.pre`
   cursor: copy;
   font-family: monospace;
@@ -100,7 +104,7 @@ class ClaimsApp extends TxModal<Props, State> {
 
   public render (): React.ReactNode {
     const { api, systemChain = '', t } = this.props;
-    const { accountId, chain, didCopy, ethereumAddress, signature, step } = this.state;
+    const { accountId, chain, didCopy, ethereumAddress, msg, signature, step } = this.state;
 
     const payload = accountId
       ? (
@@ -108,6 +112,7 @@ class ClaimsApp extends TxModal<Props, State> {
         u8aToHex(decodeAddress(accountId), -1, false)
       )
       : '';
+    const msgCheck = (msg === payload);
 
     return (
       <main>
@@ -165,7 +170,7 @@ class ClaimsApp extends TxModal<Props, State> {
                   trigger='tx-payload'
                 />
                 <div>
-                  {t('Method 1:Copy the above string and sign an Ethereum/Tron transaction with the account that got airdrop in the wallet of your choice, using the string as the payload, and copy the transaction signature.')}
+                  {t('Method 1: Copy the above string and sign an Ethereum/Tron transaction with the account that got airdrop in the wallet of your choice, using the string as the payload, and copy the transaction signature.')}
                   <br/>
                   {t('Method 2: Use the [')}<a href='https://claim.darwinia.network'
                     rel='noopener noreferrer'
@@ -175,18 +180,18 @@ class ClaimsApp extends TxModal<Props, State> {
                   <br/>
                   <p>
                     {t('Please paste the transaction signature object below')} :</p>
-
                 </div>
                 <Signature
                   onChange={this.onChangeSignature}
                   placeholder='{\n  "address": "0x ...",\n  "msg": "Pay RINGs to the Crab account: ...",\n  "sig": "0x ...",\n  "version": "2"\n}'
                   rows={10}
                 />
+                {!msgCheck && signature ? <Error>{t('The current account is different from the receiving account in the signature. Please check and try again.')}</Error> : null}
                 {(step === Step.Sign) && (
                   <Button.Group>
                     <Button
                       icon='sign-in'
-                      isDisabled={!accountId || !signature}
+                      isDisabled={!accountId || !signature || !msgCheck}
                       isPrimary
                       label={t('Confirm claim')}
                       onClick={this.setStep(Step.Claim)}

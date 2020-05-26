@@ -188,15 +188,15 @@ export default function Address ({ address, className, filter, filterName, hasQu
         {stakeOwn && (
           <div className={`ui--FormatBalance ${className}`}>
             <label>{t('own stake')}</label>
-            {stakeOwn.toString()}
+            {formatNumber(stakeOwn)}
           </div>
         )}
       </td>
       <td className='number'>
-        {stakeOwn && (
+        {stakeOther && (
           <div className={`ui--FormatBalance ${className}`}>
             <label>{t('other stake')}</label>
-            {stakeOther.toString()}
+            {formatNumber(stakeOther)}
           </div>
         )}
       </td>
