@@ -14,7 +14,6 @@ import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import { WsProvider } from '@polkadot/rpc-provider';
 import { StatusContext } from '@polkadot/react-components/Status';
 import { TokenUnit, TokenKtonUnit } from '@polkadot/react-components-darwinia/InputNumber';
-import { TokenUnit as PolkadotTokenUnit } from '@polkadot/react-components/InputNumber';
 import keyring from '@polkadot/ui-keyring';
 import uiSettings from '@polkadot/ui-settings';
 import ApiSigner from '@polkadot/react-signer/ApiSigner';
@@ -122,7 +121,6 @@ async function loadOnReady (api: ApiPromise): Promise<ApiState> {
     unit: tokenSymbol
   });
   TokenUnit.setAbbr(tokenSymbol);
-  PolkadotTokenUnit.setAbbr(tokenSymbol);
 
   formatKtonBalance.setDefaults({
     decimals: ktonTokenDecimals,
