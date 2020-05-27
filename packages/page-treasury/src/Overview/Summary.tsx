@@ -14,7 +14,7 @@ import { formatNumber, stringToU8a } from '@polkadot/util';
 
 import { useTranslation } from '../translate';
 
-const TREASURY_ACCOUNT = stringToU8a('modlpy/trsry'.padEnd(32, '\0'));
+const TREASURY_ACCOUNT = stringToU8a('modlda/trsry'.padEnd(32, '\0'));
 
 interface Props {
   approvalCount?: number;

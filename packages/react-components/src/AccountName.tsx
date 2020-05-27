@@ -31,8 +31,8 @@ interface Props extends BareProps {
 }
 
 const KNOWN: [AccountId, string][] = [
-  [registry.createType('AccountId', stringToU8a('modlpy/socie'.padEnd(32, '\0'))), 'Society'],
-  [registry.createType('AccountId', stringToU8a('modlpy/trsry'.padEnd(32, '\0'))), 'Treasury']
+  [registry.createType('AccountId', stringToU8a('modlda/socie'.padEnd(32, '\0'))), 'Society'],
+  [registry.createType('AccountId', stringToU8a('modlda/trsry'.padEnd(32, '\0'))), 'Treasury']
 ];
 
 const displayCache: Map<string, React.ReactNode> = new Map();

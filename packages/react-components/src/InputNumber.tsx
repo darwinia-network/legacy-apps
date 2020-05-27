@@ -45,7 +45,7 @@ const ZERO = new BN(0);
 const TEN = new BN(10);
 
 export class TokenUnit {
-  public static abbr = 'Unit';
+  public static abbr = 'Coin';
 
   public static setAbbr (abbr: string = TokenUnit.abbr): void {
     TokenUnit.abbr = abbr;
