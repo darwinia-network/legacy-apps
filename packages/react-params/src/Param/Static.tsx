@@ -48,5 +48,7 @@ export default React.memo(styled(StaticParam)`
     margin: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: pre-wrap;
   }
 `);
