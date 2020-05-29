@@ -188,6 +188,9 @@ export default {
     },
     usableBalance: {
       usableBalance: 'Balance'
+    },
+    PowerOf: {
+      power: 'Power'
     }
   }
 };
