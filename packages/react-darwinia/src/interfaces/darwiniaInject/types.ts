@@ -281,4 +281,9 @@ export interface usableBalance extends Struct {
   readonly usableBalance: Balance;
 }
 
+/** @name PowerOf */
+export interface PowerOf extends Struct {
+  readonly PowerOf: Power;
+}
+
 export type PHANTOM_DARWINIAINJECT = 'darwiniaInject';

@@ -1,7 +1,7 @@
 {
   "1. Select your {{chain}} account": "1. 选择你的 {{chain}} 账户",
   "2. Sign ETH transaction": "2. 签名 ETH 交易",
-  "2. Sign ETH/TRON transaction": "2. 签名ETH / TRON 交易",
+  "2. Sign ETH/TRON transaction": "签名ETH / TRON 交易",
   "Claim your {{token}} tokens": "领取 {{token}}",
   "Confirm claim": "确定认领",
   "Continue": "继续",
