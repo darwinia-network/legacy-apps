@@ -34,7 +34,7 @@ type SortedAccount = { address: string; isFavorite: boolean };
 const STORE_FAVS = 'accounts:favorites';
 
 // query the ledger for the address, adding it to the keyring
-async function queryLedger(): Promise<void> {
+async function queryLedger (): Promise<void> {
   const ledger = getLedger();
 
   try {
@@ -46,7 +46,7 @@ async function queryLedger(): Promise<void> {
   }
 }
 
-function AccountStatus({ className, onStatusChange, onToggleAccountChecked, accountChecked }: Props): React.ReactElement<Props> {
+function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAccountChecked }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { allAccounts, hasAccounts } = useAccounts();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -100,9 +100,9 @@ function AccountStatus({ className, onStatusChange, onToggleAccountChecked, acco
       )}
       {isAccountListOpen && (
         <AccountList
+          accountChecked={accountChecked}
           onClose={_toggleAccountList}
           onStatusChange={onStatusChange}
-          accountChecked={accountChecked}
           onToggleAccountChecked={onToggleAccountChecked}
         />
       )}
@@ -115,20 +115,22 @@ function AccountStatus({ className, onStatusChange, onToggleAccountChecked, acco
       {hasAccounts
         ? (
           <StyledWrapper>
-            <div className="ui--AccountStatus-Box">
-              <div className="ui--AccountStatus-Network">
-              <span>•</span><span>{systemChain} {t('Network')}</span>
+            <div className='ui--AccountStatus-Box'>
+              <div className='ui--AccountStatus-Network'>
+                <span>•</span><span>{systemChain} {t('Network')}</span>
               </div>
               <AddressRow
+                className='ui--AccountStatus-Address'
                 isEditable={true}
                 value={accountChecked}
-                className="ui--AccountStatus-Address"
               // withExplorer
               // withIndex
               // withTags
               >
               </AddressRow>
-              <div><img onClick={_toggleAccountList} className="switchBtn" src={SwitchIcon} /></div>
+              <div><img className='switchBtn'
+                onClick={_toggleAccountList}
+                src={SwitchIcon} /></div>
             </div>
           </StyledWrapper>
         )

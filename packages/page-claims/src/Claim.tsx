@@ -19,7 +19,7 @@ interface Props {
   button: React.ReactNode;
   className?: string;
   ethereumAddress: EthereumAddress | null;
-  chain: ChainType;
+  chain: ChainType | null;
 }
 
 function Claim ({ button, chain, className, ethereumAddress }: Props): React.ReactElement<Props> | null {

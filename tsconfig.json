@@ -12,6 +12,8 @@
       "@polkadot/apps-routing/*": [ "packages/apps-routing/src/*" ],
       "@polkadot/app-123code": [ "packages/page-123code/src" ],
       "@polkadot/app-123code/*": [ "packages/page-123code/src/*" ],
+      "@polkadot/app-account": [ "packages/page-account/src" ],
+      "@polkadot/app-account/*": [ "packages/page-account/src/*" ],
       "@polkadot/app-accounts": [ "packages/page-accounts/src" ],
       "@polkadot/app-accounts/*": [ "packages/page-accounts/src/*" ],
       "@polkadot/app-claims": [ "packages/page-claims/src" ],
