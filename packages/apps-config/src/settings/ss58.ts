@@ -18,12 +18,12 @@ export default function create (t: (key: string, text: string, options: { ns: st
     {
       info: 'crab',
       text: t('ss58.crab', 'Crab (live)', { ns: 'apps-config' }),
-      value: 0
+      value: 42
     },
     {
       info: 'darwinia',
       text: t('ss58.darwinia', 'Darwinia (live)', { ns: 'apps-config' }),
-      value: 0
+      value: 18
     }
     // ,
     // {
