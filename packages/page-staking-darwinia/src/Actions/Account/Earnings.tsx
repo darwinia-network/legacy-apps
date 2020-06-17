@@ -7,6 +7,7 @@ import React from 'react';
 import { withMulti } from '@polkadot/react-api/hoc';
 import styled from 'styled-components';
 import { ColorButton } from '@polkadot/react-darwinia/components';
+import { Spinner } from '@polkadot/react-components';
 import EarningsDetail from './EarningsDetail';
 import translate from '../../translate';
 import { formatFloat, formatBalance } from '@polkadot/util';
@@ -20,6 +21,9 @@ type Props = I18nProps & {
   unClaimedReward: BN;
   doPayout: () => void;
   doPayoutIsDisabled: boolean;
+  isLoading: boolean;
+  payoutsAmount: number;
+  payoutMaxAmount: number;
 };
 
 type State = {
@@ -32,23 +36,51 @@ type State = {
 
 const StyledWrapper = styled.div`
   .content {
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 25px 20px 27px 57px; 
+    .reward-box {
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 25px 20px 27px 57px; 
+    }
+
+    .tip-box {
+      text-align: right;
+      display: flex;
+      flex-direction: row-reverse;
+      padding: 25px 20px 27px 57px;
+      padding-top: 0;
+      .tip{
+        color: #ea2222;
+        span {
+          color: #db2828;
+        }
+      }
+    }
+
+    .inline-spinner {
+      display: inline-block;
+    }
   }
 
   @media (max-width: 767px) {
     .content {
-      background: #fff;
-      flex-wrap: wrap;
-      border: 1px solid #EDEDED;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: space-between;
-      padding: 10px 20px;
+      .reward-box {
+        background: #fff;
+        flex-wrap: wrap;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 10px 20px;
+      }
+
+      .tip-box {
+        .tip{
+          width: 100%;
+          color: #ea2222;
+        }
+      }
     }
   }
 
@@ -77,6 +109,8 @@ const StyledWrapper = styled.div`
   }
 `;
 
+let timer: number | null = 0;
+
 class Earnings extends React.PureComponent<Props, State> {
   state: State = {
     error: null,
@@ -94,6 +128,14 @@ class Earnings extends React.PureComponent<Props, State> {
 
   componentDidMount () {
     this.getStakingHistory();
+    timer && clearInterval(timer);
+    timer = setInterval(() => {
+      this.getStakingHistory();
+    }, 20000);
+  }
+
+  componentWillUnmount () {
+    timer && clearInterval(timer);
   }
 
   UNSAFE_componentWillReceiveProps (nextProps: Props) {
@@ -106,57 +148,61 @@ class Earnings extends React.PureComponent<Props, State> {
     return false;
   }
 
-  private getStakingHistory = (page = 0, address = this.props.address) => {
+  private getStakingHistory = (page = 0, address = this.props.address): void => {
     getStakingHistory({
       page,
       address: address
     }, (data) => {
       this.setState({
-        sum: data.data.sum,
-        today: data.data.today,
-        history: data.data.history
+        sum: data.data.sum
       });
     });
   }
 
   render () {
-    const { address, destinationId, doPayout, doPayoutIsDisabled, t, unClaimedReward } = this.props;
-    const { history, isEarningsDetailOpen, sum, today } = this.state;
+    const { address, destinationId, doPayout, doPayoutIsDisabled, isLoading, payoutMaxAmount, payoutsAmount, t, unClaimedReward } = this.props;
+    const { sum } = this.state;
 
     return (
       <StyledWrapper>
         <div className='content'>
-          <div className='earings-item'>
-            <p>{t('Claimed')}</p>
-            <h1>{sum === '--' ? '--' : formatBalance(sum)}</h1>
-          </div>
-          <div className='earings-item'>
-            <p>{t('Unclaimed')}</p>
-            <h1>{formatBalance(unClaimedReward)}</h1>
-          </div>
-          <div className='button-box'>
-            <ColorButton
-              // isDisabled={history.length <= 0}
-              key='detail'
-              onClick={
-                () => {
-                  window.open(`${SUBSCAN_URL_CRAB}/account/${destinationId}?tab=reward`);
+          <div className='reward-box'>
+            <div className='earings-item'>
+              <p>{t('Claimed')}</p>
+              {sum === '--' ? <Spinner className='inline-spinner'
+                variant='mini'/> : <h1>{formatBalance(sum)}</h1>}
+            </div>
+            <div className='earings-item'>
+              <p>{t('Unclaimed')}</p>
+              {isLoading ? <Spinner className='inline-spinner'
+                variant='mini'/> : <h1>{formatBalance(unClaimedReward)}</h1> }
+            </div>
+            <div className='button-box'>
+              <ColorButton
+                // isDisabled={history.length <= 0}
+                key='detail'
+                onClick={
+                  (): void => {
+                    window.open(`${SUBSCAN_URL_CRAB}/account/${destinationId}?tab=reward`);
+                  }
                 }
-              }
-            >{t('Reward History')}</ColorButton>
+              >{t('Reward History')}</ColorButton>
 
-            <ColorButton
-              isDisabled={doPayoutIsDisabled}
-              key='claim'
-              onClick={doPayout}
-            >{t('Claim Reward')}</ColorButton>
+              <ColorButton
+                isDisabled={doPayoutIsDisabled}
+                key='claim'
+                onClick={doPayout}
+              >{t('Claim Reward')}</ColorButton>
+            </div>
           </div>
+          {payoutsAmount > payoutMaxAmount ? <div className='tip-box'>
+            <p className='tip'>{t('There are {{payoutsAmount}} unclaimed rewards (maximum {{payoutMaxAmount}} rewards per extrinsic, {{tx}} times to receive all rewards)', {
+              payoutsAmount,
+              payoutMaxAmount,
+              tx: Math.ceil(payoutsAmount / payoutMaxAmount)
+            })}</p>
+          </div> : null}
         </div>
-        {address ? <EarningsDetail
-          address={address}
-          isOpen={isEarningsDetailOpen}
-          onClose={this.toggleEarningsDetail}
-        /> : null}
       </StyledWrapper>
     );
   }

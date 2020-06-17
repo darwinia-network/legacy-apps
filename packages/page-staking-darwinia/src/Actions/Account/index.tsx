@@ -13,7 +13,7 @@ import { AddressInfo, AddressMini, AddressSmall, Button, Menu, Popup, TxButton, 
 import { Table } from '@polkadot/react-components-darwinia';
 import { useAccounts, useApi, useCall, useToggle, useOwnEraRewards } from '@polkadot/react-hooks';
 import { u8aConcat, u8aToHex, formatNumber } from '@polkadot/util';
-import { RowTitle, Box } from '@polkadot/react-darwinia/components';
+import { RowTitle, Box, ColorButton } from '@polkadot/react-darwinia/components';
 import Identity from '@polkadot/app-account/modals/Identity';
 import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
@@ -65,6 +65,8 @@ interface StakeState {
   stakingLedger?: StakingLedger;
   validatorPrefs?: ValidatorPrefs;
 }
+
+const payoutMaxAmount = 150;
 
 interface Available {
   validators?: PayoutValidator[];
@@ -154,12 +156,16 @@ function createPayout (api: ApiPromise, payout: PayoutValidator | PayoutValidato
       return createPayout(api, payout[0]);
     }
 
-    return api.tx.utility.batch(
-      payout.reduce((calls: SubmittableExtrinsic<'promise'>[], { eras, validatorId }): SubmittableExtrinsic<'promise'>[] =>
-        calls.concat(
-          ...eras.map(({ era }) => api.tx.staking.payoutStakers(validatorId, era))
-        ), [])
-    );
+    const calls = payout.reduce((calls: SubmittableExtrinsic<'promise'>[], { eras, validatorId }): SubmittableExtrinsic<'promise'>[] =>
+      calls.concat(
+        ...eras.map(({ era }) => api.tx.staking.payoutStakers(validatorId, era))
+      ), []);
+
+    if (calls.length > payoutMaxAmount) {
+      calls.length = payoutMaxAmount;
+    }
+
+    return api.tx.utility.batch(calls);
   }
 
   const { eras, validatorId } = payout;
@@ -197,11 +203,21 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   const [isValidateOpen, toggleValidate] = useToggle();
   const [isIdentityOpen, toggleIdentity] = useToggle();
   const [nominators, setNominators] = useState<[string, Power][]>([]);
-
+  const [payoutsAmount, setPayoutsAmount] = useState<number>(0);
   const [{ validators }, setPayouts] = useState<Available>({});
   const stakerPayoutsAfter = useStakerPayouts();
   const { allRewards: rewards } = useOwnEraRewards([stashId]);
   const isPayoutEmpty = !validators || (Array.isArray(validators) && validators.length === 0);
+
+  useEffect((): void => {
+    if (!isPayoutEmpty) {
+      const amount = validators?.reduce((total: number, validator: PayoutValidator) => {
+        return total + validator.eras.length;
+      }, 0);
+
+      setPayoutsAmount(amount);
+    }
+  }, [validators]);
 
   useEffect((): void => {
     if (stakingInfoMulti) {
@@ -545,6 +561,9 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
           destinationId={destination === 2 ? controllerId : stashId}
           doPayout={_doPayout}
           doPayoutIsDisabled={isPayoutEmpty || isInElection}
+          isLoading={!rewards}
+          payoutMaxAmount={payoutMaxAmount}
+          payoutsAmount={payoutsAmount}
           unClaimedReward={payoutTotal}/>
       </Box>
       {/* <AddressMini
@@ -617,6 +636,11 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
                           value={nomineeId}
                         />
                         <p className='staking--Noms-accountbox-power'>{formatNumber(nomsPower[index]?.power)} Power</p>
+                        {/* <ColorButton
+                          isDisabled={doPayoutIsDisabled}
+                          key='claim'
+                          onClick={doPayout}
+                        >{t('Claim Reward')}</ColorButton> */}
                       </div>
                     ))}
                   </div>

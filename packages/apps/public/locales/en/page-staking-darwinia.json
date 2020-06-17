@@ -71,6 +71,7 @@
   "The percentage reward (0-100) that should be applied for the validator": "The percentage reward (0-100) that should be applied for the validator",
   "The specified value is greater than your free balance. The node will bond the maximum amount available.": "The specified value is greater than your free balance. The node will bond the maximum amount available.",
   "The total amount of the stash balance that will be at stake in any forthcoming rounds (should be less than the total amount available)": "The total amount of the stash balance that will be at stake in any forthcoming rounds (should be less than the total amount available)",
+  "There are {{payoutsAmount}} unclaimed rewards (maximum {{payoutMaxAmount}} rewards per extrinsic, {{tx}} times to receive all rewards)": "There are {{payoutsAmount}} unclaimed rewards (maximum {{payoutMaxAmount}} rewards per extrinsic, {{tx}} times to receive all rewards)",
   "There is currently an ongoing election for new validator candidates. As such staking operations are not permitted.": "There is currently an ongoing election for new validator candidates. As such staking operations are not permitted.",
   "This operation will submit the seed via an RPC call. Do not perform this operation on a public RPC node, but ensure that the node is local, connected to your validator and secure.": "This operation will submit the seed via an RPC call. Do not perform this operation on a public RPC node, but ensure that the node is local, connected to your validator and secure.",
   "Type": "Type",
