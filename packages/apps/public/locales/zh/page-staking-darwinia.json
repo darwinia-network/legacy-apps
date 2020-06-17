@@ -105,6 +105,7 @@
   "The percentage reward (0-100) that should be applied for the validator": "验证者应采用的百分比奖励（0-100）",
   "The specified value is greater than your free balance. The node will bond the maximum amount available.": "The specified value is greater than your free balance. The node will bond the maximum amount available.",
   "The total amount of the stash balance that will be at stake in any forthcoming rounds (should be less than the total amount available)": "在即将到来的各回合中将受到威胁的隐藏余额的总量（应小于可用总量）",
+  "There are {{payoutsAmount}} unclaimed rewards (maximum {{payoutMaxAmount}} rewards per extrinsic, {{tx}} times to receive all rewards)": "当前未领取的奖金有{{payoutsAmount}}笔，每次交易领取最大限额为{{payoutMaxAmount}}笔。您需要至少{{tx}}次操作，来领取全部奖金",
   "There is currently an ongoing election for new validator candidates. As such staking operations are not permitted.": "目前，正在进行新的验证人候选人选举。 因此，不允许进行抵押等操作。",
   "This operation will submit the seed via an RPC call. Do not perform this operation on a public RPC node, but ensure that the node is local, connected to your validator and secure.": "This operation will submit the seed via an RPC call. Do not perform this operation on a public RPC node, but ensure that the node is local, connected to your validator and secure.",
   "Today": "24小时收益",
