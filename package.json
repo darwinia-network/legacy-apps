@@ -14,7 +14,8 @@
     "@polkadot/util": "^2.9.1",
     "@polkadot/util-crypto": "^2.9.1",
     "babel-core": "^7.0.0-bridge.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "@darwinia/typegen": "0.0.8"
   },
   "scripts": {
     "analyze": "yarn run build && cd packages/apps && yarn run source-map-explorer build/main.*.js",

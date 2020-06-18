@@ -2,8 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AccountId, Balance, RewardPoint, Power } from '@polkadot/types/interfaces';
-
+import { AccountId, Balance, RewardPoint } from '@polkadot/types/interfaces';
+import { Power } from '@darwinia/typegen/interfaces';
 import { DeriveAccountInfo, DeriveStakingQuery, DeriveHeartbeatAuthor } from '@polkadot/api-derive/types';
 import { ValidatorFilter } from '../types';
 
@@ -53,8 +53,8 @@ function expandInfo ({ controllerId, exposure, nextSessionIds, validatorPrefs }:
   const nominators = withNominations && exposure
     ? exposure.others.map(({ power, who }): [AccountId, Power] => [who, power])
     : [];
-  const stakeTotal = (exposure && !exposure.total_power.isEmpty && exposure.total_power) || undefined;
-  const stakeOwn = (exposure && !exposure.own_power.isEmpty && exposure.own_power) || undefined;
+  const stakeTotal = (exposure && !exposure.totalPower.isEmpty && exposure.totalPower) || undefined;
+  const stakeOwn = (exposure && !exposure.ownPower.isEmpty && exposure.ownPower) || undefined;
   const stakeOther = (stakeTotal && stakeOwn) ? stakeTotal.sub(stakeOwn) : undefined;
   const commission = validatorPrefs?.commission?.unwrap();
 

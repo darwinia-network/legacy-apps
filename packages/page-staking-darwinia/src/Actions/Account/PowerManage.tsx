@@ -13,7 +13,7 @@ import { withMulti } from '@polkadot/react-api/hoc';
 
 import translate from '../../translate';
 // import { Option, createType } from '@polkadot/types';
-import { StakingLedgerT as StakingLedger } from '@polkadot/react-darwinia/interfaces';
+import { StakingLedgerT as StakingLedger } from '@darwinia/typegen/interfaces';
 import powerbg from '../../Assets/power-bg.svg';
 import { Power, TokenIcon } from '@polkadot/react-darwinia/components';
 import { AvailableKton, Available, Balance, BalanceKton } from '@polkadot/react-components-darwinia';
@@ -51,7 +51,7 @@ type Props = BareProps & I18nProps & {
   // isReadyStaking: boolean;
   // staking_ledger: StakingLedgers;
   stakingLedger?: StakingLedger;
-  stakingAccount?: DeriveStakingAccount;
+  stakingAccount: DeriveStakingAccount;
   checkedAccount?: string;
 };
 
@@ -88,8 +88,8 @@ class AddressInfoStaking extends React.PureComponent<Props> {
     return (
       <div className='power-box'>
         <h3>Power</h3>
-        <p><Power ktonAmount={stakingLedger.active_kton}
-          ringAmount={stakingLedger.active_ring} /></p>
+        <p><Power ktonAmount={stakingLedger.activeKton}
+          ringAmount={stakingLedger.activeRing} /></p>
       </div>
     );
   }
@@ -149,7 +149,6 @@ class AddressInfoStaking extends React.PureComponent<Props> {
 
     return (
       <div className='token-box'>
-
         <div className='nominate-balance-box'>
           <div className='box-left'>
             <TokenIcon className='logo'
@@ -163,7 +162,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
             </div>
             <div>
               <label>{t('bonded')}</label>
-              <FormatBalance value={stakingLedger.active_ring} />
+              <FormatBalance value={stakingLedger.activeRing} />
             </div>
             <div>
               <label>{t('unbonding')}</label>
@@ -181,7 +180,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
           </div>
           <div className='box-right'>
             <div><label>{t('available')}</label><AvailableKton params={stakingLedger.stash}/></div>
-            <div><label>{t('bonded')}</label><FormatBalance value={stakingLedger.active_kton} /></div>
+            <div><label>{t('bonded')}</label><FormatBalance value={stakingLedger.activeKton} /></div>
             <div><label>{t('unbonding')}</label><FormatBalance value={stakingAccount.unlockingKtonTotalValue} /></div>
           </div>
         </div>

@@ -112,8 +112,8 @@ function Identity ({ address, className, onClose }: Props): React.ReactElement<P
           autoFocus
           help={t('The name that will be displayed in your accounts list.')}
           label={t('display name')}
-          onChange={setValDisplay}
           maxLength={32}
+          onChange={setValDisplay}
           value={valDisplay}
         />
         <WrapToggle
@@ -124,8 +124,8 @@ function Identity ({ address, className, onClose }: Props): React.ReactElement<P
             help={t('The legal name for this identity.')}
             isDisabled={!hasLegal}
             label={t('legal name')}
-            onChange={setValLegal}
             maxLength={32}
+            onChange={setValLegal}
             value={hasLegal ? valLegal : '<none>'}
           />
         </WrapToggle>
@@ -137,8 +137,8 @@ function Identity ({ address, className, onClose }: Props): React.ReactElement<P
             help={t('The email address associated with this identity.')}
             isDisabled={!hasEmail}
             label={t('email')}
-            onChange={setValEmail}
             maxLength={32}
+            onChange={setValEmail}
             value={hasEmail ? valEmail : '<none>'}
           />
         </WrapToggle>
@@ -150,8 +150,8 @@ function Identity ({ address, className, onClose }: Props): React.ReactElement<P
             help={t('An URL that is linked to this identity.')}
             isDisabled={!hasWeb}
             label={t('web')}
-            onChange={setValWeb}
             maxLength={32}
+            onChange={setValWeb}
             value={hasWeb ? valWeb : '<none>'}
           />
         </WrapToggle>
@@ -175,8 +175,8 @@ function Identity ({ address, className, onClose }: Props): React.ReactElement<P
             help={t('a riot name linked to this identity')}
             isDisabled={!hasRiot}
             label={t('riot name')}
-            onChange={setValRiot}
             maxLength={32}
+            onChange={setValRiot}
             value={hasRiot ? valRiot : '<none>'}
           />
         </WrapToggle>

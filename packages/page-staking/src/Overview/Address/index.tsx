@@ -56,8 +56,8 @@ function expandInfo ({ exposure, validatorPrefs }: DeriveStakingQuery): StakingS
 
   if (exposure) {
     nominators = exposure.others.map(({ power: value, who }): [string, Balance] => [who.toString(), value]);
-    stakeTotal = exposure.total_power;
-    stakeOwn = exposure.own_power;
+    stakeTotal = exposure.totalPower;
+    stakeOwn = exposure.ownPower;
     stakeOther = stakeTotal.sub(stakeOwn);
   }
 
