@@ -56,10 +56,11 @@ function defaultOrAddr (defaultName = '', _address: AccountId | AccountIndex | A
 
     return [[accountIndex, null], false, true];
   }
+
   return [[extracted, null], !isAddressExtracted, isAddressExtracted];
 }
 
-function extractName (address: AccountId | string, accountIndex?: AccountIndex, defaultName?: string, showAddress: boolean = true): React.ReactNode {
+function extractName (address: AccountId | string, accountIndex?: AccountIndex, defaultName?: string, showAddress = true): React.ReactNode {
   const [[displayFirst, displaySecond], isLocal, isAddress] = defaultOrAddr(defaultName, address, accountIndex);
 
   return (
@@ -73,22 +74,22 @@ function extractName (address: AccountId | string, accountIndex?: AccountIndex, 
   );
 }
 
-function renderLinkIcon(address) {
+function renderLinkIcon (address) {
   return (
     <Button
-      onClick={() => {
-        window.open(`${SUBSCAN_URL_CRAB}/account/${address}`)
-      }}
       className='icon-button'
       icon='external alternate'
-      size='mini'
       isPrimary
       key='tosubscan'
+      onClick={() => {
+        window.open(`${SUBSCAN_URL_CRAB}/account/${address}`);
+      }}
+      size='mini'
     />
   );
 }
 
-function AccountName ({ children, className, defaultName, label, onClick, override, style, toggle, value, isLink, showAddress = true }: Props): React.ReactElement<Props> {
+function AccountName ({ children, className, defaultName, isLink, label, onClick, override, showAddress = true, style, toggle, value }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -164,12 +165,12 @@ function AccountName ({ children, className, defaultName, label, onClick, overri
 
         const displayName = isGood
           ? identity.display
-          : identity.display.replace(/[^\x20-\x7E]/g, '');
+          : identity.display;
         const displayParent = identity.displayParent
           ? (
             isGood
               ? identity.displayParent
-              : identity.displayParent.replace(/[^\x20-\x7E]/g, '')
+              : identity.displayParent
           )
           : undefined;
 

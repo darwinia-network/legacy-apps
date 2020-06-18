@@ -117,12 +117,12 @@ function extractIdentity (address: string, identity: DeriveAccountRegistration):
   const isBad = judgements.some(([, judgement]): boolean => judgement.isErroneous || judgement.isLowQuality);
   const displayName = isGood
     ? identity.display
-    : (identity.display || '').replace(/[^\x20-\x7E]/g, '');
+    : (identity.display || '');
   const displayParent = identity.displayParent
     ? (
       isGood
         ? identity.displayParent
-        : identity.displayParent.replace(/[^\x20-\x7E]/g, '')
+        : identity.displayParent
     )
     : undefined;
   const nameElem = displayParent
