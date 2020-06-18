@@ -34,7 +34,7 @@ import PowerManage from './PowerManage';
 import Earnings from './Earnings';
 import { PayoutValidator } from '../../Payouts/types';
 import useStakerPayouts from '../../Payouts/useStakerPayouts';
-import { IndividualExposure, Power } from '@polkadot/react-darwinia/interfaces';
+import { IndividualExposure, Power } from '@darwinia/typegen/interfaces';
 
 type ValidatorInfo = ITuple<[ValidatorPrefs, Codec]>;
 
@@ -66,7 +66,7 @@ interface StakeState {
   validatorPrefs?: ValidatorPrefs;
 }
 
-const payoutMaxAmount = 150;
+const payoutMaxAmount = 100;
 
 interface Available {
   validators?: PayoutValidator[];
@@ -162,7 +162,7 @@ function createPayout (api: ApiPromise, payout: PayoutValidator | PayoutValidato
       ), []);
 
     if (calls.length > payoutMaxAmount) {
-      calls.length = payoutMaxAmount;
+      calls.length = payoutMaxAmount - 1;
     }
 
     return api.tx.utility.batch(calls);

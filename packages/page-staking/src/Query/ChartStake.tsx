@@ -25,8 +25,8 @@ function extractStake (exposures: DeriveOwnExposure[], divisor: BN): ChartInfo {
   let total = 0;
 
   exposures.forEach(({ clipped, era, exposure }): void => {
-    const cli = balanceToNumber(new BN(clipped.total_power) || new BN(0), divisor);
-    const exp = balanceToNumber(new BN(exposure.total_power) || new BN(0), divisor);
+    const cli = balanceToNumber(new BN(clipped.totalPower) || new BN(0), divisor);
+    const exp = balanceToNumber(new BN(exposure.totalPower) || new BN(0), divisor);
 
     total += cli;
 

@@ -3,10 +3,10 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AccountId, AccountIndex, AccountInfo, Address, Balance, Index } from '@polkadot/types/interfaces';
+import { AccountId, AccountIndex, Address, Balance, Index } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
 import { DeriveBalancesAccount as DerivedBalancesAccount } from '../types';
-import { AccountData } from '@polkadot/react-darwinia/interfaces/darwiniaInject/types';
+import { AccountData, AccountInfo } from '@darwinia/typegen/interfaces';
 import { combineLatest, of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ApiInterfaceRx } from '@polkadot/api/types';
@@ -15,18 +15,18 @@ import { memo } from '../util';
 
 type Result = [Balance, Balance, Balance, Balance, Balance, Balance, Index];
 
-function calcBalances (api: ApiInterfaceRx, [accountId, [free, free_kton, reserved, reserved_kton, fee_frozen, misc_frozen, accountNonce]]: [AccountId, Result]): DerivedBalancesAccount {
+function calcBalances (api: ApiInterfaceRx, [accountId, [free, freeKton, reserved, reservedKton, feeFrozen, miscFrozen, accountNonce]]: [AccountId, Result]): DerivedBalancesAccount {
   return {
     accountId,
     accountNonce,
     freeBalance: free,
-    freeBalanceKton: free_kton,
-    frozenFee: fee_frozen,
-    frozenMisc: misc_frozen,
+    freeBalanceKton: freeKton,
+    frozenFee: feeFrozen,
+    frozenMisc: miscFrozen,
     reservedBalance: reserved,
-    reservedBalanceKton: reserved_kton,
+    reservedBalanceKton: reservedKton,
     votingBalance: api.registry.createType('Balance', free.add(reserved)),
-    votingBalanceKton: api.registry.createType('Balance', free_kton.add(reserved_kton))
+    votingBalanceKton: api.registry.createType('Balance', freeKton.add(reservedKton))
   };
 }
 
@@ -58,12 +58,12 @@ function queryCurrent (api: ApiInterfaceRx, accountId: AccountId): Observable<Re
   // AccountInfo is current, support old, eg. Edgeware
   return api.query.system.account<AccountInfo | ITuple<[Index, AccountData]>>(accountId).pipe(
     map((infoOrTuple): Result => {
-      const { free, free_kton, reserved, reserved_kton, misc_frozen, fee_frozen } = (infoOrTuple as AccountInfo).nonce
+      const { feeFrozen, free, freeKton, miscFrozen, reserved, reservedKton } = (infoOrTuple as AccountInfo).nonce
         ? (infoOrTuple as AccountInfo).data
         : (infoOrTuple as [Index, AccountData])[1];
       const accountNonce = (infoOrTuple as AccountInfo).nonce || (infoOrTuple as [Index, AccountData])[0];
 
-      return [free, free_kton, reserved, reserved_kton, fee_frozen, misc_frozen, accountNonce];
+      return [free, freeKton, reserved, reservedKton, feeFrozen, miscFrozen, accountNonce];
     })
   );
 }

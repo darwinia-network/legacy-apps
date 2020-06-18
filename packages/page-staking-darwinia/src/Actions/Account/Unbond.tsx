@@ -3,7 +3,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AccountId, StakingLedger } from '@polkadot/types/interfaces';
+import { AccountId } from '@polkadot/types/interfaces';
+import { StakingLedgerT as StakingLedger } from '@darwinia/typegen';
 import { I18nProps } from '@polkadot/react-components/types';
 import { ApiProps } from '@polkadot/react-api/types';
 
@@ -62,7 +63,7 @@ class Unbond extends TxComponent<Props, State> {
 
   public render (): React.ReactNode {
     const { controllerId, isOpen, onClose, t } = this.props;
-    const { maxUnbond, currencyType } = this.state;
+    const { currencyType, maxUnbond } = this.state;
     const canSubmit = !!maxUnbond && maxUnbond.gtn(0);
     const typeKey = currencyType + 'balance';
 
@@ -74,17 +75,17 @@ class Unbond extends TxComponent<Props, State> {
       <Modal
         className='staking--Unbond'
         header={t('Unbond funds')}
-        size='small'
         onCancel={onClose}
+        size='small'
       >
         {this.renderContent()}
         <Modal.Actions onCancel={onClose}>
           <TxButton
             accountId={controllerId}
+            icon='sign-out'
             isDisabled={!canSubmit}
             isPrimary
             label={t('Unbond')}
-            icon='sign-out'
             onStart={onClose}
             params={[{ [typeKey]: maxUnbond }]}
             tx='staking.unbond'
@@ -119,14 +120,14 @@ class Unbond extends TxComponent<Props, State> {
           autoFocus
           className='medium'
           help={t('The amount of funds to unbond, this is adjusted using the bonded funds on the stash account.')}
+          isSiShow={false}
+          isType
           label={t('unbond amount')}
           maxValue={maxBalance}
           onChange={this.onChangeValue}
           onChangeType={this.onChangeType}
           onEnter={this.sendTx}
           withMax
-          isType
-          isSiShow={false}
         />
       </Modal.Content>
     );
@@ -152,9 +153,10 @@ class Unbond extends TxComponent<Props, State> {
       return;
     }
 
-    const { active_ring, active_kton } = staking_ledger.unwrap();
+    const { activeKton, activeRing } = staking_ledger.unwrap();
+
     this.nextState({
-      maxBalance: currencyType === 'kton' ? active_kton.unwrap() : active_ring.unwrap()
+      maxBalance: currencyType === 'kton' ? activeKton.unwrap() : activeRing.unwrap()
     });
   }
 

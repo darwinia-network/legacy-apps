@@ -28,6 +28,7 @@
   "homepage": "https://github.com/polkadot-js/api/tree/master/packages/api-derive#readme",
   "dependencies": {
     "@babel/runtime": "^7.9.2",
+    "@darwinia/typegen": "0.0.6",
     "@polkadot/api": "1.12.2",
     "@polkadot/rpc-core": "1.12.2",
     "@polkadot/rpc-provider": "1.12.2",

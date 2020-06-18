@@ -9,7 +9,7 @@ import { DropdownOptions } from '../util/types';
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useApi } from '@polkadot/react-hooks';
-import jsonrpc from '@polkadot/react-darwinia/rpc/jsonrpc';
+import jsonrpc from '@darwinia/typegen/interfaces/jsonrpc';
 
 import LinkedWrapper from '../InputExtrinsic/LinkedWrapper';
 import SelectMethod from './SelectMethod';

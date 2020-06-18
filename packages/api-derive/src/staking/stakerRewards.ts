@@ -34,14 +34,14 @@ function parseRewards (api: ApiInterfaceRx, stashId: AccountId, [erasPoints, era
       const valComm = allValPrefs[validatorId]?.commission.unwrap() || ZERO;
       const avail = eraReward.mul(valPoints).div(eraPoints);
       const valCut = valComm.mul(avail).div(COMM_DIV);
-      const expTotal = exposure.total_power;
+      const expTotal = exposure.totalPower;
       let value: BN | undefined;
 
       if (!expTotal.isZero() && !valPoints.isZero()) {
         let staked: BN;
 
         if (validatorId === stakerId) {
-          staked = exposure.own_power;
+          staked = exposure.ownPower;
         } else {
           const stakerExp = exposure.others.find(({ who }): boolean => who.eq(stakerId));
 

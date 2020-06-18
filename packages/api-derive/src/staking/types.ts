@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { AccountId, Balance, EraIndex, Keys, RewardDestination, RewardPoint, ValidatorPrefs } from '@polkadot/types/interfaces';
-import { ExposureT as Exposure, StakingLedgerT as StakingLedger } from '@polkadot/react-darwinia/interfaces';
+import { ExposureT as Exposure, StakingLedgerT as StakingLedger } from '@darwinia/typegen/interfaces';
 import { DeriveSessionIndexes } from '../session/types';
 
 import BN from 'bn.js';

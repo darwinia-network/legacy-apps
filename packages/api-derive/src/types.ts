@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { AccountId, Balance, BalanceLock, BalanceLockTo212, BalanceOf, Bid, BidKind, BlockNumber, Hash, Index, Proposal, ProposalIndex, SetIndex, SocietyVote, StrikeCount, TreasuryProposal, Votes, VoteIndex, VouchingStatus, LockIdentifier, Moment } from '@polkadot/types/interfaces';
-import { LockReasons }  from '@polkadot/react-darwinia/interfaces/darwiniaInject';
+import { Reasons } from '@darwinia/typegen/interfaces';
 
 import BN from 'bn.js';
 import { u32 } from '@polkadot/types';
@@ -177,5 +177,5 @@ export type DerivedBalanceLock = {
   id: LockIdentifier;
   amount: Balance;
   until: BlockNumber;
-  reasons: LockReasons;
+  reasons: Reasons;
 }

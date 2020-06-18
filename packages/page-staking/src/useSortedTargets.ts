@@ -77,8 +77,8 @@ function extractInfo (allAccounts: string[], amount: BN = baseBalance(), elected
       const prefs = (validatorPrefs as (ValidatorPrefs | ValidatorPrefsTo196)) || {
         commission: registry.createType('Compact<Perbill>')
       };
-      const bondOwn = exposure.own_power;
-      const bondTotal = exposure.total_power;
+      const bondOwn = exposure.ownPower;
+      const bondTotal = exposure.totalPower;
       const validatorPayment = (prefs as ValidatorPrefsTo196).validatorPayment
         ? (prefs as ValidatorPrefsTo196).validatorPayment.unwrap() as BN
         : (prefs as ValidatorPrefs).commission.unwrap().mul(perValidatorReward).div(PERBILL);
