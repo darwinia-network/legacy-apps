@@ -66,7 +66,7 @@ interface StakeState {
   validatorPrefs?: ValidatorPrefs;
 }
 
-const payoutMaxAmount = 100;
+const payoutMaxAmount = 30;
 
 interface Available {
   validators?: PayoutValidator[];
