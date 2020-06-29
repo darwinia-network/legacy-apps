@@ -170,10 +170,12 @@ function createPayout (api: ApiPromise, payout: PayoutValidator | PayoutValidato
 
   const { eras, validatorId } = payout;
 
+  const limitEras = eras.slice(0, payoutMaxAmount);
+
   return eras.length === 1
     ? api.tx.staking.payoutStakers(validatorId, eras[0].era)
     : api.tx.utility.batch(
-      eras.map(({ era }) => api.tx.staking.payoutStakers(validatorId, era))
+      limitEras.map(({ era }) => api.tx.staking.payoutStakers(validatorId, era))
     );
 }
 
