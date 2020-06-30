@@ -162,7 +162,7 @@ function createPayout (api: ApiPromise, payout: PayoutValidator | PayoutValidato
       ), []);
 
     if (calls.length > payoutMaxAmount) {
-      calls.length = payoutMaxAmount - 1;
+      calls.length = payoutMaxAmount;
     }
 
     return api.tx.utility.batch(calls);
