@@ -1,36 +1,31 @@
-name: Master
+name: CI
 on:
   push:
     branches:
       - master
 
 jobs:
-  master:
-    strategy:
-      matrix:
-        step: ['build:release']
-    name: ${{ matrix.step }}
-    if: "! contains(github.event.head_commit.message, '[CI Skip]') && github.repository == 'polkadot-js/apps'"
+  build-and-deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-      with:
-        token: ${{ secrets.GH_PAT }}
-    - name: ${{ matrix.step }}
-      env:
-        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        GH_PAGES_SRC: packages/apps/build
-        GH_PAT: ${{ secrets.GH_PAT }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      run: |
-        yarn install --immutable | grep -v 'YN0013'
-        yarn ${{ matrix.step }}
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
 
-  dummy:
-    name: Dummy
-    if: "contains(github.event.head_commit.message, '[CI Skip]')"
-    runs-on: ubuntu-latest
-    steps:
-    - name: dummy
-      run: |
-        echo "Dummy skip step"
+      - run: yarn | grep -v 'YN0013'
+      - run: yarn run build
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dists
+          path: packages/apps/build/
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: packages/apps/build # Do not add prefix or suffix slash!
+          CLEAN: true
