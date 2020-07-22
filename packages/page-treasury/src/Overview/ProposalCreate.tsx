@@ -77,7 +77,7 @@ function Propose ({ className }: Props): React.ReactElement<Props> | null {
                   {bondPercentage}
                 </Static>
                 <InputBalance
-                  defaultValue={api.consts.treasury.proposalBondMinimum.toString()}
+                  defaultValue={api.consts.treasury.ringProposalBondMinimum.toString()}
                   help={t('The minimum amount that will be bonded')}
                   isDisabled
                   label={t('minimum bond')}
@@ -97,7 +97,7 @@ function Propose ({ className }: Props): React.ReactElement<Props> | null {
               isPrimary
               label={t('Submit proposal')}
               onStart={toggleOpen}
-              params={[value, beneficiary]}
+              params={[value, 0, beneficiary]}
               tx='treasury.proposeSpend'
             />
           </Modal.Actions>
