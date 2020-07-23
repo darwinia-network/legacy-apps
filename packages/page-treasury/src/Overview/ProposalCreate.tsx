@@ -4,7 +4,9 @@
 
 import BN from 'bn.js';
 import React, { useMemo, useState } from 'react';
-import { Button, InputAddress, InputBalance, Modal, Static, TxButton } from '@polkadot/react-components';
+import { Button, InputAddress, Modal, Static, TxButton } from '@polkadot/react-components';
+import { InputBalance } from '@polkadot/react-components-darwinia';
+
 import { useApi, useToggle } from '@polkadot/react-hooks';
 
 import { useTranslation } from '../translate';
@@ -19,8 +21,9 @@ function Propose ({ className }: Props): React.ReactElement<Props> | null {
   const [accountId, setAccountId] = useState<string | null>(null);
   const [beneficiary, setBeneficiary] = useState<string | null>(null);
   const [isOpen, toggleOpen] = useToggle();
-  const [value, setValue] = useState<BN | undefined>();
-  const hasValue = value?.gtn(0);
+  const [ringValue, setRingValue] = useState<BN | undefined>();
+  const [ktonValue, setKtonValue] = useState<BN | undefined>();
+  const hasValue = ringValue?.gtn(0) || ktonValue?.gtn(0);
   const bondPercentage = useMemo(
     () => `${api.consts.treasury.proposalBond.muln(100).divn(1_000_000).toNumber().toFixed(2)}%`,
     [api]
@@ -65,10 +68,20 @@ function Propose ({ className }: Props): React.ReactElement<Props> | null {
             <Modal.Columns>
               <Modal.Column>
                 <InputBalance
-                  help={t('The amount that will be allocated from the treasury pot')}
+                  currencyType={'ring'}
+                  help={t('The amount of RING that will be allocated from the treasury pot')}
                   isError={!hasValue}
-                  label={t('value')}
-                  onChange={setValue}
+                  isZeroable
+                  label={t('ring')}
+                  onChange={setRingValue}
+                />
+                <InputBalance
+                  currencyType={'kton'}
+                  help={t('The amount of KTON that will be allocated from the treasury pot')}
+                  isError={!hasValue}
+                  isZeroable
+                  label={t('kton')}
+                  onChange={setKtonValue}
                 />
                 <Static
                   help={t('The on-chain percentage for the treasury')}
@@ -97,7 +110,7 @@ function Propose ({ className }: Props): React.ReactElement<Props> | null {
               isPrimary
               label={t('Submit proposal')}
               onStart={toggleOpen}
-              params={[value, 0, beneficiary]}
+              params={[ringValue, ktonValue, beneficiary]}
               tx='treasury.proposeSpend'
             />
           </Modal.Actions>
