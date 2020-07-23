@@ -244,11 +244,12 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
   const _onKeyDown = (event: React.KeyboardEvent<Element>): void => {
     if (KEYS_PRE.includes(event.key)) {
       setIsPreKeyDown(true);
+
       return;
     }
 
     if (event.key.length === 1 && !isPreKeyDown) {
-      const { selectionStart: i, selectionEnd: j, value } = event.target as HTMLInputElement;
+      const { selectionEnd: j, selectionStart: i, value } = event.target as HTMLInputElement;
       const newValue = `${value.substring(0, i || 0)}${event.key}${value.substring(j || 0)}`;
 
       if (!getRegex(isDecimal || !!si).test(newValue)) {
@@ -259,6 +260,7 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
 
   const selectType = (type: string): void => {
     const { onChangeType } = props;
+
     onChangeType && onChangeType(type);
     setType(type);
   };
@@ -271,13 +273,14 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
       text: KTON_PROPERTIES.tokenSymbol,
       value: 'kton'
     }];
+
     return (
       <Dropdown
+        defaultValue={type}
         dropdownClassName='ui--TypeDropdown'
         isButton
         onChange={selectType}
         options={typeOptions}
-        defaultValue={type}
       />
     );
   };
@@ -305,6 +308,7 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
   // };
 
   const maxValueLength = getGlobalMaxValue(bitLength).toString().length - 1;
+
   return (
     <Input
       {...props}
@@ -337,9 +341,9 @@ export default function InputNumber (props: Props): React.ReactElement<Props> {
       ) */}
       {!!isSiShow && (
         <Dropdown
+          defaultValue={si.value}
           dropdownClassName='ui--SiDropdown'
           isButton
-          defaultValue={si.value}
           onChange={_onSelectSiUnit}
           options={getSiOptions(currencyType)}
         />
