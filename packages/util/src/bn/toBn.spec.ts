@@ -21,7 +21,7 @@ describe('bnToBn', (): void => {
 
   it('converts BigInt values to BN', (): void => {
     expect(
-      bnToBn(128_821n).toNumber()
+      bnToBn(128821n).toNumber()
     ).toEqual(128821);
   });
 
@@ -46,8 +46,8 @@ describe('bnToBn', (): void => {
   it('converts Compact to BN', (): void => {
     expect(
       bnToBn({
-        toBn: (): BN => new BN(1234),
-        something: 'test'
+        something: 'test',
+        toBn: (): BN => new BN(1234)
       }).toNumber()
     ).toEqual(1234);
   });

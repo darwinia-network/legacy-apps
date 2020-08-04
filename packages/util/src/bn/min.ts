@@ -7,20 +7,20 @@ import BN from 'bn.js';
 import assert from '../assert';
 
 /**
- * @name min
+ * @name bnMin
  * @summary Finds and returns the smallest value in an array of BNs.
  * @example
  * <BR>
  *
  * ```javascript
  * import BN from 'bn.js';
- * import { min } from '@polkadot/util';
+ * import { bnMin } from '@polkadot/util';
  *
- * min([new BN(1), new BN(3), new BN(2)]).toString(); // => '1'
+ * bnMin([new BN(1), new BN(3), new BN(2)]).toString(); // => '1'
  * ```
  */
 export default function min (...items: BN[]): BN {
   assert(items && items.length >= 1, 'Must provide one or more BN arguments');
 
-  return items.reduce((acc: BN, val: BN): BN => BN.min(acc, val), items[0]);
+  return items.reduce((acc: BN, val: BN) => BN.min(acc, val), items[0]);
 }
