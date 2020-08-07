@@ -32,8 +32,7 @@ function Tip ({ className, hash, isMember, members }: Props): React.ReactElement
     return null;
   }
 
-  const { finder, reason, tips, who } = tip;
-  const finderInfo = finder.unwrapOr(null);
+  const { deposit, finder, reason, tips, who } = tip;
 
   return (
     <tr className={className}>
@@ -41,13 +40,13 @@ function Tip ({ className, hash, isMember, members }: Props): React.ReactElement
         <AddressSmall value={who} />
       </td>
       <td className='address'>
-        {finderInfo && (
-          <AddressMini value={finderInfo[0]} />
+        {finder && (
+          <AddressMini value={finder} />
         )}
       </td>
       <td className='number'>
-        {finderInfo && (
-          <FormatBalance value={finderInfo[1]} />
+        {deposit && (
+          <FormatBalance value={deposit} />
         )}
       </td>
       <TipReason hash={reason} />
