@@ -2,10 +2,10 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AccountId, Balance, BalanceLock, BalanceLockTo212, BalanceOf, Bid, BidKind, BlockNumber, Hash, Index, Proposal, ProposalIndex, SetIndex, SocietyVote, StrikeCount, TreasuryProposal, Votes, VoteIndex, VouchingStatus, LockIdentifier, Moment } from '@polkadot/types/interfaces';
+import type BN from 'bn.js';
+import { AccountId, Balance, BalanceOf, Bid, BidKind, BlockNumber, Hash, Index, Proposal, ProposalIndex, SetIndex, SocietyVote, StrikeCount, TreasuryProposal, Votes, VoteIndex, VouchingStatus, LockIdentifier, Moment } from '@polkadot/types/interfaces';
 import { Reasons } from '@darwinia/typegen/interfaces';
 
-import BN from 'bn.js';
 import { u32 } from '@polkadot/types';
 
 export * from './accounts/types';
@@ -39,6 +39,8 @@ export interface DeriveBalancesAll extends DeriveBalancesAccount {
   availableBalanceKton: Balance;
   votingBalance: Balance;
   vestedBalance: Balance;
+  vestedClaimable: Balance;
+  vestingLocked: Balance;
   vestingTotal: Balance;
 }
 
@@ -50,6 +52,7 @@ export interface DeriveContractFees {
   creationFee: BN;
   rentByteFee: BN;
   rentDepositOffset: BN;
+  surchargeReward: BN;
   tombstoneDeposit: BN;
   transactionBaseFee: BN;
   transactionByteFee: BN;

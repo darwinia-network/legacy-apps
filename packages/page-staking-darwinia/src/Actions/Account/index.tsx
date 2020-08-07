@@ -630,7 +630,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
               <>
                 {nominees.length !== 0 && (
                   <div>
-                    {nominees.map((nomineeId, index): React.ReactNode => (
+                    {nominees?.map((nomineeId, index): React.ReactNode => (
                       <div className='staking--Noms-accountbox'
                         key={nomineeId}>
                         <AddressSmall

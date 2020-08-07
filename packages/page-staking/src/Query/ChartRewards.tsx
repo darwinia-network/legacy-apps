@@ -15,6 +15,7 @@ import { useTranslation } from '../translate';
 import { balanceToNumber } from './util';
 
 const COLORS_REWARD = ['#8c2200', '#008c22', '#acacac'];
+const ZERO = new BN(0);
 
 function extractRewards (erasRewards: DeriveEraRewards[], ownSlashes: DeriveOwnSlashes[], allPoints: DeriveStakerPoints[], divisor: BN): ChartInfo {
   const labels: string[] = [];
@@ -31,7 +32,7 @@ function extractRewards (erasRewards: DeriveEraRewards[], ownSlashes: DeriveOwnS
       ? balanceToNumber(points.points.mul(eraReward).div(points.eraPoints), divisor)
       : 0;
     const slash = slashed
-      ? balanceToNumber(slashed.total, divisor)
+      ? balanceToNumber(slashed.total.isEmpty ? ZERO : slashed.total.k, divisor)
       : 0;
 
     total += reward;

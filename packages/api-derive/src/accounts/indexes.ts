@@ -10,10 +10,13 @@ import { Observable, of } from 'rxjs';
 import { map, startWith, switchMap } from 'rxjs/operators';
 import { ENUMSET_SIZE } from '@polkadot/types/generic/AccountIndex';
 import { Vec } from '@polkadot/types';
+import { isFunction } from '@polkadot/util';
 
 import { memo } from '../util';
 
 const enumsetSize = ENUMSET_SIZE.toNumber();
+
+let indicesCache: AccountIndexes | null = null;
 
 function queryEnumSet (api: ApiInterfaceRx): Observable<AccountIndexes> {
   return api.query.indices.nextEnumSet<AccountIndex>().pipe(
@@ -71,11 +74,20 @@ function queryAccounts (api: ApiInterfaceRx): Observable<AccountIndexes> {
  */
 export function indexes (api: ApiInterfaceRx): () => Observable<AccountIndexes> {
   return memo((): Observable<AccountIndexes> =>
-    (api.query.indices
-      ? api.query.indices.accounts
-        ? queryAccounts(api)
-        : queryEnumSet(api)
-      : of({} as AccountIndexes)
-    ).pipe(startWith({}))
+    indicesCache
+      ? of(indicesCache)
+      : (
+        api.query.indices
+          ? isFunction(api.query.indices.accounts)
+            ? queryAccounts(api).pipe(startWith({}))
+            : queryEnumSet(api).pipe(startWith({}))
+          : of({} as AccountIndexes)
+      ).pipe(
+        map((indices): AccountIndexes => {
+          indicesCache = indices;
+
+          return indices;
+        })
+      )
   );
 }
