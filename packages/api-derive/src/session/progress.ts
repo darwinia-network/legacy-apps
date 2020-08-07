@@ -9,6 +9,7 @@ import { Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ApiInterfaceRx } from '@polkadot/api/types';
 import { Option, u64 } from '@polkadot/types';
+import { isFunction } from '@polkadot/util';
 
 import { memo } from '../util';
 
@@ -16,9 +17,9 @@ type ResultSlots = [u64, u64, u64, Option<SessionIndex>];
 type ResultSlotsFlat = [u64, u64, u64, SessionIndex];
 
 function createDerive (api: ApiInterfaceRx, info: DeriveSessionInfo, [currentSlot, epochIndex, epochOrGenesisStartSlot, activeEraStartSessionIndex]: ResultSlotsFlat): DeriveSessionProgress {
-  const epochStartSlot = epochIndex.mul(info.sessionLength).add(epochOrGenesisStartSlot);
+  const epochStartSlot = epochIndex.mul(info.sessionLength).iadd(epochOrGenesisStartSlot);
   const sessionProgress = currentSlot.sub(epochStartSlot);
-  const eraProgress = info.currentIndex.sub(activeEraStartSessionIndex).mul(info.sessionLength).add(sessionProgress);
+  const eraProgress = info.currentIndex.sub(activeEraStartSessionIndex).imul(info.sessionLength).iadd(sessionProgress);
 
   return {
     ...info,
@@ -29,14 +30,11 @@ function createDerive (api: ApiInterfaceRx, info: DeriveSessionInfo, [currentSlo
 
 function queryAura (api: ApiInterfaceRx): Observable<DeriveSessionProgress> {
   return api.derive.session.info().pipe(
-    map((info): DeriveSessionProgress =>
-      createDerive(api, info, [
-        api.registry.createType('u64', 1),
-        api.registry.createType('u64', 1),
-        api.registry.createType('u64', 1),
-        api.registry.createType('SessionIndex', 1)
-      ])
-    )
+    map((info): DeriveSessionProgress => ({
+      ...info,
+      eraProgress: api.registry.createType('BlockNumber'),
+      sessionProgress: api.registry.createType('BlockNumber')
+    }))
   );
 }
 
@@ -77,9 +75,10 @@ function queryBabeNoHistory (api: ApiInterfaceRx): Observable<[DeriveSessionInfo
 export function progress (api: ApiInterfaceRx): () => Observable<DeriveSessionProgress> {
   return memo((): Observable<DeriveSessionProgress> =>
     api.consts.babe
-      ? (api.query.staking.erasStartSessionIndex
-        ? queryBabe(api) // 2.x with Babe
-        : queryBabeNoHistory(api)
+      ? (
+        isFunction(api.query.staking.erasStartSessionIndex)
+          ? queryBabe(api) // 2.x with Babe
+          : queryBabeNoHistory(api)
       ).pipe(
         map(([info, slots]: [DeriveSessionInfo, ResultSlotsFlat]): DeriveSessionProgress =>
           createDerive(api, info, slots)

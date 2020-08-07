@@ -12,8 +12,8 @@ import { Option, u32 } from '@polkadot/types';
 
 import { memo } from '../util';
 
-export function erasHistoric (api: ApiInterfaceRx): (withActive?: boolean) => Observable<EraIndex[]> {
-  return memo((withActive?: boolean): Observable<EraIndex[]> =>
+export function erasHistoric (api: ApiInterfaceRx): (withActive: boolean) => Observable<EraIndex[]> {
+  return memo((withActive: boolean): Observable<EraIndex[]> =>
     api.query.staking?.activeEra
       ? api.queryMulti<[Option<ActiveEraInfo>, u32]>([
         api.query.staking.activeEra,
@@ -27,7 +27,7 @@ export function erasHistoric (api: ApiInterfaceRx): (withActive?: boolean) => Ob
 
           while (lastEra.gten(0) && (result.length < max)) {
             if ((lastEra !== activeEra) || (withActive === true)) {
-              result.push(api.registry.createType('EraIndex', lastEra));
+              result.push(api.registry.createType('u32', lastEra));
             }
 
             lastEra = lastEra.subn(1);

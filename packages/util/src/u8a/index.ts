@@ -7,7 +7,9 @@
  */
 
 export { default as u8aConcat } from './concat';
+export { default as u8aEq } from './eq';
 export { default as u8aFixLength } from './fixLength';
+export { default as u8aSorted } from './sorted';
 export { default as u8aToBn } from './toBn';
 export { default as u8aToBuffer } from './toBuffer';
 export { default as u8aToHex } from './toHex';

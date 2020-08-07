@@ -31,22 +31,17 @@ const chalked = {
   warn: chalk.yellow
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function formatObject (value: Record<string, any>): any {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const result: Record<string, any> = {};
+function formatObject (value: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return Object.keys(value).reduce((result, key): Record<string, any> => {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  return Object.keys(value).reduce((result, key): Record<string, unknown> => {
     result[key] = format(value[key]);
 
     return result;
   }, result);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function format (value: any): any {
+export function format (value: unknown): unknown {
   if (Array.isArray(value)) {
     return value.map(format);
   }
@@ -72,7 +67,7 @@ export function format (value: any): any {
 
 function apply (log: LogType, type: string, values: Logger$Data): void {
   if (values.length === 1 && isFunction(values[0])) {
-    const fnResult = (values[0] as Function)();
+    const fnResult = values[0]() as unknown;
 
     return apply(log, type, Array.isArray(fnResult) ? fnResult : [fnResult]);
   }
@@ -87,8 +82,7 @@ function apply (log: LogType, type: string, values: Logger$Data): void {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function noop (...values: Logger$Data): void {
+function noop (): void {
   // noop
 }
 

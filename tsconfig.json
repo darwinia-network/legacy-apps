@@ -78,8 +78,8 @@
       "@polkadot/api-derive/*": ["packages/api-derive/src/*"],
       "@polkadot/util": ["packages/util/src"],
       "@polkadot/util/*": ["packages/util/src/*"],
-      "@polkadot/api/augment": ["packages/react-darwinia/src/interfaces/augment-api.ts"],
-      "@polkadot/types/augment": ["packages/react-darwinia/src/interfaces/augment-types.ts"]
+      "@polkadot/api/augment": ["node_modules/@darwinia/typegen/interfaces/augment-api.d.ts"],
+      "@polkadot/types/augment": ["node_modules/@darwinia/typegen/interfaces/augment-types.d.ts"]
     },
     "skipLibCheck": true,
     "typeRoots": [

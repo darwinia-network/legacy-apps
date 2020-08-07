@@ -10,7 +10,7 @@ describe('bnToU8a', (): void => {
   it('converts null values to 0x00', (): void => {
     expect(
       bnToU8a(null, -1, false)
-    ).toEqual(new Uint8Array([]));
+    ).toEqual(new Uint8Array());
   });
 
   it('converts null values to 0x00000000 (bitLength)', (): void => {
@@ -45,13 +45,13 @@ describe('bnToU8a', (): void => {
 
   it('converts negative numbers (BE)', (): void => {
     expect(
-      bnToU8a(new BN(-1234), { isNegative: true, isLe: false })
+      bnToU8a(new BN(-1234), { isLe: false, isNegative: true })
     ).toEqual(new Uint8Array([251, 46]));
   });
 
   it('converts negative numbers (bitLength)', (): void => {
     expect(
-      bnToU8a(new BN(-1234), { isNegative: true, bitLength: 32 })
+      bnToU8a(new BN(-1234), { bitLength: 32, isNegative: true })
     ).toEqual(new Uint8Array([46, 251, 255, 255]));
   });
 

@@ -2,8 +2,8 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import BN from 'bn.js';
-import { BalanceFormatter } from './format/formatBalance';
+import type BN from 'bn.js';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface Constructor<T = any> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,10 +20,8 @@ export interface SiDef {
   value: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Logger$Data$Fn = () => any[];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Logger$Data = (any | Logger$Data$Fn)[];
+type Logger$Data$Fn = () => unknown[];
+export type Logger$Data = (unknown | Logger$Data$Fn)[];
 
 export interface Logger {
   debug: (...values: Logger$Data) => void;
@@ -43,4 +41,10 @@ export type BnList = {
   1: BN;
 } & BN[];
 
-export { BalanceFormatter };
+export interface Time {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  milliseconds: number;
+}

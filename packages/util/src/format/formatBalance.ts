@@ -25,8 +25,8 @@ interface Options {
   withUnit?: boolean | string;
 }
 
-export interface BalanceFormatter {
-  <ExtToBn extends ToBn> (input?: number | string | BN | BigInt | ExtToBn, options?: Options | boolean, decimals?: number): string;
+interface BalanceFormatter {
+  <ExtToBn extends ToBn> (input?: number | string | BN | BigInt | ExtToBn, options?: Options, decimals?: number): string;
   calcSi (text: string, decimals?: number): SiDef;
   findSi (type: string): SiDef;
   getDefaults (): Defaults;
