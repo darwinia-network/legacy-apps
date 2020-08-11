@@ -239,7 +239,7 @@ class Overview extends React.PureComponent<Props, State> {
                   <div className='textGradient'>{(item.currency.toLowerCase() === 'kton' || item.month === 0) ? '--' : formatKtonBalance(ringToKton(item.amount, item.month))}</div>
                 </td>
                 <td>
-                  {item.month === 0 ? <>{t('Completed')}</> : (dayjs(item.expired_at).unix() < dayjs().unix()) ? <TxButton
+                  {item.month === 0 ? <>{t('Completed')}</> : (dayjs(item.expired_at).unix() < dayjs().unix() && !item.unlock) ? <TxButton
                     accountId={controllerId}
                     isBasic={true}
                     // isSecondary={true}
