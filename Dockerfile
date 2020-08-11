@@ -1,12 +1,11 @@
-FROM node:12.16.3 as builder
-WORKDIR /www
+FROM node:12 as builder
+WORKDIR /app
 
-COPY . /www
-
-RUN yarn
-
+COPY . .
+RUN yarn install | grep -v 'YN0013'
 RUN yarn run build
 
-FROM nginx:latest
-COPY --from=builder /www/packages /usr/share/nginx/html
-COPY --from=builder /www/www.conf /etc/nginx/conf.d/default.conf
+FROM nginx:mainline-alpine
+COPY ./nginx-http.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=builder /app/packages/apps/build /usr/share/nginx/html
