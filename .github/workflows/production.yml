@@ -1,0 +1,33 @@
+name: Production
+on:
+  push:
+    tags: ["*"]
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: itering/actions
+          path: .github/actions
+          persist-credentials: false
+          ssh-key: "${{ secrets.ITERING_ACTIONS_DEPLOY_KEY }}"
+
+      - uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.QUAY_IO_BOT_USERNAME }}
+          password: ${{ secrets.QUAY_IO_BOT_PASSWORD }}
+          registry: quay.io
+          repository: ${{ github.repository }}
+          add_git_labels: true
+          tag_with_sha: true
+          tag_with_ref: true
+
+      - uses: ./.github/actions/trigger-deployment
+        with:
+          deploy_phase: production
+          trigger_token: ${{ secrets.ITERING_DEPLOYMENT_TRIGGER_TOKEN }}
+          trigger_endpoint: ${{ secrets.ITERING_DEPLOYMENT_TRIGGER_ENDPOINT }}
