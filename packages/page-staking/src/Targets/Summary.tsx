@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { SummaryBox, CardSummary } from '@polkadot/react-components';
 import { useApi, useCall } from '@polkadot/react-hooks';
 import { FormatBalance } from '@polkadot/react-query';
+import { formatNumber } from '@polkadot/util';
 
 import { useTranslation } from '../translate';
 
@@ -36,10 +37,7 @@ function Summary ({ lastReward, numNominators, numValidators, totalStaked }: Pro
       <section className='ui--media-small'>
         {totalStaked && (
           <CardSummary label={t('total staked')}>
-            <FormatBalance
-              value={totalStaked}
-              withSi
-            />
+            {formatNumber(totalStaked)}
           </CardSummary>
         )}
         {totalStaked && totalIssuance && (
