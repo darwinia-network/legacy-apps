@@ -45,8 +45,8 @@ class Import extends TxComponent<Props, State> {
             icon='sync'
             isDisabled={!isFileValid || !isPassValid}
             isPrimary
-            onClick={this.onSave}
             label={t('Restore')}
+            onClick={this.onSave}
           />
         </Modal.Actions>
       </Modal>
@@ -131,7 +131,7 @@ class Import extends TxComponent<Props, State> {
     }
 
     const status: Partial<ActionStatus> = { action: 'restore' };
-    console.log(111, json, password)
+
     try {
       const pair = keyring.restoreAccount(json, password);
       const { address } = pair;
