@@ -12,7 +12,7 @@ import AccountAddress from './AccountAddress';
 import AccountName from './AccountName';
 import IdentityIcon from './IdentityIcon';
 
-function toIdString(id?: string | Address | AccountId | null | Uint8Array): string | null {
+function toIdString (id?: string | Address | AccountId | null | Uint8Array): string | null {
   return id
     ? id.toString()
     : null;
@@ -28,7 +28,7 @@ interface Props {
   isLink?: boolean;
 }
 
-function AddressSmall ({ className, defaultName, onClickName, overrideName, toggle, value, isLink }: Props): React.ReactElement<Props> {
+function AddressSmall ({ className, defaultName, isLink, onClickName, overrideName, toggle, value }: Props): React.ReactElement<Props> {
   return (
     <div className={`ui--AddressSmall ${className}`}>
       <IdentityIcon
@@ -39,12 +39,12 @@ function AddressSmall ({ className, defaultName, onClickName, overrideName, togg
         <AccountName
           className={(overrideName || !onClickName) ? '' : 'name--clickable'}
           defaultName={defaultName}
-          override={overrideName}
+          isLink={isLink}
           onClick={onClickName}
+          override={overrideName}
+          showAddress={true}
           toggle={toggle}
           value={value}
-          isLink={isLink}
-          showAddress={false}
         />
         <AccountAddress value={value} />
       </div>
