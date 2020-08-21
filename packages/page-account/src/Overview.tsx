@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { BlockNumber } from '@polkadot/types/interfaces';
 import { KeyringAddress } from '@polkadot/ui-keyring/types';
 import { ComponentProps as Props } from './types';
 
@@ -34,7 +35,7 @@ const STORE_FAVS = 'accounts:favorites';
 const STORE_CHECKED = 'accounts:checked';
 
 // query the ledger for the address, adding it to the keyring
-async function queryLedger (): Promise<void> {
+async function queryLedger(): Promise<void> {
   const ledger = getLedger();
 
   try {
@@ -46,10 +47,10 @@ async function queryLedger (): Promise<void> {
   }
 }
 
-function Overview ({ className, onStatusChange }: Props): React.ReactElement<Props> {
+function Overview({ className, onStatusChange }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { api } = useApi();
-
+  const { api, isApiReady } = useApi();
+  const blockNumber = useCall<BlockNumber>(isApiReady && api.derive.chain.bestNumber, []);
   const { allAccounts, hasAccounts } = useAccounts();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
@@ -164,6 +165,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
           </div>
         </div>
         <StakingList
+          currentBlock={blockNumber?.toNumber()}
           account={_accountChecked}
           controllerId={controllerId}
         />

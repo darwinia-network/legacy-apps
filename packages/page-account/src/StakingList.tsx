@@ -43,6 +43,7 @@ type State = {
 };
 
 class Overview extends React.PureComponent<Props, State> {
+  unbondEnd: number = 201600;
   state: State = {
     isRingStakingOpen: false,
     isCreateOpen: false,
@@ -59,14 +60,14 @@ class Overview extends React.PureComponent<Props, State> {
     locked: 0
   };
 
-  componentDidMount () {
+  componentDidMount() {
     const { account } = this.props;
     const { locked } = this.state;
 
     this.updateBondList(0, 'bonded', locked, account);
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (this.props.account !== nextProps.account) {
       this.updateBondList(0, 'bonded', this.state.locked, nextProps.account);
     }
@@ -119,7 +120,7 @@ class Overview extends React.PureComponent<Props, State> {
     }, 1500);
   }
 
-  formatDate (date) {
+  formatDate(date) {
     if (date) {
       return dayjs(date).format('YYYY-MM-DD');
     }
@@ -127,7 +128,22 @@ class Overview extends React.PureComponent<Props, State> {
     return dayjs(0).format('YYYY-MM-DD');
   }
 
-  process (start, expire): number {
+  formatIndex(extrinsicIndex: string): number {
+    var idx: number = 0
+    try {
+      idx = parseInt(extrinsicIndex.split('-')[0])
+    } catch (error) {
+      console.error(error)
+    }
+
+    return idx
+  }
+
+  computeUnbondProgress(start: number, current: number, end: number): string {
+    return ((current - start) / (end - start) * 100).toFixed(2) + ' %'
+  }
+
+  process(start, expire): number {
     const now = dayjs().unix();
     const end = dayjs(expire).unix();
 
@@ -178,11 +194,11 @@ class Overview extends React.PureComponent<Props, State> {
     this.updateBondList(selected, status, locked, account);
   };
 
-  private getUnbondingEndTime (start) {
+  private getUnbondingEndTime(start) {
     return dayjs(start).add(14, 'day');
   }
 
-  renderBondedList () {
+  renderBondedList() {
     const { controllerId, t } = this.props;
     const { bondList, pageCount } = this.state;
 
@@ -284,7 +300,7 @@ class Overview extends React.PureComponent<Props, State> {
     );
   }
 
-  renderUnbondList () {
+  renderUnbondList() {
     const { t } = this.props;
     const { bondList, pageCount, status } = this.state;
 
@@ -317,7 +333,7 @@ class Overview extends React.PureComponent<Props, State> {
           <tbody>
             <tr className='stakingTh'>
               <td>{t('Extrinsic ID')}</td>
-              <td>{t('Date')}</td>
+              <td>{t('Progress')}</td>
               <td>{t('Amount')}</td>
               <td>{t('Status')}</td>
             </tr>
@@ -328,7 +344,14 @@ class Overview extends React.PureComponent<Props, State> {
                   rel='noopener noreferrer'
                   target='_blank'>{item.extrinsic_index}</a></td>
                 <td>
-                  <p className='stakingRange'>{`${this.formatDate(item.unbonding_at)} - ${this.formatDate(this.getUnbondingEndTime(item.unbonding_at))}`}</p>
+                  {/* <p className='stakingRange'>{`${this.formatDate(item.unbonding_at)} - ${this.formatDate(this.getUnbondingEndTime(item.unbonding_at))}`}</p> */}
+                  {this.props.currentBlock && (
+                    <div>{this.computeUnbondProgress(
+                      this.formatIndex(item.unbonding_extrinsic_index),
+                      this.props.currentBlock,
+                      this.formatIndex(item.unbonding_extrinsic_index) + this.unbondEnd
+                    )}</div>
+                  )}
                   <div className='stakingProcess'>
                     <div className='stakingProcessPassed'
                       style={{ width: `${this.process(item.unbonding_at, this.getUnbondingEndTime(item.unbonding_at))}%` }}></div>
@@ -337,7 +360,8 @@ class Overview extends React.PureComponent<Props, State> {
                 <td>{formatBalance(item.amount)}</td>
                 <td>
                   {/* <div className="textGradient">{formatKtonBalance(ringToKton(item.amount, item.month))}</div> */}
-                  <div className='textGradient'>{this.renderUnbondingStatus(this.getUnbondingEndTime(item.unbonding_at))}</div>
+                  {/* <div className='textGradient'>{this.renderUnbondingStatus(this.getUnbondingEndTime(item.unbonding_at))}</div> */}
+                  <div className='textGradient'>{this.renderUnbondingStatusWithBlockNumber(this.props.currentBlock, this.formatIndex(item.unbonding_extrinsic_index) + this.unbondEnd)}</div>
                 </td>
               </tr>);
             })}
@@ -362,7 +386,7 @@ class Overview extends React.PureComponent<Props, State> {
     );
   }
 
-  renderMapList () {
+  renderMapList() {
     const { controllerId, t } = this.props;
     const { bondList, pageCount } = this.state;
 
@@ -455,7 +479,11 @@ class Overview extends React.PureComponent<Props, State> {
     }
   }
 
-  render () {
+  renderUnbondingStatusWithBlockNumber(current: number, end: number): string {
+    return end > current ? 'Unbonding' : 'Unbonded'
+  }
+
+  render() {
     const { status } = this.state;
 
     return (
