@@ -34,7 +34,7 @@ import PowerManage from './PowerManage';
 import Earnings from './Earnings';
 import { PayoutValidator } from '../../Payouts/types';
 import useStakerPayouts from '../../Payouts/useStakerPayouts';
-import { IndividualExposure, Power } from '@darwinia/typegen/interfaces';
+import { IndividualExposure, Power, SpanRecord, SlashingSpans } from '@darwinia/typegen/interfaces';
 
 type ValidatorInfo = ITuple<[ValidatorPrefs, Codec]>;
 
@@ -72,13 +72,13 @@ interface Available {
   validators?: PayoutValidator[];
 }
 
-function toIdString (id?: AccountId | null): string | null {
+function toIdString(id?: AccountId | null): string | null {
   return id
     ? id.toString()
     : null;
 }
 
-function getStakeState (allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DeriveStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
+function getStakeState(allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DeriveStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
   const isStashNominating = !!(nominators?.length);
   const isStashValidating = !(Array.isArray(validateInfo) ? validateInfo[1].isEmpty : validateInfo.isEmpty) || !!allStashes?.includes(stashId);
   const nextConcat = u8aConcat(...nextSessionIds.map((id): Uint8Array => id.toU8a()));
@@ -107,7 +107,7 @@ function getStakeState (allAccounts: string[], allStashes: string[] | undefined,
   };
 }
 
-function groupByValidator (allRewards: Record<string, DeriveStakerReward[]>, stakerPayoutsAfter: BN): PayoutValidator[] {
+function groupByValidator(allRewards: Record<string, DeriveStakerReward[]>, stakerPayoutsAfter: BN): PayoutValidator[] {
   return Object
     .entries(allRewards)
     .reduce((grouped: PayoutValidator[], [stashId, rewards]): PayoutValidator[] => {
@@ -150,7 +150,7 @@ function groupByValidator (allRewards: Record<string, DeriveStakerReward[]>, sta
     .sort((a, b) => b.available.cmp(a.available));
 }
 
-function createPayout (api: ApiPromise, payout: PayoutValidator | PayoutValidator[]): SubmittableExtrinsic<'promise'> {
+function createPayout(api: ApiPromise, payout: PayoutValidator | PayoutValidator[]): SubmittableExtrinsic<'promise'> {
   if (Array.isArray(payout)) {
     if (payout.length === 1) {
       return createPayout(api, payout[0]);
@@ -179,12 +179,19 @@ function createPayout (api: ApiPromise, payout: PayoutValidator | PayoutValidato
     );
 }
 
-function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpdateType, stakingOverview, stashId }: Props): React.ReactElement<Props> {
+function Account({ allStashes, className, isInElection, isOwnStash, next, onUpdateType, stakingOverview, stashId }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { queueExtrinsic } = useContext(StatusContext);
   const { api } = useApi();
   const { allAccounts } = useAccounts();
   const validateInfo = useCall<ValidatorInfo>(api.query.staking.validators, [stashId]);
+
+  const slashingSpans = useCall<SlashingSpans>(api.query.staking.slashingSpans, [stashId])
+  let spanRecord = null
+  if (slashingSpans && slashingSpans.spanIndex) {
+    spanRecord = useCall<SpanRecord>(api.query.staking.spanSlash, [stashId, slashingSpans.spanIndex])
+  }
+
   const balancesAll = useCall<DeriveBalancesAll>(api.derive.balances.all as any, [stashId]);
   const stakingAccount = useCall<DeriveStakingAccount>(api.derive.staking.account as any, [stashId]);
   const [[payoutEras, payoutTotal], setStakingRewards] = useState<[EraIndex[], BN]>([[], new BN(0)]);
@@ -451,7 +458,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
                                 payoutEras.length
                                   ? <>(<FormatBalance value={payoutTotal}
                                     withSi={false}
-                                    withUnit/>)</>
+                                    withUnit />)</>
                                   : ''
                               }
                             </Trans>
@@ -566,7 +573,9 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
           isLoading={!rewards}
           payoutMaxAmount={payoutMaxAmount}
           payoutsAmount={payoutsAmount}
-          unClaimedReward={payoutTotal}/>
+          unClaimedReward={payoutTotal}
+          toSlashRing={spanRecord ? spanRecord.slashed.r.sub(spanRecord.paidOut.r).toNumber() : undefined}
+          toSlashKton={spanRecord ? spanRecord.slashed.k.sub(spanRecord.paidOut.k).toNumber() : undefined} />
       </Box>
       {/* <AddressMini
         className='mini-nopad'
