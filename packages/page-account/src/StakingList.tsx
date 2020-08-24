@@ -140,7 +140,11 @@ class Overview extends React.PureComponent<Props, State> {
   }
 
   computeUnbondProgress(start: number, current: number, end: number): string {
-    return ((current - start) / (end - start) * 100).toFixed(2) + ' %'
+    if (current < end) {
+      return ((current - start) / (end - start) * 100).toFixed(2) + ' %'
+    } else {
+      return '100 %'
+    }
   }
 
   process(start, expire): number {
