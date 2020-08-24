@@ -23,6 +23,7 @@
   "Create and backup account": "Create and backup account",
   "Darwinia asset": "Darwinia asset",
   "Date": "Date",
+  "Progress": "Progress",
   "Derive account from pair": "Derive account from pair",
   "Determines what cryptography will be used to create this account. Note that to validate on Polkadot, the session account must use \"ed25519\".": "Determines what cryptography will be used to create this account. Note that to validate on Polkadot, the session account must use \"ed25519\".",
   "Development": "Development",
