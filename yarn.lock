@@ -1408,12 +1408,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@darwinia/typegen@npm:0.0.9":
-  version: 0.0.9
-  resolution: "@darwinia/typegen@npm:0.0.9"
+"@darwinia/typegen@npm:0.0.10":
+  version: 0.0.10
+  resolution: "@darwinia/typegen@npm:0.0.10"
   dependencies:
     "@polkadot/api": 1.27.1
-  checksum: aa16b735d9fcb5b93e9fc3e6605b464daa3c07eb416b934863a26d3291a8e4b5be70dce3abaacc51b6619110049d7bc14276b456b2a8680bc490c7b673c7b835
+  checksum: db14f5152ce69a6d7fab74663ab216307f6333147e2a16a3e0226e145b383415c70070b339bfb17ee135904c9a8c97358fe1cbefb3299006bf75f10e82f3aeb2
   languageName: node
   linkType: hard
 
@@ -3072,7 +3072,7 @@ __metadata:
   resolution: "@polkadot/app-staking-darwinia@workspace:packages/page-staking-darwinia"
   dependencies:
     "@babel/runtime": ^7.9.6
-    "@darwinia/typegen": 0.0.9
+    "@darwinia/typegen": 0.0.10
     "@polkadot/app-explorer": 0.42.0-beta.100
     "@polkadot/react-components-darwinia": 0.42.0-beta.100
     "@polkadot/react-query": 0.42.0-beta.100
