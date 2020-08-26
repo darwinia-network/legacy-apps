@@ -324,6 +324,7 @@
   "Prefix indicates the ss58 address format in this network, it is a number between 0 ~ 255 that describes the precise format of the bytes of the address": "",
   "Preimage": "",
   "Present the QR code containing the signature to the UI. Once scanned it will be submitted for on-chain processing and execution.": "",
+  "Progress": "",
   "Proposal can either be to approve or reject this spend. One approved, the change is applied by either removing the proposal or scheduling payout.": "",
   "Proposals": "",
   "Proposals ({{count}})": "",
