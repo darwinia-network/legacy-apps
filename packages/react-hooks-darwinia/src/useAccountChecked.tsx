@@ -11,7 +11,7 @@ import useAccounts from './useAccounts';
 export default function useAccountChecked (storageKeyBase: string): [string[], (address: string) => void] {
   const [getCache, setCache] = useCacheKey<string[]>(storageKeyBase);
   const { allAccounts, hasAccounts } = useAccounts();
-  const [accountChecked, setAccountChecked] = useState<string[]>(getCache() || (hasAccounts ? [allAccounts[0]] : []));
+  const [accountChecked, setAccountChecked] = useState<string[]>((hasAccounts ? getCache() : null) || (hasAccounts ? [allAccounts[0]] : []));
 
   const _toggleAccountChecked = (address: string): void =>
     setAccountChecked(
@@ -19,6 +19,13 @@ export default function useAccountChecked (storageKeyBase: string): [string[], (
         [address]
       )
     );
+
+  //  When the selected account is forgotten, the remaining account is selected by default
+  if (accountChecked.length > 0 && hasAccounts) {
+    if (!(hasAccounts ? allAccounts : []).includes(accountChecked[0])) {
+      _toggleAccountChecked(allAccounts[0]);
+    }
+  }
 
   if (accountChecked.length === 0 && hasAccounts) {
     _toggleAccountChecked(allAccounts[0]);
