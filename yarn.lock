@@ -1408,12 +1408,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@darwinia/typegen@npm:0.0.10":
-  version: 0.0.10
-  resolution: "@darwinia/typegen@npm:0.0.10"
+"@darwinia/typegen@npm:0.0.12":
+  version: 0.0.12
+  resolution: "@darwinia/typegen@npm:0.0.12"
   dependencies:
     "@polkadot/api": 1.27.1
-  checksum: db14f5152ce69a6d7fab74663ab216307f6333147e2a16a3e0226e145b383415c70070b339bfb17ee135904c9a8c97358fe1cbefb3299006bf75f10e82f3aeb2
+  checksum: 164ed5f15711b7b23f04d83390f9f5cfc79edaf8ccc532c1754c317525ffb18aa176c48b6a12677476aed9854c410cac885754c7fccbf91bf253f8cd2d41e3ed
   languageName: node
   linkType: hard
 
