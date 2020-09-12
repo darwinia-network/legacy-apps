@@ -28,6 +28,7 @@ import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import { RowTitle, TokenIcon } from '@polkadot/react-darwinia/components';
 import Transfer from './modals/Transfer';
 import TransferKton from './modals/TransferKton';
+import SwapAndMapping from './modals/SwapAndMapping';
 
 type SortedAccount = { address: string; isFavorite: boolean };
 
@@ -62,6 +63,7 @@ function Overview({ className, onStatusChange }: Props): React.ReactElement<Prop
   const [controllerId, setControllerId] = useState<string>('');
   const [isTransferOpen, toggleTransfer] = useToggle();
   const [isTransferKtonOpen, toggleKtonTransfer] = useToggle();
+  const [isMappingOpen, toggleMapping] = useToggle();
   const _accountChecked = accountChecked[0];
 
   useEffect((): void => {
@@ -126,12 +128,20 @@ function Overview({ className, onStatusChange }: Props): React.ReactElement<Prop
                   <div className='p-amount'>
                     <Available params={_accountChecked} />
                   </div>
-                  <p className='p-btn'><Button
-                    isBasic={true}
-                    // isSecondary={true}
-                    label={t('Transfer')}
-                    onClick={(): void => { toggleTransfer(); }}
-                  /></p>
+                  <p className='p-btn'>
+                    <Button
+                      isBasic={true}
+                      // isSecondary={true}
+                      label={t('Swap & Mapping')}
+                      onClick={(): void => { toggleMapping(); }}
+                    />
+                    <Button
+                      isBasic={true}
+                      // isSecondary={true}
+                      label={t('Transfer')}
+                      onClick={(): void => { toggleTransfer(); }}
+                    />
+                  </p>
                 </div>
               </div>
             </div>
@@ -210,6 +220,13 @@ function Overview({ className, onStatusChange }: Props): React.ReactElement<Prop
         <Transfer
           key='modal-transfer'
           onClose={toggleTransfer}
+          senderId={_accountChecked}
+        />
+      )}
+      {isMappingOpen && (
+        <SwapAndMapping
+          key='modal-transfer'
+          onClose={toggleMapping}
           senderId={_accountChecked}
         />
       )}
@@ -396,7 +413,7 @@ export default styled(Overview)`
 
         }
         button{
-          width: 110px;
+          min-width: 110px;
           padding: 8px 0px;
           font-weight: bold!important;
         }
@@ -425,7 +442,7 @@ export default styled(Overview)`
       .allvalueBox.kton {
         background:linear-gradient(270deg, #FE3876 0%,#7C30DD 70%, #3A30DD 100%);;
       }
-      
+
       .allvalueBox {
         display: flex;
         flex-direction: row;
@@ -448,7 +465,7 @@ export default styled(Overview)`
       }
 
       .info-bottom{
-        padding: 23px 25px 23px 58px;
+        padding: 23px 25px 23px 28px;
       }
 
       .column {
@@ -483,7 +500,7 @@ export default styled(Overview)`
         .allvalueBox {
           padding: 10px;
         }
-        
+
         .info-bottom {
           padding: 23px 10px;
         }
@@ -499,5 +516,5 @@ export default styled(Overview)`
         }
       }
     }
-    
+
 `;
