@@ -1,5 +1,6 @@
 {
   "Aye": "Aye",
+  "Aye {{count}}": "Aye {{count}}",
   "Cancel slashes": "Cancel slashes",
   "Candidate account": "Candidate account",
   "Close": "Close",
@@ -10,6 +11,7 @@
   "In calculating the election outcome, this prioritized vote ordering will be used to determine the final score for the candidates.": "In calculating the election outcome, this prioritized vote ordering will be used to determine the final score for the candidates.",
   "Motions ({{count}})": "Motions ({{count}})",
   "Nay": "Nay",
+  "Nay {{count}}": "Nay {{count}}",
   "No candidates found": "No candidates found",
   "No council motions": "No council motions",
   "No members found": "No members found",
@@ -73,6 +75,7 @@
   "the era to cancel for": "the era to cancel for",
   "threshold": "threshold",
   "vote value": "vote value",
+  "votes": "votes",
   "voting account": "voting account",
   "voting balance": "voting balance",
   "voting end": "voting end",
