@@ -24,3 +24,5 @@ export { default as useRegistrars } from './useRegistrars';
 export { default as useStashIds } from './useStashIds';
 export { default as useSudo } from './useSudo';
 export { default as useToggle } from './useToggle';
+export { default as useVotingStatus } from './useVotingStatus';
+export { default as useWeight } from './useWeight';
