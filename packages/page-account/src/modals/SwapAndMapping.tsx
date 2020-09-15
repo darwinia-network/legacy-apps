@@ -44,7 +44,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
   return (
     <Modal
       className='app--accounts-Modal'
-      header={t('Swap CRING and mapping to RING in Darwinia Genesis')}
+      header={t('Darwainias Genesis Swap and Generating')}
       onCancel={onClose}
     >
       <Modal.Content>
@@ -80,7 +80,7 @@ function Transfer ({ className, onClose, recipientId: propRecipientId, senderId:
           icon='send'
           isDisabled={!hasAvailable}
           isPrimary
-          label={t('Make Swap&Mapping')}
+          label={t('Make Genesis Swap')}
           onStart={onClose}
         />
       </Modal.Actions>

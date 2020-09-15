@@ -132,7 +132,7 @@ function Overview({ className, onStatusChange }: Props): React.ReactElement<Prop
                     <Button
                       isBasic={true}
                       // isSecondary={true}
-                      label={t('Swap & Mapping')}
+                      label={t('Genesis Swap')}
                       onClick={(): void => { toggleMapping(); }}
                     />
                     <Button
