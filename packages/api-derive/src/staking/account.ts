@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ApiInterfaceRx } from '@polkadot/api/types';
-import { Balance } from '@polkadot/types/interfaces';
+import { Balance, BlockNumber } from '@polkadot/types/interfaces';
 import { StakingLedgerT as StakingLedger, Unbonding } from '@darwinia/typegen/interfaces';
 import { DeriveSessionInfo, DeriveStakingAccount, DeriveStakingQuery, DeriveUnlocking } from '../types';
 
@@ -15,20 +15,6 @@ import { currencyType } from '@polkadot/react-darwinia/types';
 import { isUndefined } from '@polkadot/util';
 
 import { memo } from '../util';
-
-// groups the supplied chunks by era, i.e. { [era]: BN(total of values) }
-function groupByEra (list: Unbonding[], sessionInfo: DeriveSessionInfo): Record<string, BN> {
-  return list.reduce((map: Record<string, BN>, { amount, moment }): Record<string, BN> => {
-    const era = moment.div(sessionInfo.eraLength);
-    const key = era.toString();
-
-    map[key] = !map[key]
-      ? amount
-      : map[key].add(amount);
-
-    return map;
-  }, {});
-}
 
 // calculate the remaining blocks in a specific unlock era
 function remainingBlocks (api: ApiInterfaceRx, blocks: BN, sessionInfo: DeriveSessionInfo): BlockNumber {
@@ -45,56 +31,43 @@ function remainingBlocks (api: ApiInterfaceRx, blocks: BN, sessionInfo: DeriveSe
   );
 }
 
-function calculateUnlocking (api: ApiInterfaceRx, stakingLedger: StakingLedger | undefined, sessionInfo: DeriveSessionInfo, currencyType: currencyType): [DeriveUnlocking[] | undefined, Balance] {
+function calculateUnlocking (api: ApiInterfaceRx, stakingLedger: StakingLedger | undefined, best: BlockNumber, currencyType: currencyType): [DeriveUnlocking[] | undefined, Balance] {
   if (isUndefined(stakingLedger)) {
     return [undefined, api.registry.createType('Balance', 0)];
   }
 
   const unlockingChunks = stakingLedger[`${currencyType}StakingLock`].unbondings.filter(({ moment }): boolean => {
-    const era = moment.div(sessionInfo.eraLength);
-
-    return era.sub(sessionInfo.activeEra).gtn(0);
-  }
-  );
+    return moment.gtn(best);
+  });
 
   if (!unlockingChunks.length) {
     return [undefined, api.registry.createType('Balance', 0)];
   }
 
-  // group the unlock chunks that have the same era and sum their values
-  const groupedResult = groupByEra(unlockingChunks, sessionInfo);
-  const results = Object.entries(groupedResult).map(([eraString, amount]): DeriveUnlocking => ({
-    remainingEras: new BN(eraString).sub(sessionInfo.activeEra),
-    // remainingBlocks: remainingBlocks(api, new BN(eraString), sessionInfo),
-    value: api.registry.createType('Balance', amount)
-  }));
+  const total = Object.entries(unlockingChunks).reduce((all, [, unbond]) => (all.add(unbond.amount)), new BN(0));
 
-  const total = Object.entries(groupedResult).reduce((all, [, amount]) => (all.add(amount)), new BN(0));
-
-  return [results.length ? results : undefined, api.registry.createType('Balance', total)];
+  return [undefined, api.registry.createType('Balance', total)];
 }
 
-function redeemableSum (api: ApiInterfaceRx, stakingLedger: StakingLedger | undefined, sessionInfo: DeriveSessionInfo): Balance {
+function redeemableSum (api: ApiInterfaceRx, stakingLedger: StakingLedger | undefined, best: BlockNumber): Balance {
   if (isUndefined(stakingLedger)) {
     return api.registry.createType('Balance');
   }
 
   return api.registry.createType('Balance', stakingLedger.ringStakingLock.unbondings.reduce((total, { amount, moment }): BN => {
-    const era = moment.div(sessionInfo.eraLength);
-
-    return era.sub(sessionInfo.activeEra).eqn(0)
+    return moment.gte(best)
       ? total.add(amount)
       : total;
   }, new BN(0)));
 }
 
-function parseResult (api: ApiInterfaceRx, sessionInfo: DeriveSessionInfo, query: DeriveStakingQuery): DeriveStakingAccount {
-  const calcUnlocking = calculateUnlocking(api, query.stakingLedger, sessionInfo, 'ring');
-  const calcUnlockingKton = calculateUnlocking(api, query.stakingLedger, sessionInfo, 'kton');
+function parseResult (api: ApiInterfaceRx, best: BlockNumber, query: DeriveStakingQuery): DeriveStakingAccount {
+  const calcUnlocking = calculateUnlocking(api, query.stakingLedger, best, 'ring');
+  const calcUnlockingKton = calculateUnlocking(api, query.stakingLedger, best, 'kton');
 
   return {
     ...query,
-    redeemable: redeemableSum(api, query.stakingLedger, sessionInfo),
+    redeemable: redeemableSum(api, query.stakingLedger, best),
     unlocking: calcUnlocking[0],
     unlockingTotalValue: calcUnlocking[1],
     unlockingKton: calcUnlockingKton[0],
@@ -102,10 +75,10 @@ function parseResult (api: ApiInterfaceRx, sessionInfo: DeriveSessionInfo, query
   };
 }
 
-export function _account (api: ApiInterfaceRx): (sessionInfo: DeriveSessionInfo, accountId: Uint8Array | string) => Observable<DeriveStakingAccount> {
-  return memo((sessionInfo: DeriveSessionInfo, accountId: Uint8Array | string): Observable<DeriveStakingAccount> =>
+export function _account (api: ApiInterfaceRx): (best: BlockNumber, accountId: Uint8Array | string) => Observable<DeriveStakingAccount> {
+  return memo((best: BlockNumber, accountId: Uint8Array | string): Observable<DeriveStakingAccount> =>
     api.derive.staking.query(accountId).pipe(
-      map((query) => parseResult(api, sessionInfo, query))
+      map((query) => parseResult(api, best, query))
     ));
 }
 
@@ -114,8 +87,8 @@ export function _account (api: ApiInterfaceRx): (sessionInfo: DeriveSessionInfo,
  */
 export function account (api: ApiInterfaceRx): (accountId: Uint8Array | string) => Observable<DeriveStakingAccount> {
   return memo((accountId: Uint8Array | string): Observable<DeriveStakingAccount> =>
-    api.derive.session.info().pipe(
-      switchMap((sessionInfo) => api.derive.staking._account(sessionInfo, accountId))
+    api.derive.chain.bestNumber().pipe(
+      switchMap((best) => api.derive.staking._account(best, accountId))
     ));
 }
 
@@ -124,9 +97,9 @@ export function account (api: ApiInterfaceRx): (accountId: Uint8Array | string) 
  */
 export function accounts (api: ApiInterfaceRx): (accountIds: (Uint8Array | string)[]) => Observable<DeriveStakingAccount[]> {
   return memo((accountIds: (Uint8Array | string)[]): Observable<DeriveStakingAccount[]> =>
-    api.derive.session.info().pipe(
-      switchMap((sessionInfo) =>
-        combineLatest(accountIds.map((accountId) => api.derive.staking._account(sessionInfo, accountId)))
+    api.derive.chain.bestNumber().pipe(
+      switchMap((best) =>
+        combineLatest(accountIds.map((accountId) => api.derive.staking._account(best, accountId)))
       )
     ));
 }
