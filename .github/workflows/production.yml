@@ -27,6 +27,5 @@ jobs:
         with:
           deploy_phase: production
           docker_registry: quay.io
-          docker_build_options: --build-arg BUILD_COMMAND=build
           trigger_token: ${{ secrets.ITERING_DEPLOYMENT_TRIGGER_TOKEN }}
           trigger_endpoint: ${{ secrets.ITERING_DEPLOYMENT_TRIGGER_ENDPOINT }}
