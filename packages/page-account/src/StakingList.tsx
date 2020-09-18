@@ -1,18 +1,20 @@
+/* eslint-disable @typescript-eslint/camelcase */
 // Copyright 2017-2019 @polkadot/app-staking authors & contributors
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { I18nProps } from '@polkadot/react-components/types';
-import { SubjectInfo } from '@polkadot/ui-keyring/observable/types';
+import { BlockNumber } from '@polkadot/types/interfaces';
 import { ComponentProps, bondList } from './types';
 import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
 import React from 'react';
-import { withMulti } from '@polkadot/react-api/hoc';
+import { withMulti, withCalls } from '@polkadot/react-api/hoc';
 import { TxButton, Button } from '@polkadot/react-components';
 import { Button as SButton, Checkbox } from 'semantic-ui-react';
 import translate from './translate';
 import { formatBalance, formatKtonBalance, formatNumber, ringToKton } from '@polkadot/util';
+import { encodeAddress } from '@polkadot/util-crypto';
 import dayjs from 'dayjs';
 import ReactPaginate from 'react-paginate';
 import { getBondList, SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
@@ -24,6 +26,7 @@ type Props = ComponentProps & I18nProps & {
   controllerId: string;
   onStakingNow: () => void;
   history: any;
+  chain_bestNumber: BlockNumber;
 };
 
 type State = {
@@ -43,7 +46,7 @@ type State = {
 };
 
 class Overview extends React.PureComponent<Props, State> {
-  unbondEnd: number = 201600;
+  unbondEnd = 201600;
   state: State = {
     isRingStakingOpen: false,
     isCreateOpen: false,
@@ -60,14 +63,14 @@ class Overview extends React.PureComponent<Props, State> {
     locked: 0
   };
 
-  componentDidMount() {
+  componentDidMount () {
     const { account } = this.props;
     const { locked } = this.state;
 
     this.updateBondList(0, 'bonded', locked, account);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps (nextProps: Props) {
     if (this.props.account !== nextProps.account) {
       this.updateBondList(0, 'bonded', this.state.locked, nextProps.account);
     }
@@ -91,7 +94,7 @@ class Overview extends React.PureComponent<Props, State> {
       locked = 0;
     }
 
-    const response = await getBondList({ page: page, row: PAGE_SIZE, status: status, locked, address: address });
+    const response = await getBondList({ page: page, row: PAGE_SIZE, status: status, locked, address: encodeAddress(address, 42) });
 
     if (response.data.code === 0 && response.data.data) {
       this.setState({
@@ -120,7 +123,7 @@ class Overview extends React.PureComponent<Props, State> {
     }, 1500);
   }
 
-  formatDate(date) {
+  formatDate (date) {
     if (date) {
       return dayjs(date).format('YYYY-MM-DD');
     }
@@ -128,26 +131,41 @@ class Overview extends React.PureComponent<Props, State> {
     return dayjs(0).format('YYYY-MM-DD');
   }
 
-  formatIndex(extrinsicIndex: string): number {
-    var idx: number = 0
+  formatIndex (extrinsicIndex: string): number {
+    let idx = 0;
+
     try {
-      idx = parseInt(extrinsicIndex.split('-')[0])
+      idx = parseInt(extrinsicIndex.split('-')[0]);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
 
-    return idx
+    return idx;
   }
 
-  computeUnbondProgress(start: number, current: number, end: number): string {
+  computeUnbondProgress (start: number, current: number, end: number): string {
     if (current < end) {
-      return ((current - start) / (end - start) * 100).toFixed(2) + ' %'
+      return ((current - start) / (end - start) * 100).toFixed(2) + ' %';
     } else {
-      return '100 %'
+      return '100 %';
     }
   }
 
-  process(start, expire): number {
+  process (start: number, expire: number): number {
+    const { chain_bestNumber } = this.props;
+
+    if (chain_bestNumber.toNumber() < start) {
+      return 0;
+    }
+
+    if (expire <= chain_bestNumber.toNumber()) {
+      return 100;
+    } else {
+      return 100 - (expire - chain_bestNumber.toNumber()) / (expire - start) * 100;
+    }
+  }
+
+  processTime (start: number, expire: number): number {
     const now = dayjs().unix();
     const end = dayjs(expire).unix();
 
@@ -158,7 +176,7 @@ class Overview extends React.PureComponent<Props, State> {
     }
   }
 
-  private renderTitle = () => {
+  private renderTitle = (): React.ReactNode => {
     const { account, t } = this.props;
     const { locked, status } = this.state;
 
@@ -198,11 +216,11 @@ class Overview extends React.PureComponent<Props, State> {
     this.updateBondList(selected, status, locked, account);
   };
 
-  private getUnbondingEndTime(start) {
+  private getUnbondingEndTime (start) {
     return dayjs(start).add(14, 'day');
   }
 
-  renderBondedList() {
+  renderBondedList (): React.ReactNode {
     const { controllerId, t } = this.props;
     const { bondList, pageCount } = this.state;
 
@@ -251,7 +269,7 @@ class Overview extends React.PureComponent<Props, State> {
                   <p className='stakingRange'>{`${this.formatDate(item.start_at)} - ${this.formatDate(item.expired_at)}`}</p>
                   <div className='stakingProcess'>
                     <div className='stakingProcessPassed'
-                      style={{ width: `${this.process(item.start_at, item.expired_at)}%` }}></div>
+                      style={{ width: `${this.processTime(item.start_at, item.expired_at)}%` }}></div>
                   </div>
                 </td>
                 <td>{formatBalance(item.amount, false)} {item.currency.toUpperCase()}</td>
@@ -304,9 +322,13 @@ class Overview extends React.PureComponent<Props, State> {
     );
   }
 
-  renderUnbondList() {
-    const { t } = this.props;
-    const { bondList, pageCount, status } = this.state;
+  extrinsicIndexToBlockNumber = (index: string): number => {
+    return parseInt(index.split('-')[0]);
+  }
+
+  renderUnbondList () {
+    const { chain_bestNumber, t } = this.props;
+    const { bondList, pageCount } = this.state;
 
     if (!bondList || bondList.count === 0 || (bondList.list.length === 0)) {
       return (
@@ -349,23 +371,23 @@ class Overview extends React.PureComponent<Props, State> {
                   target='_blank'>{item.extrinsic_index}</a></td>
                 <td>
                   {/* <p className='stakingRange'>{`${this.formatDate(item.unbonding_at)} - ${this.formatDate(this.getUnbondingEndTime(item.unbonding_at))}`}</p> */}
-                  {this.props.currentBlock && (
+                  {chain_bestNumber && (
                     <div>{this.computeUnbondProgress(
                       this.formatIndex(item.unbonding_extrinsic_index),
-                      this.props.currentBlock,
+                      chain_bestNumber.toNumber(),
                       this.formatIndex(item.unbonding_extrinsic_index) + this.unbondEnd
                     )}</div>
                   )}
                   <div className='stakingProcess'>
                     <div className='stakingProcessPassed'
-                      style={{ width: `${this.process(item.unbonding_at, this.getUnbondingEndTime(item.unbonding_at))}%` }}></div>
+                      style={{ width: `${this.process(this.extrinsicIndexToBlockNumber(item.unbonding_extrinsic_index), item.unbonding_block_end)}%` }}></div>
                   </div>
                 </td>
                 <td>{formatBalance(item.amount, false)} {item.currency.toUpperCase()}</td>
                 <td>
                   {/* <div className="textGradient">{formatKtonBalance(ringToKton(item.amount, item.month))}</div> */}
                   {/* <div className='textGradient'>{this.renderUnbondingStatus(this.getUnbondingEndTime(item.unbonding_at))}</div> */}
-                  <div className='textGradient'>{this.renderUnbondingStatusWithBlockNumber(this.props.currentBlock, this.formatIndex(item.unbonding_extrinsic_index) + this.unbondEnd)}</div>
+                  <div className='textGradient'>{this.renderUnbondingStatusWithBlockNumber(chain_bestNumber.toNumber(), this.formatIndex(item.unbonding_extrinsic_index) + this.unbondEnd)}</div>
                 </td>
               </tr>);
             })}
@@ -390,7 +412,7 @@ class Overview extends React.PureComponent<Props, State> {
     );
   }
 
-  renderMapList() {
+  renderMapList () {
     const { controllerId, t } = this.props;
     const { bondList, pageCount } = this.state;
 
@@ -483,11 +505,13 @@ class Overview extends React.PureComponent<Props, State> {
     }
   }
 
-  renderUnbondingStatusWithBlockNumber(current: number, end: number): string {
-    return end > current ? 'Unbonding' : 'Unbonded'
+  renderUnbondingStatusWithBlockNumber (current: number, end: number): string {
+    const { t } = this.props;
+
+    return end > current ? t('Unbonding') : t('Unbonded');
   }
 
-  render() {
+  render () {
     const { status } = this.state;
 
     return (
@@ -630,5 +654,8 @@ const Wrapper = styled.div`
 export default withMulti(
   Overview,
   translate,
-  withRouter
+  // withRouter,
+  withCalls<Props>(
+    'derive.chain.bestNumber'
+  )
 );
