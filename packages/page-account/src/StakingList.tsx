@@ -361,7 +361,7 @@ class Overview extends React.PureComponent<Props, State> {
                       style={{ width: `${this.process(item.unbonding_at, this.getUnbondingEndTime(item.unbonding_at))}%` }}></div>
                   </div>
                 </td>
-                <td>{formatBalance(item.amount)}</td>
+                <td>{formatBalance(item.amount, false)} {item.currency.toUpperCase()}</td>
                 <td>
                   {/* <div className="textGradient">{formatKtonBalance(ringToKton(item.amount, item.month))}</div> */}
                   {/* <div className='textGradient'>{this.renderUnbondingStatus(this.getUnbondingEndTime(item.unbonding_at))}</div> */}
@@ -590,7 +590,7 @@ const Wrapper = styled.div`
           background: #FBFBFB;
         }
       }
-      
+
     }
 
     .unbondedStakingTable{
@@ -598,7 +598,7 @@ const Wrapper = styled.div`
         width: 25%;
       }
     }
-    
+
     .stakingTableEmpty{
       .no-items{
         padding: 15px;
