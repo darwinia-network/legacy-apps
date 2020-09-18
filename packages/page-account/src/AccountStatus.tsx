@@ -87,8 +87,6 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
   const _toggleAccountList = (): void => setIsAccountListOpen(!isAccountListOpen);
   const _toggleQr = (): void => setIsQrOpen(!isQrOpen);
 
-  console.log(1111, systemChain);
-
   return (
     <div className={className}>
       {/* <Banner /> */}

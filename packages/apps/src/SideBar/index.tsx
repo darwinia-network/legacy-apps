@@ -243,7 +243,7 @@ export default styled(SideBar)`
 
       img {
         height: 4.28571428571rem;
-        width: 3.55rem;
+        width: 4.28571428571rem;
       }
 
       > div.info {
