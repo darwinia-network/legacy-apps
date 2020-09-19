@@ -19,21 +19,27 @@ function sanitize (value?: string): string {
 
 function ChainImg ({ className, logo, onClick }: Props): React.ReactElement<Props> {
   const { systemChain, systemName } = useApi();
+
   const img = useMemo((): any => {
     return namedLogos[logo || ''] || chainLogos[sanitize(systemChain)] || nodeLogos[sanitize(systemName)] || emptyLogo;
   }, [logo, systemChain, systemName]);
 
   return (
-    <img
-      alt='chain logo'
-      className={className}
-      onClick={onClick}
-      src={img}
-    />
+    <div className={className}>
+      <img
+        alt='chain logo'
+        onClick={onClick}
+        src={img}
+      />
+    </div>
   );
 }
 
 export default React.memo(styled(ChainImg)`
   border-radius: 50%;
   box-sizing: border-box;
+  background: #ccc;
+  img{
+    width: 100%;
+  }
 `);

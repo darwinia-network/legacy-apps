@@ -126,7 +126,7 @@ function ClaimsApp (): React.ReactElement {
 
   const payload = accountId
     ? (
-      u8aToString(api.consts.claims.prefix.toU8a(true)) +
+      u8aToString(api.consts.claims?.prefix.toU8a(true)) +
       u8aToHex(decodeAddress(accountId), -1, false)
     )
     : '';

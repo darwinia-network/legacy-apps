@@ -2,7 +2,7 @@
   "name": "@polkadot/apps",
   "private": true,
   "version": "0.42.0-beta.100",
-  "description": "An Apps portal into the Polkadot network",
+  "description": "An Apps portal into the Darwinia network",
   "main": "index.js",
   "homepage": ".",
   "repository": "https://github.com/polkadot-js/apps.git",

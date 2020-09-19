@@ -7,7 +7,7 @@
   "nav.contracts": "合约",
   "nav.council": "议会",
   "nav.dashboard": "面板",
-  "nav.democracy": "De民主权利mocracy",
+  "nav.democracy": "民主权利",
   "nav.explorer": "浏览器",
   "nav.extrinsics": "交易",
   "nav.generic-asset": "通用资产",
@@ -20,10 +20,10 @@
   "nav.staking": "抵押",
   "nav.stakinginfo": "抵押总览",
   "nav.storage": "链状态",
-  "nav.sudo": "Sudo",
+  "nav.sudo": "管理员",
   "nav.tech-comm": "技术委员会",
   "nav.toolbox": "工具箱",
   "nav.transfer": "转账",
-  "nav.treasury": "Treasury",
+  "nav.treasury": "财政",
   "nav.vanity": "美化账号"
 }

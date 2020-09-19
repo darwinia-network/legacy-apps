@@ -1,12 +1,12 @@
 {
-  "1 day": "1 day",
-  "1 hr": "1 hr",
-  "1 min": "1 min",
-  "1 s": "1 s",
-  "all available": "all available",
-  "everything": "everything",
-  "{{d}} days": "{{d}} days",
-  "{{h}} hrs": "{{h}} hrs",
-  "{{m}} mins": "{{m}} mins",
-  "{{s}} s": "{{s}} s"
+  "1 day": "1 天",
+  "1 hr": "1 小时",
+  "1 min": "1 分钟",
+  "1 s": "1 秒",
+  "all available": "全部可用",
+  "everything": "全部",
+  "{{d}} days": "{{d}} 天",
+  "{{h}} hrs": "{{h}} 小时",
+  "{{m}} mins": "{{m}} 分钟",
+  "{{s}} s": "{{s}} 秒"
 }

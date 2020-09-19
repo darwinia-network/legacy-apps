@@ -8,8 +8,9 @@ import BN from 'bn.js';
 import React, { useEffect, useState } from 'react';
 import { SummaryBox, CardSummary } from '@polkadot/react-components';
 import { useApi, useCall } from '@polkadot/react-hooks';
-import { FormatBalance } from '@polkadot/react-query';
+import { FormatBalance, FormatKtonBalance } from '@polkadot/react-query';
 import { formatNumber } from '@polkadot/util';
+import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 
 import { useTranslation } from '../translate';
 
@@ -20,17 +21,24 @@ interface Props {
   totalStaked?: BN;
 }
 
+function capitalize (s: string): string {
+  if (typeof s !== 'string') return '';
+
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 function Summary ({ lastReward, numNominators, numValidators, totalStaked }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const totalIssuance = useCall<Balance>(api.query.balances?.totalIssuance, []);
-  const [percentage, setPercentage] = useState<string | undefined>();
+  const totalIssuanceKton = useCall<Balance>(api.query.kton?.totalIssuance, []);
+  // const [percentage, setPercentage] = useState<string | undefined>();
 
-  useEffect((): void => {
-    totalIssuance && totalStaked?.gtn(0) && setPercentage(
-      `${(totalStaked.muln(10000).div(totalIssuance).toNumber() / 100).toFixed(2)}%`
-    );
-  }, [totalIssuance, totalStaked]);
+  // useEffect((): void => {
+  //   totalIssuance && totalStaked?.gtn(0) && setPercentage(
+  //     `${(totalStaked.muln(10000).div(totalIssuance).toNumber() / 100).toFixed(2)}%`
+  //   );
+  // }, [totalIssuance, totalStaked]);
 
   return (
     <SummaryBox>
@@ -44,26 +52,34 @@ function Summary ({ lastReward, numNominators, numValidators, totalStaked }: Pro
           <CardSummary label=''>/</CardSummary>
         )}
         {totalIssuance && (
-          <CardSummary label={t('total issuance')}>
+          <CardSummary label={`${t('total issuance')}(${capitalize(RING_PROPERTIES.tokenSymbol.toLocaleLowerCase())})`}>
             <FormatBalance
               value={totalIssuance}
               withSi
             />
           </CardSummary>
         )}
+        {totalIssuanceKton && (
+          <CardSummary label={`${t('total issuance')}(${capitalize(KTON_PROPERTIES.tokenSymbol.toLocaleLowerCase())})`}>
+            <FormatKtonBalance
+              value={totalIssuanceKton}
+              withSi
+            />
+          </CardSummary>
+        )}
       </section>
-      {percentage && (
+      {/* {percentage && (
         <CardSummary label={t('staked')}>
           {percentage}
         </CardSummary>
-      )}
-      {numValidators && numNominators && (
+      )} */}
+      {(numValidators && numNominators) ? (
         <CardSummary label={t('validators/nominators')}>
           {numValidators}/{numNominators}
         </CardSummary>
-      )}
+      ) : null}
       {lastReward?.gtn(0) && (
-        <CardSummary label={t('last reward')}>
+        <CardSummary label={`${t('last reward')}(${capitalize(RING_PROPERTIES.tokenSymbol.toLocaleLowerCase())})`}>
           <FormatBalance
             value={lastReward}
             withSi

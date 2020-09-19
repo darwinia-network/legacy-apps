@@ -8,19 +8,16 @@ import { ComponentProps } from './types';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import keyring from '@polkadot/ui-keyring';
-import { getLedger, isLedger } from '@polkadot/react-api';
+import { getLedger } from '@polkadot/react-api';
 import { useAccounts, useFavorites, useApi } from '@polkadot/react-hooks';
-import { Button, Input, Table, AddressRow } from '@polkadot/react-components';
+import { AddressRow } from '@polkadot/react-components';
 import { ActionStatus } from '@polkadot/react-components/Status/types';
 
 import CreateModal from './modals/Create';
 import ImportModal from './modals/Import';
 import QrModal from './modals/Qr';
-import Account from './Account';
-import Banner from './Banner';
 import AccountList from './AccountList';
 import { useTranslation } from './translate';
-import ChangeIcon from './img/changeIcon.svg';
 import SwitchIcon from './img/switchAccount.svg';
 
 interface Props {
@@ -46,6 +43,14 @@ async function queryLedger (): Promise<void> {
   }
 }
 
+function hackParseSystemChain (systemChain: string): string {
+  if (systemChain === 'Crab' || systemChain === 'crab') {
+    return 'Darwinia Crab';
+  }
+
+  return systemChain;
+}
+
 function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAccountChecked }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { allAccounts, hasAccounts } = useAccounts();
@@ -55,7 +60,6 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
   const [isQrOpen, setIsQrOpen] = useState(false);
   const [favorites, toggleFavorite] = useFavorites(STORE_FAVS);
   const [sortedAccounts, setSortedAccounts] = useState<SortedAccount[]>([]);
-  const [filter, setFilter] = useState<string>('');
   const { systemChain } = useApi();
 
   useEffect((): void => {
@@ -117,7 +121,7 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
           <StyledWrapper>
             <div className='ui--AccountStatus-Box'>
               <div className='ui--AccountStatus-Network'>
-                <span>•</span><span>{systemChain} {t('Network')}</span>
+                <span>•</span><span>{hackParseSystemChain(systemChain)} {t('Network')}</span>
               </div>
               <AddressRow
                 className='ui--AccountStatus-Address'

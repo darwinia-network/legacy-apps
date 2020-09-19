@@ -12,6 +12,7 @@ import { ApiPromise } from '@polkadot/api';
 import { Badge, Icon, Menu, Tooltip } from '@polkadot/react-components';
 import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
 import { isFunction } from '@polkadot/util';
+import modulesDisabled from '@polkadot/apps-config/module';
 
 const DUMMY_COUNTER = (): number => 0;
 
@@ -42,7 +43,7 @@ function hasEndpoint (api: ApiPromise, endpoint: string): boolean {
   }
 }
 
-function checkVisible (name: string, { api, isApiConnected, isApiReady }: ApiProps, hasAccounts: boolean, hasSudo: boolean, { isHidden, needsAccounts, needsApi, needsSudo }: Route['display']): boolean {
+function checkVisible (name: string, { api, isApiConnected, isApiReady, systemName }: ApiProps, hasAccounts: boolean, hasSudo: boolean, { isHidden, needsAccounts, needsApi, needsSudo }: Route['display']): boolean {
   if (isHidden) {
     return false;
   } else if (needsAccounts && !hasAccounts) {
@@ -54,6 +55,8 @@ function checkVisible (name: string, { api, isApiConnected, isApiReady }: ApiPro
   } else if (needsSudo && !hasSudo) {
     logDisabled(name, 'Sudo key not available');
 
+    return false;
+  } else if (modulesDisabled[systemName]?.paths && (modulesDisabled[systemName]?.paths as any)[name]) {
     return false;
   }
 

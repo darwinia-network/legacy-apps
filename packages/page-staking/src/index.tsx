@@ -101,7 +101,7 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
 
   return (
     <main className={`staking--App ${className}`}>
-      <HelpOverlay md={basicMd} />
+      {/* <HelpOverlay md={basicMd} /> */}
       <header>
         <Tabs
           basePath={basePath}

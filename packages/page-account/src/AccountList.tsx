@@ -2,26 +2,21 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { KeyringAddress } from '@polkadot/ui-keyring/types';
 import { ComponentProps as Props, ModalProps } from './types';
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import keyring from '@polkadot/ui-keyring';
-import { getLedger, isLedger } from '@polkadot/react-api';
 import { useAccounts, useFavorites } from '@polkadot/react-hooks';
-import { Button, Input, Table, Modal } from '@polkadot/react-components-darwinia';
+import { Button, Table, Modal } from '@polkadot/react-components-darwinia';
 import { I18nProps } from '@polkadot/react-components/types';
 
 import CreateModal from './modals/Create';
 import ImportModal from './modals/Import';
 import QrModal from './modals/Qr';
 import Account from './AccountListItem';
-import Banner from './Banner';
 import { useTranslation } from './translate';
 import noAccountImg from './img/noAccount.svg';
-
-import store from 'store';
 
 interface Props extends ModalProps, I18nProps {
   onToggleAccountChecked: (address: string) => void;
@@ -88,39 +83,6 @@ function AccountList ({ accountChecked, className, onClose, onStatusChange, onTo
             onStatusChange={onStatusChange}
           />
         )}
-        {/* <Button.Group>
-        <Button
-          icon='add'
-          isPrimary
-          label={t('Add account')}
-          onClick={_toggleCreate}
-        />
-        <Button.Or />
-        <Button
-          icon='sync'
-          isPrimary
-          label={t('Restore JSON')}
-          onClick={_toggleImport}
-        />
-        <Button.Or />
-        <Button
-          icon='qrcode'
-          isPrimary
-          label={t('Add via Qr')}
-          onClick={_toggleQr}
-        />
-        {isLedger() && (
-          <>
-            <Button.Or />
-            <Button
-              icon='question'
-              isPrimary
-              label={t('Query Ledger')}
-              onClick={queryLedger}
-            />
-          </>
-        )}
-      </Button.Group> */}
         {hasAccounts
           ? (
             <>
@@ -169,8 +131,8 @@ function AccountList ({ accountChecked, className, onClose, onStatusChange, onTo
           )
           : <div className='noAccount'>
             <img src={noAccountImg} />
-            <p className='h1'>No account</p>
-            <p>Please add an account and open your Darwinia Network Surfing</p>
+            <p className='h1'>{t('No account')}</p>
+            <p>{t('Please add an account and open your Darwinia Network Surfing')}</p>
 
             <Button
               isPrimary

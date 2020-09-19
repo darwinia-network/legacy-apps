@@ -59,7 +59,7 @@ function Validator ({ canSelect, info: { accountId, bondOther, bondOwn, bondTota
       <td className='number together'>
         {formatNumber(bondOther)}{` (${numNominators})`}
       </td>
-      <td className='number together'><FormatBalance value={rewardPayout} /></td>
+      {/* <td className='number together'><FormatBalance value={rewardPayout} /></td> */}
       <td>
         {(canSelect || isSelected) && (
           <Toggle
