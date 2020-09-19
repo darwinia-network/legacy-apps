@@ -161,7 +161,7 @@ class Overview extends React.PureComponent<Props, State> {
     if (expire <= chain_bestNumber.toNumber()) {
       return 100;
     } else {
-      return 100 - (expire - chain_bestNumber.toNumber()) / (expire - start) * 100;
+      return parseFloat((100 - (expire - chain_bestNumber.toNumber()) / (expire - start) * 100).toFixed(2));
     }
   }
 
@@ -372,11 +372,7 @@ class Overview extends React.PureComponent<Props, State> {
                 <td>
                   {/* <p className='stakingRange'>{`${this.formatDate(item.unbonding_at)} - ${this.formatDate(this.getUnbondingEndTime(item.unbonding_at))}`}</p> */}
                   {chain_bestNumber && (
-                    <div>{this.computeUnbondProgress(
-                      this.formatIndex(item.unbonding_extrinsic_index),
-                      chain_bestNumber.toNumber(),
-                      this.formatIndex(item.unbonding_extrinsic_index) + this.unbondEnd
-                    )}</div>
+                    <div>{this.process(this.extrinsicIndexToBlockNumber(item.unbonding_extrinsic_index), item.unbonding_block_end)}%</div>
                   )}
                   <div className='stakingProcess'>
                     <div className='stakingProcessPassed'
