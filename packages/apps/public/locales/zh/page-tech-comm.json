@@ -1,14 +1,19 @@
 {
+  "Close": "关闭",
+  "Close proposal": "关闭提案",
   "Committee prime member, default voting": "委员会主要成员，默认表决",
   "No committee proposals": "没有委员会提案",
   "No members found": "找不到会员",
   "Positive number between 1 and {{count}}": "Positive number between 1 and {{count}}",
   "Proposals ({{count}})": "提案 ({{count}})",
   "Propose a committee motion": "提出委员会议案",
+  "Select the account you wish close the proposal with.": "选择您要用来关闭提案的帐户。",
   "Select the account you wish to make the proposal with.": "选择您要用来提出提案的帐户。",
   "Submit proposal": "提交提案",
   "Tech. committee": "技术委员会",
+  "The committee account that will apply the close for the current round.": "将在当前回合中应用结束的委员会帐户。",
   "The minimum number of committee votes required to approve this motion": "批准该议案所需的最低委员会投票数",
+  "The proposal that will be affected. Once closed for the current voting round, it would need to be re-submitted for a subsequent voting round.": "该提案将受到影响。 在当前投票轮结束后，需要将其重新提交以进行下一轮投票。",
   "Vote": "投票",
   "Vote on proposal": "提议投票",
   "You are voting with this collective's prime account. The vote will be the default outcome in case of any abstentions.": "您正在使用该集体的主要帐户进行投票。 如有任何弃权，表决将是默认结果。",
@@ -19,6 +24,8 @@
   "proposal": "提案",
   "proposals": "提案",
   "propose from account": "从帐户中提出",
+  "sending account": "发送帐户",
   "threshold": "阈值",
-  "total": "总共"
+  "total": "总共",
+  "voting end": "投票结束"
 }
