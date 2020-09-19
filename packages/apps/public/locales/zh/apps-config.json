@@ -2,6 +2,7 @@
   "lng.detect": "默认浏览器语言 (自动检测)",
   "rpc.crab.darwinia": "Crab Network (hosted by Darwinia)",
   "rpc.custom": "自定义环境",
+  "rpc.darwinia": "Darwinia Network (hosted by Darwinia)",
   "rpc.header.dev": "开发环境",
   "rpc.header.live": "正式网络",
   "rpc.header.test": "测试网络",
