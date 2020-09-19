@@ -4,6 +4,7 @@
 
 export default {
   paths: {
-    transfer: true
+    transfer: true,
+    claims: true
   }
 };
