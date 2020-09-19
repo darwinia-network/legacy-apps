@@ -54,6 +54,7 @@ function Nominate ({ className, ownNominators, targets }: Props): React.ReactEle
         <Modal
           className={className}
           header={t('Nominate validators')}
+          onCancel={toggleOpen}
           size='large'
         >
           <Modal.Content>
@@ -96,7 +97,7 @@ function Nominate ({ className, ownNominators, targets }: Props): React.ReactEle
               </Modal.Column>
             </Modal.Columns>
           </Modal.Content>
-          <Modal.Actions onCancel={toggleOpen}>
+          <Modal.Actions>
             <TxButton
               accountId={ids?.controllerId}
               label={t('Nominate')}

@@ -181,11 +181,13 @@ function Create ({ className, onClose, onStatusChange, seed: propsSeed, type: pr
     setAddress(updateAddress(newSeed, derivePath, seedType, pairType));
   const _onChangePairType = (newPairType: KeypairType): void =>
     setAddress(updateAddress(seed, derivePath, seedType, newPairType));
+
   const _selectSeedType = (newSeedType: SeedType): void => {
     if (newSeedType !== seedType) {
       setAddress(generateSeed(null, derivePath, newSeedType, pairType));
     }
   };
+
   const _onChangeName = (name: string): void => setName({ isNameValid: !!name.trim(), name });
   const _toggleConfirmation = (): void => setIsConfirmationOpen(!isConfirmationOpen);
 
@@ -212,8 +214,8 @@ function Create ({ className, onClose, onStatusChange, seed: propsSeed, type: pr
         <CreateConfirmation
           address={address}
           name={name}
-          onCommit={_onCommit}
           onClose={_toggleConfirmation}
+          onCommit={_onCommit}
         />
       )}
       <Modal.Content>
@@ -251,8 +253,8 @@ function Create ({ className, onClose, onStatusChange, seed: propsSeed, type: pr
             value={seed}
           >
             <Dropdown
-              isButton
               defaultValue={seedType}
+              isButton
               onChange={_selectSeedType}
               options={seedOpt}
             />

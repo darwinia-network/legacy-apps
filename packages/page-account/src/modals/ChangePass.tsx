@@ -32,12 +32,13 @@ class ChangePass extends TxComponent<Props, State> {
   };
 
   public render (): React.ReactNode {
-    const { t } = this.props;
+    const { onClose, t } = this.props;
 
     return (
       <Modal
         className='app--accounts-Modal'
         header={t('Change account password')}
+        onCancel={onClose}
       >
         {this.renderContent()}
         {this.renderButtons()}
