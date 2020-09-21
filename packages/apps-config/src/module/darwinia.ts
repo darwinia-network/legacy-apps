@@ -6,6 +6,7 @@ export default {
   paths: {
     transfer: true,
     claims: true,
-    bondHistory: true
+    bondHistory: true,
+    convertDarwiniaAddress: true
   }
 };

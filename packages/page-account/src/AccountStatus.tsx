@@ -3,22 +3,22 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { KeyringAddress } from '@polkadot/ui-keyring/types';
-import { ComponentProps } from './types';
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import keyring from '@polkadot/ui-keyring';
 import { getLedger } from '@polkadot/react-api';
+import modulesDisabled from '@polkadot/apps-config/module';
 import { useAccounts, useFavorites, useApi } from '@polkadot/react-hooks';
-import { AddressRow } from '@polkadot/react-components';
+import { AddressRow, Button } from '@polkadot/react-components';
 import { ActionStatus } from '@polkadot/react-components/Status/types';
 
 import CreateModal from './modals/Create';
 import ImportModal from './modals/Import';
+import MainnetAddress from './modals/MainnetAddress';
 import QrModal from './modals/Qr';
 import AccountList from './AccountList';
 import { useTranslation } from './translate';
-import SwitchIcon from './img/switchAccount.svg';
 
 interface Props {
   onStatusChange: (status: ActionStatus) => void;
@@ -58,9 +58,11 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [isAccountListOpen, setIsAccountListOpen] = useState(false);
   const [isQrOpen, setIsQrOpen] = useState(false);
+  const [isMainnetAddressOpen, setIsMainnetAddressOpen] = useState(false);
   const [favorites, toggleFavorite] = useFavorites(STORE_FAVS);
   const [sortedAccounts, setSortedAccounts] = useState<SortedAccount[]>([]);
-  const { systemChain } = useApi();
+  const { systemChain, systemName } = useApi();
+  const [isConvertDawiniaAddressDisabled, setConvertDawiniaAddressDisabled] = useState(false);
 
   useEffect((): void => {
     setSortedAccounts(
@@ -82,10 +84,15 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
     );
   }, [allAccounts, favorites]);
 
+  useEffect((): void => {
+    setConvertDawiniaAddressDisabled(modulesDisabled[systemName]?.paths.convertDarwiniaAddress || false);
+  }, [systemName]);
+
   const _toggleCreate = (): void => setIsCreateOpen(!isCreateOpen);
   const _toggleImport = (): void => setIsImportOpen(!isImportOpen);
   const _toggleAccountList = (): void => setIsAccountListOpen(!isAccountListOpen);
   const _toggleQr = (): void => setIsQrOpen(!isQrOpen);
+  const _toggleMainnetAddress = (): void => setIsMainnetAddressOpen(!isMainnetAddressOpen);
 
   return (
     <div className={className}>
@@ -116,6 +123,13 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
           onStatusChange={onStatusChange}
         />
       )}
+      {isMainnetAddressOpen && (
+        <MainnetAddress
+          onClose={_toggleMainnetAddress}
+          senderId={accountChecked}
+          onStatusChange={onStatusChange}
+        />
+      )}
       {hasAccounts
         ? (
           <StyledWrapper>
@@ -123,6 +137,7 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
               <div className='ui--AccountStatus-Network'>
                 <span>•</span><span>{hackParseSystemChain(systemChain)} {t('Network')}</span>
               </div>
+
               <AddressRow
                 className='ui--AccountStatus-Address'
                 isEditable={true}
@@ -132,9 +147,18 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
               // withTags
               >
               </AddressRow>
-              <div><img className='switchBtn'
+              {!isConvertDawiniaAddressDisabled ? <Button
+                className='ui--AccountStatus-Convert'
+                isBasic={true}
+                label={t('Convert to Darwinia account')}
+                onClick={_toggleMainnetAddress}
+              /> : null}
+              <Button
+                className='ui--AccountStatus-ChangeAccount'
+                isBasic={true}
+                label={t('Change account')}
                 onClick={_toggleAccountList}
-                src={SwitchIcon} /></div>
+              />
             </div>
           </StyledWrapper>
         )
@@ -149,6 +173,14 @@ const StyledWrapper = styled.div`
   padding: 4px 0 0px 2rem;
   margin: 0 -2rem;
   border-bottom: 1px solid rgba(237,237,237,1);
+
+  .ui--AccountStatus-Convert {
+    margin-right: 10px;
+  }
+
+  .ui--AccountStatus-ChangeAccount {
+    margin-right: 30px;
+  }
 
   @media (max-width: 767px) {
     padding: 0 0.5rem;
@@ -172,9 +204,6 @@ const StyledWrapper = styled.div`
     span{
       margin-right: .5rem;
     }
-  }
-  button{
-    background-color: transparent!important;
   }
   .accounts--Account-buttons{
     padding: 40px;

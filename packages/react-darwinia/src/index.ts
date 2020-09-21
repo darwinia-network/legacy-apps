@@ -64,7 +64,12 @@ function getStakingHistory ({ address, page = 0, row = 10 }, callback) {
 }
 
 const lockLimitOptionsMaker = (t: i18nT): Array<object> => {
-  const month = [0, 3, 6, 12, 18, 24, 30, 36];
+  const month = [];
+
+  for (let i = 0; i <= 36; i++) {
+    month.push(i);
+  }
+
   const options: object[] = [];
 
   month.map((i) => {
