@@ -5,6 +5,7 @@
 export default {
   paths: {
     transfer: true,
-    claims: true
+    claims: true,
+    bondHistory: true
   }
 };

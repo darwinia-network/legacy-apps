@@ -49,6 +49,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
   const [isTransferKtonOpen, toggleKtonTransfer] = useToggle();
   const [isMappingOpen, toggleMapping] = useToggle();
   const [isTransferDisabled, setTransferDisabled] = useState(false);
+  const [isBondHistoryDisabled, setBondHistoryDisabled] = useState(false);
   const _accountChecked = accountChecked[0];
 
   useEffect((): void => {
@@ -76,6 +77,7 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
 
   useEffect((): void => {
     setTransferDisabled(modulesDisabled[systemName]?.paths.transfer || false);
+    setBondHistoryDisabled(modulesDisabled[systemName]?.paths.bondHistory || false);
   }, [systemName]);
 
   const _toggleCreate = (): void => setIsCreateOpen(!isCreateOpen);
@@ -161,11 +163,11 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
             </div>
           </div>
         </div>
-        <StakingList
+        {!isBondHistoryDisabled ? <StakingList
           account={_accountChecked}
           controllerId={controllerId}
           currentBlock={blockNumber?.toNumber()}
-        />
+        /> : null}
       </>
         : <div className='noAccount'>
           <img src={noAccountImg} />
