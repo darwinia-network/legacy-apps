@@ -3,18 +3,20 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { I18nProps } from '@polkadot/react-components/types';
+import { ApiProps } from '@polkadot/react-api/types';
 import React from 'react';
-import { withMulti } from '@polkadot/react-api/hoc';
+import { withMulti, withApi } from '@polkadot/react-api/hoc';
 import styled from 'styled-components';
 import { ColorButton } from '@polkadot/react-darwinia/components';
 import { Spinner } from '@polkadot/react-components';
-import EarningsDetail from './EarningsDetail';
+import ExternalsLinks from '@polkadot/apps-config/links';
+import { encodeAddress } from '@polkadot/util-crypto';
 import translate from '../../translate';
-import { formatFloat, formatBalance } from '@polkadot/util';
-import { RING_PROPERTIES, getStakingHistory, SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
+import { formatBalance } from '@polkadot/util';
+import { getStakingHistory, instance } from '@polkadot/react-darwinia';
 import BN from 'bn.js';
 
-type Props = I18nProps & {
+type Props = I18nProps & ApiProps &{
   stashId: string;
   address: string;
   destinationId: string;
@@ -41,7 +43,7 @@ const StyledWrapper = styled.div`
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 25px 20px 27px 57px; 
+      padding: 25px 20px 27px 57px;
     }
 
     .tip-box {
@@ -120,6 +122,8 @@ class Earnings extends React.PureComponent<Props, State> {
     history: []
   };
 
+  axiosInstance = null;
+
   toggleEarningsDetail = () => {
     this.setState(({ isEarningsDetailOpen }) => ({
       isEarningsDetailOpen: !isEarningsDetailOpen
@@ -127,6 +131,10 @@ class Earnings extends React.PureComponent<Props, State> {
   }
 
   componentDidMount () {
+    const { systemChain } = this.props;
+
+    this.axiosInstance = instance[systemChain];
+
     this.getStakingHistory();
     timer && clearInterval(timer);
     timer = setInterval(() => {
@@ -149,7 +157,11 @@ class Earnings extends React.PureComponent<Props, State> {
   }
 
   private getStakingHistory = (page = 0, address = this.props.address): void => {
-    getStakingHistory({
+    if (!this.axiosInstance) {
+      return;
+    }
+
+    getStakingHistory(this.axiosInstance, {
       page,
       address: address
     }, (data) => {
@@ -160,8 +172,10 @@ class Earnings extends React.PureComponent<Props, State> {
   }
 
   render () {
-    const { address, destinationId, doPayout, doPayoutIsDisabled, isLoading, payoutMaxAmount, payoutsAmount, t, unClaimedReward } = this.props;
+    const { destinationId, doPayout, doPayoutIsDisabled, isLoading, payoutMaxAmount, payoutsAmount, t, unClaimedReward, systemChain } = this.props;
     const { sum } = this.state;
+    const extChain = ExternalsLinks.Subscan.chains[systemChain];
+    const subscanDomain = ExternalsLinks.Subscan.createDomain(extChain);
 
     return (
       <StyledWrapper>
@@ -183,7 +197,7 @@ class Earnings extends React.PureComponent<Props, State> {
                 key='detail'
                 onClick={
                   (): void => {
-                    window.open(`${SUBSCAN_URL_CRAB}/account/${destinationId}?tab=reward`);
+                    window.open(`${subscanDomain}/account/${destinationId}?tab=reward`);
                   }
                 }
               >{t('Reward History')}</ColorButton>
@@ -210,5 +224,6 @@ class Earnings extends React.PureComponent<Props, State> {
 
 export default withMulti(
   Earnings,
-  translate
+  translate,
+  withApi
 );

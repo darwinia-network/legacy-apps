@@ -6,10 +6,13 @@ import BN from 'bn.js';
 
 export default {
   chains: {
-    Crab: 'Crab'
+    'Darwinia Crab': 'crab',
+    'Darwinia CC1': 'dev.darwinia'
   },
   create: (chain: string, path: string, data: BN | number | string): string =>
     `https://${chain}.subscan.io/${path}/${data.toString()}`,
+  createDomain: (chain: string): string =>
+    `https://${chain}.subscan.io`,
   isActive: true,
   paths: {
     address: 'account',
@@ -19,7 +22,8 @@ export default {
     proposal: 'democracy_proposal',
     referendum: 'referenda',
     techcomm: 'tech',
-    treasury: 'treasury'
+    treasury: 'treasury',
+    transaction: 'tx'
   },
   url: 'https://subscan.io/'
 };

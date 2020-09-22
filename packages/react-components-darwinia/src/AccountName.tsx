@@ -10,8 +10,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useCall, useAccounts, useApi, useToggle } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
-import { SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
-
+import ExternalsLinks from '@polkadot/apps-config/links';
 import { useTranslation } from './translate';
 import { getAddressName } from './util';
 import AccountNameJudgement from './AccountNameJudgement';
@@ -74,15 +73,15 @@ function extractName (address: AccountId | string, accountIndex?: AccountIndex, 
   );
 }
 
-function renderLinkIcon (address) {
+function renderLinkIcon (domain: string, address: string): React.ReactNode {
   return (
     <Button
       className='icon-button'
       icon='external alternate'
       isPrimary
       key='tosubscan'
-      onClick={() => {
-        window.open(`${SUBSCAN_URL_CRAB}/account/${address}`);
+      onClick={(): void => {
+        window.open(`${domain}/account/${address}`);
       }}
       size='mini'
     />
@@ -91,7 +90,7 @@ function renderLinkIcon (address) {
 
 function AccountName ({ children, className, defaultName, isLink, label, onClick, override, showAddress = true, style, toggle, value }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { api } = useApi();
+  const { api, systemChain } = useApi();
   const { allAccounts } = useAccounts();
   const [isJudgementOpen, toggleJudgement] = useToggle();
   const registrars = useCall<Option<RegistrarInfo>[]>(api.query.identity?.registrars, []);
@@ -99,6 +98,8 @@ function AccountName ({ children, className, defaultName, isLink, label, onClick
   const [isRegistrar, setIsRegistrar] = useState(false);
   const address = useMemo((): string => (value || '').toString(), [value]);
   const [name, setName] = useState<React.ReactNode>((): React.ReactNode => extractName((value || '').toString(), undefined, defaultName, showAddress));
+  const extChain = ExternalsLinks.Subscan.chains[systemChain];
+  const subscanDomain = ExternalsLinks.Subscan.createDomain(extChain);
 
   // determine if we have a registrar or not - registrars are allowed to approve
   useEffect((): void => {
@@ -229,7 +230,7 @@ function AccountName ({ children, className, defaultName, isLink, label, onClick
         }
         style={style}
       >
-        {label || ''}{override || name}{isLink && renderLinkIcon(address)}{children}
+        {label || ''}{override || name}{isLink && renderLinkIcon(subscanDomain, address)}{children}
       </div>
     </>
   );
