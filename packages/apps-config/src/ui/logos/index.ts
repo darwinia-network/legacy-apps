@@ -20,7 +20,7 @@ import emptyLogo from './empty.svg';
 const chainLogos: Record<string, any> = [
   ['darwinia cc1', chainDarwinia],
   ['darwinia', chainDarwinia],
-  ['crab network', chainCrab],
+  ['darwinia crab', chainCrab],
   ['darwinia network', chainDarwinia]
 ].reduce((logos, [chain, logo]): Record<string, any> => ({
   ...logos,
@@ -31,7 +31,7 @@ const chainLogos: Record<string, any> = [
 const nodeLogos: Record<string, any> = [
   ['node-template', nodeSubstrate],
   ['substrate-node', nodeSubstrate],
-  ['crab', chainCrab],
+  ['darwinia crab', chainCrab],
   ['darwinia', chainDarwinia]
 ].reduce((logos, [node, logo]): Record<string, any> => ({
   ...logos,

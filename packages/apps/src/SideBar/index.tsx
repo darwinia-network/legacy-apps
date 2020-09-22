@@ -88,13 +88,6 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
               onClick={_toggleModal('network')}
             >
               <ChainImg />
-              {/* <div className='info'>
-                <Chain className='chain' />
-                {runtimeVersion && (
-                  <div className='runtimeVersion'>{t('version {{version}}', { replace: { version: runtimeVersion.specVersion.toNumber() } })}</div>
-                )}
-                <BestNumber label='#' />
-              </div> */}
             </div>
             {routing.map((route, index): React.ReactNode => (
               route

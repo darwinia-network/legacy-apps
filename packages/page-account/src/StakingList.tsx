@@ -7,21 +7,22 @@ import { I18nProps } from '@polkadot/react-components/types';
 import { BlockNumber } from '@polkadot/types/interfaces';
 import { ComponentProps, bondList } from './types';
 import styled from 'styled-components';
-import { withRouter } from 'react-router-dom';
 import React from 'react';
-import { withMulti, withCalls } from '@polkadot/react-api/hoc';
-import { TxButton, Button } from '@polkadot/react-components';
+import { withMulti, withCalls, withApi } from '@polkadot/react-api/hoc';
+import { ApiProps } from '@polkadot/react-api/types';
+import { TxButton } from '@polkadot/react-components';
 import { Button as SButton, Checkbox } from 'semantic-ui-react';
 import translate from './translate';
-import { formatBalance, formatKtonBalance, formatNumber, ringToKton } from '@polkadot/util';
-import { encodeAddress } from '@polkadot/util-crypto';
+import { formatBalance, formatKtonBalance, ringToKton } from '@polkadot/util';
 import dayjs from 'dayjs';
 import ReactPaginate from 'react-paginate';
-import { getBondList, SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
+import { getBondList, instance } from '@polkadot/react-darwinia';
+import ExternalsLinks from '@polkadot/apps-config/links';
+import { encodeAddress } from '@polkadot/util-crypto';
 
 const PAGE_SIZE = 10;
 
-type Props = ComponentProps & I18nProps & {
+type Props = ComponentProps & I18nProps & ApiProps & {
   account: string;
   controllerId: string;
   onStakingNow: () => void;
@@ -94,7 +95,14 @@ class Overview extends React.PureComponent<Props, State> {
       locked = 0;
     }
 
-    const response = await getBondList({ page: page, row: PAGE_SIZE, status: status, locked, address: encodeAddress(address, 42) });
+    const { systemChain } = this.props;
+    const axiosInstance = instance[systemChain];
+
+    if (!axiosInstance) {
+      return;
+    }
+
+    const response = await getBondList(axiosInstance, { page: page, row: PAGE_SIZE, status: status, locked, address: address });
 
     if (response.data.code === 0 && response.data.data) {
       this.setState({
@@ -221,8 +229,12 @@ class Overview extends React.PureComponent<Props, State> {
   }
 
   renderBondedList (): React.ReactNode {
-    const { controllerId, t } = this.props;
+    const { controllerId, systemChain, t } = this.props;
     const { bondList, pageCount } = this.state;
+
+    const { chains, paths } = ExternalsLinks.Subscan;
+    const extChain = chains[systemChain];
+    const extPaths = paths.extrinsic;
 
     if (!bondList || bondList.count === 0 || (bondList.list.length === 0)) {
       return (
@@ -262,7 +274,7 @@ class Overview extends React.PureComponent<Props, State> {
             {bondList.list.map((item, index) => {
               return (<tr key={`${index}${item.Id}`}>
                 <td><a className='stakingLink'
-                  href={`${SUBSCAN_URL_CRAB}/extrinsic/${item.extrinsic_index}`}
+                  href={ExternalsLinks.Subscan.create(extChain, extPaths || '', item.extrinsic_index)}
                   rel='noopener noreferrer'
                   target='_blank'>{item.extrinsic_index}</a></td>
                 <td>
@@ -327,10 +339,14 @@ class Overview extends React.PureComponent<Props, State> {
   }
 
   renderUnbondList () {
-    const { chain_bestNumber, t } = this.props;
+    const { chain_bestNumber, systemChain, t } = this.props;
     const { bondList, pageCount } = this.state;
 
-    if (!bondList || bondList.count === 0 || (bondList.list.length === 0)) {
+    const { chains, paths } = ExternalsLinks.Subscan;
+    const extChain = chains[systemChain];
+    const extPaths = paths.extrinsic;
+
+    if (!bondList || bondList.count === 0 || (bondList.list?.length === 0)) {
       return (
         <Wrapper>
           <table className={'stakingTable stakingTableEmpty unbondedStakingTable'}>
@@ -363,10 +379,10 @@ class Overview extends React.PureComponent<Props, State> {
               <td>{t('Amount')}</td>
               <td>{t('Status')}</td>
             </tr>
-            {bondList.list.map((item, index) => {
+            {bondList.list?.map((item, index) => {
               return (<tr key={`${index}${item.Id}`}>
                 <td><a className='stakingLink'
-                  href={`${SUBSCAN_URL_CRAB}/extrinsic/${item.extrinsic_index}`}
+                  href={ExternalsLinks.Subscan.create(extChain, extPaths || '', item.extrinsic_index)}
                   rel='noopener noreferrer'
                   target='_blank'>{item.extrinsic_index}</a></td>
                 <td>
@@ -409,10 +425,15 @@ class Overview extends React.PureComponent<Props, State> {
   }
 
   renderMapList () {
-    const { controllerId, t } = this.props;
+    const { controllerId, systemChain, t } = this.props;
     const { bondList, pageCount } = this.state;
 
-    if (!bondList || bondList.count === 0 || (bondList.list.length === 0)) {
+    const { chains, paths } = ExternalsLinks.Subscan;
+    const extChain = chains[systemChain];
+    const extPaths = paths.extrinsic;
+    const txPaths = paths.transaction;
+
+    if (!bondList || bondList.count === 0 || (bondList.list?.length === 0)) {
       return (
         <Wrapper>
           <table className={'stakingTable stakingTableEmpty'}>
@@ -450,7 +471,7 @@ class Overview extends React.PureComponent<Props, State> {
             {bondList.list.map((item, index) => {
               return (<tr key={`${index}${item.Id}`}>
                 <td><a className='stakingLink'
-                  href={`${SUBSCAN_URL_CRAB}/extrinsic/${item.extrinsic_index}`}
+                  href={ExternalsLinks.Subscan.create(extChain, extPaths || '', item.extrinsic_index)}
                   rel='noopener noreferrer'
                   target='_blank'>{item.extrinsic_index}</a></td>
                 <td>
@@ -462,7 +483,7 @@ class Overview extends React.PureComponent<Props, State> {
                 </td>
                 <td>
                   <a className='stakingLink'
-                    href={`${SUBSCAN_URL_CRAB}/tx/${item.from_tx}`}
+                    href={ExternalsLinks.Subscan.create(extChain, txPaths || '', item.from_tx)}
                     rel='noopener noreferrer'
                     target='_blank'>{item.from_tx}</a>
                 </td>
@@ -651,6 +672,7 @@ export default withMulti(
   Overview,
   translate,
   // withRouter,
+  withApi,
   withCalls<Props>(
     'derive.chain.bestNumber'
   )

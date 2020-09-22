@@ -96,6 +96,7 @@ class EarningsDetail extends React.PureComponent<Props, State> {
 
   private getStakingHistory = (page = 0) => {
     const { address } = this.props;
+
     getStakingHistory({
       page,
       address: address
@@ -111,6 +112,7 @@ class EarningsDetail extends React.PureComponent<Props, State> {
   render () {
     const { isOpen, onClose, t } = this.props;
     const { pageCount } = this.state;
+
     if (!isOpen) {
       return null;
     }
@@ -120,23 +122,23 @@ class EarningsDetail extends React.PureComponent<Props, State> {
         <Modal
           className='staking--Unbond'
           dimmer='inverted'
-          open
           onCancel={onClose}
+          open
         >
           {this.renderContent()}
           <Modal.Actions withCancel={false}>
             <ReactPaginate
-              previousLabel={'<'}
-              nextLabel={'>'}
-              breakLabel={'...'}
-              breakClassName={'break-me'}
-              pageCount={pageCount}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
-              onPageChange={this.handlePageClick}
-              containerClassName={'pagination'}
-              subContainerClassName={'pages pagination'}
               activeClassName={'active'}
+              breakClassName={'break-me'}
+              breakLabel={'...'}
+              containerClassName={'pagination'}
+              marginPagesDisplayed={2}
+              nextLabel={'>'}
+              onPageChange={this.handlePageClick}
+              pageCount={pageCount}
+              pageRangeDisplayed={3}
+              previousLabel={'<'}
+              subContainerClassName={'pages pagination'}
             />
           </Modal.Actions>
         </Modal>
@@ -144,8 +146,9 @@ class EarningsDetail extends React.PureComponent<Props, State> {
     );
   }
 
-  private handlePageClick = data => {
+  private handlePageClick = (data) => {
     const selected = data.selected;
+
     this.getStakingHistory(selected);
   };
 
@@ -157,21 +160,24 @@ class EarningsDetail extends React.PureComponent<Props, State> {
       <>
         <Modal.Content className='ui--signer-Signer-Content'>
           <StyleWrapper>
-            <div className="th">
+            <div className='th'>
               <div>{t('Date')}</div>
               <div>{t('Era')}</div>
               <div>{t('Type')}</div>
               <div>{t('Reward')}</div>
             </div>
             {history.map((item, index) => (
-              <div className={`td ${index % 2 === 0 ? 'even' : 'odd'}`} key={item.Id}>
+              <div className={`td ${index % 2 === 0 ? 'even' : 'odd'}`}
+                key={item.Id}>
                 <div>{this.parserDate(item.block_timestamp)}</div>
                 <div>{item.era}</div>
-                <div className="validator-box">
-                  <IdentityIcon key={index} value={'0x' + item.validator} size={20} />
+                <div className='validator-box'>
+                  <IdentityIcon key={index}
+                    size={20}
+                    value={'0x' + item.validator} />
                   <p>{item.reward_type}</p>
                 </div>
-                <div className="earning">{formatFloat(item.reward)} {RING_PROPERTIES.tokenSymbol}</div>
+                <div className='earning'>{formatFloat(item.reward)} {RING_PROPERTIES.tokenSymbol}</div>
               </div>
             ))}
           </StyleWrapper>
@@ -182,7 +188,7 @@ class EarningsDetail extends React.PureComponent<Props, State> {
 
   private nextState (newState: Partial<State>): void {
     this.setState((prevState: State): State => {
-      const { history, count, pageCount } = newState;
+      const { count, history, pageCount } = newState;
 
       return {
         history,
