@@ -29,7 +29,7 @@ function createTest (t: (key: string, text: string, options: { ns: string }) => 
     {
       info: 'darwinia',
       text: t('rpc.darwinia', 'Darwinia Network (hosted by Darwinia)', { ns: 'apps-config' }),
-      value: 'ws://146.56.203.90:9944'
+      value: 'wss://cc1.darwinia.network'
     }
   ];
 }
