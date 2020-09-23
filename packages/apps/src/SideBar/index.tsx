@@ -233,7 +233,7 @@ export default styled(SideBar)`
       width: 100%;
       display: flex;
       justify-content: center;
-
+      flex-shrink: 0;
       img {
         height: 4.28571428571rem;
         width: 4.28571428571rem;
