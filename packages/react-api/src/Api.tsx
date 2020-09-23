@@ -22,6 +22,7 @@ import { setSS58Format } from '@polkadot/util-crypto';
 import addressDefaults from '@polkadot/util-crypto/address/defaults';
 import { setRingProperties, setKtonProperties } from '@polkadot/react-darwinia';
 import rpc from '@darwinia/typegen/interfaces/jsonrpc';
+import { getSpecTypes } from '@polkadot/types-known';
 import ApiContext from './ApiContext';
 import registry from './typeRegistry';
 
@@ -45,6 +46,8 @@ interface ChainData {
   systemChainType: ChainType;
   systemName: string;
   systemVersion: string;
+  specVersion: number;
+  specName: string;
 }
 
 // const injectedPromise = new Promise<InjectedExtension[]>((resolve): void => {
@@ -61,7 +64,7 @@ let api: ApiPromise;
 export { api };
 
 async function retrieve (api: ApiPromise): Promise<ChainData> {
-  const [properties, systemChain, systemChainType, systemName, systemVersion, injectedAccounts] = await Promise.all([
+  const [properties, systemChain, systemChainType, systemName, systemVersion, specVersion, specName, injectedAccounts] = await Promise.all([
     api.rpc.system.properties(),
     api.rpc.system.chain(),
     api.rpc.system.chainType
@@ -69,6 +72,8 @@ async function retrieve (api: ApiPromise): Promise<ChainData> {
       : Promise.resolve(registry.createType('ChainType', 'Live')),
     api.rpc.system.name(),
     api.rpc.system.version(),
+    api.runtimeVersion.specVersion.toNumber(),
+    api.runtimeVersion.specName.toString(),
     injectedPromise
       .then(() => web3Accounts())
       .then((accounts) => accounts.map(({ address, meta }): InjectedAccountExt => ({
@@ -91,12 +96,14 @@ async function retrieve (api: ApiPromise): Promise<ChainData> {
     systemChain: (systemChain || '<unknown>').toString(),
     systemChainType,
     systemName: systemName.toString(),
-    systemVersion: systemVersion.toString()
+    systemVersion: systemVersion.toString(),
+    specVersion,
+    specName
   };
 }
 
 async function loadOnReady (api: ApiPromise): Promise<ApiState> {
-  const { injectedAccounts, properties, systemChain, systemChainType, systemName, systemVersion } = await retrieve(api);
+  const { injectedAccounts, properties, specName, specVersion, systemChain, systemChainType, systemName, systemVersion } = await retrieve(api);
   const ss58Format = uiSettings.prefix === -1
     ? properties.ss58Format.unwrapOr(DEFAULT_SS58).toNumber()
     : uiSettings.prefix;
@@ -108,6 +115,9 @@ async function loadOnReady (api: ApiPromise): Promise<ApiState> {
   const isDevelopment = systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain);
 
   console.log(`chain: ${systemChain} (${systemChainType}), ${JSON.stringify(properties)}`);
+  console.log(`runtime: ${systemChain} | ${specName} | ${specVersion}`);
+  console.log('specTypes', getSpecTypes(registry, systemChain, specName, specVersion));
+  registry.register(getSpecTypes(registry, systemChain, specName, specVersion));
 
   // explicitly override the ss58Format as specified
   registry.setChainProperties(registry.createType('ChainProperties', { ...properties, ss58Format }));
