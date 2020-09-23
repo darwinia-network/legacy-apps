@@ -7,7 +7,7 @@ import BN from 'bn.js';
 export default {
   chains: {
     'Darwinia Crab': 'crab',
-    'Darwinia CC1': 'dev.darwinia'
+    'Darwinia CC1': 'darwinia-cc1'
   },
   create: (chain: string, path: string, data: BN | number | string): string =>
     `https://${chain}.subscan.io/${path}/${data.toString()}`,
