@@ -3544,19 +3544,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types-known@npm:1.27.1":
-  version: 1.27.1
-  resolution: "@polkadot/types-known@npm:1.27.1"
-  dependencies:
-    "@babel/runtime": ^7.11.0
-    "@polkadot/types": 1.27.1
-    "@polkadot/util": ^3.0.1
-    bn.js: ^5.1.2
-  checksum: 7c80c4597b91f35b932b740a870ffb2e407692567e08b63ea0821a91681f99c596c0cc69a3e891b6ca6ff3eb07fc786f247d8bb13896d08a2018a62181af065f
-  languageName: node
-  linkType: hard
-
-"@polkadot/types-known@workspace:packages/types-known":
+"@polkadot/types-known@1.27.1, @polkadot/types-known@workspace:packages/types-known":
   version: 0.0.0-use.local
   resolution: "@polkadot/types-known@workspace:packages/types-known"
   dependencies:
