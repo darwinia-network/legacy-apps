@@ -1,11 +1,11 @@
 {
   "1. You need to stake some {{KTON}} or {{RING}} to get POWER. The higher the POWER, the greater the share of reward.": "1. 您可以选择冻结 {{KTON}} 或 {{RING}} 来获取票权（POWER），票权越大获得的收益分成比重越大。",
-  "1. You need to stake some {{KTON}} or {{RING}} to get power for nominate.": "1. 您可以选择冻结 RING 或 KTON 来获取投票所需的 POWER，POWER越大获得的收益分成比重越大。",
+  "1. You need to stake some {{KTON}} or {{RING}} to get power for nominate.": "1. 您可以选择冻结 RING 或 KTON 来获取 竞选验证人/提名 所需的 POWER，POWER越大获得的收益分成比重越大。",
   "2. Please make sure that you have some excess {{RING}} in this account as gas fee.": "2. 请确保您账号中剩余少量 {{RING}} 作为交易手续费。",
   "Account": "账号",
   "Get Power": "获取 POWER",
   "Month": "月",
-  "My Nomination": "我的投票",
+  "My Nomination": "我的提名",
   "New stake": "冻结",
   "No fixed term": "不冻结",
   "Power Manager": "POWER 管理",
