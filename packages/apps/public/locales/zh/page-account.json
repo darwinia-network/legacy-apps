@@ -132,6 +132,8 @@
   "available ": "可用 ",
   "backup file": "备份文件",
   "case sensitive": "大小写敏感",
+  "copied": "已复制",
+  "copy": "复制",
   "created account": "账号已创建",
   "delay": "delay",
   "deposit": "deposit",
@@ -172,7 +174,5 @@
   "twitter": "推特",
   "web": "主页",
   "your current password": "你当前的密码",
-  "your new password": "你的新密码",
-  "copied": "已复制",
-  "copy": "复制"
+  "your new password": "你的新密码"
 }
