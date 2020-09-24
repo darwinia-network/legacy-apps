@@ -119,18 +119,13 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
                   <div className='p-amount'>
                     <Available params={_accountChecked} />
                   </div>
-                  {!isTransferDisabled ? <p className='p-btn'>
-                    {api.tx.crabIssuing ? <Button
-                      isBasic={true}
-                      label={t('Genesis Swap')}
-                      onClick={(): void => { toggleMapping(); }}
-                    /> : null}
+                  <p className='p-btn'>
                     <Button
                       isBasic={true}
                       label={t('Transfer')}
                       onClick={(): void => { toggleTransfer(); }}
                     />
-                  </p> : null}
+                  </p>
                 </div>
               </div>
             </div>
