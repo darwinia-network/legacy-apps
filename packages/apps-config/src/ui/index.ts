@@ -2,7 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { chainColors, nodeColors } from './general';
+import { chainColors, nodeColors, logoBgColors } from './general';
 import { identityNodes } from './identityIcons';
 
 function sanitize (value?: string): string {
@@ -15,4 +15,8 @@ export function getSystemIcon (systemName: string): 'beachball' | 'polkadot' | '
 
 export const getSystemChainColor = (systemChain: string, systemName: string): string | undefined => {
   return chainColors[sanitize(systemChain)] || nodeColors[sanitize(systemName)];
+};
+
+export const getSystemChainLogoBgColor = (systemChain: string, logo: undefined | string): string | undefined => {
+  return logoBgColors[sanitize(logo)] || logoBgColors[sanitize(systemChain)];
 };

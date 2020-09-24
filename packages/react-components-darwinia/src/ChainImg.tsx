@@ -10,7 +10,7 @@ import { useApi } from '@polkadot/react-hooks';
 interface Props {
   className?: string;
   logo?: keyof typeof namedLogos;
-  onClick?: () => any;
+  uiLogoBgColoronClick?: () => any;
 }
 
 function sanitize (value?: string): string {
