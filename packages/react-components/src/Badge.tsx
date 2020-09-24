@@ -105,7 +105,7 @@ export default React.memo(styled(Badge)`
   }
 
   &.counter {
-    margin: 0 0.5rem;
+    margin: 0 0.2rem;
     vertical-align: middle;
   }
 

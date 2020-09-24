@@ -7,7 +7,7 @@ import { BareProps as Props } from '@polkadot/react-components/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import store from 'store';
 import styled from 'styled-components';
-import { getSystemChainColor } from '@polkadot/apps-config/ui';
+import { getSystemChainColor, getSystemChainLogoBgColor } from '@polkadot/apps-config/ui';
 import { defaultColor } from '@polkadot/apps-config/ui/general';
 import GlobalStyle from '@polkadot/react-components/styles';
 import { useApi } from '@polkadot/react-hooks';
@@ -47,6 +47,11 @@ function Apps ({ className }: Props): React.ReactElement<Props> {
     [systemChain, systemName]
   );
 
+  const uiLogoBgColor = useMemo(
+    (): string | undefined => getSystemChainLogoBgColor(systemChain),
+    [systemChain]
+  );
+
   const _collapse = useCallback(
     (): void => setSidebar((sidebar: SidebarState) => saveSidebar({ ...sidebar, isCollapsed: !sidebar.isCollapsed })),
     []
@@ -75,7 +80,8 @@ function Apps ({ className }: Props): React.ReactElement<Props> {
 
   return (
     <>
-      <GlobalStyle uiHighlight={defaultColor || uiHighlight} />
+      <GlobalStyle uiHighlight={defaultColor || uiHighlight}
+        uiLogoBgColor={defaultColor || uiLogoBgColor} />
       <div className={`apps--Wrapper ${isCollapsed ? 'collapsed' : 'expanded'} ${isMenu && 'fixed'} ${isMenuOpen && 'menu-open'} theme--default ${className}`}>
         <div
           className={`apps--Menu-bg ${isMenuOpen ? 'open' : 'closed'}`}

@@ -14,9 +14,11 @@ import cssDarwinia from './darwinia';
 
 interface Props {
   uiHighlight?: string;
+  uiLogoBgColor?: string;
 }
 
 const defaultHighlight = '#302B3C'; // #999
+const defaultLogoBgColor = '#F4F3F3'; // #999
 
 export default createGlobalStyle<Props>`
   .ui--highlight--all {
@@ -60,6 +62,10 @@ export default createGlobalStyle<Props>`
 
   .ui--highlight--stroke {
     stroke: ${(props): string => (props.uiHighlight || defaultHighlight)} !important;
+  }
+
+  .ui--logo-bg-color {
+    background: ${(props): string => (props.uiLogoBgColor || defaultLogoBgColor)} !important;
   }
 
   .theme--default {

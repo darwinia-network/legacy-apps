@@ -9,6 +9,10 @@ const chainKulupu = '#003366';
 const chainKusama = '#d32e79';
 const chainWestend = '#da68a7';
 
+const chainLogoDarwiniaCrab = '#EC3783';
+const chainLogoEmpty = '#313131';
+const chainLogoDarwinia = 'linear-gradient(315deg, #FE3876 0%, #7C30DD 71%, #3A30DD 100%)';
+
 const nodeCentrifuge = '#fcc367';
 const nodeEdgeware = '#0a95df';
 const nodeNodle = '#1ab394';
@@ -39,9 +43,24 @@ const nodeColors: Record<string, any> = [
   [node.toLowerCase().replace(/-/g, ' ')]: color
 }), {});
 
+// overrides based on the actual matched chain name
+const logoBgColors: Record<string, any> = [
+  ['Darwinia Crab', chainLogoDarwiniaCrab],
+  ['Crab', chainLogoDarwiniaCrab],
+  ['empty', chainLogoEmpty],
+  ['Darwinia', chainLogoDarwinia], // new name after CC3
+  ['Darwinia CC1', chainLogoDarwinia],
+  ['Darwinia CC2', chainLogoDarwinia],
+  ['Darwinia CC3', chainLogoDarwinia]
+].reduce((colors, [chain, color]): Record<string, any> => ({
+  ...colors,
+  [chain.toLowerCase()]: color
+}), {});
+
 export {
   defaultColor,
   chainColors,
   emptyColor,
-  nodeColors
+  nodeColors,
+  logoBgColors
 };

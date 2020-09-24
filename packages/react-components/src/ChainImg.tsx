@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { chainLogos, emptyLogo, namedLogos, nodeLogos } from '@polkadot/apps-config/ui/logos';
 import { useApi } from '@polkadot/react-hooks';
+import { getSystemChainLogoBgColor } from '@polkadot/apps-config/ui';
 
 interface Props {
   className?: string;
@@ -19,13 +20,19 @@ function sanitize (value?: string): string {
 
 function ChainImg ({ className, logo, onClick }: Props): React.ReactElement<Props> {
   const { systemChain, systemName } = useApi();
-
   const img = useMemo((): any => {
     return namedLogos[logo || ''] || chainLogos[sanitize(systemChain)] || nodeLogos[sanitize(systemName)] || emptyLogo;
   }, [logo, systemChain, systemName]);
 
+  const uiLogoBgColor = useMemo(
+    (): string | undefined => getSystemChainLogoBgColor(systemChain, logo),
+    [systemChain, logo]
+  );
+
   return (
-    <div className={className}>
+    <div className={className}
+      style={{ background: uiLogoBgColor }}
+    >
       <img
         alt='chain logo'
         onClick={onClick}
@@ -38,7 +45,6 @@ function ChainImg ({ className, logo, onClick }: Props): React.ReactElement<Prop
 export default React.memo(styled(ChainImg)`
   border-radius: 50%;
   box-sizing: border-box;
-  background: #ccc;
   img{
     width: 100%;
   }

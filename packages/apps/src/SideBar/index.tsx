@@ -17,6 +17,7 @@ import NetworkModal from '../modals/Network';
 import { useTranslation } from '../translate';
 import Item from './Item';
 import NodeInfo from './NodeInfo';
+import chainArrowIcon from '../img/chain-arrow.svg';
 
 interface Props {
   className?: string;
@@ -84,10 +85,13 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
         >
           <div className='apps--SideBar-Scroll'>
             <div
-              className='apps--SideBar-logo'
+              className='apps--SideBar-logo ui--logo-bg-color'
               onClick={_toggleModal('network')}
             >
               <ChainImg />
+              <img alt='select'
+                className='apps-SideBar-select'
+                src={chainArrowIcon}/>
             </div>
             {routing.map((route, index): React.ReactNode => (
               route
@@ -224,6 +228,8 @@ export default styled(SideBar)`
       }
     }
 
+
+
     .apps--SideBar-logo {
       cursor: pointer;
       display: flex;
@@ -237,6 +243,12 @@ export default styled(SideBar)`
       img {
         height: 4.28571428571rem;
         width: 4.28571428571rem;
+      }
+
+      .apps-SideBar-select {
+        width: 17px;
+        height: 17px;
+        margin-left: 18px;
       }
 
       > div.info {
