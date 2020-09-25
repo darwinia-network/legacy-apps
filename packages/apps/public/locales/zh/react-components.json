@@ -1,5 +1,6 @@
 {
   " ({{count}} waiting)": " ({{count}} waiting)",
+  "0.1x voting balance, no lockup period": "0.1x voting balance, no lockup period",
   "1 judgement": "1 judgement",
   "Aye, I approve": "是, 我赞成",
   "Call this message": "调用这个消息",
@@ -105,5 +106,6 @@
   "{{blocks}} blocks": "{{blocks}} blocks",
   "{{count}} judgements": "{{count}} judgements",
   "{{name}} ({{size}} bytes)": "{{name}} ({{size}} bytes)",
-  "{{value}}, {{remaining}} blocks left": "{{value}}, {{remaining}} 区块剩下"
+  "{{value}}, {{remaining}} blocks left": "{{value}}, {{remaining}} 区块剩下",
+  "{{value}}x voting balance, locked for {{lock}}x enactment ({{period}} days)": "{{value}}x voting balance, locked for {{lock}}x enactment ({{period}} days)"
 }
