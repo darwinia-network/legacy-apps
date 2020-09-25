@@ -41,6 +41,7 @@ function Voting ({ proposal, referendumId }: Props): React.ReactElement<Props> |
       {isVotingOpen && (
         <Modal
           header={t<string>('Vote on proposal')}
+          onCancel={toggleVoting}
           size='large'
         >
           <Modal.Content>

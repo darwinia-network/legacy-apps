@@ -29,7 +29,7 @@ function VoteValue ({ accountId, autoFocus, onChange }: Props): React.ReactEleme
   const { api } = useApi();
   const allBalances = useCall<DeriveBalancesAll>(api.derive.balances.all, [accountId]);
   const [{ selectedId, value }, setValue] = useState<ValueState>({});
-
+  console.log(1112, accountId)
   useEffect((): void => {
     // if the set accountId changes and the new balances is for that id, set it
     (accountId !== selectedId) && allBalances?.accountId.eq(accountId) && setValue({

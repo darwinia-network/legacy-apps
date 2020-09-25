@@ -112,13 +112,13 @@ function Referendum ({ className = '', value: { allAye, allNay, image, imageHash
       <td className='badge'>
         {isBoolean(isPassing) && (
           <Badge
-            color={isPassing ? 'green' : 'red'}
             hover={
               isPassing
                 ? t<string>('{{threshold}}, passing', { replace: { threshold } })
                 : t<string>('{{threshold}}, not passing', { replace: { threshold } })
             }
             icon={isPassing ? 'check' : 'times'}
+            type={isPassing ? 'green' : 'red'}
           />
         )}
       </td>
