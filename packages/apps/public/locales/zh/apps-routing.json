@@ -14,7 +14,7 @@
   "nav.i18n": "翻译",
   "nav.js": "Javascript",
   "nav.parachains": "平行链",
-  "nav.scan": "节点信息",
+  "nav.scan": "验证人信息",
   "nav.settings": "设置",
   "nav.society": "社会",
   "nav.staking": "质押",
@@ -24,6 +24,6 @@
   "nav.tech-comm": "技术委员会",
   "nav.toolbox": "工具箱",
   "nav.transfer": "转账",
-  "nav.treasury": "财政",
+  "nav.treasury": "财政部",
   "nav.vanity": "美化账号"
 }
