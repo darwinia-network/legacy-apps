@@ -5,15 +5,14 @@
 import { DeriveDispatch } from '@polkadot/api-derive/types';
 import { BlockNumber } from '@polkadot/types/interfaces';
 
-import BN from 'bn.js';
 import React from 'react';
 import { LinkExternal } from '@polkadot/react-components';
 import { useApi, useCall } from '@polkadot/react-hooks';
 import { BlockToTime } from '@polkadot/react-query';
 import { formatNumber } from '@polkadot/util';
 
-import ProposalCell from './ProposalCell';
-import PreImageButton from './PreImageButton';
+import ProposalCell from '../Overview/ProposalCell';
+import PreImageButton from '../Overview/PreImageButton';
 
 interface Props {
   value: DeriveDispatch;
@@ -21,7 +20,7 @@ interface Props {
 
 function DispatchEntry ({ value: { at, image, imageHash, index } }: Props): React.ReactElement<Props> {
   const { api } = useApi();
-  const bestNumber = useCall<BlockNumber>(api.derive.chain.bestNumber, []) || new BN(0);
+  const bestNumber = useCall<BlockNumber>(api.derive.chain.bestNumber);
 
   return (
     <tr>
@@ -46,11 +45,11 @@ function DispatchEntry ({ value: { at, image, imageHash, index } }: Props): Reac
           />
         )}
       </td>
-      <td className='mini'>
+      <td className='links media--1000'>
         <LinkExternal
           data={index}
+          isLogo
           type='referendum'
-          withShort
         />
       </td>
     </tr>

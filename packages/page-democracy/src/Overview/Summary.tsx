@@ -17,33 +17,33 @@ interface Props {
 function Summary ({ referendumCount }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
-  const activeProposals = useCall<any[]>(api.derive.democracy.proposals, []);
-  const bestNumber = useCall<BN>(api.derive.chain.bestNumber, []);
-  const publicPropCount = useCall<BN>(api.query.democracy.publicPropCount, []);
-  const referendumTotal = useCall<BN>(api.query.democracy.referendumCount, []);
+  const activeProposals = useCall<unknown[]>(api.derive.democracy.proposals);
+  const bestNumber = useCall<BN>(api.derive.chain.bestNumber);
+  const publicPropCount = useCall<BN>(api.query.democracy.publicPropCount);
+  const referendumTotal = useCall<BN>(api.query.democracy.referendumCount);
 
   return (
     <SummaryBox>
       <section>
-        <CardSummary label={t('proposals')}>
+        <CardSummary label={t<string>('proposals')}>
           {formatNumber(activeProposals?.length)}
         </CardSummary>
-        <CardSummary label={t('total')}>
+        <CardSummary label={t<string>('total')}>
           {formatNumber(publicPropCount)}
         </CardSummary>
       </section>
       <section>
-        <CardSummary label={t('referenda')}>
+        <CardSummary label={t<string>('referenda')}>
           {formatNumber(referendumCount || 0)}
         </CardSummary>
-        <CardSummary label={t('total')}>
+        <CardSummary label={t<string>('total')}>
           {formatNumber(referendumTotal || 0)}
         </CardSummary>
       </section>
       {bestNumber && (
-        <section className='ui--media-medium'>
+        <section className='media--1100'>
           <CardSummary
-            label={t('launch period')}
+            label={t<string>('launch period')}
             progress={{
               total: api.consts.democracy.launchPeriod,
               value: bestNumber.mod(api.consts.democracy.launchPeriod).addn(1),

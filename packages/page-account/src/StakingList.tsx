@@ -18,7 +18,6 @@ import dayjs from 'dayjs';
 import ReactPaginate from 'react-paginate';
 import { getBondList, instance } from '@polkadot/react-darwinia';
 import ExternalsLinks from '@polkadot/apps-config/links';
-import { encodeAddress } from '@polkadot/util-crypto';
 
 const PAGE_SIZE = 10;
 
@@ -399,7 +398,7 @@ class Overview extends React.PureComponent<Props, State> {
                 <td>
                   {/* <div className="textGradient">{formatKtonBalance(ringToKton(item.amount, item.month))}</div> */}
                   {/* <div className='textGradient'>{this.renderUnbondingStatus(this.getUnbondingEndTime(item.unbonding_at))}</div> */}
-                  <div className='textGradient'>{this.renderUnbondingStatusWithBlockNumber(chain_bestNumber.toNumber(), this.formatIndex(item.unbonding_extrinsic_index) + this.unbondEnd)}</div>
+                  <div className='textGradient'>{this.renderUnbondingStatusWithBlockNumber(chain_bestNumber.toNumber(), item.unbonding_block_end)}</div>
                 </td>
               </tr>);
             })}
@@ -510,17 +509,17 @@ class Overview extends React.PureComponent<Props, State> {
     );
   }
 
-  renderUnbondingStatus = (expire) => {
-    const { t } = this.props;
-    const now = dayjs().unix();
-    const end = dayjs(expire).unix();
+  // renderUnbondingStatus = (expire) => {
+  //   const { t } = this.props;
+  //   const now = dayjs().unix();
+  //   const end = dayjs(expire).unix();
 
-    if (now >= end) {
-      return t('Unbonded');
-    } else {
-      return t('Unbonding');
-    }
-  }
+  //   if (now >= end) {
+  //     return t('Unbonded');
+  //   } else {
+  //     return t('Unbonding');
+  //   }
+  // }
 
   renderUnbondingStatusWithBlockNumber (current: number, end: number): string {
     const { t } = this.props;
