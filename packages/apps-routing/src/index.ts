@@ -8,7 +8,6 @@ import appSettings from '@polkadot/ui-settings';
 
 // When adding here, also ensure to add to Dummy.tsx
 
-import template from './123code';
 // import accounts from './accounts';
 import account from './account';
 import claims from './claims';
@@ -84,7 +83,6 @@ export default function create (t: (key: string, text: string, options: { ns: st
       toolbox(t),
       js(t),
       // hidden
-      template(t),
       i18n(t)
     ];
 }
