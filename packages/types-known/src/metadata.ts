@@ -11,14 +11,9 @@ const typesMeta: OverrideVersionedType[] = [
     // This is detected based on metadata version, since this is what we have up-front
     //   v3 = Alex
     //   v4 = v1.0 branch
-    minmax: [0, 4],
+    minmax: [17, undefined],
     types: {
-      Address: 'GenericAddress',
-      BlockNumber: 'u64',
-      EventRecord: 'EventRecordTo76',
-      Index: 'u64',
-      StakingLedger: 'StakingLedgerTo223',
-      ValidatorPrefs: 'ValidatorPrefsTo145'
+
     }
   }
 ];
