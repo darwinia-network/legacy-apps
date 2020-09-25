@@ -15,7 +15,7 @@ import claims from './claims';
 import contracts from './contracts';
 import council from './council';
 // import dashboard from './dashboard';
-import democracy from './democracy';
+// import democracy from './democracy';
 import explorer from './explorer';
 import extrinsics from './extrinsics';
 import genericAsset from './generic-asset';
@@ -69,7 +69,7 @@ export default function create (t: (key: string, text: string, options: { ns: st
       genericAsset(t),
       explorer(t),
       staking(t),
-      democracy(t),
+      // democracy(t),
       council(t),
       treasury(t),
       techcomm(t),
