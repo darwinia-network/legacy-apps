@@ -171,6 +171,7 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
 const StyledWrapper = styled.div`
   background: #fff;
   padding: 4px 0 0px 2rem;
+  min-height: 61px;
   margin: 0 -2rem;
   border-bottom: 1px solid rgba(237,237,237,1);
 
@@ -183,6 +184,8 @@ const StyledWrapper = styled.div`
   }
 
   @media (max-width: 767px) {
+    min-height: 44px;
+    display: flex;
     padding: 0 0.5rem;
     margin: 0 0;
     .ui--AccountStatus-Address{

@@ -30,6 +30,7 @@ function TipClose ({ hash, isMember, members }: Props): React.ReactElement<Props
       {isOpen && (
         <Modal
           header={t<string>('Close tip')}
+          onCancel={toggleOpen}
           size='large'
         >
           <Modal.Content>

@@ -45,6 +45,7 @@ function TipEndorse ({ defaultId, hash, isMember, isTipped, median, members }: P
       {isOpen && (
         <Modal
           header={t<string>('Submit tip endorsement')}
+          onCancel={toggleOpen}
           size='large'
         >
           <Modal.Content>
