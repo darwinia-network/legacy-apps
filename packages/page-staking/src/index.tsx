@@ -62,12 +62,12 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
     //   name: 'actions',
     //   text: t('Account actions')
     // },
-    api.query.staking.activeEra
-      ? {
-        name: 'payout',
-        text: 'Payouts'
-      }
-      : null,
+    // api.query.staking.activeEra
+    //   ? {
+    //     name: 'payout',
+    //     text: 'Payouts'
+    //   }
+    //   : null,
     {
       name: 'targets',
       text: t('Targets')
@@ -116,9 +116,9 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
         stakingOverview={stakingOverview}
       />
       <Switch>
-        <Route path={`${basePath}/payout`}>
+        {/* <Route path={`${basePath}/payout`}>
           <Payouts isInElection={isInElection} />
-        </Route>
+        </Route> */}
         <Route path={[`${basePath}/query/:value`, `${basePath}/query`]}>
           <Query />
         </Route>
