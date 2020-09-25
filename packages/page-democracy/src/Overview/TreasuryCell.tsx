@@ -25,13 +25,20 @@ interface Value {
   value: TreasuryProposal;
 }
 
-function TreasuryCell ({ className, value }: Props): React.ReactElement<Props> | null {
+interface ParamState {
+  params: Param[];
+  values: Value[];
+}
+
+const transformProposal = {
+  transform: (optProp: Option<TreasuryProposal>) => optProp.unwrapOr(null)
+};
+
+function TreasuryCell ({ className = '', value }: Props): React.ReactElement<Props> | null {
   const { api } = useApi();
   const [proposalId] = useState(value.unwrap());
-  const proposal = useCall<TreasuryProposal | null>(api.query.treasury.proposals, [proposalId], {
-    transform: (optProp: Option<TreasuryProposal>) => optProp.unwrapOr(null)
-  });
-  const [{ params, values }, setExtracted] = useState<{ params: Param[]; values: Value[] }>({ params: [], values: [] });
+  const proposal = useCall<TreasuryProposal | null>(api.query.treasury.proposals, [proposalId], transformProposal);
+  const [{ params, values }, setExtracted] = useState<ParamState>({ params: [], values: [] });
 
   useEffect((): void => {
     proposal && setExtracted({
