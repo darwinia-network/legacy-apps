@@ -529,7 +529,8 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
         }
       </Box>
 
-      <RowTitle title={t('Power Manager')} />
+      <RowTitle subTitle={t('POWER = your stake / total stake')}
+        title={t('Power Manager')}/>
       <Box>
         <PowerManage
           buttons={
