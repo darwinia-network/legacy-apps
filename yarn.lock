@@ -2902,15 +2902,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/app-123code@workspace:packages/page-123code":
-  version: 0.0.0-use.local
-  resolution: "@polkadot/app-123code@workspace:packages/page-123code"
-  dependencies:
-    "@babel/runtime": ^7.9.6
-    "@polkadot/react-components": 0.42.0-beta.100
-  languageName: unknown
-  linkType: soft
-
 "@polkadot/app-account@workspace:packages/page-account":
   version: 0.0.0-use.local
   resolution: "@polkadot/app-account@workspace:packages/page-account"
