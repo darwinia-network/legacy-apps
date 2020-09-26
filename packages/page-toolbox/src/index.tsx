@@ -8,7 +8,7 @@ import React, { useMemo } from 'react';
 import { Route, Switch } from 'react-router';
 import Tabs from '@polkadot/react-components/Tabs';
 import { useAccounts } from '@polkadot/react-hooks';
-import Vanity from '@polkadot/app-account/vanity';
+import Vanity from '@polkadot/app-account/Vanity';
 
 import Hash from './Hash';
 import Rpc from './Rpc';
