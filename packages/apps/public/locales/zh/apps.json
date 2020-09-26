@@ -1,7 +1,7 @@
 {
   "Create an account now.": "马上创建账号.",
   "GitHub": "GitHub",
-  "Initializing connection": "正在连接验证人",
+  "Initializing connection": "正在连接节点",
   "Select Network": "选择网络",
   "Waiting for API to be connected and ready.": "等待API连接成功。",
   "Waiting for authorization from the extension. Please open the installed extension and approve or reject access.": "扩展等待认证. 打开已经安装的扩展同意或者拒绝他.",

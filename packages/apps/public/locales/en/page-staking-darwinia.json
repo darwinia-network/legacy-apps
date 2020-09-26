@@ -85,6 +85,7 @@
   "Waiting": "Waiting",
   "Warning - Changing the controller while validating will modify the associated session account. It is advised to stop validating before changing the controller account.": "Warning - Changing the controller while validating will modify the associated session account. It is advised to stop validating before changing the controller account.",
   "You will get": "You will get",
+  "Your nomination will take effect in the next era. Before that, the POWER may be displayed as 0": "Your nomination will take effect in the next era. Before that, the POWER may be displayed as 0",
   "additional bonded funds": "additional bonded funds",
   "amount to use for estimation": "amount to use for estimation",
   "available": "available",
