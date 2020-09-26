@@ -97,7 +97,7 @@ function Nominate ({ className, ownNominators, targets }: Props): React.ReactEle
               </Modal.Column>
             </Modal.Columns>
           </Modal.Content>
-          <Modal.Actions>
+          <Modal.Actions onCancel={toggleOpen}>
             <TxButton
               accountId={ids?.controllerId}
               label={t('Nominate')}

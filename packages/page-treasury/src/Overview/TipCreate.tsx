@@ -46,6 +46,7 @@ function TipCreate ({ members, refresh }: Props): React.ReactElement<Props> {
       {isOpen && (
         <Modal
           header={t('Submit tip request')}
+          onCancel={toggleOpen}
           size='large'
         >
           <Modal.Content>

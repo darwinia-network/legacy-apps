@@ -51,7 +51,8 @@ const logoBgColors: Record<string, any> = [
   ['Darwinia', chainLogoDarwinia], // new name after CC3
   ['Darwinia CC1', chainLogoDarwinia],
   ['Darwinia CC2', chainLogoDarwinia],
-  ['Darwinia CC3', chainLogoDarwinia]
+  ['Darwinia CC3', chainLogoDarwinia],
+  ['Darwinia Devnet', chainLogoDarwinia]
 ].reduce((colors, [chain, color]): Record<string, any> => ({
   ...colors,
   [chain.toLowerCase()]: color

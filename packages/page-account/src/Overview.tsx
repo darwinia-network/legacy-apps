@@ -119,13 +119,13 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
                   <div className='p-amount'>
                     <Available params={_accountChecked} />
                   </div>
-                  <p className='p-btn'>
+                  {!isTransferDisabled ? <p className='p-btn'>
                     <Button
                       isBasic={true}
                       label={t('Transfer')}
                       onClick={(): void => { toggleTransfer(); }}
                     />
-                  </p>
+                  </p> : null}
                 </div>
               </div>
             </div>

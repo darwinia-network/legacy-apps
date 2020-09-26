@@ -23,6 +23,7 @@
   "Unlock": "Unlock",
   "Unlock account": "Unlock account",
   "Unlock the account for signing. Once active the signature will be generated based on the content provided.": "Unlock the account for signing. Once active the signature will be generated based on the content provided.",
+  "Vanity": "Vanity",
   "Verify signature": "Verify signature",
   "Yes": "Yes",
   "You are about to unlock your account to allow for the signing of messages. Once active the signature will be generated based on the content provided.": "You are about to unlock your account to allow for the signing of messages. Once active the signature will be generated based on the content provided.",

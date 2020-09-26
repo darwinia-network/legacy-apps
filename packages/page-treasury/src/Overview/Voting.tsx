@@ -80,6 +80,7 @@ function Voting ({ councilProposals, isDisabled, members }: Props): React.ReactE
       {isOpen && (
         <Modal
           header={t('Vote on proposal')}
+          onCancel={toggleOpen}
           size='small'
         >
           <Modal.Content>

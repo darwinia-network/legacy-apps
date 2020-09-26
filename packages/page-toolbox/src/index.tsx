@@ -8,6 +8,7 @@ import React, { useMemo } from 'react';
 import { Route, Switch } from 'react-router';
 import Tabs from '@polkadot/react-components/Tabs';
 import { useAccounts } from '@polkadot/react-hooks';
+import Vanity from '@polkadot/app-account/Vanity';
 
 import Hash from './Hash';
 import Rpc from './Rpc';
@@ -35,6 +36,10 @@ function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
     {
       name: 'verify',
       text: t('Verify signature')
+    },
+    {
+      name: 'vanity',
+      text: t('Vanity')
     }
   ], [t]);
 
@@ -55,6 +60,7 @@ function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
         <Route path={`${basePath}/hash`}><Hash /></Route>
         <Route path={`${basePath}/sign`}><Sign /></Route>
         <Route path={`${basePath}/verify`}><Verify /></Route>
+        <Route path={`${basePath}/vanity`}><Vanity /></Route>
         <Route><Rpc /></Route>
       </Switch>
     </main>
