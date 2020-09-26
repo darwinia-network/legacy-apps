@@ -284,6 +284,7 @@ const KtonTipStyledWrapper = styled.div`
     flex: 0 0 15rem;
   }
   &>div{
+    width: 100%;
     border: 1px solid #DEDEDF;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
@@ -291,7 +292,7 @@ const KtonTipStyledWrapper = styled.div`
       color: #98959F;
       font-size: 12px;
     }
-    
+
     padding: 10px 20px;
     background: #FBFBFB;
   }

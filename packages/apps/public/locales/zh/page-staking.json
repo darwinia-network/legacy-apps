@@ -164,7 +164,7 @@
   "Waiting": "候选",
   "Waiting nominations ({{count}})": "Waiting nominations ({{count}})",
   "Warning - Changing the controller while validating will modify the associated session account. It is advised to stop validating before changing the controller account.": "警告-验证时更改控制账号将修改关联的session帐户。 建议更改控制账号之前停止验证。",
-  "You will get": "您将获得",
+  "You will get": "您将预计获得",
   "Your stash account. The transaction will be sent from the associated controller.": "Your stash account. The transaction will be sent from the associated controller.",
   "additional bonded funds": "附加质押更多资金",
   "amount to use for estimation": "估算的金额",

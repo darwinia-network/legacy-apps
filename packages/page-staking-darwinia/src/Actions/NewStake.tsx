@@ -25,8 +25,17 @@ import { formatBalance, ringToKton } from '@polkadot/util';
 import translate from '../translate';
 import detectUnsafe from '../unsafeChains';
 import InputValidateAmount from './Account/InputValidateAmount';
-import InputValidationController from './Account/InputValidationController';
-import { rewardDestinationOptions } from './constants';
+import { TFunction } from 'i18next';
+// import InputValidationController from './Account/InputValidationController';
+// import { rewardDestinationOptions } from './constants';
+
+function rewardDestinationOptions (t: TFunction): any {
+  return [
+    { text: t('Stash account (increase the amount at stake)'), value: 0 },
+    { text: t('Stash account (do not increase the amount at stake)'), value: 1 },
+    { text: t('Controller account'), value: 2 }
+  ];
+}
 
 interface Props extends ApiProps, I18nProps, CalculateBalanceProps {
   onClose: () => void;
@@ -137,7 +146,7 @@ class NewStake extends TxComponent<Props, State> {
             help={t('The destination account for any payments as either a nominator or validator')}
             label={t('payment destination')}
             onChange={this.onChangeDestination}
-            options={rewardDestinationOptions}
+            options={rewardDestinationOptions(t)}
             value={destination}
           />
           {currencyType === 'ring' ? <Dropdown
@@ -282,6 +291,7 @@ const KtonTipStyledWrapper = styled.div`
     flex: 0 0 15rem;
   }
   &>div{
+    width: 100%;
     border: 1px solid #DEDEDF;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
@@ -289,7 +299,7 @@ const KtonTipStyledWrapper = styled.div`
       color: #98959F;
       font-size: 12px;
     }
-    
+
     padding: 10px 20px;
     background: #FBFBFB;
   }
