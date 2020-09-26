@@ -9,6 +9,7 @@ interface Props {
   className?: string;
   children?: React.ReactNode;
   title: string;
+  subTitle?: string;
 }
 
 const styles = `
@@ -23,6 +24,11 @@ const styles = `
         font-weight: bold;
         margin-left: 10px;
         font-size: 16px;
+        span {
+          text-transform: initial;
+          font-size: 13px;
+          color: gray;
+        }
     }
 }
 
@@ -35,11 +41,13 @@ const styles = `
 }
 `;
 
-function RowTitle ({ className, children, title }: Props): React.ReactElement<Props> {
+function RowTitle ({ children, className, subTitle, title }: Props): React.ReactElement<Props> {
   return (
     <div className={className}>
       <div className='ui--RowTitle'>
-        <p className="ui--RowTitle-main">{title}</p>
+        <p className='ui--RowTitle-main'>{title}
+          { subTitle ? <span> - {subTitle}</span> : null }
+        </p>
         {children}
       </div>
     </div>

@@ -116,9 +116,9 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
         stakingOverview={stakingOverview}
       />
       <Switch>
-        {/* <Route path={`${basePath}/payout`}>
+        <Route path={`${basePath}/payout`}>
           <Payouts isInElection={isInElection} />
-        </Route> */}
+        </Route>
         <Route path={[`${basePath}/query/:value`, `${basePath}/query`]}>
           <Query />
         </Route>

@@ -120,6 +120,7 @@
   "Waiting": "候选",
   "Warning - Changing the controller while validating will modify the associated session account. It is advised to stop validating before changing the controller account.": "警告-验证时更改控制账号将修改关联的session帐户。 建议更改控制账号之前停止验证。",
   "You will get": "您将获得",
+  "Your nomination will take effect in the next era. Before that, the POWER may be displayed as 0": "您的提名将在下一个era生效，在此之前，POWER有可能展示为0",
   "additional bonded funds": "附加质押更多资金",
   "amount to use for estimation": "估算的金额",
   "automatic unstake threshold": "自动取消验证漏块数阈值",

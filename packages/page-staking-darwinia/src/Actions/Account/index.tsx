@@ -597,7 +597,8 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
           //   />
           // </div>
           <div className='lastBox'>
-            <RowTitle title={t('Nominating')} />
+            <RowTitle title={t('Nominating')}
+            />
             <Box>
               <>
                 {nominators.length !== 0 && (
@@ -625,7 +626,8 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
         )
         : isStashNominating && (
           <div className='lastBox'>
-            <RowTitle title={t('Nominating')} />
+            <RowTitle subTitle={t('Your nomination will take effect in the next era. Before that, the POWER may be displayed as 0')}
+              title={t('Nominating')} />
             <Box>
               <>
                 {nominees.length !== 0 && (
