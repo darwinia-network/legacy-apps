@@ -24,7 +24,15 @@ const sharedTypes = {
     votes16: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 15], ValidatorIndexCompact)>'
   },
   NominatorIndexCompact: 'Compact<NominatorIndex>',
-  ValidatorIndexCompact: 'Compact<ValidatorIndex>'
+  ValidatorIndexCompact: 'Compact<ValidatorIndex>',
+  RewardDestination: {
+    _enum: {
+      Staked: 'Null',
+      Stash: 'Null',
+      Controller: 'Null',
+      Account: 'AccountId'
+    }
+  }
 };
 
 const versioned: OverrideVersionedType[] = [
