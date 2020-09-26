@@ -19,7 +19,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { withCalls, withApi, withMulti } from '@polkadot/react-api/hoc';
 import { ZERO_BALANCE, ZERO_FEES } from '@polkadot/react-signer/Checks/constants';
 import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
-import { lockLimitOptionsMaker, KTON_PROPERTIES } from '@polkadot/react-darwinia';
+import { lockLimitOptionsMaker, RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import { PowerTelemetry } from '@polkadot/react-darwinia/components';
 import styled from 'styled-components';
 import { bnMax, formatBalance, ringToKton } from '@polkadot/util';
@@ -58,7 +58,7 @@ class BondExtra extends TxComponent<Props, State> {
     accept: false
   };
 
-  public componentDidUpdate(prevProps: Props, prevState: State): void {
+  public componentDidUpdate (prevProps: Props, prevState: State): void {
     const { balances_fees } = this.props;
     const { extrinsic } = this.state;
 
@@ -71,7 +71,7 @@ class BondExtra extends TxComponent<Props, State> {
     }
   }
 
-  public render(): React.ReactNode {
+  public render (): React.ReactNode {
     const { isOpen, onClose, stashId, t } = this.props;
     const { accept, currencyType, extrinsic, maxAdditional, promiseMonth } = this.state;
     const canSubmit = !!maxAdditional && maxAdditional.gtn(0) && (promiseMonth && currencyType === 'ring' ? accept : true);
@@ -104,7 +104,7 @@ class BondExtra extends TxComponent<Props, State> {
     );
   }
 
-  private renderContent(): React.ReactNode {
+  private renderContent (): React.ReactNode {
     const { stashId, systemChain, t } = this.props;
     const { accept, amountError, currencyType, maxAdditional, maxBalance, promiseMonth } = this.state;
     const isUnsafeChain = detectUnsafe(systemChain);
@@ -119,9 +119,11 @@ class BondExtra extends TxComponent<Props, State> {
           labelExtra={
             <>
               <Available label={<span className='label'>{t('transferrable')}</span>}
-                params={stashId} withCurrency/>
+                params={stashId}
+                withCurrency/>
               <AvailableKton label={<span className='label'>{t(' ')}</span>}
-                params={stashId} withCurrency/>
+                params={stashId}
+                withCurrency/>
             </>
           }
         />
@@ -139,6 +141,7 @@ class BondExtra extends TxComponent<Props, State> {
           onEnter={this.sendTx}
           // withMax={!isUnsafeChain}
         />
+        <WarnTipsWrapper>{t('Note: Please keep a little {{token}} as fee', { replace: { token: RING_PROPERTIES.tokenSymbol } })}</WarnTipsWrapper>
         {/* <ValidateAmount
           accountId={stashId}
           onError={this.setAmountError}
@@ -173,7 +176,7 @@ class BondExtra extends TxComponent<Props, State> {
     );
   }
 
-  private nextState(newState: Partial<State>): void {
+  private nextState (newState: Partial<State>): void {
     this.setState((prevState: State): State => {
       const { api } = this.props;
       const { amountError = prevState.amountError, maxAdditional = prevState.maxAdditional, maxBalance = prevState.maxBalance, currencyType = prevState.currencyType, promiseMonth = prevState.promiseMonth, accept = prevState.accept } = newState;
@@ -275,6 +278,13 @@ class BondExtra extends TxComponent<Props, State> {
     />;
   }
 }
+
+const WarnTipsWrapper = styled.div`
+  margin-left: 2rem;
+  color: #9F3A38;
+  margin-top: 5px;
+  margin-bottom: 10px;
+`;
 
 const KtonTipStyledWrapper = styled.div`
   display: flex;

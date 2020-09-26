@@ -17,7 +17,7 @@ import { InputBalanceBonded } from '@polkadot/react-components-darwinia';
 
 import { withApi, withMulti } from '@polkadot/react-api/hoc';
 import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
-import { lockLimitOptionsMaker, KTON_PROPERTIES } from '@polkadot/react-darwinia';
+import { lockLimitOptionsMaker, RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import { PowerTelemetry } from '@polkadot/react-darwinia/components';
 import styled from 'styled-components';
 import { formatBalance, ringToKton } from '@polkadot/util';
@@ -135,6 +135,8 @@ class NewStake extends TxComponent<Props, State> {
             stashId={stashId}
             withMax={!isUnsafeChain}
           />
+          <WarnTipsWrapper>{t('Note: Please keep a little {{token}} as fee', { replace: { token: RING_PROPERTIES.tokenSymbol } })}</WarnTipsWrapper>
+
           <InputValidateAmount
             accountId={stashId}
             onError={this.onAmountError}
@@ -282,6 +284,13 @@ class NewStake extends TxComponent<Props, State> {
     this.setState({ controllerError });
   }
 }
+
+const WarnTipsWrapper = styled.div`
+  margin-left: 2rem;
+  color: #9F3A38;
+  margin-top: 5px;
+  margin-bottom: 10px;
+`;
 
 const KtonTipStyledWrapper = styled.div`
   display: flex;
