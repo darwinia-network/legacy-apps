@@ -23,15 +23,20 @@ const setKtonProperties = (properties) => {
   };
 };
 
+const crabInstance = axios.create({
+  baseURL: SUBSCAN_URL_CRAB,
+  timeout: 30000
+});
+
+const darwiniaInstance = axios.create({
+  baseURL: SUBSCAN_URL_DARWINIA,
+  timeout: 30000
+});
+
 export const instance = {
-  'Darwinia Crab': axios.create({
-    baseURL: SUBSCAN_URL_CRAB,
-    timeout: 30000
-  }),
-  'Darwinia CC1': axios.create({
-    baseURL: SUBSCAN_URL_DARWINIA,
-    timeout: 30000
-  })
+  'Darwinia Crab': crabInstance,
+  'Darwinia CC1': darwiniaInstance,
+  'Darwinia Devnet': darwiniaInstance
 };
 
 async function getBondList (instance, { address, locked = 0, page = 0, row = 10, status = 'bonded' }) {
