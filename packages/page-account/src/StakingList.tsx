@@ -161,6 +161,10 @@ class Overview extends React.PureComponent<Props, State> {
   process (start: number, expire: number): number {
     const { chain_bestNumber } = this.props;
 
+    if (!chain_bestNumber) {
+      return 0;
+    }
+
     if (chain_bestNumber.toNumber() < start) {
       return 0;
     }

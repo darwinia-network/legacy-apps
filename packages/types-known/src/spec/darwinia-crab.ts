@@ -5,6 +5,14 @@
 import { OverrideVersionedType } from '@polkadot/types/types';
 
 const sharedTypes = {
+  RewardDestination: {
+    _enum: {
+      Staked: 'Null',
+      Stash: 'Null',
+      Controller: 'Null',
+      Account: 'AccountId'
+    }
+  }
 };
 
 const versioned: OverrideVersionedType[] = [
@@ -14,7 +22,7 @@ const versioned: OverrideVersionedType[] = [
     }
   },
   {
-    minmax: [13, undefined],
+    minmax: [16, undefined],
     types: {
       ...sharedTypes
     }
