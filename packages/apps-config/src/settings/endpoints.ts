@@ -17,6 +17,11 @@ function createDev (t: (key: string, text: string, options: { ns: string }) => s
 function createLive (t: (key: string, text: string, options: { ns: string }) => string): Option[] {
   return [
     {
+      info: 'darwinia',
+      text: t('rpc.darwinia', 'Darwinia Network (hosted by Darwinia)', { ns: 'apps-config' }),
+      value: 'wss://cc1.darwinia.network'
+    },
+    {
       info: 'crab',
       text: t('rpc.crab.darwinia', 'Crab Network (hosted by Darwinia)', { ns: 'apps-config' }),
       value: 'wss://crab.darwinia.network'
