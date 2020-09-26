@@ -305,8 +305,6 @@
   "Nominators can be selected automatically based on the current on-chain conditions or supplied manually as selected from the list of all currently available validators. In both cases, your favorites appear for the selection.": "",
   "Nonce": "",
   "None": "",
-  "Note: Please keep a little ring as fee": "",
-  "Note: Please keep a little {{ring}} as fee": "",
   "Note: Please keep a little {{token}} as fee": "",
   "Nothing queued for execution": "",
   "Of the beneficiary amount, at least {{bondPercentage}} would need to be put up as collateral. The maximum of this and the minimum bond will be used to secure the proposal, refundable if it passes.": "",
