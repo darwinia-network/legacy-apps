@@ -38,15 +38,16 @@ class SetControllerAccount extends TxComponent<Props, State> {
   public render (): React.ReactNode {
     const { defaultControllerId, isValidating, onClose, stashId, systemChain, t } = this.props;
     const { controllerError, controllerId } = this.state;
-    const isUnsafeChain = detectUnsafe(systemChain);
+    // const isUnsafeChain = detectUnsafe(systemChain);
+    const isUnsafeChain = true;
     const canSubmit = isUnsafeChain || (!controllerError && !!controllerId && (defaultControllerId !== controllerId));
 
     return (
       <Modal
         className='staking--SetControllerAccount'
         header={t('Change controller account')}
-        size='small'
         onCancel={onClose}
+        size='small'
       >
         <Modal.Content className='ui--signer-Signer-Content'>
           {isValidating && (
@@ -75,8 +76,8 @@ class SetControllerAccount extends TxComponent<Props, State> {
           />
           <InputValidationController
             accountId={stashId}
-            defaultController={defaultControllerId}
             controllerId={controllerId}
+            defaultController={defaultControllerId}
             isUnsafeChain={isUnsafeChain}
             onError={this.onControllerError}
           />
@@ -84,10 +85,10 @@ class SetControllerAccount extends TxComponent<Props, State> {
         <Modal.Actions onCancel={onClose}>
           <TxButton
             accountId={stashId}
+            icon='sign-in'
             isDisabled={!canSubmit}
             isPrimary
             label={t('Set controller')}
-            icon='sign-in'
             onStart={onClose}
             params={[controllerId]}
             tx='staking.setController'
