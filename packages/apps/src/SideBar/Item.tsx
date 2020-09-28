@@ -43,7 +43,7 @@ function hasEndpoint (api: ApiPromise, endpoint: string): boolean {
   }
 }
 
-function checkVisible (name: string, { api, isApiConnected, isApiReady, systemName }: ApiProps, hasAccounts: boolean, hasSudo: boolean, { isHidden, needsAccounts, needsApi, needsSudo }: Route['display']): boolean {
+function checkVisible (name: string, { api, isApiConnected, isApiReady, systemChain }: ApiProps, hasAccounts: boolean, hasSudo: boolean, { isHidden, needsAccounts, needsApi, needsSudo }: Route['display']): boolean {
   if (isHidden) {
     return false;
   } else if (needsAccounts && !hasAccounts) {
@@ -56,7 +56,7 @@ function checkVisible (name: string, { api, isApiConnected, isApiReady, systemNa
     logDisabled(name, 'Sudo key not available');
 
     return false;
-  } else if (modulesDisabled[systemName]?.paths && (modulesDisabled[systemName]?.paths as any)[name]) {
+  } else if (modulesDisabled[systemChain]?.paths && (modulesDisabled[systemChain]?.paths as any)[name]) {
     return false;
   }
 

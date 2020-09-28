@@ -35,7 +35,7 @@ const STORE_CHECKED = 'accounts:checked';
 
 function Overview ({ className, onStatusChange }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { api, isApiReady, systemName } = useApi();
+  const { api, isApiReady, systemChain } = useApi();
   const blockNumber = useCall<BlockNumber>(isApiReady && api.derive.chain.bestNumber, []);
   const { allAccounts, hasAccounts } = useAccounts();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -76,9 +76,9 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
   }, [allAccounts, favorites, _accountChecked, api.derive.staking]);
 
   useEffect((): void => {
-    setTransferDisabled(modulesDisabled[systemName]?.paths.transfer || false);
-    setBondHistoryDisabled(modulesDisabled[systemName]?.paths.bondHistory || false);
-  }, [systemName]);
+    setTransferDisabled(modulesDisabled[systemChain]?.paths.transfer || false);
+    setBondHistoryDisabled(modulesDisabled[systemChain]?.paths.bondHistory || false);
+  }, [systemChain]);
 
   const _toggleCreate = (): void => setIsCreateOpen(!isCreateOpen);
   const _toggleImport = (): void => setIsImportOpen(!isImportOpen);
