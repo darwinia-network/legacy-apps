@@ -85,8 +85,8 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
   }, [allAccounts, favorites]);
 
   useEffect((): void => {
-    setConvertDawiniaAddressDisabled(modulesDisabled[systemName]?.paths.convertDarwiniaAddress || false);
-  }, [systemName]);
+    setConvertDawiniaAddressDisabled(modulesDisabled[systemChain]?.paths.convertDarwiniaAddress || false);
+  }, [systemChain]);
 
   const _toggleCreate = (): void => setIsCreateOpen(!isCreateOpen);
   const _toggleImport = (): void => setIsImportOpen(!isImportOpen);
@@ -135,7 +135,7 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
           <StyledWrapper>
             <div className='ui--AccountStatus-Box'>
               <div className='ui--AccountStatus-Network'>
-                <span>•</span><span>{hackParseSystemChain(systemChain)} {t('Network')}</span>
+                <span>{hackParseSystemChain(systemChain)} {t('Network')}</span>
               </div>
 
               <AddressRow
@@ -147,12 +147,12 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
               // withTags
               >
               </AddressRow>
-              {!isConvertDawiniaAddressDisabled ? <Button
+              {/* {!isConvertDawiniaAddressDisabled ? <Button
                 className='ui--AccountStatus-Convert'
                 isBasic={true}
                 label={t('Convert to Darwinia account')}
                 onClick={_toggleMainnetAddress}
-              /> : null}
+              /> : null} */}
               <Button
                 className='ui--AccountStatus-ChangeAccount'
                 isBasic={true}
@@ -201,7 +201,7 @@ const StyledWrapper = styled.div`
 
   .ui--AccountStatus-Network{
     color: #8231D8;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     flex: 1;
     span{

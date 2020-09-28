@@ -7,6 +7,9 @@ import { ExternalDef } from './types';
 import darwinia from './darwinia';
 
 const modulesDisabled: Record<string, ExternalDef> = {
+  'Darwinia CC1': darwinia,
+  'Darwinia CC2': darwinia,
+  'Darwinia CC3': darwinia,
   Darwinia: darwinia
 };
 
