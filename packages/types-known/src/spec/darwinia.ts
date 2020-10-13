@@ -32,7 +32,8 @@ const sharedTypes = {
       Controller: 'Null',
       Account: 'AccountId'
     }
-  }
+  },
+  Judgement: 'IdentityJudgement'
 };
 
 const versioned: OverrideVersionedType[] = [
