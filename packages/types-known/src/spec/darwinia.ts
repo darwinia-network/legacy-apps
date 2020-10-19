@@ -33,13 +33,19 @@ const sharedTypes = {
       Account: 'AccountId'
     }
   },
-  Judgement: 'IdentityJudgement',
-  RefCount: 'RefCountTo259'
+  Judgement: 'IdentityJudgement'
 };
 
 const versioned: OverrideVersionedType[] = [
   {
-    minmax: [0, undefined],
+    minmax: [0, 2],
+    types: {
+      ...sharedTypes,
+      RefCount: 'RefCountTo259'
+    }
+  },
+  {
+    minmax: [3, undefined],
     types: {
       ...sharedTypes
     }
