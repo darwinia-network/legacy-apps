@@ -82,14 +82,15 @@ function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nomi
       rankBondOther: t('other stake'),
       rankBondOwn: t('own stake'),
       rankBondTotal: t('total stake'),
-      rankComm: t('commission')
+      rankComm: t('next commission'),
+      rankActiveComm: t('active commission')
     }),
     [t]
   );
 
   const header = useMemo(() => [
     [t('validators'), 'start', 4],
-    ...['rankComm', 'rankBondTotal', 'rankBondOwn', 'rankBondOther'].map((header) => [
+    ...['rankActiveComm', 'rankComm', 'rankBondTotal', 'rankBondOwn', 'rankBondOther'].map((header) => [
       <>{labels[header]}<Icon name={sortBy === header ? (sortFromMax ? 'chevron down' : 'chevron up') : 'minus'} /></>,
       sorted ? `isClickable ${sortBy === header && 'ui--highlight--border'} number` : 'number',
       1,

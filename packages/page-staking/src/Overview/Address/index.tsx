@@ -2,15 +2,15 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { Balance } from '@polkadot/types/interfaces';
+import { Balance, EraIndex, ValidatorPrefs } from '@polkadot/types/interfaces';
 import { DeriveAccountInfo, DeriveStakingQuery } from '@polkadot/api-derive/types';
+import { Option } from '@polkadot/types';
 
 import BN from 'bn.js';
 import React, { useCallback, useEffect, useState } from 'react';
 import ApiPromise from '@polkadot/api/promise';
 import { AddressSmall, Icon } from '@polkadot/react-components';
 import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
-import { FormatBalance } from '@polkadot/react-query';
 import keyring from '@polkadot/ui-keyring';
 import { formatNumber } from '@polkadot/util';
 import Favorite from './Favorite';
@@ -38,6 +38,7 @@ interface Props {
 
 interface StakingState {
   commission?: string;
+  currentEraCommission?: string;
   nominators: [string, Balance][];
   stakeTotal?: BN;
   stakeOther?: BN;
@@ -48,7 +49,7 @@ interface StakingState {
 const PERBILL_PERCENT = 10_000_000;
 /* stylelint-enable */
 
-function expandInfo ({ exposure, validatorPrefs }: DeriveStakingQuery): StakingState {
+function expandInfo ({ exposure, validatorPrefs }: DeriveStakingQuery, currentEraValidatorPrefs?: ValidatorPrefs): StakingState {
   let nominators: [string, Balance][] = [];
   let stakeTotal: BN | undefined;
   let stakeOther: BN | undefined;
@@ -62,10 +63,14 @@ function expandInfo ({ exposure, validatorPrefs }: DeriveStakingQuery): StakingS
   }
 
   const commission = validatorPrefs?.commission?.unwrap();
+  const currentEraCommission = currentEraValidatorPrefs?.commission.unwrap();
 
   return {
     commission: commission
       ? `${(commission.toNumber() / PERBILL_PERCENT).toFixed(2)}%`
+      : undefined,
+    currentEraCommission: currentEraCommission
+      ? `${(currentEraCommission.toNumber() / PERBILL_PERCENT).toFixed(2)}%`
       : undefined,
     nominators,
     stakeOther,
@@ -111,18 +116,21 @@ function Address ({ address, className, filterName, hasQueries, isAuthor, isElec
   const { allAccounts } = useAccounts();
   const accountInfo = useCall<DeriveAccountInfo>(isMain && api.derive.accounts.info, [address]);
   const stakingInfo = useCall<DeriveStakingQuery>(api.derive.staking.query, [address]);
-  const [{ commission, nominators, stakeOther, stakeOwn }, setStakingState] = useState<StakingState>({ nominators: [] });
+  const currentEraIndex = useCall<Option<EraIndex>>(api.query.staking.currentEra, []);
+  const prefs = useCall<ValidatorPrefs>(api.query.staking.erasValidatorPrefs, [currentEraIndex?.unwrap(), address]);
+
+  const [{ commission, currentEraCommission, nominators, stakeOther, stakeOwn }, setStakingState] = useState<StakingState>({ nominators: [] });
   const [isVisible, setIsVisible] = useState(true);
   const [isNominating, setIsNominating] = useState(false);
 
   useEffect((): void => {
     if (stakingInfo) {
-      const info = expandInfo(stakingInfo);
+      const info = expandInfo(stakingInfo, prefs);
 
       setNominators && setNominators(info.nominators.map(([who]): string => who.toString()));
       setStakingState(info);
     }
-  }, [setNominators, stakingInfo]);
+  }, [setNominators, stakingInfo, prefs]);
 
   useEffect((): void => {
     setIsVisible(
@@ -173,6 +181,9 @@ function Address ({ address, className, filterName, hasQueries, isAuthor, isElec
         {stakeOwn?.gtn(0) && (
           formatNumber(stakeOwn)
         )}
+      </td>
+      <td className='number'>
+        {currentEraCommission}
       </td>
       <td className='number'>
         {commission}
