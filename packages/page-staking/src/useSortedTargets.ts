@@ -34,6 +34,8 @@ function sortValidators (list: ValidatorInfo[]): ValidatorInfo[] {
     .filter((a) => a.bondTotal.gtn(0))
     .sort((a, b) => b.commissionPer - a.commissionPer)
     .map(mapIndex('rankComm'))
+    .sort((a, b) => b.currentEraCommissionPer - a.currentEraCommissionPer)
+    .map(mapIndex('rankActiveComm'))
     .sort((a, b) => b.bondOther.cmp(a.bondOther))
     .map(mapIndex('rankBondOther'))
     .sort((a, b) => b.bondOwn.cmp(a.bondOwn))
@@ -67,8 +69,9 @@ function extractInfo (allAccounts: string[], amount: BN = baseBalance(), elected
   const nominators: string[] = [];
   let totalStaked = new BN(0);
   const perValidatorReward = lastReward.divn(electedInfo.info.length);
+
   const validators = sortValidators(
-    electedInfo.info.map(({ accountId, exposure: _exposure, validatorPrefs }): ValidatorInfo => {
+    electedInfo.info.map(({ accountId, exposure: _exposure, validatorPrefs }, index): ValidatorInfo => {
       const exposure = _exposure || {
         others: registry.createType('Vec<IndividualExposure>'),
         own: registry.createType('Compact<Balance>'),
@@ -106,6 +109,7 @@ function extractInfo (allAccounts: string[], amount: BN = baseBalance(), elected
         bondShare: 0,
         bondTotal,
         commissionPer: (((prefs as ValidatorPrefs).commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
+        currentEraCommissionPer: ((electedInfo.activeComminssions[index].commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
         isCommission: !!(prefs as ValidatorPrefs).commission,
         isFavorite: favorites.includes(key),
         isNominating,
@@ -115,6 +119,7 @@ function extractInfo (allAccounts: string[], amount: BN = baseBalance(), elected
         rankBondOwn: 0,
         rankBondTotal: 0,
         rankComm: 0,
+        rankActiveComm: 0,
         rankOverall: 0,
         rankPayment: 0,
         rankReward: 0,

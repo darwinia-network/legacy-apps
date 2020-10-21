@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ApiInterfaceRx } from '@polkadot/api/types';
-import { AccountId } from '@polkadot/types/interfaces';
+import { AccountId, ValidatorPrefs } from '@polkadot/types/interfaces';
 import { DeriveStakingQuery, DeriveStakingElected } from '../types';
 
 import { Observable, combineLatest, of } from 'rxjs';
@@ -13,18 +13,29 @@ import { memo } from '../util';
 
 export function electedInfo (api: ApiInterfaceRx): () => Observable<DeriveStakingElected> {
   return memo((): Observable<DeriveStakingElected> =>
-    api.derive.staking.validators().pipe(
-      switchMap(({ nextElected }): Observable<[AccountId[], DeriveStakingQuery[]]> =>
+    combineLatest([
+      api.derive.staking.validators(),
+      api.query.staking.currentEra()
+    ]).pipe(
+      switchMap(( [{nextElected}, currentEra] ): Observable<[AccountId[], DeriveStakingQuery[]], ValidatorPrefs[]> =>
         combineLatest([
           of(nextElected),
           combineLatest(
-            nextElected.map((accountId) => api.derive.staking.query(accountId))
+            nextElected.map((accountId) => {
+              return api.derive.staking.query(accountId);
+            })
+          ),
+          combineLatest(
+            nextElected.map((accountId) => {
+              return api.query.staking.erasValidatorPrefs(currentEra.unwrap(), accountId.toString());
+            })
           )
         ])
       ),
-      map(([nextElected, info]): DeriveStakingElected => ({
+      map(([nextElected, info, activeComminssions]): DeriveStakingElected => ({
         info,
-        nextElected
+        nextElected,
+        activeComminssions
       }))
     )
   );

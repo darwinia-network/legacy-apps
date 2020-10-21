@@ -20,7 +20,7 @@ interface Props {
   toggleSelected: (accountId: string) => void;
 }
 
-function Validator ({ canSelect, info: { accountId, bondOther, bondOwn, bondTotal, commissionPer, isCommission, isFavorite, isNominating, key, numNominators, rankOverall, rewardPayout, validatorPayment }, isSelected, toggleFavorite, toggleSelected }: Props): React.ReactElement<Props> {
+function Validator ({ canSelect, info: { accountId, bondOther, bondOwn, bondTotal, commissionPer, currentEraCommissionPer, isCommission, isFavorite, isNominating, key, numNominators, rankOverall, rewardPayout, validatorPayment }, isSelected, toggleFavorite, toggleSelected }: Props): React.ReactElement<Props> {
   const _onQueryStats = useCallback(
     (): void => {
       window.location.hash = `/staking/query/${key}`;
@@ -46,6 +46,13 @@ function Validator ({ canSelect, info: { accountId, bondOther, bondOwn, bondTota
       <td className='number'>{formatNumber(rankOverall)}</td>
       <td className='address all'>
         <AddressSmall value={accountId} />
+      </td>
+      <td className='number'>
+        {
+          isCommission
+            ? `${currentEraCommissionPer.toFixed(2)}%`
+            : <FormatBalance value={validatorPayment} />
+        }
       </td>
       <td className='number'>
         {
