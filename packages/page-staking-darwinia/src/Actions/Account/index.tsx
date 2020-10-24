@@ -4,16 +4,16 @@
 
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { DeriveBalancesAll, DeriveStakingAccount, DeriveStakingOverview as DerivedStakingOverview, DeriveHeartbeats as DerivedHeartbeats, DeriveStakingQuery as DerivedStakingQuery, DeriveStakerReward } from '@polkadot/api-derive/types';
-import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs } from '@polkadot/types/interfaces';
+import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs, RewardDestination } from '@polkadot/types/interfaces';
 import { Codec, ITuple } from '@polkadot/types/types';
 
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
-import { AddressInfo, AddressMini, AddressSmall, Button, Menu, Popup, TxButton, StatusContext } from '@polkadot/react-components';
+import { AddressSmall, Button, Menu, Popup, TxButton, StatusContext } from '@polkadot/react-components';
 import { Table } from '@polkadot/react-components-darwinia';
 import { useAccounts, useApi, useCall, useToggle, useOwnEraRewards } from '@polkadot/react-hooks';
 import { u8aConcat, u8aToHex, formatNumber } from '@polkadot/util';
-import { RowTitle, Box, ColorButton } from '@polkadot/react-darwinia/components';
+import { RowTitle, Box } from '@polkadot/react-darwinia/components';
 import Identity from '@polkadot/app-account/modals/Identity';
 import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
@@ -35,6 +35,7 @@ import Earnings from './Earnings';
 import { PayoutValidator } from '../../Payouts/types';
 import useStakerPayouts from '../../Payouts/useStakerPayouts';
 import { IndividualExposure, Power } from '@darwinia/typegen/interfaces';
+import { DestinationType } from '../NewStake';
 
 type ValidatorInfo = ITuple<[ValidatorPrefs, Codec]>;
 
@@ -52,7 +53,8 @@ interface Props {
 
 interface StakeState {
   controllerId: string | null;
-  destination: number;
+  destination: DestinationType;
+  destAccount: string | null;
   exposure?: Exposure;
   hexSessionIdNext: string | null;
   hexSessionIdQueue: string | null;
@@ -87,7 +89,8 @@ function getStakeState (allAccounts: string[], allStashes: string[] | undefined,
 
   return {
     controllerId,
-    destination: rewardDestination?.toNumber() || 0,
+    destination: (rewardDestination?.isAccount ? 'Account' : rewardDestination?.toString() || 'Staked') as 'Staked',
+    destAccount: rewardDestination?.isAccount ? rewardDestination.asAccount.toString() : null,
     exposure,
     hexSessionIdNext: u8aToHex(nextConcat, 48),
     hexSessionIdQueue: u8aToHex(currConcat.length ? currConcat : nextConcat, 48),
@@ -189,7 +192,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   const stakingAccount = useCall<DeriveStakingAccount>(api.derive.staking.account as any, [stashId]);
   const [[payoutEras, payoutTotal], setStakingRewards] = useState<[EraIndex[], BN]>([[], new BN(0)]);
   const stakingInfo = useCall<DerivedStakingQuery>(api.derive.staking.query as any, [stashId]);
-  const [{ controllerId, destination, hexSessionIdNext, hexSessionIdQueue, isLoading, isOwnController, isStashNominating, isStashValidating, nominees, sessionIds, stakingLedger, validatorPrefs }, setStakeState] = useState<StakeState>({ controllerId: null, destination: 0, hexSessionIdNext: null, hexSessionIdQueue: null, isLoading: true, isOwnController: false, isStashNominating: false, isStashValidating: false, stakingLedger: null, sessionIds: [] });
+  const [{ controllerId, destAccount, destination, hexSessionIdNext, hexSessionIdQueue, isLoading, isOwnController, isStashNominating, isStashValidating, nominees, sessionIds, stakingLedger, validatorPrefs }, setStakeState] = useState<StakeState>({ controllerId: null, destination: 'Staked', hexSessionIdNext: null, destAccount: '', hexSessionIdQueue: null, isLoading: true, isOwnController: false, isStashNominating: false, isStashValidating: false, stakingLedger: null, sessionIds: [] });
   const [activeNoms, setActiveNoms] = useState<string[]>([]);
   const inactiveNoms = useInactives(stashId, nominees);
   const stakingInfoMulti = useCall<DerivedStakingQuery[]>(api.derive.staking.queryMulti as any, [nominees || []]);
@@ -337,6 +340,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
       {isRewardDestinationOpen && controllerId && (
         <SetRewardDestination
           controllerId={controllerId}
+          defaultDestAccount={destAccount}
           defaultDestination={destination}
           onClose={toggleRewardDestination}
         />
@@ -561,7 +565,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
       <RowTitle title={t('Earnings')} />
       <Box>
         <Earnings address={stashId}
-          destinationId={destination === 2 ? controllerId : stashId}
+          destinationId={destination === 'Controller' ? controllerId : stashId}
           doPayout={_doPayout}
           doPayoutIsDisabled={isPayoutEmpty || isInElection}
           isLoading={!rewards}
