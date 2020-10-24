@@ -43,14 +43,14 @@ try {
     store.set('darwinia_types_version', INIT_VERSION);
   }
 
+  const darwiniaTypes = Object.values(definitions).reduce((res, { types }): object => ({ ...res, ...types }), {});
+
+  registry.register(darwiniaTypes);
+
   if (names.length) {
     registry.register(types);
     console.log('Type registration:', names.join(', '));
   }
-
-  const darwiniaTypes = Object.values(definitions).reduce((res, { types }): object => ({ ...res, ...types }), {});
-
-  registry.register(darwiniaTypes);
 } catch (error) {
   console.error('Type registration failed', error);
 }
