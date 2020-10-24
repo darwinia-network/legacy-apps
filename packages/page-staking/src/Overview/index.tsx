@@ -6,6 +6,7 @@ import { DeriveStakingOverview } from '@polkadot/api-derive/types';
 import { BareProps } from '@polkadot/react-components/types';
 
 import React from 'react';
+import styled from 'styled-components';
 
 import CurrentList from './CurrentList';
 
@@ -31,4 +32,8 @@ function Overview ({ className, hasQueries, isIntentions, next, setNominators, s
   );
 }
 
-export default React.memo(Overview);
+export default React.memo(styled(Overview)`
+  .ui--Table {
+    overflow-x: auto;
+  }
+`);

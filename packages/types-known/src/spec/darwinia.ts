@@ -33,7 +33,12 @@ const sharedTypes = {
       Account: 'AccountId'
     }
   },
-  Judgement: 'IdentityJudgement'
+  Judgement: 'IdentityJudgement',
+  TcHeaderThingWithProof: 'EthereumHeaderThingWithProof',
+  TcHeaderThing: 'EthereumHeaderThing',
+  TcBlockNumber: 'u64',
+  TcHeaderHash: 'H256',
+  GameId: 'TcBlockNumber'
 };
 
 const versioned: OverrideVersionedType[] = [
