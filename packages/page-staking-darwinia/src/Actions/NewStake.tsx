@@ -31,11 +31,14 @@ import { TFunction } from 'i18next';
 
 function rewardDestinationOptions (t: TFunction): any {
   return [
-    { text: t('Stash account (increase the amount at stake)'), value: 0 },
-    { text: t('Stash account (do not increase the amount at stake)'), value: 1 },
-    { text: t('Controller account'), value: 2 }
+    { text: t('Stash account (increase the amount at stake)'), value: 'Staked' },
+    { text: t('Stash account (do not increase the amount at stake)'), value: 'Stash' },
+    { text: t('Controller account'), value: 'Controller' },
+    { text: t('Account'), value: 'Account' }
   ];
 }
+
+export type DestinationType = 'Staked' | 'Stash' | 'Controller' | 'Account';
 
 interface Props extends ApiProps, I18nProps, CalculateBalanceProps {
   onClose: () => void;
@@ -49,12 +52,14 @@ interface State {
   bondValue?: BN;
   controllerError: string | null;
   controllerId: string | null;
-  destination: number;
+  destAccount: string | null;
+  destination: DestinationType;
   extrinsic: SubmittableExtrinsic | null;
   stashId: string | null;
   currencyType: currencyType;
   promiseMonth: promiseMonth;
   accept: boolean;
+  isAccount: boolean;
 }
 
 const ZERO = new BN(0);
@@ -69,21 +74,24 @@ class NewStake extends TxComponent<Props, State> {
       amountError: null,
       controllerError: null,
       controllerId: null,
-      destination: 0,
+      destAccount: null,
+      destination: 'Staked',
       extrinsic: null,
       stashId: null,
       currencyType: 'ring',
       promiseMonth: 0,
-      accept: false
+      accept: false,
+      isAccount: false
     };
   }
 
   public render (): React.ReactNode {
     const { accountId, onClose, systemChain, t } = this.props;
-    const { accept, amountError, bondValue, controllerError, controllerId, currencyType, destination, extrinsic, promiseMonth, stashId } = this.state;
+    const { accept, amountError, bondValue, controllerError, controllerId, currencyType, destAccount, destination, extrinsic, isAccount, promiseMonth, stashId } = this.state;
     const hasValue = !!bondValue && bondValue.gtn(0);
     const isUnsafeChain = detectUnsafe(systemChain);
-    const canSubmit = (hasValue && (isUnsafeChain || (!controllerError && !!controllerId))) && (promiseMonth && currencyType === 'ring' ? accept : true);
+    const isDestAccount = !isAccount || ((isAccount) && destAccount);
+    const canSubmit = isDestAccount && (hasValue && (isUnsafeChain || (!controllerError && !!controllerId))) && (promiseMonth && currencyType === 'ring' ? accept : true);
 
     return (
       <Modal
@@ -151,6 +159,14 @@ class NewStake extends TxComponent<Props, State> {
             options={rewardDestinationOptions(t)}
             value={destination}
           />
+          {isAccount && <InputAddress
+            className='medium'
+            help={t('An account that is to receive the rewards.')}
+            label={t('the payment account')}
+            onChange={this.onChangeDestAccount}
+            type='allPlus'
+            value={destAccount}
+          />}
           {currencyType === 'ring' ? <Dropdown
             className='medium'
             defaultValue={promiseMonth}
@@ -238,11 +254,11 @@ class NewStake extends TxComponent<Props, State> {
   private nextState (newState: Partial<State>): void {
     this.setState((prevState: State): State => {
       const { api } = this.props;
-      const { amountError = prevState.amountError, bondValue = prevState.bondValue, controllerError = prevState.controllerError, controllerId = prevState.controllerId, destination = prevState.destination, stashId = prevState.stashId, currencyType = prevState.currencyType, promiseMonth = prevState.promiseMonth, accept = prevState.accept } = newState;
+      const { amountError = prevState.amountError, bondValue = prevState.bondValue, destAccount = prevState.destAccount, controllerError = prevState.controllerError, controllerId = prevState.controllerId, destination = prevState.destination, stashId = prevState.stashId, currencyType = prevState.currencyType, promiseMonth = prevState.promiseMonth, accept = prevState.accept, isAccount = prevState.isAccount } = newState;
       // const typeKey = currencyType.charAt(0).toUpperCase() + currencyType.slice(1) + 'Balance';
       const typeKey = currencyType + 'balance';
       const extrinsic = (bondValue && controllerId)
-        ? api.tx.staking.bond(controllerId, { [typeKey]: bondValue }, destination, promiseMonth)
+        ? api.tx.staking.bond(controllerId, { [typeKey]: bondValue }, isAccount ? { Account: destAccount } : destination, promiseMonth)
         : null;
 
       return {
@@ -255,7 +271,9 @@ class NewStake extends TxComponent<Props, State> {
         stashId,
         currencyType,
         promiseMonth,
-        accept
+        accept,
+        isAccount,
+        destAccount
       };
     });
   }
@@ -268,8 +286,14 @@ class NewStake extends TxComponent<Props, State> {
     this.nextState({ controllerId });
   }
 
-  private onChangeDestination = (destination: number): void => {
-    this.nextState({ destination });
+  private onChangeDestination = (destination: DestinationType): void => {
+    const isAccount = destination === 'Account';
+
+    this.nextState({ destination, isAccount });
+  }
+
+  private onChangeDestAccount = (destAccount: string | null): void => {
+    this.nextState({ destAccount });
   }
 
   private onChangeStash = (stashId: string | null): void => {

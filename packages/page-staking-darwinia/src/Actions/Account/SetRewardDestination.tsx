@@ -10,15 +10,19 @@ import { withMulti } from '@polkadot/react-api/hoc';
 
 import translate from '../../translate';
 import { rewardDestinationOptions } from '../constants';
+import { DestinationType } from '../NewStake';
 
 interface Props extends I18nProps {
-  defaultDestination?: number;
+  defaultDestination?: DestinationType;
+  defaultDestAccount?: string | null;
   controllerId: string;
   onClose: () => void;
 }
 
 interface State {
-  destination: number;
+  destination: DestinationType;
+  destAccount: string | null;
+  isAccount: boolean;
 }
 
 class SetRewardDestination extends TxComponent<Props, State> {
@@ -26,32 +30,38 @@ class SetRewardDestination extends TxComponent<Props, State> {
     super(props);
 
     this.state = {
-      destination: 0
+      destination: props.defaultDestination || 'Staked',
+      isAccount: false,
+      destAccount: props.defaultDestAccount || ''
     };
   }
 
   public render (): React.ReactNode {
     const { controllerId, onClose, t } = this.props;
-    const { destination } = this.state;
+    const { destAccount, destination, isAccount } = this.state;
     const canSubmit = !!controllerId;
 
     return (
       <Modal
         className='staking--Bonding'
         header={t('Bonding Preferences')}
-        size='small'
         onCancel={onClose}
+        size='small'
       >
         {this.renderContent()}
         <Modal.Actions onCancel={onClose}>
           <TxButton
             accountId={controllerId}
+            icon='sign-in'
             isDisabled={!canSubmit}
             isPrimary
             label={t('Set reward destination')}
-            icon='sign-in'
             onStart={onClose}
-            params={[destination]}
+            params={[
+              isAccount
+                ? { Account: destAccount }
+                : destination
+            ]}
             tx={'staking.setPayee'}
             withSpinner
           />
@@ -62,15 +72,15 @@ class SetRewardDestination extends TxComponent<Props, State> {
 
   private renderContent (): React.ReactNode {
     const { controllerId, defaultDestination, t } = this.props;
-    const { destination } = this.state;
+    const { destAccount, destination, isAccount } = this.state;
 
     return (
       <Modal.Content className='ui--signer-Signer-Content'>
         <InputAddress
           className='medium'
-          isDisabled
           defaultValue={controllerId}
           help={t('The controller is the account that is be used to control any nominating or validating actions. I will sign this transaction.')}
+          isDisabled
           label={t('controller account')}
         />
         <Dropdown
@@ -79,15 +89,29 @@ class SetRewardDestination extends TxComponent<Props, State> {
           help={t('The destination account for any payments as either a nominator or validator')}
           label={t('payment destination')}
           onChange={this.onChangeDestination}
-          options={rewardDestinationOptions}
+          options={rewardDestinationOptions(t)}
           value={destination}
         />
+        {isAccount && <InputAddress
+          className='medium'
+          help={t('An account that is to receive the rewards.')}
+          label={t('the payment account')}
+          onChange={this.onChangeDestAccount}
+          type='allPlus'
+          value={destAccount}
+        />}
       </Modal.Content>
     );
   }
 
-  private onChangeDestination = (destination: number): void => {
-    this.setState({ destination });
+  private onChangeDestination = (destination: DestinationType): void => {
+    const isAccount = destination === 'Account';
+
+    this.setState({ destination, isAccount });
+  }
+
+  private onChangeDestAccount = (destAccount: string | null): void => {
+    this.setState({ destAccount });
   }
 }
 
