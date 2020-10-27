@@ -269,9 +269,6 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   useEffect((): void => {
     rewards && setStakingRewards([
       rewards[stashId].map(({ era }): EraIndex => era),
-      // rewards[stashId].reduce((result, { total }) => {
-      //   console.log(111,rewards[stashId], total.toNumber())
-      //   return result.iadd(total)}, new BN(0))
       rewards[stashId].reduce((result, { validators }) => {
         const eraTotalList: Balance[] = Object.keys(validators).map((validatorId: string): Balance => {
           return validators[validatorId].value;
