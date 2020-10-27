@@ -5,7 +5,7 @@
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { DeriveBalancesAll, DeriveStakingAccount, DeriveStakingOverview as DerivedStakingOverview, DeriveHeartbeats as DerivedHeartbeats, DeriveStakingQuery as DerivedStakingQuery, DeriveStakerReward } from '@polkadot/api-derive/types';
 import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs, RewardDestination } from '@polkadot/types/interfaces';
-import { Codec, ITuple } from '@polkadot/types/types';
+import { Codec, ITuple, Balance } from '@polkadot/types/types';
 
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
@@ -269,7 +269,20 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   useEffect((): void => {
     rewards && setStakingRewards([
       rewards[stashId].map(({ era }): EraIndex => era),
-      rewards[stashId].reduce((result, { total }) => result.iadd(total), new BN(0))
+      // rewards[stashId].reduce((result, { total }) => {
+      //   console.log(111,rewards[stashId], total.toNumber())
+      //   return result.iadd(total)}, new BN(0))
+      rewards[stashId].reduce((result, { validators }) => {
+        const eraTotalList: Balance[] = Object.keys(validators).map((validatorId: string): Balance => {
+          return validators[validatorId].value;
+        });
+
+        const eraTotal = eraTotalList.reduce((total, item) => {
+          return total.iadd(item);
+        }, new BN(0));
+
+        return result.iadd(eraTotal);
+      }, new BN(0))
     ]);
   }, [rewards, stashId]);
 
