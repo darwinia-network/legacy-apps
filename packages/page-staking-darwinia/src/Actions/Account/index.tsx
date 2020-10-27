@@ -4,8 +4,8 @@
 
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { DeriveBalancesAll, DeriveStakingAccount, DeriveStakingOverview as DerivedStakingOverview, DeriveHeartbeats as DerivedHeartbeats, DeriveStakingQuery as DerivedStakingQuery, DeriveStakerReward } from '@polkadot/api-derive/types';
-import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs, RewardDestination } from '@polkadot/types/interfaces';
-import { Codec, ITuple, Balance } from '@polkadot/types/types';
+import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs, RewardDestination, Balance } from '@polkadot/types/interfaces';
+import { Codec, ITuple } from '@polkadot/types/types';
 
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
