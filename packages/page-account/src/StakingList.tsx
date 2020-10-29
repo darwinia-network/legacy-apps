@@ -130,12 +130,35 @@ class Overview extends React.PureComponent<Props, State> {
     }, 1500);
   }
 
-  formatDate (date) {
-    if (date) {
-      return dayjs(date).format('YYYY-MM-DD');
+  formatDate (date: number, params = { format: 'YYYY-MM-DD', isUnix: true }): string {
+    if (date && params.isUnix) {
+      return dayjs.unix(date).format(params.format);
     }
 
-    return dayjs(0).format('YYYY-MM-DD');
+    if (date) {
+      return dayjs(date).format(params.format);
+    }
+
+    return dayjs(0).format(params.format);
+  }
+
+  formatType (type = ''): string {
+    const { t } = this.props;
+
+    switch (type.toLowerCase()) {
+      case 'redeemdeposit':
+        return t('Deposit');
+        break;
+      case 'redeemring':
+        return 'RING';
+        break;
+      case 'redeemkton':
+        return 'KTON';
+        break;
+      default:
+        return type;
+        break;
+    }
   }
 
   formatIndex (extrinsicIndex: string): number {
@@ -466,7 +489,7 @@ class Overview extends React.PureComponent<Props, State> {
           <tbody>
             <tr className='stakingTh'>
               <td>{t('Extrinsic ID')}</td>
-              <td>{t('Date')}</td>
+              <td>{t('Mapping Date')}</td>
               <td>{t('Amount')}</td>
               <td>{t('Type')}</td>
               <td>{t('Tx Hash')}</td>
@@ -478,15 +501,18 @@ class Overview extends React.PureComponent<Props, State> {
                   rel='noopener noreferrer'
                   target='_blank'>{item.extrinsic_index}</a></td>
                 <td>
-                  {this.formatDate(item.mapping_at)}
+                  {this.formatDate(item.mapping_at, {
+                    format: 'YYYY-MM-DD HH:mm:ss',
+                    isUnix: true
+                  })}
                 </td>
                 <td>{formatBalance(item.amount, false)}</td>
                 <td>
-                  {item.mapping_type}
+                  {this.formatType(item.mapping_type)}
                 </td>
                 <td>
                   <a className='stakingLink'
-                    href={ExternalsLinks.Subscan.create(extChain, txPaths || '', item.from_tx)}
+                    href={`https://etherscan.io/tx/${item.from_tx}`}
                     rel='noopener noreferrer'
                     target='_blank'>{item.from_tx}</a>
                 </td>
