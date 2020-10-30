@@ -5,9 +5,11 @@
 import { ExternalDef } from './types';
 
 import Subscan from './subscan';
+import Etherscan from './etherscan';
 
 const externals: Record<string, ExternalDef> = {
-  Subscan
+  Subscan,
+  Etherscan
 };
 
 export default externals;

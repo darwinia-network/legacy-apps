@@ -4,13 +4,15 @@
 
 import BN from 'bn.js';
 
-export type LinkTypes = 'address' | 'block' | 'council' | 'extrinsic' | 'proposal' | 'referendum' | 'techcomm' | 'treasury' | 'transaction';
+export type LinkTypes = 'address' | 'block' | 'council' | 'extrinsic' | 'proposal' | 'referendum' | 'techcomm' | 'treasury' | 'transaction' | 'tx';
 
 export interface ExternalDef {
-  chains: Record<string, string>;
+  chains?: Record<string, string>;
+  lngs?: ['en', 'zh'];
   isActive: boolean;
   paths: Partial<Record<LinkTypes, string>>;
   url: string;
   create: (chain: string, path: string, data: BN | number | string, hash?: string) => string;
-  createDomain: (chain: string) => string;
+  createDomain?: (chain: string) => string;
+  key?: string;
 }

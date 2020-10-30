@@ -130,12 +130,35 @@ class Overview extends React.PureComponent<Props, State> {
     }, 1500);
   }
 
-  formatDate (date) {
-    if (date) {
-      return dayjs(date).format('YYYY-MM-DD');
+  formatDate (date: number, params = { format: 'YYYY-MM-DD', isUnix: false }): string {
+    if (date && params.isUnix) {
+      return dayjs.unix(date).format(params.format);
     }
 
-    return dayjs(0).format('YYYY-MM-DD');
+    if (date) {
+      return dayjs(date).format(params.format);
+    }
+
+    return dayjs(0).format(params.format);
+  }
+
+  formatType (type = ''): string {
+    const { t } = this.props;
+
+    switch (type.toLowerCase()) {
+      case 'redeemdeposit':
+        return t('Deposit');
+        break;
+      case 'redeemring':
+        return 'RING';
+        break;
+      case 'redeemkton':
+        return 'KTON';
+        break;
+      default:
+        return type;
+        break;
+    }
   }
 
   formatIndex (extrinsicIndex: string): number {
@@ -229,6 +252,14 @@ class Overview extends React.PureComponent<Props, State> {
 
   private getUnbondingEndTime (start) {
     return dayjs(start).add(14, 'day');
+  }
+
+  textEllipsis (text = '', maxLength = 30): string {
+    if (text.length > maxLength) {
+      return text.substr(0, 10) + '...' + text.substr(text.length - 10, 10);
+    }
+
+    return text;
   }
 
   renderBondedList (): React.ReactNode {
@@ -436,6 +467,7 @@ class Overview extends React.PureComponent<Props, State> {
     const extPaths = paths.extrinsic;
     const txPaths = paths.transaction;
 
+
     if (!bondList || bondList.count === 0 || (bondList.list?.length === 0)) {
       return (
         <Wrapper>
@@ -466,10 +498,10 @@ class Overview extends React.PureComponent<Props, State> {
           <tbody>
             <tr className='stakingTh'>
               <td>{t('Extrinsic ID')}</td>
-              <td>{t('Date')}</td>
+              <td>{t('Mapping Date')}</td>
               <td>{t('Amount')}</td>
               <td>{t('Type')}</td>
-              <td>{t('Tx Hash')}</td>
+              <td>{t('Ethereum Tx Hash')}</td>
             </tr>
             {bondList.list.map((item, index) => {
               return (<tr key={`${index}${item.Id}`}>
@@ -478,17 +510,20 @@ class Overview extends React.PureComponent<Props, State> {
                   rel='noopener noreferrer'
                   target='_blank'>{item.extrinsic_index}</a></td>
                 <td>
-                  {this.formatDate(item.mapping_at)}
+                  {this.formatDate(item.mapping_at, {
+                    format: 'YYYY-MM-DD HH:mm:ss',
+                    isUnix: true
+                  })}
                 </td>
                 <td>{formatBalance(item.amount, false)}</td>
                 <td>
-                  {item.mapping_type}
+                  {this.formatType(item.mapping_type)}
                 </td>
                 <td>
                   <a className='stakingLink'
-                    href={ExternalsLinks.Subscan.create(extChain, txPaths || '', item.from_tx)}
+                    href={ExternalsLinks.Etherscan.create(t(ExternalsLinks.Etherscan.key || ''), 'tx', item.from_tx)}
                     rel='noopener noreferrer'
-                    target='_blank'>{item.from_tx}</a>
+                    target='_blank'>{this.textEllipsis(item.from_tx)}</a>
                 </td>
               </tr>);
             })}
