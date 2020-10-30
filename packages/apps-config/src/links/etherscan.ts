@@ -5,6 +5,11 @@
 import BN from 'bn.js';
 
 export default {
+  chains: {
+    'Darwinia Crab': 'crab',
+    'Darwinia CC1': 'darwinia-cc1',
+    'Darwinia Devnet': 'darwinia-cc1'
+  },
   create: (domain: string, path: string, data: BN | number | string): string =>
     `https://${domain}/${path}/${data.toString()}`,
   isActive: true,
