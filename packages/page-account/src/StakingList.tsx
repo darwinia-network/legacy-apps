@@ -130,7 +130,7 @@ class Overview extends React.PureComponent<Props, State> {
     }, 1500);
   }
 
-  formatDate (date: number, params = { format: 'YYYY-MM-DD', isUnix: true }): string {
+  formatDate (date: number, params = { format: 'YYYY-MM-DD', isUnix: false }): string {
     if (date && params.isUnix) {
       return dayjs.unix(date).format(params.format);
     }
@@ -252,6 +252,14 @@ class Overview extends React.PureComponent<Props, State> {
 
   private getUnbondingEndTime (start) {
     return dayjs(start).add(14, 'day');
+  }
+
+  textEllipsis (text = '', maxLength = 30): string {
+    if (text.length > maxLength) {
+      return text.substr(0, 10) + '...' + text.substr(text.length - 10, 10);
+    }
+
+    return text;
   }
 
   renderBondedList (): React.ReactNode {
@@ -459,6 +467,7 @@ class Overview extends React.PureComponent<Props, State> {
     const extPaths = paths.extrinsic;
     const txPaths = paths.transaction;
 
+
     if (!bondList || bondList.count === 0 || (bondList.list?.length === 0)) {
       return (
         <Wrapper>
@@ -492,7 +501,7 @@ class Overview extends React.PureComponent<Props, State> {
               <td>{t('Mapping Date')}</td>
               <td>{t('Amount')}</td>
               <td>{t('Type')}</td>
-              <td>{t('Tx Hash')}</td>
+              <td>{t('Ethereum Tx Hash')}</td>
             </tr>
             {bondList.list.map((item, index) => {
               return (<tr key={`${index}${item.Id}`}>
@@ -512,9 +521,9 @@ class Overview extends React.PureComponent<Props, State> {
                 </td>
                 <td>
                   <a className='stakingLink'
-                    href={`https://etherscan.io/tx/${item.from_tx}`}
+                    href={ExternalsLinks.Etherscan.create(t(ExternalsLinks.Etherscan.key || ''), 'tx', item.from_tx)}
                     rel='noopener noreferrer'
-                    target='_blank'>{item.from_tx}</a>
+                    target='_blank'>{this.textEllipsis(item.from_tx)}</a>
                 </td>
               </tr>);
             })}
