@@ -43,6 +43,7 @@
   "This account does have a reserved/locked balance, not taken into account": "此帐户确实有保留/锁定余额，未计入",
   "Tip (optional)": "小费 (可选的)",
   "Unlock the sending account to allow signing of this transaction.": "Unlock the sending account to allow signing of this transaction.",
+  "If you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the KTON reward.": "如您在锁定期限内提前取出，需要提现3倍的 KTON 罚款。",
   "sending from my account": "发送",
   "signatory": "signatory",
   "unlock account with password": "使用密码解锁账号",

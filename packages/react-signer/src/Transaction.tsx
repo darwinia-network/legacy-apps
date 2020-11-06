@@ -12,6 +12,7 @@ import { Call, InputAddress, Expander, Modal } from '@polkadot/react-components'
 
 import Checks from './Checks';
 import { useTranslation } from './translate';
+import { WARNING } from './Warning';
 
 interface Props {
   children?: React.ReactNode;
@@ -31,6 +32,7 @@ function Transaction ({ children, className, hideDetails, isSendable, onError, t
   }
 
   const { meta, method, section } = registry.findMetaCall(extrinsic.callIndex);
+  const warning = WARNING[`${section}.${method}`];
 
   return (
     <Modal.Content className={`ui--signer-Signer-Content ${className}`}>
@@ -86,6 +88,19 @@ function Transaction ({ children, className, hideDetails, isSendable, onError, t
               <p>{t('The details of the transaction including the type, the description (as available from the chain metadata) as well as any parameters and fee estimations (as available) for the specific type of call.')}</p>
             </Modal.Column>
           </Modal.Columns>
+          { warning ? <Modal.Columns>
+            <Modal.Column>
+              <Expander
+                className='tx-penalty'
+                summary={
+                  <>
+                    {t(WARNING[`${section}.${method}`])}
+                  </>
+                }
+              >
+              </Expander>
+            </Modal.Column>
+          </Modal.Columns> : null}
         </>
       )}
       {children}
@@ -94,6 +109,7 @@ function Transaction ({ children, className, hideDetails, isSendable, onError, t
 }
 
 export default React.memo(styled(Transaction)`
+  .tx
   .tx-details {
     margin-left: 2rem;
 
@@ -114,5 +130,9 @@ export default React.memo(styled(Transaction)`
     .meta, .mute {
       opacity: 0.6;
     }
+  }
+  .tx-penalty {
+    margin-left: 2rem;
+    color: #9F3A38;
   }
 `);
