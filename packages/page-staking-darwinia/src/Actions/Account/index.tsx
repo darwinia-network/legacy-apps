@@ -214,15 +214,14 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   const { allRewards: rewards } = useOwnEraRewards([stashId]);
   const isPayoutEmpty = !validators || (Array.isArray(validators) && validators.length === 0);
 
-  useEffect((): void => {
-    if (!isPayoutEmpty) {
-      const amount = validators?.reduce((total: number, validator: PayoutValidator) => {
-        return total + validator.eras.length;
-      }, 0);
-
-      setPayoutsAmount(amount);
-    }
-  }, [validators]);
+  // useEffect((): void => {
+  //   if (!isPayoutEmpty) {
+  //     const amount = validators?.reduce((total: number, validator: PayoutValidator) => {
+  //       return total + validator.eras.length;
+  //     }, 0);
+  //     // setPayoutsAmount(amount);
+  //   }
+  // }, [validators]);
 
   useEffect((): void => {
     if (stakingInfoMulti) {
@@ -267,10 +266,14 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   }, [inactiveNoms, nominees]);
 
   useEffect((): void => {
+    let payoutsAmount = 0;
+
     rewards && setStakingRewards([
       rewards[stashId].map(({ era }): EraIndex => era),
       rewards[stashId].reduce((result, { validators }) => {
         const eraTotalList: Balance[] = Object.keys(validators).map((validatorId: string): Balance => {
+          payoutsAmount++;
+
           return validators[validatorId].value;
         });
 
@@ -281,6 +284,8 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
         return result.iadd(eraTotal);
       }, new BN(0))
     ]);
+
+    setPayoutsAmount(payoutsAmount);
   }, [rewards, stashId]);
 
   useEffect((): void => {
