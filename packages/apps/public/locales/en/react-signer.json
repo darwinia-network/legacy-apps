@@ -45,6 +45,7 @@
   "Tip (optional)": "Tip (optional)",
   "Unable to render extrinsic, invalid": "Unable to render extrinsic, invalid",
   "Unlock the sending account to allow signing of this transaction.": "Unlock the sending account to allow signing of this transaction.",
+  "If you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the KTON reward.": "if you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the KTON reward.",
   "sending from my account": "sending from my account",
   "signatory": "signatory",
   "unlock account with password": "unlock account with password",
