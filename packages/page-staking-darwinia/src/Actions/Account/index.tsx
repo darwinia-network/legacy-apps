@@ -34,7 +34,7 @@ import PowerManage from './PowerManage';
 import Earnings from './Earnings';
 import { PayoutValidator } from '../../Payouts/types';
 import useStakerPayouts from '../../Payouts/useStakerPayouts';
-import { IndividualExposure, Power } from '@darwinia/typegen/interfaces';
+import { IndividualExposure, Power } from '@darwinia/types/interfaces';
 import { DestinationType } from '../NewStake';
 
 type ValidatorInfo = ITuple<[ValidatorPrefs, Codec]>;

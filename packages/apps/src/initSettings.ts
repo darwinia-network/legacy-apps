@@ -8,7 +8,7 @@ import { createEndpoints } from '@polkadot/apps-config/settings';
 import { registry } from '@polkadot/react-api';
 import settings from '@polkadot/ui-settings';
 import { DARWINIA_CRAB_TYPES, INIT_VERSION } from '@polkadot/react-darwinia';
-import * as definitions from '@darwinia/typegen/interfaces/definitions';
+import * as definitions from '@darwinia/types/interfaces/definitions';
 
 // we split here so that both these forms are allowed
 //  - http://localhost:3000/?rpc=wss://substrate-rpc.parity.io/#/explorer

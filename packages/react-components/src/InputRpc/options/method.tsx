@@ -7,7 +7,7 @@ import { DropdownOption, DropdownOptions } from '../../util/types';
 
 import React from 'react';
 import ApiPromise from '@polkadot/api/promise';
-import jsonrpc from '@darwinia/typegen/interfaces/jsonrpc';
+import jsonrpc from '@darwinia/types/interfaces/jsonrpc';
 
 export default function createOptions (api: ApiPromise, sectionName: string): DropdownOptions {
   const section = jsonrpc[sectionName];

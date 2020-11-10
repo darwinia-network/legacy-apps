@@ -76,12 +76,10 @@
       "@polkadot/jsonrpc/*": ["packages/jsonrpc/src/*"],
       "@polkadot/api-derive": ["packages/api-derive/src"],
       "@polkadot/api-derive/*": ["packages/api-derive/src/*"],
-      "@polkadot/types-known": ["packages/types-known/src"],
-      "@polkadot/types-known/*": ["packages/types-known/src/*"],
       "@polkadot/util": ["packages/util/src"],
       "@polkadot/util/*": ["packages/util/src/*"],
-      "@polkadot/api/augment": ["node_modules/@darwinia/typegen/interfaces/augment-api.d.ts"],
-      "@polkadot/types/augment": ["node_modules/@darwinia/typegen/interfaces/augment-types.d.ts"]
+      "@polkadot/api/augment": ["node_modules/@darwinia/types/interfaces/augment-api.d.ts"],
+      "@polkadot/types/augment": ["node_modules/@darwinia/types/interfaces/augment-types.d.ts"]
     },
     "skipLibCheck": true,
     "typeRoots": [

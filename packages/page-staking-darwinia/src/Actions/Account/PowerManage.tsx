@@ -13,7 +13,7 @@ import { withMulti } from '@polkadot/react-api/hoc';
 
 import translate from '../../translate';
 // import { Option, createType } from '@polkadot/types';
-import { StakingLedgerT as StakingLedger } from '@darwinia/typegen/interfaces';
+import { StakingLedgerT as StakingLedger } from '@darwinia/types/interfaces';
 import powerbg from '../../Assets/power-bg.svg';
 import { Power, TokenIcon } from '@polkadot/react-darwinia/components';
 import { AvailableKton, Available, Balance, BalanceKton } from '@polkadot/react-components-darwinia';
@@ -280,7 +280,7 @@ export default withMulti(
         .box-left{
           text-align: center;
           margin-top: 5px;
-          
+
           img{
             width: 40px;
           }

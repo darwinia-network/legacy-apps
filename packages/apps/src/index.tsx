@@ -6,7 +6,7 @@
 import './initSettings';
 import './style/semantic-ui-css/semantic.css';
 import '@polkadot/react-components/i18n';
-import '@darwinia/typegen/interfaces/augment-api';
+import '@darwinia/types/interfaces/augment-api';
 
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';

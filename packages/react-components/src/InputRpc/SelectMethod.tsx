@@ -8,7 +8,7 @@ import { BareProps } from '../types';
 
 import React from 'react';
 
-import jsonrpc from '@darwinia/typegen/interfaces/jsonrpc';
+import jsonrpc from '@darwinia/types/interfaces/jsonrpc';
 
 import Dropdown from '../Dropdown';
 import { classes } from '../util';

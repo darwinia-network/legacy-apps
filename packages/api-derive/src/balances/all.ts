@@ -5,7 +5,7 @@
 
 import { AccountId, AccountIndex, Address, Balance, BalanceLockTo212, BlockNumber, VestingInfo, VestingSchedule } from '@polkadot/types/interfaces';
 import { DeriveBalancesAccount, DeriveBalancesAll, DerivedBalanceLock } from '../types';
-import { BalanceLock } from '@darwinia/typegen/interfaces';
+import { BalanceLock } from '@darwinia/types/interfaces';
 import BN from 'bn.js';
 import { combineLatest, of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';

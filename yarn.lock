@@ -1408,12 +1408,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@darwinia/typegen@npm:0.0.23":
-  version: 0.0.23
-  resolution: "@darwinia/typegen@npm:0.0.23"
+"@darwinia/types-known@npm:1.0.2":
+  version: 1.0.2
+  resolution: "@darwinia/types-known@npm:1.0.2"
   dependencies:
-    "@polkadot/api": 1.35.0-beta.19
-  checksum: 581ceb86e991e651b97523d94ed033e4b1e1bfd919609d80225b1f0a1f7c9c5ab9059908c07a4b08f0bfd934cd06013d75d1f7ebcac5e275b4b91bff1dbe69e2
+    "@babel/runtime": ^7.9.6
+    "@polkadot/types": 1.27.1
+    "@polkadot/util": ^3.0.1
+    bn.js: ^5.1.2
+  checksum: f60157370cd708c33fe5b81f86b5452d3dca310404da85ac0b77b189db255ba5fa456e0532f158566d4621b380eb310259deadf1b8c2a75fbcb7d2fd13901204
+  languageName: node
+  linkType: hard
+
+"@darwinia/types@npm:1.0.2":
+  version: 1.0.2
+  resolution: "@darwinia/types@npm:1.0.2"
+  dependencies:
+    "@babel/runtime": ^7.11.2
+    "@polkadot/metadata": 1.35.0-beta.19
+    "@polkadot/util": ^3.5.1
+    "@polkadot/util-crypto": ^3.5.1
+    "@types/bn.js": ^4.11.6
+    bn.js: ^5.1.3
+    memoizee: ^0.4.14
+    rxjs: ^6.6.2
+  checksum: 8534b099d3bae34dc0b0bf7c272b73323048f4bb0e3407b579dc4cd6709a0debe35b477e9bed45ae50b8b9926041a7379b62b3a9e237664efe3209a05632feb7
   languageName: node
   linkType: hard
 
@@ -3042,6 +3061,7 @@ __metadata:
   resolution: "@polkadot/app-settings@workspace:packages/page-settings"
   dependencies:
     "@babel/runtime": ^7.9.6
+    "@darwinia/types-known": 1.0.2
     "@polkadot/apps-config": 0.42.0-beta.100
     "@polkadot/react-components": 0.42.0-beta.100
     "@polkadot/react-query": 0.42.0-beta.100
@@ -3063,7 +3083,7 @@ __metadata:
   resolution: "@polkadot/app-staking-darwinia@workspace:packages/page-staking-darwinia"
   dependencies:
     "@babel/runtime": ^7.9.6
-    "@darwinia/typegen": 0.0.10
+    "@darwinia/types": 1.0.2
     "@polkadot/app-explorer": 0.42.0-beta.100
     "@polkadot/react-components-darwinia": 0.42.0-beta.100
     "@polkadot/react-query": 0.42.0-beta.100
@@ -3326,6 +3346,7 @@ __metadata:
   resolution: "@polkadot/react-api@workspace:packages/react-api"
   dependencies:
     "@babel/runtime": ^7.9.6
+    "@darwinia/types-known": 1.0.2
     "@polkadot/api": 1.35.0-beta.19
     "@polkadot/extension-dapp": ^0.25.0-beta.4
     rxjs-compat: ^6.6.2
