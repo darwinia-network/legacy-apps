@@ -4,7 +4,7 @@
 
 import type BN from 'bn.js';
 import { AccountId, Balance, BalanceOf, Bid, BidKind, BlockNumber, Hash, Index, Proposal, ProposalIndex, SetIndex, SocietyVote, StrikeCount, TreasuryProposal, Votes, VoteIndex, VouchingStatus, LockIdentifier, Moment } from '@polkadot/types/interfaces';
-import { Reasons } from '@darwinia/typegen/interfaces';
+import { Reasons } from '@darwinia/types/interfaces';
 
 import { u32 } from '@polkadot/types';
 

@@ -10,6 +10,7 @@ import Tabs from '@polkadot/react-components/Tabs';
 import { useAccounts } from '@polkadot/react-hooks';
 import Vanity from '@polkadot/app-account/Vanity';
 
+import DvmAddress from './DvmAddress';
 import Hash from './Hash';
 import Rpc from './Rpc';
 import Sign from './Sign';
@@ -40,6 +41,10 @@ function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
     {
       name: 'vanity',
       text: t('Vanity')
+    },
+    {
+      name: 'dvmaddress',
+      text: t('DVM address')
     }
   ], [t]);
 
@@ -61,6 +66,7 @@ function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
         <Route path={`${basePath}/sign`}><Sign /></Route>
         <Route path={`${basePath}/verify`}><Verify /></Route>
         <Route path={`${basePath}/vanity`}><Vanity /></Route>
+        <Route path={`${basePath}/dvmaddress`}><DvmAddress /></Route>
         <Route><Rpc /></Route>
       </Switch>
     </main>

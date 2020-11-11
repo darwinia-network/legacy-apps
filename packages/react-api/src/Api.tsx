@@ -4,7 +4,7 @@
 
 import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { ChainType } from '@polkadot/types/interfaces';
-import { ChainProperties } from '@darwinia/typegen/interfaces';
+import { ChainProperties } from '@darwinia/types/interfaces';
 import { ApiProps, ApiState } from './types';
 
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -21,8 +21,8 @@ import { formatBalance, formatKtonBalance, isTestChain } from '@polkadot/util';
 import { setSS58Format } from '@polkadot/util-crypto';
 import addressDefaults from '@polkadot/util-crypto/address/defaults';
 import { setRingProperties, setKtonProperties } from '@polkadot/react-darwinia';
-import rpc from '@darwinia/typegen/interfaces/jsonrpc';
-import { getSpecTypes } from '@polkadot/types-known';
+import rpc from '@darwinia/types/interfaces/jsonrpc';
+import { getSpecTypes } from '@darwinia/types-known';
 import ApiContext from './ApiContext';
 import registry from './typeRegistry';
 

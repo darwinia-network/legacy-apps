@@ -4,7 +4,7 @@
 
 import { ApiInterfaceRx } from '@polkadot/api/types';
 import { EraIndex, Perbill } from '@polkadot/types/interfaces';
-import { RKT } from '@darwinia/typegen/interfaces';
+import { RKT } from '@darwinia/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
 import { DeriveStakerSlashes } from '../types';
 

@@ -4,7 +4,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { AccountId } from '@polkadot/types/interfaces';
-import { StakingLedgerT as StakingLedger } from '@darwinia/typegen';
+import { StakingLedgerT as StakingLedger } from '@darwinia/types';
 import { I18nProps } from '@polkadot/react-components/types';
 import { ApiProps } from '@polkadot/react-api/types';
 

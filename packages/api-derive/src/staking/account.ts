@@ -4,7 +4,7 @@
 
 import { ApiInterfaceRx } from '@polkadot/api/types';
 import { Balance, BlockNumber } from '@polkadot/types/interfaces';
-import { StakingLedgerT as StakingLedger, Unbonding } from '@darwinia/typegen/interfaces';
+import { StakingLedgerT as StakingLedger, Unbonding } from '@darwinia/types/interfaces';
 import { DeriveSessionInfo, DeriveStakingAccount, DeriveStakingQuery, DeriveUnlocking } from '../types';
 
 import BN from 'bn.js';

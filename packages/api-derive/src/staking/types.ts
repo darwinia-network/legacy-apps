@@ -5,7 +5,7 @@
 import type BN from 'bn.js';
 import { AccountId, Balance, EraIndex, Keys, RewardDestination, RewardPoint, ValidatorPrefs } from '@polkadot/types/interfaces';
 import { DeriveSessionIndexes } from '../session/types';
-import { ExposureT as Exposure, StakingLedgerT as StakingLedger, RKT } from '@darwinia/typegen/interfaces';
+import { ExposureT as Exposure, StakingLedgerT as StakingLedger, RKT } from '@darwinia/types/interfaces';
 import { Option } from '@polkadot/types';
 
 export type DeriveEraValPoints = Record<string, RewardPoint>;

@@ -5,7 +5,7 @@
 import { ChainInfo } from './types';
 
 import { getSystemChainColor, getSystemIcon } from '@polkadot/apps-config/ui';
-import { getSpecTypes } from '@polkadot/types-known';
+import { getSpecTypes } from '@darwinia/types-known';
 import { registry } from '@polkadot/react-api';
 import { useApi } from '@polkadot/react-hooks';
 
