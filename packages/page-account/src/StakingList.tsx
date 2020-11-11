@@ -107,7 +107,7 @@ class Overview extends React.PureComponent<Props, State> {
       this.setState({
         status,
         bondList: response.data.data,
-        pageCount: (response.data.data.count > PAGE_SIZE && response.data.data.count % PAGE_SIZE > 0) ? (response.data.data.count / PAGE_SIZE + 1) : (response.data.data.count / PAGE_SIZE)
+        pageCount: (response.data.data.count > PAGE_SIZE && response.data.data.count % PAGE_SIZE > 0) ? (Math.floor(response.data.data.count / PAGE_SIZE) + 1) : (response.data.data.count / PAGE_SIZE)
       });
     } else {
       this.setState({
