@@ -724,6 +724,7 @@ class Signer extends React.PureComponent<Props, State> {
       const result = await (api.rpc as any)[section][method](...values);
 
       console.log('submitRpc: result ::', format(result));
+      console.log('submitRpc: result ::', result.toHex());
 
       return {
         result,

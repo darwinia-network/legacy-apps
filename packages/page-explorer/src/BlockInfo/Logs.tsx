@@ -86,6 +86,8 @@ function formatVector (vector: Vec<any>): React.ReactNode {
 }
 
 function formatItem (item: DigestItem): React.ReactNode {
+  console.log('log', item.value.toString());
+
   if (item.value instanceof Struct) {
     return formatStruct(item.value);
   } else if (item.value instanceof Tuple) {
