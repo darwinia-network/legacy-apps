@@ -19,13 +19,14 @@ type ResultBalance = [(BalanceLock)[], (BalanceLock)[]];
 type Result = [DeriveBalancesAccount, BlockNumber, ResultBalance];
 
 function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock)[], bestNumber: BlockNumber): [Balance, (DerivedBalanceLock)[]] {
-  let lockedBn = new BN(0);
   let lockedBalance = api.registry.createType('Balance');
   let lockedBreakdown: (DerivedBalanceLock)[] = [];
 
-  lockedBn = locks.reduce((total, { id, lockFor, reasons }) => {
+  const locksAmount: BN[] = [];
+
+  locks.map(({ id, lockFor, reasons }) => {
     if (lockFor.isStaking) {
-      total = total.add(lockFor.asStaking?.stakingAmount);
+      let total: BN = lockFor.asStaking?.stakingAmount;
       const _lockedBreakdown = lockFor.asStaking?.unbondings.filter(({ moment }): boolean => !moment || (bestNumber && moment.gt(bestNumber)));
 
       lockedBreakdown = lockedBreakdown.concat(_lockedBreakdown.map(({ amount, moment }): DerivedBalanceLock => ({
@@ -35,11 +36,17 @@ function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock)[], bestNumber: Blo
         reasons: reasons
       })));
       _lockedBreakdown.forEach(({ amount }) => { total = total.add(amount); });
+      locksAmount.push(total);
     }
 
-    return total;
-  }, new BN(0));
-  lockedBalance = api.registry.createType('Balance', lockedBn);
+    if (lockFor.isCommon) {
+      locksAmount.push(lockFor.asCommon?.amount);
+    }
+  });
+
+  if (locksAmount.length) {
+    lockedBalance = api.registry.createType('Balance', bnMax(...locksAmount));
+  }
 
   return [lockedBalance, lockedBreakdown];
 }

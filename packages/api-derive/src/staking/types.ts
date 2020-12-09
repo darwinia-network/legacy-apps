@@ -7,6 +7,7 @@ import { AccountId, Balance, EraIndex, Keys, RewardDestination, RewardPoint, Val
 import { DeriveSessionIndexes } from '../session/types';
 import { ExposureT as Exposure, StakingLedgerT as StakingLedger, RKT } from '@darwinia/types/interfaces';
 import { Option } from '@polkadot/types';
+import { TimeDepositItem } from '@darwinia/types/interfaces/darwiniaInject';
 
 export type DeriveEraValPoints = Record<string, RewardPoint>;
 
@@ -131,6 +132,11 @@ export interface DeriveStakingQuery extends DeriveStakingStash {
 export interface DeriveStakingAccount extends DeriveStakingQuery {
   redeemable?: Balance;
   unlocking?: DeriveUnlocking[];
+  activeDepositItems?: TimeDepositItem[];
+  unlockingTotalValue: Balance;
+  unlockingKton?: DeriveUnlocking[];
+  unlockingKtonTotalValue: Balance;
+  activeDepositAmount?: Balance;
 }
 
 export interface DeriveStakingOverview extends DeriveSessionIndexes {
