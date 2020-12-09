@@ -44,7 +44,9 @@ function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock)[], bestNumber: Blo
     }
   });
 
-  lockedBalance = api.registry.createType('Balance', bnMax(...locksAmount));
+  if (locksAmount.length) {
+    lockedBalance = api.registry.createType('Balance', bnMax(...locksAmount));
+  }
 
   return [lockedBalance, lockedBreakdown];
 }

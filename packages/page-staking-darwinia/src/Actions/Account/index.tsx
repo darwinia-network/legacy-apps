@@ -22,6 +22,7 @@ import { FormatBalance } from '@polkadot/react-query';
 
 import { useTranslation } from '../../translate';
 import BondExtra from './BondExtra';
+import DepositExtra from './DepositExtra';
 import InjectKeys from './InjectKeys';
 import Nominate from './Nominate';
 import SetControllerAccount from './SetControllerAccount';
@@ -198,6 +199,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   const stakingInfoMulti = useCall<DerivedStakingQuery[]>(api.derive.staking.queryMulti as any, [nominees || []]);
   const [nomsPower, setNomsPower] = useState<(IndividualExposure | null)[]>([]);
   const [isBondExtraOpen, toggleBondExtra] = useToggle();
+  const [isDepositExtraOpen, toggleDepositExtra] = useToggle();
   const [isInjectOpen, toggleInject] = useToggle();
   const [isNominateOpen, toggleNominate] = useToggle();
   const [isRewardDestinationOpen, toggleRewardDestination] = useToggle();
@@ -311,7 +313,12 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
 
   return (
     <div className={className}>
-
+      <DepositExtra
+        controllerId={controllerId}
+        isOpen={isDepositExtraOpen}
+        onClose={toggleDepositExtra}
+        stashId={stashId}
+      />
       <BondExtra
         controllerId={controllerId}
         isOpen={isBondExtraOpen}
@@ -554,7 +561,6 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
         <PowerManage
           buttons={
             <div className='staking--PowerMange-buttons'>
-
               <Button
                 isBasic
                 isDisabled={isInElection}
@@ -571,6 +577,13 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
                 label={t('Unbond')}
                 onClick={toggleUnbond}
               // icon='hand paper outline'
+              />
+              <Button
+                isBasic
+                isDisabled={isInElection}
+                key='depositextra'
+                label={t('Deposit')}
+                onClick={toggleDepositExtra}
               />
             </div>
           }
@@ -753,7 +766,13 @@ export default styled(Account)`
     display: flex;
     align-items: center;
     flex: 1;
-    justify-content: flex-end;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+    button {
+      min-width: 130px;
+      margin-left: 0;
+    }
   }
 
   .staking--Noms-accountbox {

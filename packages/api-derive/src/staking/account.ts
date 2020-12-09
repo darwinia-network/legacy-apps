@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { ApiInterfaceRx } from '@polkadot/api/types';
-import { Balance, BlockNumber } from '@polkadot/types/interfaces';
+import { Balance, BlockNumber, Moment } from '@polkadot/types/interfaces';
 import { StakingLedgerT as StakingLedger, Unbonding } from '@darwinia/types/interfaces';
 import { DeriveSessionInfo, DeriveStakingAccount, DeriveStakingQuery, DeriveUnlocking } from '../types';
 
@@ -61,12 +61,21 @@ function redeemableSum (api: ApiInterfaceRx, stakingLedger: StakingLedger | unde
   }, new BN(0)));
 }
 
-function parseResult (api: ApiInterfaceRx, best: BlockNumber, query: DeriveStakingQuery): DeriveStakingAccount {
+function parseResult (api: ApiInterfaceRx, best: BlockNumber, now: Moment, query: DeriveStakingQuery): DeriveStakingAccount {
   const calcUnlocking = calculateUnlocking(api, query.stakingLedger, best, 'ring');
   const calcUnlockingKton = calculateUnlocking(api, query.stakingLedger, best, 'kton');
+  const depositItems = query.stakingLedger?.depositItems.filter(({ expireTime }) => expireTime.toBn().gt(now));
+
+  const total = depositItems?.reduce((accumulator, item) => {
+    return accumulator.add(item.value.toBn());
+  }, new BN(0));
+
+  const activeDepositAmount: Balance = api.registry.createType('Balance', total);
 
   return {
     ...query,
+    activeDepositItems: depositItems,
+    activeDepositAmount,
     redeemable: redeemableSum(api, query.stakingLedger, best),
     unlocking: calcUnlocking[0],
     unlockingTotalValue: calcUnlocking[1],
@@ -76,9 +85,9 @@ function parseResult (api: ApiInterfaceRx, best: BlockNumber, query: DeriveStaki
 }
 
 export function _account (api: ApiInterfaceRx): (best: BlockNumber, accountId: Uint8Array | string) => Observable<DeriveStakingAccount> {
-  return memo((best: BlockNumber, accountId: Uint8Array | string): Observable<DeriveStakingAccount> =>
+  return memo((best: BlockNumber, accountId: Uint8Array | string, now: Moment): Observable<DeriveStakingAccount> =>
     api.derive.staking.query(accountId).pipe(
-      map((query) => parseResult(api, best, query))
+      map((query) => parseResult(api, best, now, query))
     ));
 }
 
@@ -87,8 +96,11 @@ export function _account (api: ApiInterfaceRx): (best: BlockNumber, accountId: U
  */
 export function account (api: ApiInterfaceRx): (accountId: Uint8Array | string) => Observable<DeriveStakingAccount> {
   return memo((accountId: Uint8Array | string): Observable<DeriveStakingAccount> =>
-    api.derive.chain.bestNumber().pipe(
-      switchMap((best) => api.derive.staking._account(best, accountId))
+  combineLatest([
+    api.derive.chain.bestNumber(),
+    api.query.timestamp.now()
+  ]).pipe(
+      switchMap(([best, now]) => api.derive.staking._account(best, accountId, now))
     ));
 }
 

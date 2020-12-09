@@ -96,6 +96,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
 
   private renderBalances (): React.ReactElement {
     const { buttons, checkedAccount, stakingAccount, stakingLedger, t } = this.props;
+
     // const { staking_info, t, withBalance = true, kton_locks, balances_locks, buttons, isReadyStaking = false, staking_ledger, balances_all, kton_all, stashId } = this.props;
     // const balanceDisplay = withBalance === true
     //   ? { available: true, bonded: true, free: true, redeemable: true, unlocking: true }
@@ -147,6 +148,12 @@ class AddressInfoStaking extends React.PureComponent<Props> {
       return null;
     }
 
+    let normalBondedRing = stakingLedger.activeRing.toBn().sub(stakingLedger.activeDepositRing.toBn());
+
+    if (normalBondedRing.ltn(0)) {
+      normalBondedRing = new BN(0);
+    }
+
     return (
       <div className='token-box'>
         <div className='nominate-balance-box'>
@@ -162,7 +169,11 @@ class AddressInfoStaking extends React.PureComponent<Props> {
             </div>
             <div>
               <label>{t('bonded')}</label>
-              <FormatBalance value={stakingLedger.activeRing} />
+              <FormatBalance value={normalBondedRing} />
+            </div>
+            <div>
+              <label>{t('deposit')}</label>
+              <FormatBalance value={stakingLedger.activeDepositRing} />
             </div>
             <div>
               <label>{t('unbonding')}</label>
@@ -202,7 +213,7 @@ export default withMulti(
     .PowerManage--box{
       display: flex;
       flex: 1;
-      padding: 15px;
+      padding: 15px 20px;
       flex-wrap: wrap;
       .power-box{
         display: flex;
@@ -275,7 +286,7 @@ export default withMulti(
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        padding: 10px 30px;
+        padding: 6px 24px;
         background: #FBFBFB;
         .box-left{
           text-align: center;
@@ -298,7 +309,7 @@ export default withMulti(
           &>div {
             display: flex;
             flex-direction: row;
-            margin-bottom: 0.9rem;
+            margin-bottom: 4px;
             label{
               color: #98959F;
               font-size: 12px;
@@ -311,7 +322,7 @@ export default withMulti(
               font-size: 16px;
               font-weight: bold;
               span {
-                font-size: 16px;
+                font-size: 15px;
                 font-weight: bold;
               }
             }
