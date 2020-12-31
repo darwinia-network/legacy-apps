@@ -1420,9 +1420,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@darwinia/types@npm:1.0.2":
-  version: 1.0.2
-  resolution: "@darwinia/types@npm:1.0.2"
+"@darwinia/types@npm:1.0.6":
+  version: 1.0.6
+  resolution: "@darwinia/types@npm:1.0.6"
   dependencies:
     "@babel/runtime": ^7.11.2
     "@polkadot/metadata": 1.35.0-beta.19
@@ -1432,7 +1432,7 @@ __metadata:
     bn.js: ^5.1.3
     memoizee: ^0.4.14
     rxjs: ^6.6.2
-  checksum: 8534b099d3bae34dc0b0bf7c272b73323048f4bb0e3407b579dc4cd6709a0debe35b477e9bed45ae50b8b9926041a7379b62b3a9e237664efe3209a05632feb7
+  checksum: 91e204282e98cc2e5d25ac5cd1aa7deefa9622baa584545e6ee61e37fe0297941c8ffe4a26b033cbf3920dcf8771c7c03d093945bc6c83a4a83a7be0e787e889
   languageName: node
   linkType: hard
 
