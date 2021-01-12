@@ -52,6 +52,7 @@
   "Loading block data": "Loading block data",
   "Loading data": "加载中",
   "Loading staker data": "Loading staker data",
+  "Max, {{eras}} eras": "最大 {{eras}} 时代",
   "Month": "月",
   "My Nomination": "我的提名人",
   "Nay": "Nay",
@@ -150,6 +151,7 @@
   "controller": "控制账号",
   "controller account": "控制账号",
   "crypto type to use": "使用的加密类型",
+  "deposit": "锁定",
   "ed25519, Edwards": "ed25519, Edwards",
   "elected stake": "当选份额",
   "era points": "era points",
@@ -178,7 +180,6 @@
   "payout/validator": "payout/validator",
   "points": "点数",
   "profit/era est.": "profit/era est.",
-  "deposit": "锁定",
   "request payout from": "request payout from",
   "reward commission": "奖励佣金",
   "reward commission percentage": "奖励佣金百分比",
@@ -217,5 +218,6 @@
   "{{currency}} own": "{{currency}} 自己",
   "{{currency}} rewards (est.)": "{{currency}} 奖励 (est.)",
   "{{currency}} slashed": "{{currency}} 被罚",
-  "{{currency}} total": "{{currency}} 总额"
+  "{{currency}} total": "{{currency}} 总额",
+  "{{days}} days": "{{days}} 天"
 }

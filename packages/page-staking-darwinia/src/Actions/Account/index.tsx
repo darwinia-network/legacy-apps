@@ -6,10 +6,11 @@ import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { DeriveBalancesAll, DeriveStakingAccount, DeriveStakingOverview as DerivedStakingOverview, DeriveHeartbeats as DerivedHeartbeats, DeriveStakingQuery as DerivedStakingQuery, DeriveStakerReward } from '@polkadot/api-derive/types';
 import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs, RewardDestination, Balance } from '@polkadot/types/interfaces';
 import { Codec, ITuple } from '@polkadot/types/types';
+import type { TFunction } from 'i18next';
 
-import React, { useCallback, useEffect, useState, useContext } from 'react';
+import React, { useCallback, useEffect, useState, useContext, useMemo } from 'react';
 import styled from 'styled-components';
-import { AddressSmall, Button, Menu, Popup, TxButton, StatusContext } from '@polkadot/react-components';
+import { AddressSmall, Button, Menu, Popup, TxButton, StatusContext, ToggleGroup } from '@polkadot/react-components';
 import { Table } from '@polkadot/react-components-darwinia';
 import { useAccounts, useApi, useCall, useToggle, useOwnEraRewards } from '@polkadot/react-hooks';
 import { u8aConcat, u8aToHex, formatNumber } from '@polkadot/util';
@@ -52,6 +53,11 @@ interface Props {
   isInElection: boolean;
 }
 
+interface EraSelection {
+  value: number;
+  text: string;
+}
+
 interface StakeState {
   controllerId: string | null;
   destination: DestinationType;
@@ -71,6 +77,8 @@ interface StakeState {
 
 const payoutMaxAmount = 30;
 
+const DAY_SECS = new BN(1000 * 60 * 60 * 24);
+
 interface Available {
   validators?: PayoutValidator[];
 }
@@ -79,6 +87,39 @@ function toIdString (id?: AccountId | null): string | null {
   return id
     ? id.toString()
     : null;
+}
+
+function getOptions (api: ApiPromise, eraLength: BN | undefined, historyDepth: BN | undefined, t: TFunction): EraSelection[] {
+  if (eraLength && historyDepth) {
+    const blocksPerDay = DAY_SECS.div(api.consts.babe?.expectedBlockTime || api.consts.timestamp?.minimumPeriod.muln(2) || new BN(6000));
+    const maxBlocks = eraLength.mul(historyDepth);
+    const eraSelection: EraSelection[] = [];
+    let days = 2;
+
+    while (true) {
+      const dayBlocks = blocksPerDay.muln(days);
+
+      if (dayBlocks.gte(maxBlocks)) {
+        break;
+      }
+
+      eraSelection.push({
+        text: t<string>('{{days}} days', { replace: { days } }),
+        value: dayBlocks.div(eraLength).toNumber()
+      });
+
+      days = days * 3;
+    }
+
+    eraSelection.push({
+      text: t<string>('Max, {{eras}} eras', { replace: { eras: historyDepth.toNumber() } }),
+      value: historyDepth.toNumber()
+    });
+
+    return eraSelection;
+  }
+
+  return [{ text: '', value: 0 }];
 }
 
 function getStakeState (allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DeriveStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
@@ -213,8 +254,17 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   const [payoutsAmount, setPayoutsAmount] = useState<number>(0);
   const [{ validators }, setPayouts] = useState<Available>({});
   const stakerPayoutsAfter = useStakerPayouts();
-  const { allRewards: rewards } = useOwnEraRewards([stashId]);
   const isPayoutEmpty = !validators || (Array.isArray(validators) && validators.length === 0);
+  const [eraSelectionIndex, setEraSelectionIndex] = useState(0);
+  const eraLength = useCall<BN>(api.derive.session.eraLength);
+  const historyDepth = useCall<BN>(api.query.staking.historyDepth);
+
+  const eraSelection = useMemo(
+    () => getOptions(api, eraLength, historyDepth, t),
+    [api, eraLength, historyDepth, t]
+  );
+
+  const { allRewards: rewards, isLoadingRewards } = useOwnEraRewards([stashId], eraSelection[eraSelectionIndex].value);
 
   // useEffect((): void => {
   //   if (!isPayoutEmpty) {
@@ -263,7 +313,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
 
   useEffect((): void => {
     if (nominees) {
-      setActiveNoms(nominees.filter((id): boolean => !inactiveNoms.includes(id)));
+      setActiveNoms(nominees.filter((id: string): boolean => !inactiveNoms.includes(id)));
     }
   }, [inactiveNoms, nominees]);
 
@@ -590,13 +640,23 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
           stakingAccount={stakingAccount}
           stakingLedger={stakingLedger} />
       </Box>
-      <RowTitle title={t('Earnings')} />
+      <RowTitle title={t('Earnings')} >
+        {api.tx.staking.payoutStakers && (
+          <Button.Group className='staking--Earning-buttons'>
+            <ToggleGroup
+              onChange={setEraSelectionIndex}
+              options={eraSelection}
+              value={eraSelectionIndex}
+            />
+          </Button.Group>
+        )}
+      </RowTitle>
       <Box>
         <Earnings address={stashId}
           destinationId={destination === 'Controller' ? controllerId : stashId}
           doPayout={_doPayout}
           doPayoutIsDisabled={isPayoutEmpty || isInElection}
-          isLoading={!rewards}
+          isLoading={isLoadingRewards}
           payoutMaxAmount={payoutMaxAmount}
           payoutsAmount={payoutsAmount}
           unClaimedReward={payoutTotal}/>
@@ -792,5 +852,9 @@ export default styled(Account)`
 
   .lastBox {
     margin-bottom: 50px;
+  }
+
+  .staking--Earning-buttons {
+    margin-top: 0;
   }
 `;

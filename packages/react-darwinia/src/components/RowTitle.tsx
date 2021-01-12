@@ -20,10 +20,14 @@ const styles = `
     text-transform: uppercase;
     margin-bottom: 10px;
     margin-top: 20px;
+    display: flex;
+    align-items: center;
     .ui--RowTitle-main {
         font-weight: bold;
         margin-left: 10px;
         font-size: 16px;
+        margin-bottom: 0;
+        margin-right: 10px;
         span {
           text-transform: initial;
           font-size: 13px;

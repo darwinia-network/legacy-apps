@@ -39,6 +39,7 @@
   "Keys from rotateKeys": "Keys from rotateKeys",
   "Loading block data": "Loading block data",
   "Loading staker data": "Loading staker data",
+  "Max, {{eras}} eras": "Max, {{eras}} eras",
   "No nominators": "No nominators",
   "Nominate": "Nominate",
   "Nominate Validators": "Nominate Validators",
@@ -108,6 +109,7 @@
   "commission": "commission",
   "controller account": "controller account",
   "crypto type to use": "crypto type to use",
+  "deposit": "locked",
   "ed25519, Edwards": "ed25519, Edwards",
   "elected stake": "elected stake",
   "filter candidates": "filter candidates",
@@ -124,7 +126,6 @@
   "payment destination": "payment destination",
   "points": "points",
   "profit/era est.": "profit/era est.",
-  "deposit": "locked",
   "reward commission percentage": "reward commission percentage",
   "rewards & slashes": "rewards & slashes",
   "sr15519, Schnorrkel": "sr15519, Schnorrkel",
@@ -149,5 +150,6 @@
   "{{currency}} own": "{{currency}} own",
   "{{currency}} rewards (est.)": "{{currency}} rewards (est.)",
   "{{currency}} slashed": "{{currency}} slashed",
-  "{{currency}} total": "{{currency}} total"
+  "{{currency}} total": "{{currency}} total",
+  "{{days}} days": "{{days}} days"
 }
