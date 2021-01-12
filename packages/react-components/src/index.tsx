@@ -85,6 +85,7 @@ export { default as Tabs } from './Tabs';
 export { default as Tag } from './Tag';
 export { default as Toggle } from './Toggle';
 export { default as Tooltip } from './Tooltip';
+export { default as ToggleGroup } from './ToggleGroup';
 export { default as TxButton } from './TxButton';
 export { default as TxComponent } from './TxComponent';
 export { default as TxModal } from './TxModal';

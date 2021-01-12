@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { DeriveStakerReward } from '@polkadot/api-derive/types';
-
+import type { EraIndex } from '@polkadot/types/interfaces';
 import { useEffect, useState } from 'react';
 
 import useApi from './useApi';
@@ -12,8 +12,13 @@ import useIsMountedRef from './useIsMountedRef';
 import { useOwnStashIds } from './useOwnStashes';
 
 interface OwnRewards {
-  allRewards?: Record<string, DeriveStakerReward[]>;
+  allRewards?: Record<string, DeriveStakerReward[]> | null;
+  isLoadingRewards: boolean;
   rewardCount: number;
+}
+
+interface Filtered {
+  filteredEras: EraIndex[];
 }
 
 function getRewards ([[stashIds], available]: [[string[]], DeriveStakerReward[][]]): OwnRewards {
@@ -25,16 +30,31 @@ function getRewards ([[stashIds], available]: [[string[]], DeriveStakerReward[][
 
   return {
     allRewards,
+    isLoadingRewards: false,
     rewardCount: Object.values(allRewards).filter((rewards) => rewards && rewards.length !== 0).length
   };
 }
 
-export default function useOwnEraRewards (_stashIds?: string[]): OwnRewards {
+export default function useOwnEraRewards (_stashIds?: string[], maxEras?: number): OwnRewards {
   const { api } = useApi();
   const mountedRef = useIsMountedRef();
   const stashIds = useOwnStashIds();
-  const available = useCall<[[string[]], DeriveStakerReward[][]]>((_stashIds || stashIds) && api.derive.staking?.stakerRewardsMulti, [_stashIds || stashIds], { withParams: true });
-  const [state, setState] = useState<OwnRewards>({ rewardCount: 0 });
+  const [{ filteredEras }, setFiltered] = useState<Filtered>({ filteredEras: [] });
+  const allEras = useCall<EraIndex[]>(api.derive.staking?.erasHistoric);
+  const available = useCall<[[string[]], DeriveStakerReward[][]]>((_stashIds || stashIds) && api.derive.staking?.stakerRewardsMultiEras, [_stashIds || stashIds, filteredEras], { withParams: true });
+  const [state, setState] = useState<OwnRewards>({ rewardCount: 0, isLoadingRewards: true });
+
+  useEffect((): void => {
+    setState({ allRewards: null, isLoadingRewards: true, rewardCount: 0 });
+  }, [maxEras]);
+
+  useEffect((): void => {
+    if (allEras && maxEras) {
+      const filteredEras = allEras.slice(-1 * maxEras);
+
+      setFiltered({ filteredEras });
+    }
+  }, [allEras, maxEras]);
 
   useEffect((): void => {
     mountedRef.current && available && setState(
