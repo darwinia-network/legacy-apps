@@ -24,6 +24,7 @@ import { FormatBalance } from '@polkadot/react-query';
 import { useTranslation } from '../../translate';
 import BondExtra from './BondExtra';
 import DepositExtra from './DepositExtra';
+import Rebond from './Rebond';
 import InjectKeys from './InjectKeys';
 import Nominate from './Nominate';
 import SetControllerAccount from './SetControllerAccount';
@@ -241,6 +242,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
   const [nomsPower, setNomsPower] = useState<(IndividualExposure | null)[]>([]);
   const [isBondExtraOpen, toggleBondExtra] = useToggle();
   const [isDepositExtraOpen, toggleDepositExtra] = useToggle();
+  const [isRebondOpen, toggleRebond] = useToggle();
   const [isInjectOpen, toggleInject] = useToggle();
   const [isNominateOpen, toggleNominate] = useToggle();
   const [isRewardDestinationOpen, toggleRewardDestination] = useToggle();
@@ -263,8 +265,9 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
     () => getOptions(api, eraLength, historyDepth, t),
     [api, eraLength, historyDepth, t]
   );
-
-  const { allRewards: rewards, isLoadingRewards } = useOwnEraRewards([stashId], eraSelection[eraSelectionIndex].value);
+  const rewards = null;
+  const isLoadingRewards = false;
+  // const { allRewards: rewards, isLoadingRewards } = useOwnEraRewards([stashId], eraSelection[eraSelectionIndex].value);
 
   // useEffect((): void => {
   //   if (!isPayoutEmpty) {
@@ -367,6 +370,12 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
         controllerId={controllerId}
         isOpen={isDepositExtraOpen}
         onClose={toggleDepositExtra}
+        stashId={stashId}
+      />
+      <Rebond
+        controllerId={controllerId}
+        isOpen={isRebondOpen}
+        onClose={toggleRebond}
         stashId={stashId}
       />
       <BondExtra
@@ -549,6 +558,18 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
                           {t('Unbond funds')}
                         </Menu.Item>
                         <Menu.Item
+                          disabled={!isOwnController || isInElection}
+                          onClick={toggleDepositExtra}
+                        >
+                          {t('Deposit')}
+                        </Menu.Item>
+                        <Menu.Item
+                          // disabled={!isOwnController || isInElection}
+                          onClick={toggleRebond}
+                        >
+                          {t('rebond funds')}
+                        </Menu.Item>
+                        <Menu.Item
                           disabled={isInElection}
                           onClick={toggleSetController}
                         >
@@ -627,13 +648,6 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
                 label={t('Unbond')}
                 onClick={toggleUnbond}
               // icon='hand paper outline'
-              />
-              <Button
-                isBasic
-                isDisabled={isInElection}
-                key='depositextra'
-                label={t('Deposit')}
-                onClick={toggleDepositExtra}
               />
             </div>
           }

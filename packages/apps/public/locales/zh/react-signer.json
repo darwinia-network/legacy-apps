@@ -12,7 +12,7 @@
   "Fees includes the transaction fee and the per-byte fee": "费用包括交易费用和每字节费用",
   "Fees of {{fees}} will be applied to the submission": "该交易将消耗 {{fees}} 手续费",
   "Fees totalling {{fees}} will be applied to the submission": "总计{{fees}}的费用将应用于提交",
-  "If you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the KTON reward.": "如您在锁定期限内提前取出，需要提现3倍的 KTON 罚款。",
+  "If you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the {{KTON}} reward.": "如您在锁定期限内提前取出，需要提现3倍的 {{KTON}} 罚款。",
   "Include an optional tip for faster processing": "增加交易费，可以使增加打包优先级",
   "Lifetime (# of blocks)": "生命周期 (# 块)",
   "Multisig approval with hash (not message with call)": "Multisig approval with hash (not message with call)",
