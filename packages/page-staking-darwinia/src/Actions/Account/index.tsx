@@ -266,7 +266,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
     [api, eraLength, historyDepth, t]
   );
 
-  // const { allRewards: rewards, isLoadingRewards } = useOwnEraRewards([stashId], eraSelection[eraSelectionIndex].value);
+  const { allRewards: rewards, isLoadingRewards } = useOwnEraRewards([stashId], eraSelection[eraSelectionIndex].value);
 
   // useEffect((): void => {
   //   if (!isPayoutEmpty) {
