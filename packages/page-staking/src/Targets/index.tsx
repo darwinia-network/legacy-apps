@@ -36,7 +36,7 @@ function sort (sortBy: TargetSortBy, sortFromMax: boolean, validators: Validator
     );
 }
 
-function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nominators, setCalcWith, toggleFavorite, totalStaked, validators } }: Props): React.ReactElement<Props> {
+function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nominators, setCalcWith, toggleFavorite, totalStaked, validators, waitings } }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const ownNominators = useOwnNominators(ownStashes);
   const [selected, setSelected] = useState<string[]>([]);
@@ -44,10 +44,10 @@ function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nomi
   const [{ sortBy, sortFromMax }, setSortBy] = useState<{ sortBy: TargetSortBy; sortFromMax: boolean }>({ sortBy: 'rankOverall', sortFromMax: true });
 
   useEffect((): void => {
-    validators && setSorted(
-      sort(sortBy, sortFromMax, validators)
+    validators && waitings && setSorted(
+      sort(sortBy, sortFromMax, [...validators, ...waitings])
     );
-  }, [sortBy, sortFromMax, validators]);
+  }, [sortBy, sortFromMax, validators, waitings]);
 
   const _sort = useCallback(
     (newSortBy: TargetSortBy) => setSortBy(({ sortBy, sortFromMax }) => ({

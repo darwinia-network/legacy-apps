@@ -67,4 +67,5 @@ export interface SortedTargets {
   toggleFavorite: (accountId: string) => void;
   totalStaked?: BN;
   validators?: ValidatorInfo[];
+  waitings?: ValidatorInfo[];
 }

@@ -46,7 +46,7 @@ function Nominate ({ className, ownNominators, targets }: Props): React.ReactEle
     <>
       <Button
         icon='hand paper outline'
-        isDisabled={!filter.length || !targets.length}
+        isDisabled={!targets.length}
         label={t('Nominate selected')}
         onClick={toggleOpen}
       />

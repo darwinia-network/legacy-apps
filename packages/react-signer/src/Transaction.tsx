@@ -13,6 +13,7 @@ import { Call, InputAddress, Expander, Modal } from '@polkadot/react-components'
 import Checks from './Checks';
 import { useTranslation } from './translate';
 import { WARNING } from './Warning';
+import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 
 interface Props {
   children?: React.ReactNode;
@@ -94,7 +95,10 @@ function Transaction ({ children, className, hideDetails, isSendable, onError, t
                 className='tx-penalty'
                 summary={
                   <>
-                    {t(WARNING[`${section}.${method}`])}
+                    {t(WARNING[`${section}.${method}`], { replace: {
+                      RING: RING_PROPERTIES.tokenSymbol,
+                      KTON: KTON_PROPERTIES.tokenSymbol
+                    } })}
                   </>
                 }
               >

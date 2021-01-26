@@ -65,7 +65,7 @@ function sortValidators (list: ValidatorInfo[]): ValidatorInfo[] {
     );
 }
 
-function extractInfo (allAccounts: string[], amount: BN = baseBalance(), electedInfo: DeriveStakingElected, favorites: string[], lastReward = new BN(1)): Partial<SortedTargets> {
+function extractInfo (allAccounts: string[], amount: BN = baseBalance(), electedInfo: DeriveStakingElected, waitingInfo: DeriveStakingElected, favorites: string[], lastReward = new BN(1)): Partial<SortedTargets> {
   const nominators: string[] = [];
   let totalStaked = new BN(0);
   const perValidatorReward = lastReward.divn(electedInfo.info.length);
@@ -130,7 +130,67 @@ function extractInfo (allAccounts: string[], amount: BN = baseBalance(), elected
     })
   );
 
-  return { nominators, totalStaked, validators };
+  const waitings = sortValidators(
+    waitingInfo.info.map(({ accountId, exposure: _exposure, validatorPrefs }, index): ValidatorInfo => {
+      const exposure = _exposure || {
+        others: registry.createType('Vec<IndividualExposure>'),
+        own: registry.createType('Compact<Balance>'),
+        total: registry.createType('Compact<Balance>')
+      };
+      const prefs = (validatorPrefs as (ValidatorPrefs | ValidatorPrefsTo196)) || {
+        commission: registry.createType('Compact<Perbill>')
+      };
+      const bondOwn = exposure.ownPower;
+      const bondTotal = exposure.totalPower;
+      const validatorPayment = (prefs as ValidatorPrefsTo196).validatorPayment
+        ? (prefs as ValidatorPrefsTo196).validatorPayment.unwrap() as BN
+        : (prefs as ValidatorPrefs).commission.unwrap().mul(perValidatorReward).div(PERBILL);
+      const key = accountId.toString();
+      const rewardSplit = perValidatorReward.sub(validatorPayment);
+      const rewardPayout = rewardSplit.gtn(0)
+        ? amount.mul(rewardSplit).div(amount.add(bondTotal))
+        : new BN(0);
+      const isNominating = exposure.others.reduce((isNominating, indv): boolean => {
+        const nominator = indv.who.toString();
+
+        if (!nominators.includes(nominator)) {
+          nominators.push(nominator);
+        }
+
+        return isNominating || allAccounts.includes(nominator);
+      }, allAccounts.includes(key));
+
+      totalStaked = totalStaked.add(bondTotal);
+
+      return {
+        accountId,
+        bondOther: bondTotal.sub(bondOwn),
+        bondOwn,
+        bondShare: 0,
+        bondTotal,
+        commissionPer: (((prefs as ValidatorPrefs).commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
+        currentEraCommissionPer: ((electedInfo.activeComminssions[index].commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
+        isCommission: !!(prefs as ValidatorPrefs).commission,
+        isFavorite: favorites.includes(key),
+        isNominating,
+        key,
+        numNominators: exposure.others.length,
+        rankBondOther: 0,
+        rankBondOwn: 0,
+        rankBondTotal: 0,
+        rankComm: 0,
+        rankActiveComm: 0,
+        rankOverall: 0,
+        rankPayment: 0,
+        rankReward: 0,
+        rewardPayout,
+        rewardSplit,
+        validatorPayment
+      };
+    })
+  );
+
+  return { nominators, totalStaked, validators, waitings };
 }
 
 export default function useSortedTargets (): SortedTargets {
@@ -138,6 +198,7 @@ export default function useSortedTargets (): SortedTargets {
   const { allAccounts } = useAccounts();
   const [favorites, toggleFavorite] = useFavorites(STORE_FAVS_BASE);
   const electedInfo = useCall<DeriveStakingElected>(api.derive.staking.electedInfo, []);
+  const waitingInfo = useCall<DeriveStakingElected>(api.derive.staking.waitingInfo, []);
   const lastEra = useCall<BN>(api.derive.session.indexes, [], {
     transform: ({ activeEra }: DeriveSessionIndexes) => activeEra.gtn(0) ? activeEra.subn(1) : new BN(0)
   });
@@ -149,14 +210,14 @@ export default function useSortedTargets (): SortedTargets {
   const [state, setState] = useState<SortedTargets>({ setCalcWith, toggleFavorite });
 
   useEffect((): void => {
-    electedInfo && setState(({ calcWith, setCalcWith, toggleFavorite }) => ({
-      ...extractInfo(allAccounts, calcWithDebounce, electedInfo, favorites, lastReward),
+    electedInfo && waitingInfo && setState(({ calcWith, setCalcWith, toggleFavorite }) => ({
+      ...extractInfo(allAccounts, calcWithDebounce, electedInfo, waitingInfo, favorites, lastReward),
       calcWith,
       lastReward,
       setCalcWith,
       toggleFavorite
     }));
-  }, [allAccounts, calcWithDebounce, electedInfo, favorites, lastReward]);
+  }, [allAccounts, calcWithDebounce, electedInfo, waitingInfo, favorites, lastReward]);
 
   useEffect((): void => {
     calcWith && setState((state) => ({

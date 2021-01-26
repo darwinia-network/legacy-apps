@@ -116,7 +116,7 @@
   "Stop Nominating": "停止提名",
   "Stop Validating": "停止验证",
   "Submit key": "提交key",
-  "Targets": "目标",
+  "Targets": "提名",
   "The Threshold must be a positive number": "阈值必须为正数",
   "The Threshold must lower than 11": "阈值必须小于11",
   "The amount of funds to unbond, this is adjusted using the bonded funds on the stash account.": "The amount of funds to unbond, this is adjusted using the bonded funds on the stash account.",

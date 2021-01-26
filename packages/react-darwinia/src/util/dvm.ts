@@ -1,4 +1,4 @@
-import { hexToU8a, stringToU8a } from '@polkadot/util';
+import { hexToU8a, stringToU8a, numberToU8a } from '@polkadot/util';
 import { AccountId } from '@polkadot/types/interfaces';
 import registry from '@polkadot/react-api/typeRegistry';
 
@@ -12,7 +12,7 @@ function dvmAddressToAccountId (address: string | null | undefined): AccountId {
     return pre ^ current;
   });
 
-  data.set(hexToU8a('0x' + checksum.toString(16)), 31);
+  data.set(numberToU8a(checksum), 31);
   const accountId = registry.createType('AccountId', data);
 
   return accountId;

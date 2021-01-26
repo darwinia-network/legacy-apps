@@ -2,20 +2,18 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-// import { DerivedBalances, DerivedStaking } from '@polkadot/api-derive/types';
 import { BareProps, I18nProps } from '@polkadot/react-components/types';
 
 import BN from 'bn.js';
 import React from 'react';
 import styled from 'styled-components';
-// import { formatBalance, formatNumber, formatKtonBalance } from '@polkadot/util';
 import { withMulti } from '@polkadot/react-api/hoc';
 
 import translate from '../../translate';
-// import { Option, createType } from '@polkadot/types';
 import { StakingLedgerT as StakingLedger } from '@darwinia/types/interfaces';
 import powerbg from '../../Assets/power-bg.svg';
 import { Power, TokenIcon } from '@polkadot/react-darwinia/components';
+import { LabelHelp } from '@polkadot/react-components';
 import { AvailableKton, Available, Balance, BalanceKton } from '@polkadot/react-components-darwinia';
 import { DeriveStakingAccount } from '@polkadot/api-derive/types';
 import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
@@ -180,7 +178,19 @@ class AddressInfoStaking extends React.PureComponent<Props> {
               <FormatBalance value={stakingAccount.unlockingTotalValue} />
             </div>
           </div>
-
+          <LabelHelp
+            className='token-label-help'
+            help={
+              <div style={{ textAlign: 'left' }}>
+                <p>{t('available: The amount of tokens that are able to transfer, bond and transfer.')}</p>
+                <p>{t('bonded: The amount of tokens that cannot operated directly but does not have lock limit, which is used to gain voting power and can be taken out at any time (with a 14-day unbonding period) or add lock limit.')}</p>
+                <p>{t('locked: The amount of tokens that cannot be operated and has a lock limit, which is used to gain voting power and earn additional {{KTON}} rewards.', { replace: {
+                  KTON: KTON_PROPERTIES.tokenSymbol
+                } })}</p>
+                <p>{t('unbonding: The amount of tokens that has been unlocked but in the unbonding period.')}</p>
+              </div>
+            }
+          />
         </div>
 
         <div className='nominate-balance-box'>
@@ -194,6 +204,16 @@ class AddressInfoStaking extends React.PureComponent<Props> {
             <div><label>{t('bonded')}</label><FormatBalance value={stakingLedger.activeKton} /></div>
             <div><label>{t('unbonding')}</label><FormatBalance value={stakingAccount.unlockingKtonTotalValue} /></div>
           </div>
+          <LabelHelp
+            className='token-label-help'
+            help={
+              <div style={{ textAlign: 'left' }}>
+                <p>{t('available: The amount of tokens that are able to transfer, bond and transfer.')}</p>
+                <p>{t('bonded: The amount of tokens that cannot operated directly but does not have lock limit, which is used to gain voting power and can be taken out at any time (with a 14-day unbonding period) or add lock limit.')}</p>
+                <p>{t('unbonding: The amount of tokens that has been unlocked but in the unbonding period.')}</p>
+              </div>
+            }
+          />
         </div>
         {buttons}
       </div>
@@ -288,6 +308,7 @@ export default withMulti(
         align-items: center;
         padding: 6px 24px;
         background: #FBFBFB;
+        position: relative;
         .box-left{
           text-align: center;
           margin-top: 5px;
@@ -355,6 +376,12 @@ export default withMulti(
         i.info.circle.icon {
           margin-left: .3em;
         }
+      }
+
+      .token-label-help {
+        position: absolute;
+        top: 4px;
+        right: 4px;
       }
     }
 
