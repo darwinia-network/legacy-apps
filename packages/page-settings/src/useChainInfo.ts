@@ -24,8 +24,8 @@ export default function useChainInfo (): ChainInfo | null {
       metaCalls: Buffer.from(api.runtimeMetadata.asCallsOnly.toU8a()).toString('base64'),
       specVersion: api.runtimeVersion.specVersion.toNumber(),
       ss58Format: api.registry.chainSS58 || 42,
-      tokenDecimals: api.registry.chainDecimals || 9,
-      tokenSymbol: api.registry.chainToken || 'Unit',
+      tokenDecimals: api.registry.chainDecimals[0] || 9,
+      tokenSymbol: api.registry.chainToken[0] || 'Unit',
       types: getSpecTypes(registry, systemChain, api.runtimeVersion.specName, api.runtimeVersion.specVersion)
     });
   }, [api, isApiReady, systemChain, systemName]);

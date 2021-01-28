@@ -107,10 +107,11 @@ async function loadOnReady (api: ApiPromise): Promise<ApiState> {
   const ss58Format = uiSettings.prefix === -1
     ? properties.ss58Format.unwrapOr(DEFAULT_SS58).toNumber()
     : uiSettings.prefix;
-  const tokenSymbol = properties.tokenSymbol.unwrapOr(undefined)?.toString();
-  const tokenDecimals = properties.tokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
-  const ktonTokenSymbol = properties.ktonTokenSymbol.unwrapOr(undefined)?.toString();
-  const ktonTokenDecimals = properties.ktonTokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
+
+  const tokenSymbol = properties.tokenSymbol.unwrapOr([undefined])[0]?.toString();
+  const tokenDecimals = properties.tokenDecimals.unwrapOr([DEFAULT_DECIMALS])[0].toNumber();
+  const ktonTokenSymbol = properties.tokenSymbol.unwrapOr([undefined])[1]?.toString();
+  const ktonTokenDecimals = properties.tokenDecimals.unwrapOr([DEFAULT_DECIMALS])[1].toNumber();
 
   const isDevelopment = systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain);
 

@@ -7,6 +7,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@polkadot/types": [ "packages/types/src" ],
+      "@polkadot/types/*": [ "packages/types/src/*" ],
       "@polkadot/apps-config/*": [ "packages/apps-config/src/*" ],
       "@polkadot/apps-routing": [ "packages/apps-routing/src" ],
       "@polkadot/apps-routing/*": [ "packages/apps-routing/src/*" ],
