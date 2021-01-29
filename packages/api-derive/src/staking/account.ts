@@ -109,9 +109,12 @@ export function account (api: ApiInterfaceRx): (accountId: Uint8Array | string) 
  */
 export function accounts (api: ApiInterfaceRx): (accountIds: (Uint8Array | string)[]) => Observable<DeriveStakingAccount[]> {
   return memo((accountIds: (Uint8Array | string)[]): Observable<DeriveStakingAccount[]> =>
-    api.derive.chain.bestNumber().pipe(
-      switchMap((best) =>
-        combineLatest(accountIds.map((accountId) => api.derive.staking._account(best, accountId)))
+  combineLatest([
+    api.derive.chain.bestNumber(),
+    api.query.timestamp.now()
+  ]).pipe(
+      switchMap(([best, now]) =>
+        combineLatest(accountIds.map((accountId) => api.derive.staking._account(best, accountId, now)))
       )
     ));
 }
