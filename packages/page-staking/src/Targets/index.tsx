@@ -44,10 +44,10 @@ function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nomi
   const [{ sortBy, sortFromMax }, setSortBy] = useState<{ sortBy: TargetSortBy; sortFromMax: boolean }>({ sortBy: 'rankOverall', sortFromMax: true });
 
   useEffect((): void => {
-    validators && waitings && setSorted(
-      sort(sortBy, sortFromMax, [...validators, ...waitings])
+    validators && setSorted(
+      sort(sortBy, sortFromMax, [...validators])
     );
-  }, [sortBy, sortFromMax, validators, waitings]);
+  }, [sortBy, sortFromMax, validators]);
 
   const _sort = useCallback(
     (newSortBy: TargetSortBy) => setSortBy(({ sortBy, sortFromMax }) => ({
