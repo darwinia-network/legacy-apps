@@ -126,6 +126,7 @@
   "last reward": "last reward",
   "lock limit": "lock limit",
   "locked: The amount of tokens that cannot be operated and has a lock limit, which is used to gain voting power and earn additional KTON rewards.": "locked: The amount of tokens that cannot be operated and has a lock limit, which is used to gain voting power and earn additional KTON rewards.",
+  "locked: The amount of tokens that cannot be operated and has a lock limit, which is used to gain voting power and earn additional {{KTON}} rewards.": "locked: The amount of tokens that cannot be operated and has a lock limit, which is used to gain voting power and earn additional {{KTON}} rewards.",
   "nominators": "nominators",
   "other stake": "other stake(Power)",
   "own stake": "own stake(Power)",
