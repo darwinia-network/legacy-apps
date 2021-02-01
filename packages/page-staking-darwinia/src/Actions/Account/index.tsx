@@ -563,7 +563,7 @@ function Account ({ allStashes, className, isInElection, isOwnStash, next, onUpd
                           {t('Deposit')}
                         </Menu.Item>
                         <Menu.Item
-                          // disabled={!isOwnController || isInElection}
+                          disabled={isInElection}
                           onClick={toggleRebond}
                         >
                           {t('Rebond funds')}

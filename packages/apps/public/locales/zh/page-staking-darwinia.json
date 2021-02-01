@@ -10,7 +10,7 @@
   "Amount": "数量",
   "Amount taken up-front from the reward by the validator before splitting the remainder between themselves and the nominators": "确认之前从奖励中预先提取的金额，然后将剩余部分分配给自己和提名人",
   "Amount to add to the currently bonded funds. This is adjusted using the available funds on the account.": "当前质押金额的总量. 使用帐户中的可用资金进行调整.",
-  "Amount to add to the currently deposit funds. This is adjusted using the bonded funds on the account.": "Amount to add to the currently deposit funds. This is adjusted using the bonded funds on the account.",
+  "Amount to add to the currently deposit funds. This is adjusted using the bonded funds on the account.": "将冻结资产转换为锁定资产的数量",
   "An account that is to receive the rewards.": "接收收益的账号",
   "Any account can request payout for stakers, this is not limited to accounts that will be rewarded.": "Any account can request payout for stakers, this is not limited to accounts that will be rewarded.",
   "Aura": "Aura",

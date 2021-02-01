@@ -33,10 +33,14 @@ function sort (sortBy: TargetSortBy, sortFromMax: boolean, validators: Validator
       validators[a].isFavorite === validators[b].isFavorite
         ? 0
         : (validators[a].isFavorite ? -1 : 1)
+    ).sort((a, b) =>
+      validators[a].isValidator === validators[b].isValidator
+        ? 0
+        : (validators[a].isValidator ? -1 : 1)
     );
 }
 
-function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nominators, setCalcWith, toggleFavorite, totalStaked, validators, waitings } }: Props): React.ReactElement<Props> {
+function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nominators, setCalcWith, toggleFavorite, totalStaked, validators } }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const ownNominators = useOwnNominators(ownStashes);
   const [selected, setSelected] = useState<string[]>([]);
@@ -137,15 +141,14 @@ function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nomi
         // filter={filter}
         header={header}
       >
-        {validators && sorted && (validators.length === sorted.length) && sorted.map((index): React.ReactNode =>
-          <Validator
-            canSelect={selected.length < MAX_NOMINATIONS}
-            info={validators[index]}
-            isSelected={selected.includes(validators[index].key)}
-            key={validators[index].key}
-            toggleFavorite={toggleFavorite}
-            toggleSelected={_toggleSelected}
-          />
+        {validators && sorted && (validators.length === sorted.length) && sorted.map((index): React.ReactNode => <Validator
+          canSelect={selected.length < MAX_NOMINATIONS}
+          info={validators[index]}
+          isSelected={selected.includes(validators[index].key)}
+          key={validators[index].key}
+          toggleFavorite={toggleFavorite}
+          toggleSelected={_toggleSelected}
+        />
         )}
       </Table>
     </div>

@@ -178,7 +178,7 @@ export default abstract class AbstractInt extends BN implements Codec {
     if (rawType === 'Balance') {
       return this.isMax()
         ? 'everything'
-        : formatBalance(this, { decimals: this.registry.chainDecimals, withSi: true, withUnit: this.registry.chainToken });
+        : formatBalance(this, { decimals: this.registry.chainDecimals[0], withSi: true, withUnit: this.registry.chainToken[0] });
     }
 
     const [, divisor] = FORMATTERS.find(([type]) => type === rawType) || [];

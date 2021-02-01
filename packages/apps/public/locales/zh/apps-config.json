@@ -8,6 +8,7 @@
   "rpc.header.test": "测试网络",
   "rpc.kusama.w3f": "Darwinia Network (hosted by Darwinia)",
   "rpc.local": "Local Node (Own, 127.0.0.1:9944)",
+  "rpc.pangolin.darwinia": "Pangolin 测试网络 (hosted by Darwinia)",
   "ss58.crab": "Crab (live)",
   "ss58.darwinia": "Darwinia (live)",
   "ss58.default": "默认的验证人配置",
