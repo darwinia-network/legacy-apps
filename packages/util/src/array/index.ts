@@ -6,4 +6,6 @@
  * @summary Utility methods that operates on arrays
  */
 
-export { default as arrayFilter } from './filter';
+export { arrayChunk } from './chunk';
+export { arrayFilter } from './filter';
+export { arrayFlatten } from './flatten';

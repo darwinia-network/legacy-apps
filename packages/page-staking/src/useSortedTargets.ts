@@ -31,7 +31,7 @@ function mapIndex (mapBy: TargetSortBy): (info: ValidatorInfo, index: number) =>
 
 function sortValidators (list: ValidatorInfo[]): ValidatorInfo[] {
   return list
-    .filter((a) => a.bondTotal.gtn(0))
+    // .filter((a) => a.bondTotal.gtn(0))
     .sort((a, b) => b.commissionPer - a.commissionPer)
     .map(mapIndex('rankComm'))
     .sort((a, b) => b.currentEraCommissionPer - a.currentEraCommissionPer)
@@ -71,7 +71,7 @@ function extractInfo (allAccounts: string[], amount: BN = baseBalance(), elected
   const perValidatorReward = lastReward.divn(electedInfo.info.length);
 
   const validators = sortValidators(
-    electedInfo.info.map(({ accountId, exposure: _exposure, validatorPrefs }, index): ValidatorInfo => {
+    [...electedInfo.info, ...waitingInfo.info].map(({ accountId, exposure: _exposure, validatorPrefs }, index): ValidatorInfo => {
       const exposure = _exposure || {
         others: registry.createType('Vec<IndividualExposure>'),
         own: registry.createType('Compact<Balance>'),
@@ -109,10 +109,11 @@ function extractInfo (allAccounts: string[], amount: BN = baseBalance(), elected
         bondShare: 0,
         bondTotal,
         commissionPer: (((prefs as ValidatorPrefs).commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
-        currentEraCommissionPer: ((electedInfo.activeComminssions[index].commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
+        currentEraCommissionPer: ((electedInfo.activeComminssions[index]?.commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
         isCommission: !!(prefs as ValidatorPrefs).commission,
         isFavorite: favorites.includes(key),
         isNominating,
+        isValidator: index < electedInfo.info.length,
         key,
         numNominators: exposure.others.length,
         rankBondOther: 0,
@@ -130,67 +131,7 @@ function extractInfo (allAccounts: string[], amount: BN = baseBalance(), elected
     })
   );
 
-  const waitings = sortValidators(
-    waitingInfo.info.map(({ accountId, exposure: _exposure, validatorPrefs }, index): ValidatorInfo => {
-      const exposure = _exposure || {
-        others: registry.createType('Vec<IndividualExposure>'),
-        own: registry.createType('Compact<Balance>'),
-        total: registry.createType('Compact<Balance>')
-      };
-      const prefs = (validatorPrefs as (ValidatorPrefs | ValidatorPrefsTo196)) || {
-        commission: registry.createType('Compact<Perbill>')
-      };
-      const bondOwn = exposure.ownPower;
-      const bondTotal = exposure.totalPower;
-      const validatorPayment = (prefs as ValidatorPrefsTo196).validatorPayment
-        ? (prefs as ValidatorPrefsTo196).validatorPayment.unwrap() as BN
-        : (prefs as ValidatorPrefs).commission.unwrap().mul(perValidatorReward).div(PERBILL);
-      const key = accountId.toString();
-      const rewardSplit = perValidatorReward.sub(validatorPayment);
-      const rewardPayout = rewardSplit.gtn(0)
-        ? amount.mul(rewardSplit).div(amount.add(bondTotal))
-        : new BN(0);
-      const isNominating = exposure.others.reduce((isNominating, indv): boolean => {
-        const nominator = indv.who.toString();
-
-        if (!nominators.includes(nominator)) {
-          nominators.push(nominator);
-        }
-
-        return isNominating || allAccounts.includes(nominator);
-      }, allAccounts.includes(key));
-
-      totalStaked = totalStaked.add(bondTotal);
-
-      return {
-        accountId,
-        bondOther: bondTotal.sub(bondOwn),
-        bondOwn,
-        bondShare: 0,
-        bondTotal,
-        commissionPer: (((prefs as ValidatorPrefs).commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
-        currentEraCommissionPer: ((electedInfo.activeComminssions[index].commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
-        isCommission: !!(prefs as ValidatorPrefs).commission,
-        isFavorite: favorites.includes(key),
-        isNominating,
-        key,
-        numNominators: exposure.others.length,
-        rankBondOther: 0,
-        rankBondOwn: 0,
-        rankBondTotal: 0,
-        rankComm: 0,
-        rankActiveComm: 0,
-        rankOverall: 0,
-        rankPayment: 0,
-        rankReward: 0,
-        rewardPayout,
-        rewardSplit,
-        validatorPayment
-      };
-    })
-  );
-
-  return { nominators, totalStaked, validators, waitings };
+  return { nominators, totalStaked, validators };
 }
 
 export default function useSortedTargets (): SortedTargets {

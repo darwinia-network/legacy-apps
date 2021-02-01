@@ -50,6 +50,7 @@ export interface ValidatorInfo extends ValidatorInfoRank {
   isCommission: boolean;
   isFavorite: boolean;
   isNominating: boolean;
+  isValidator: boolean;
   key: string;
   numNominators: number;
   rewardPayout: BN;

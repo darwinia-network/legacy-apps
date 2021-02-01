@@ -1,9 +1,8 @@
-// Copyright 2017-2020 @polkadot/util authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
+// Copyright 2017-2021 @polkadot/util authors & contributors
+// SPDX-License-Identifier: Apache-2.0
 
-import isNull from '../is/null';
-import isUndefined from '../is/undefined';
+import { isNull } from '../is/null';
+import { isUndefined } from '../is/undefined';
 
 /**
  * @name arrayFilter
@@ -21,7 +20,7 @@ import isUndefined from '../is/undefined';
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function arrayFilter <T = any> (array: T[], allowNulls = true): T[] {
+export function arrayFilter <T = any> (array: T[], allowNulls = true): T[] {
   return array.filter((value) =>
     !isUndefined(value) && (allowNulls || !isNull(value))
   );

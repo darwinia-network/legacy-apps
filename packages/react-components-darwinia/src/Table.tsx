@@ -66,7 +66,13 @@ export default styled(Table)`
 
       &.isHighlight {
         td {
-          background: #ffffed;
+          background: #ffffed !important;
+        }
+      }
+
+      &.isWaiting {
+        td {
+          background: #f2f2f2;
         }
       }
 
@@ -184,7 +190,7 @@ export default styled(Table)`
           color: darkorange;
         }
       }
-      
+
       th {
         background: #666;
         color: #eee;

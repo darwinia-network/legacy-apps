@@ -73,7 +73,7 @@ class BondExtra extends TxComponent<Props, State> {
   public render (): React.ReactNode {
     const { isOpen, onClose, stashId, t } = this.props;
     const { accept, currencyType, extrinsic, maxAdditional, promiseMonth } = this.state;
-    const canSubmit = !!maxAdditional && maxAdditional.gtn(0) && promiseMonth;
+    const canSubmit = !!maxAdditional && maxAdditional.gtn(0) && promiseMonth && accept;
 
     if (!isOpen) {
       return null;
