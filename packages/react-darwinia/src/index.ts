@@ -3,7 +3,7 @@ import { i18nT } from './types';
 import DARWINIA_CRAB_TYPES from './types_crab.json';
 
 const SUBSCAN_URL_CRAB = 'https://crab.subscan.io';
-const SUBSCAN_URL_DARWINIA = 'https://darwinia-cc1.subscan.io';
+const SUBSCAN_URL_DARWINIA = 'https://darwinia.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
 const INIT_VERSION = 'version-2020-05-0101';
 let KTON_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CKTON' };
@@ -36,7 +36,8 @@ const darwiniaInstance = axios.create({
 export const instance = {
   'Darwinia Crab': crabInstance,
   'Darwinia CC1': darwiniaInstance,
-  'Darwinia Devnet': darwiniaInstance
+  'Darwinia Devnet': darwiniaInstance,
+  Darwinia: darwiniaInstance
 };
 
 async function getBondList (instance, { address, locked = 0, page = 0, row = 10, status = 'bonded' }) {
