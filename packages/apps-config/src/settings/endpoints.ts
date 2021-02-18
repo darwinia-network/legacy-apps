@@ -19,7 +19,7 @@ function createLive (t: (key: string, text: string, options: { ns: string }) => 
     {
       info: 'darwinia',
       text: t('rpc.darwinia', 'Darwinia Network (hosted by Darwinia)', { ns: 'apps-config' }),
-      value: 'wss://cc1.darwinia.network'
+      value: 'wss://mainnet.darwinia.network'
     },
     {
       info: 'crab',
