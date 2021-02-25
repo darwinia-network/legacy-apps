@@ -58,12 +58,13 @@ interface ChainData {
 
 const DEFAULT_DECIMALS = registry.createType('u32', 12);
 const DEFAULT_SS58 = registry.createType('u32', addressDefaults.prefix);
-const injectedPromise = web3Enable('polkadot-js/apps');
+
 let api: ApiPromise;
 
 export { api };
 
 async function retrieve (api: ApiPromise): Promise<ChainData> {
+  const injectedPromise = web3Enable('polkadot-js/apps');
   const [properties, systemChain, systemChainType, systemName, systemVersion, specVersion, specName, injectedAccounts] = await Promise.all([
     api.rpc.system.properties(),
     api.rpc.system.chain(),
@@ -193,16 +194,18 @@ function Api ({ children, url }: Props): React.ReactElement<Props> | null {
     api.on('connected', () => setIsApiConnected(true));
     api.on('disconnected', () => setIsApiConnected(false));
     api.on('ready', async (): Promise<void> => {
+      const injectedPromise = web3Enable('polkadot-js/apps');
+
+      injectedPromise
+        .then(setExtensions)
+        .catch((error) => console.error(error));
+
       try {
         setState(await loadOnReady(api));
       } catch (error) {
         console.error('Unable to load chain', error);
       }
     });
-
-    injectedPromise
-      .then(setExtensions)
-      .catch((error) => console.error(error));
 
     setIsApiInitialized(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
