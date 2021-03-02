@@ -113,17 +113,28 @@ export default {
     }
   },
   types: {
-    AccountInfo: {
+    AccountInfo: 'AccountInfoWithRefCount',
+    AccountInfoWithRefCount: {
       nonce: 'Index',
       refcount: 'RefCount',
       data: 'AccountData'
     },
-    ApplyExtrinsicResult: 'Result<DispatchOutcome, TransactionValidityError>',
-    ChainProperties: {
-      ss58Format: 'Option<u8>',
-      tokenDecimals: 'Option<u32>',
-      tokenSymbol: 'Option<Text>'
+    AccountInfoWithProviders: {
+      nonce: 'Index',
+      consumers: 'RefCount',
+      providers: 'RefCount',
+      data: 'AccountData'
     },
+    ApplyExtrinsicResult: 'Result<DispatchOutcome, TransactionValidityError>',
+    BlockLength: {
+      max: 'PerDispatchClassU32'
+    },
+    BlockWeights: {
+      baseBlock: 'Weight',
+      maxBlock: 'Weight',
+      perClass: 'PerDispatchClassWeightsPerClass'
+    },
+    ChainProperties: 'GenericChainProperties',
     ChainType: {
       _enum: {
         Development: 'Null',
@@ -132,6 +143,7 @@ export default {
         Custom: 'Text'
       }
     },
+    ConsumedWeight: 'PerDispatchClassWeight',
     DigestOf: 'Digest',
     DispatchClass: {
       _enum: ['Normal', 'Operational', 'Mandatory']
@@ -263,6 +275,21 @@ export default {
       bestHash: 'Hash',
       bestNumber: 'BlockNumber'
     },
+    PerDispatchClassU32: {
+      normal: 'u32',
+      operational: 'u32',
+      mandatory: 'u32'
+    },
+    PerDispatchClassWeight: {
+      normal: 'Weight',
+      operational: 'Weight',
+      mandatory: 'Weight'
+    },
+    PerDispatchClassWeightsPerClass: {
+      normal: 'WeightPerClass',
+      operational: 'WeightPerClass',
+      mandatory: 'WeightPerClass'
+    },
     Phase: {
       _enum: {
         ApplyExtrinsic: 'u32',
@@ -270,8 +297,21 @@ export default {
         Initialization: 'Null'
       }
     },
+    RawOrigin: {
+      _enum: {
+        Root: 'Null',
+        Signed: 'AccountId',
+        None: 'Null'
+      }
+    },
     RefCount: 'u32',
     RefCountTo259: 'u8',
+    SyncState: {
+      startingBlock: 'BlockNumber',
+      currentBlock: 'BlockNumber',
+      highestBlock: 'Option<BlockNumber>'
+    },
+    SystemOrigin: 'RawOrigin',
     TransactionValidityError: {
       _enum: {
         Invalid: 'InvalidTransaction',
@@ -284,6 +324,12 @@ export default {
         NoUnsignedValidator: 'Null',
         Custom: 'u8'
       }
+    },
+    WeightPerClass: {
+      baseExtrinsic: 'Weight',
+      maxExtrinsic: 'Weight',
+      maxTotal: 'Option<Weight>',
+      reserved: 'Option<Weight>'
     }
   }
 } as Definitions;
