@@ -23,7 +23,7 @@ function TipReason ({ hash }: Props): React.ReactElement<Props> {
   });
 
   return (
-    <td className='start all'>{reasonText || hash.toHex()}</td>
+    <td className='start all reason'>{reasonText || hash.toHex()}</td>
   );
 }
 

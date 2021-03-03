@@ -61,7 +61,6 @@ function Tips ({ className = '', defaultId, hashes, isMember, members, onSelectT
     [t('finder'), 'address media--1400'],
     [t('reason'), 'start'],
     [],
-    [],
     [undefined, 'badge media--1700'],
     [],
     [undefined, 'media--1700']
@@ -100,6 +99,9 @@ function Tips ({ className = '', defaultId, hashes, isMember, members, onSelectT
 }
 
 export default React.memo(styled(Tips)`
+  .reason {
+    word-break: break-all;
+  }
   .tipsFilter {
     text-align: right;
 
