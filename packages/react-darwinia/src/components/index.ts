@@ -7,3 +7,4 @@ export { default as Power } from './Power';
 export { default as PowerTelemetry } from './PowerTelemetry';
 export { default as PowerManageEmpty } from './PowerManageEmpty';
 export { default as TokenIcon } from './TokenIcon/TokenIcon';
+export { default as ConnectWeb3js } from './ConnectWeb3js';
