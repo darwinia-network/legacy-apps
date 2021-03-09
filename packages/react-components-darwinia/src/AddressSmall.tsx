@@ -73,8 +73,11 @@ export default styled(AddressSmall)`
   .nameInfo {
     > div {
       max-width: 12rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      .shortname {
+        width: 10rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 `;

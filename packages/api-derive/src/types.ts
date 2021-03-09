@@ -68,7 +68,7 @@ export interface DeriveCollectiveProposal {
 export type DeriveCollectiveProposals = DeriveCollectiveProposal[];
 
 export interface DeriveElectionsInfo {
-  candidates: AccountId[];
+  candidates: [AccountId, Balance][];
   candidateCount: u32;
   candidacyBond?: Balance;
   desiredSeats: u32;

@@ -181,6 +181,13 @@ export interface RewardDestinationTo257 extends Enum {
 /** @name RewardPoint */
 export interface RewardPoint extends u32 {}
 
+/** @name SeatHolder */
+export interface SeatHolder extends Struct {
+  readonly who: AccountId;
+  readonly stake: Balance;
+  readonly deposit: Balance;
+}
+
 /** @name SlashingSpans */
 export interface SlashingSpans extends Struct {
   readonly spanIndex: SpanIndex;
@@ -276,6 +283,13 @@ export interface ValidatorPrefsTo145 extends Struct {
 /** @name ValidatorPrefsTo196 */
 export interface ValidatorPrefsTo196 extends Struct {
   readonly validatorPayment: Compact<Balance>;
+}
+
+/** @name Voter */
+export interface Voter extends Struct {
+  readonly votes: Vec<AccountId>;
+  readonly stake: Balance;
+  readonly deposit: Balance;
 }
 
 export type PHANTOM_STAKING = 'staking';

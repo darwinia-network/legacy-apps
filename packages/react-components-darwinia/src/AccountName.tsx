@@ -12,7 +12,7 @@ import { useCall, useAccounts, useApi, useToggle } from '@polkadot/react-hooks';
 import { Option } from '@polkadot/types';
 import ExternalsLinks from '@polkadot/apps-config/links';
 import { useTranslation } from './translate';
-import { getAddressName } from './util';
+import { getAddressName, innerText } from './util';
 import AccountNameJudgement from './AccountNameJudgement';
 import AddressMini from './AddressMini';
 import Badge from './Badge';
@@ -87,6 +87,16 @@ function renderLinkIcon (domain: string, address: string): React.ReactNode {
     />
   );
 }
+
+const getText = (tree) => {
+  if (typeof tree === 'string') {
+    return tree;
+  }
+
+  return tree.children?.map((child) => {
+    return getText(child);
+  }).join('');
+};
 
 function AccountName ({ children, className, defaultName, isLink, label, onClick, override, showAddress = true, style, toggle, value }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
@@ -230,7 +240,8 @@ function AccountName ({ children, className, defaultName, isLink, label, onClick
         }
         style={style}
       >
-        {label || ''}{override || name}{isLink && renderLinkIcon(subscanDomain, address)}{children}
+        <div className={override ? '' : 'shortname'}
+          title={innerText(name)}>{label || ''}{override || name}</div>{(!override && isLink) && renderLinkIcon(subscanDomain, address)}{children}
       </div>
     </>
   );
