@@ -15,6 +15,7 @@ import Hash from './Hash';
 import Rpc from './Rpc';
 import Sign from './Sign';
 import Verify from './Verify';
+import DvmWithdraw from './DvmWithdraw';
 import { useTranslation } from './translate';
 
 function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
@@ -45,6 +46,10 @@ function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
     {
       name: 'dvmaddress',
       text: t('DVM address')
+    },
+    {
+      name: 'dvmwithdraw',
+      text: t('DVM Withdraw')
     }
   ], [t]);
 
@@ -56,7 +61,7 @@ function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
           hidden={
             hasAccounts
               ? []
-              : ['sign', 'verify']
+              : ['sign', 'verify', 'dvmwithdraw']
           }
           items={items}
         />
@@ -67,6 +72,7 @@ function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
         <Route path={`${basePath}/verify`}><Verify /></Route>
         <Route path={`${basePath}/vanity`}><Vanity /></Route>
         <Route path={`${basePath}/dvmaddress`}><DvmAddress /></Route>
+        <Route path={`${basePath}/dvmwithdraw`}><DvmWithdraw /></Route>
         <Route><Rpc /></Route>
       </Switch>
     </main>

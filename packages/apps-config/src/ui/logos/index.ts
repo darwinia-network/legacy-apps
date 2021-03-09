@@ -6,6 +6,7 @@
 import chainDarwinia from './chains/darwinia.svg';
 import chainCrab from './chains/crab.svg';
 import chainDev from './chains/dev.svg';
+import chainPangolin from './chains/pangolin.svg';
 
 // defaults for the node type, assuming we don't have a specific chain, but rather match on the implementation
 import nodeSubstrate from './nodes/substrate-hexagon.svg';
@@ -17,17 +18,22 @@ import extensionPolkadotJs from './extensions/polkadot-js.svg';
 import emptyLogo from './empty.svg';
 
 // overrides based on the actual matched chain name
+// Alphabetical overrides based on the actual matched chain name
+// NOTE: This is as retrieved via system.chain RPC
 const chainLogos: Record<string, any> = [
   ['darwinia cc1', chainDarwinia],
   ['darwinia', chainDarwinia],
   ['darwinia crab', chainCrab],
-  ['darwinia network', chainDarwinia]
+  ['darwinia network', chainDarwinia],
+  ['Pangolin', chainPangolin]
 ].reduce((logos, [chain, logo]): Record<string, any> => ({
   ...logos,
   [chain.toLowerCase()]: logo
 }), {});
 
 // overrides based on the actual software node type (all '-' converted to ' ')
+// Alphabetical overrides based on the actual software node type
+// NOTE: This is as retrieved via system.name RPC
 const nodeLogos: Record<string, any> = [
   ['node-template', nodeSubstrate],
   ['substrate-node', nodeSubstrate],

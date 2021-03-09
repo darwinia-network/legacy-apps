@@ -154,16 +154,25 @@ export default React.memo(styled(Apps)`
       }
     }
 
+    a.apps--SideBar-Item-NavLink {
+      padding: 1.1em 0.75em 1.1em 0.9em;
+    }
+
     .apps--SideBar-logo {
       /* margin: 0.875rem auto; */
       padding: 0;
       width: 100%;
 
       img {
-        margin: 0 0.25rem 0 0;
+        /* margin: 0 0.25rem 0 0; */
+        margin: 0;
       }
 
       > div.info {
+        display: none;
+      }
+
+      .apps-SideBar-select {
         display: none;
       }
     }

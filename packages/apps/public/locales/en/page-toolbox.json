@@ -1,6 +1,7 @@
 {
   "Crypto not detected": "Crypto not detected",
   "Cryptography used to create this signature. It is auto-detected on valid signatures.": "Cryptography used to create this signature. It is auto-detected on valid signatures.",
+  "DVM Withdraw": "DVM Withdraw",
   "DVM address": "DVM address",
   "Darwinia Network Account Id": "Darwinia Network Account Id",
   "Detection on the input string to determine if it is hex or non-hex.": "Detection on the input string to determine if it is hex or non-hex.",
@@ -28,6 +29,7 @@
   "Unlock the account for signing. Once active the signature will be generated based on the content provided.": "Unlock the account for signing. Once active the signature will be generated based on the content provided.",
   "Vanity": "Vanity",
   "Verify signature": "Verify signature",
+  "Withdraw": "Withdraw",
   "Yes": "Yes",
   "You are about to unlock your account to allow for the signing of messages. Once active the signature will be generated based on the content provided.": "You are about to unlock your account to allow for the signing of messages. Once active the signature will be generated based on the content provided.",
   "You need to unlock this account to be able to sign data.": "You need to unlock this account to be able to sign data.",
@@ -37,6 +39,8 @@
   "from the following data": "from the following data",
   "hex input data": "hex input data",
   "password": "password",
+  "receiving account": "receiving account",
+  "select or enter an account address to receive transfers": "select or enter an account address to receive transfers",
   "select the account you wish to sign data with": "select the account you wish to sign data with",
   "sign data from account": "sign data from account",
   "sign the following data": "sign the following data",
@@ -47,5 +51,6 @@
   "the supplied signature": "the supplied signature",
   "using the following data": "using the following data",
   "verify using address": "verify using address",
-  "with an index of": "with an index of"
+  "with an index of": "with an index of",
+  "withdraw amount": "withdraw amount"
 }
