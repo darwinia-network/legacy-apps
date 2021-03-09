@@ -118,6 +118,16 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
             <Menu.Item className='apps--SideBar-Item'>
               <a
                 className='apps--SideBar-Item-NavLink'
+                href='https://wormhole.darwinia.network/'
+                rel='noopener noreferrer'
+                target='_blank'
+              >
+                <Icon name='sitemap' /><span className='text'>{t('Wormhole')}</span>
+              </a>
+            </Menu.Item>
+            <Menu.Item className='apps--SideBar-Item'>
+              <a
+                className='apps--SideBar-Item-NavLink'
                 href='https://github.com/darwinia-network/'
                 rel='noopener noreferrer'
                 target='_blank'
@@ -171,7 +181,7 @@ export default styled(SideBar)`
   z-index: 300;
 
   &.collapsed {
-    width: 4.2rem;
+    width: 5.5rem;
   }
 
   &.expanded {
@@ -227,8 +237,6 @@ export default styled(SideBar)`
         letter-spacing: 0.3px;
       }
     }
-
-
 
     .apps--SideBar-logo {
       cursor: pointer;

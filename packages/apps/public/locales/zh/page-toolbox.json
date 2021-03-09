@@ -2,6 +2,7 @@
   "Cancel": "取消",
   "Crypto not detected": "未检测到加密",
   "Cryptography used to create this signature. It is auto-detected on valid signatures.": "用于创建此签名的密码。 它是在有效签名上自动检测到的。",
+  "DVM Withdraw": "DVM Withdraw",
   "DVM address": "DVM地址",
   "Darwinia Network Account Id": "达尔文网络账号",
   "Detection on the input string to determine if it is hex or non-hex.": "检测输入字符串以确定它是十六进制还是非十六进制。",
@@ -29,6 +30,7 @@
   "Unlock the account for signing. Once active the signature will be generated based on the content provided.": "解锁要签名的账号。 一旦激活，签名将基于提供的内容生成。",
   "Vanity": "美化账号",
   "Verify signature": "验证签名",
+  "Withdraw": "Withdraw",
   "Yes": "是",
   "You are about to unlock your account to allow for the signing of messages. Once active the signature will be generated based on the content provided.": "您将要解锁您的账号以允许邮件签名。 一旦激活，签名将基于提供的内容生成。",
   "You need to unlock this account to be able to sign data.": "您需要解锁该账号才能签名数据。",
@@ -38,6 +40,8 @@
   "from the following data": "从下面的数据",
   "hex input data": "哈希数据",
   "password": "密码",
+  "receiving account": "receiving account",
+  "select or enter an account address to receive transfers": "select or enter an account address to receive transfers",
   "select the account you wish to sign data with": "选择您要用来签署数据的帐户",
   "sign data from account": "从此账号签名数据",
   "sign the following data": "签名下面数据",
@@ -48,5 +52,6 @@
   "the supplied signature": "提供的签名",
   "using the following data": "使用下面数据",
   "verify using address": "验证使用账号",
-  "with an index of": "使用编号"
+  "with an index of": "使用编号",
+  "withdraw amount": "withdraw amount"
 }

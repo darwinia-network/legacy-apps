@@ -44,6 +44,7 @@ const nodeColors: Record<string, any> = [
 }), {});
 
 // overrides based on the actual matched chain name
+// get by RPC system.chain()
 const logoBgColors: Record<string, any> = [
   ['Darwinia Crab', chainLogoDarwiniaCrab],
   ['Crab', chainLogoDarwiniaCrab],
@@ -52,7 +53,8 @@ const logoBgColors: Record<string, any> = [
   ['Darwinia CC1', chainLogoDarwinia],
   ['Darwinia CC2', chainLogoDarwinia],
   ['Darwinia CC3', chainLogoDarwinia],
-  ['Darwinia Devnet', chainLogoDarwinia]
+  ['Darwinia Devnet', chainLogoDarwinia],
+  ['Pangolin', chainLogoDarwiniaCrab]
 ].reduce((colors, [chain, color]): Record<string, any> => ({
   ...colors,
   [chain.toLowerCase()]: color

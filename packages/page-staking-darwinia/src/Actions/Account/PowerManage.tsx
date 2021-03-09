@@ -262,7 +262,8 @@ export default withMulti(
 
     .token-box {
       display: flex;
-      flex: 1;s
+      flex-wrap: wrap;
+      flex: 1;
       .balance-box{
         flex-basis: 205px;
         display: flex;
