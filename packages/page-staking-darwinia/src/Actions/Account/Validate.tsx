@@ -93,7 +93,7 @@ class Validate extends TxComponent<Props, State> {
           label={t('Validate')}
           icon='check circle outline'
           onStart={onClose}
-          params={[{ commission }]}
+          params={[{ commission, blocked: false }]}
           tx='staking.validate'
           withSpinner
         />

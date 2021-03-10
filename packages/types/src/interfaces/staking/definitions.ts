@@ -198,8 +198,15 @@ export default {
     ValidatorPrefs: {
       commission: 'Compact<Perbill>'
     },
+    ValidatorPrefsWithBlocked: {
+      commission: 'Compact<Perbill>',
+      blocked: 'bool'
+    },
     ValidatorPrefsTo196: {
       validatorPayment: 'Compact<Balance>'
+    },
+    ValidatorPrefsWithCommission: {
+      commission: 'Compact<Perbill>'
     },
     ValidatorPrefsTo145: {
       unstakeThreshold: 'Compact<u32>',

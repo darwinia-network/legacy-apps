@@ -285,6 +285,17 @@ export interface ValidatorPrefsTo196 extends Struct {
   readonly validatorPayment: Compact<Balance>;
 }
 
+/** @name ValidatorPrefsWithBlocked */
+export interface ValidatorPrefsWithBlocked extends Struct {
+  readonly commission: Compact<Perbill>;
+  readonly blocked: bool;
+}
+
+/** @name ValidatorPrefsWithCommission */
+export interface ValidatorPrefsWithCommission extends Struct {
+  readonly commission: Compact<Perbill>;
+}
+
 /** @name Voter */
 export interface Voter extends Struct {
   readonly votes: Vec<AccountId>;
