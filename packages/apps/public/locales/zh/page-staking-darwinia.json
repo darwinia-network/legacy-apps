@@ -5,7 +5,7 @@
   "Account": "账号",
   "Account actions": "Account actions",
   "Active with {{blocks}} blocks authored{{hasMessage}} heartbeat message": "Active with {{blocks}} blocks authored{{hasMessage}} heartbeat message",
-  "After setting a lock limit, you will receive an additional {{KTON}} bonus; if you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the {{KTON}} reward.": "设置锁定期限后，您将获得额外的 KTON 奖励。如您在锁定期限内提前取出，需要提现3倍的 KTON 罚款。",
+  "After setting a lock limit, you will receive an additional {{KTON}} bonus; if you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the {{KTON}} reward.": "设置锁定期限后，您将获得额外的 {{KTON}} 奖励。如您在锁定期限内提前取出，需要提现3倍的 {{KTON}} 罚款。",
   "All the listed validators and all their nominators will receive their rewards.": "All the listed validators and all their nominators will receive their rewards.",
   "Amount": "数量",
   "Amount taken up-front from the reward by the validator before splitting the remainder between themselves and the nominators": "确认之前从奖励中预先提取的金额，然后将剩余部分分配给自己和提名人",
