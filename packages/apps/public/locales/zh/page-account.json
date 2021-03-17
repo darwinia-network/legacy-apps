@@ -42,6 +42,7 @@
   "Evaluated {{count}} keys in {{elapsed}}s ({{avg}} keys/s)": "在 {{elapsed}}秒, 生成 {{count}} 个 key (平均{{avg}} keys/秒)",
   "Extrinsic ID": "交易ID",
   "Forget this account": "忘记此帐号",
+  "View on subscan": "在 Subscan 上查看",
   "Genesis Swap": "创世兑换",
   "History": "历史",
   "Important notice": "重要提示",

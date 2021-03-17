@@ -111,6 +111,7 @@
   "Unbonded": "Unbonded",
   "Unbonding": "Unbonding",
   "Unlock": "Unlock",
+  "View on subscan": "View on Subscan",
   "We will provide you with a generated backup file after your account is created. As long as you have access to your account you can always download this file later by clicking on \"Backup\" button from the Accounts section.": "We will provide you with a generated backup file after your account is created. As long as you have access to your account you can always download this file later by clicking on \"Backup\" button from the Accounts section.",
   "You can set a custom derivation path for this account using the following syntax \"/<soft-key>//<hard-key>///<password>\". The \"/<soft-key>\" and \"//<hard-key>\" may be repeated and mixed`. The \"///password\" is optional and should only occur once.": "You can set a custom derivation path for this account using the following syntax \"/<soft-key>//<hard-key>///<password>\". The \"/<soft-key>\" and \"//<hard-key>\" may be repeated and mixed`. The \"///password\" is optional and should only occur once.",
   "a riot name linked to this identity": "a riot name linked to this identity",

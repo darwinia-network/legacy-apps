@@ -47,6 +47,7 @@
   "External": "External",
   "Extrinsic ID": "交易ID",
   "Forget this account": "忘记此帐号",
+  "View on subscan": "在 Subscan 上查看",
   "Forget this address": "Forget this address",
   "History": "历史",
   "If the recipient account is new, the balance needs to be more than the existential deposit. Likewise if the sending account balance drops below the same value, the account will be removed from the state.": "If the recipient account is new, the balance needs to be more than the existential deposit. Likewise if the sending account balance drops below the same value, the account will be removed from the state.",
