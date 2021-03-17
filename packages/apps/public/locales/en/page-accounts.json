@@ -44,6 +44,7 @@
   "External": "External",
   "Extrinsic ID": "Extrinsic ID",
   "Forget this account": "Forget this account",
+  "View on subscan": "View on Subscan",
   "Forget this address": "Forget this address",
   "History": "History",
   "If the recipient account is new, the balance needs to be more than the existential deposit. Likewise if the sending account balance drops below the same value, the account will be removed from the state.": "If the recipient account is new, the balance needs to be more than the existential deposit. Likewise if the sending account balance drops below the same value, the account will be removed from the state.",

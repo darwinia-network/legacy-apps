@@ -1,8 +1,8 @@
 {
   "explorer": "管理器",
   "nav.123-code": "Template",
-  "nav.account": "账号",
-  "nav.accounts": "账号",
+  "nav.account": "账户",
+  "nav.accounts": "账户",
   "nav.claims": "认领",
   "nav.contracts": "合约",
   "nav.council": "议会",
@@ -25,5 +25,5 @@
   "nav.toolbox": "工具箱",
   "nav.transfer": "转账",
   "nav.treasury": "财政部",
-  "nav.vanity": "美化账号"
+  "nav.vanity": "美化账户"
 }
