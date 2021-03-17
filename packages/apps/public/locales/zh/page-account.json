@@ -178,5 +178,8 @@
   "twitter": "推特",
   "web": "主页",
   "your current password": "你当前的密码",
-  "your new password": "你的新密码"
+  "your new password": "你的新密码",
+  "Confirm to continue": "操作确认",
+  "Continue": "继续",
+  "In lock-up period, the withdrawal will be punished with a 3 times {{KTON}} fine. Are you sure to continue?": "当前处于锁定期内，提现将会处以3倍 {{KTON}} 罚款，确定要继续吗？"
 }

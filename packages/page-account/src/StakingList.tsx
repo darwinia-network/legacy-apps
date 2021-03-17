@@ -3,21 +3,23 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/react-components/types';
-import { BlockNumber } from '@polkadot/types/interfaces';
-import { ComponentProps, bondList } from './types';
-import styled from 'styled-components';
-import React from 'react';
-import { withMulti, withCalls, withApi } from '@polkadot/react-api/hoc';
-import { ApiProps } from '@polkadot/react-api/types';
-import { TxButton } from '@polkadot/react-components';
-import { Button as SButton, Checkbox } from 'semantic-ui-react';
-import translate from './translate';
-import { formatBalance, formatKtonBalance, ringToKton } from '@polkadot/util';
-import dayjs from 'dayjs';
-import ReactPaginate from 'react-paginate';
-import { getBondList, instance } from '@polkadot/react-darwinia';
 import ExternalsLinks from '@polkadot/apps-config/links';
+import { withApi, withCalls, withMulti } from '@polkadot/react-api/hoc';
+import { ApiProps } from '@polkadot/react-api/types';
+import { Modal, TxButton } from '@polkadot/react-components';
+import { I18nProps } from '@polkadot/react-components/types';
+import { getBondList, instance } from '@polkadot/react-darwinia';
+import { BlockNumber } from '@polkadot/types/interfaces';
+import { formatBalance, formatKtonBalance, ringToKton } from '@polkadot/util';
+import { encodeAddress } from '@polkadot/util-crypto';
+import dayjs from 'dayjs';
+import React from 'react';
+import ReactPaginate from 'react-paginate';
+import { Button as SButton, Checkbox } from 'semantic-ui-react';
+import styled from 'styled-components';
+import Button from '../../react-components-darwinia/src/Button/Button';
+import translate from './translate';
+import { bondList, ComponentProps } from './types';
 
 const PAGE_SIZE = 10;
 
@@ -34,6 +36,7 @@ type State = {
   isRingStakingOpen: boolean;
   isImportOpen: boolean;
   isAccountsListOpen: boolean;
+  forceUnbondTarget: any;
   AccountMain: string;
   bondList: bondList;
   page: number;
@@ -52,6 +55,7 @@ class Overview extends React.PureComponent<Props, State> {
     isCreateOpen: false,
     isImportOpen: false,
     isAccountsListOpen: false,
+    forceUnbondTarget: false,
     AccountMain: '',
     bondList: {
       count: 0,
@@ -101,7 +105,13 @@ class Overview extends React.PureComponent<Props, State> {
       return;
     }
 
-    const response = await getBondList(axiosInstance, { page: page, row: PAGE_SIZE, status: status, locked, address: address });
+    const response = await getBondList(axiosInstance, {
+      page: page,
+      row: PAGE_SIZE,
+      status: status,
+      locked,
+      address: ["Pangolin", "Darwinia"].includes(systemChain) ? address : encodeAddress(address, 42),
+    });
 
     if (response.data.code === 0 && response.data.data) {
       this.setState({
@@ -148,16 +158,12 @@ class Overview extends React.PureComponent<Props, State> {
     switch (type.toLowerCase()) {
       case 'redeemdeposit':
         return t('Deposit');
-        break;
       case 'redeemring':
         return 'RING';
-        break;
       case 'redeemkton':
         return 'KTON';
-        break;
       default:
         return type;
-        break;
     }
   }
 
@@ -264,7 +270,7 @@ class Overview extends React.PureComponent<Props, State> {
 
   renderBondedList (): React.ReactNode {
     const { controllerId, systemChain, t } = this.props;
-    const { bondList, pageCount } = this.state;
+    const { bondList, pageCount, forceUnbondTarget } = this.state;
 
     const { chains, paths } = ExternalsLinks.Subscan;
     const extChain = chains[systemChain];
@@ -296,76 +302,153 @@ class Overview extends React.PureComponent<Props, State> {
 
     return (
       <Wrapper>
-        <table className={'stakingTable'}>
+        <table className={"stakingTable"}>
           <tbody>
-            <tr className='stakingTh'>
-              <td>{t('Extrinsic ID')}</td>
-              <td>{t('Date')}</td>
-              <td>{t('Amount')}</td>
-              <td>{t('Reward')}</td>
-              <td>{t('Setting')}</td>
+            <tr className="stakingTh">
+              <td>{t("Extrinsic ID")}</td>
+              <td>{t("Date")}</td>
+              <td>{t("Amount")}</td>
+              <td>{t("Reward")}</td>
+              <td>{t("Setting")}</td>
             </tr>
             {bondList.list.map((item, index) => {
-              return (<tr key={`${index}${item.Id}`}>
-                <td><a className='stakingLink'
-                  href={ExternalsLinks.Subscan.create(extChain, extPaths || '', item.extrinsic_index)}
-                  rel='noopener noreferrer'
-                  target='_blank'>{item.extrinsic_index}</a></td>
-                <td>
-                  <p className='stakingRange'>{`${this.formatDate(item.start_at)} - ${this.formatDate(item.expired_at)}`}</p>
-                  <div className='stakingProcess'>
-                    <div className='stakingProcessPassed'
-                      style={{ width: `${this.processTime(item.start_at, item.expired_at)}%` }}></div>
-                  </div>
-                </td>
-                <td>{formatBalance(item.amount, false)} {item.currency.toUpperCase()}</td>
-                <td>
-                  <div className='textGradient'>{(item.currency.toLowerCase() === 'kton' || item.month === 0) ? '--' : formatKtonBalance(ringToKton(item.amount, item.month))}</div>
-                </td>
-                <td>
-                  {item.month === 0 ? <>{t('Completed')}</> : (dayjs(item.expired_at).unix() < dayjs().unix() && !item.unlock) ? <TxButton
-                    accountId={controllerId}
-                    isBasic={true}
-                    // isSecondary={true}
-                    label={t('Release')}
-                    onSuccess={() => { this.refreshList(); }}
-                    tx='staking.claimMatureDeposits'
-                  /> : (item.unlock ? <>{t('Lock limit canceled')}</> : <TxButton
-                    accountId={controllerId}
-                    isBasic={true}
-                    // isSecondary={true}
-                    key='tryClaimDepositsWithPunish'
-                    label={
-                      t('Cancel lock limit')
-                    }
-                    onSuccess={() => { this.refreshList(); }}
-                    params={[
+              return (
+                <tr key={`${index}${item.Id}`}>
+                  <td>
+                    <a
+                      className="stakingLink"
+                      href={ExternalsLinks.Subscan.create(extChain, extPaths || "", item.extrinsic_index)}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {item.extrinsic_index}
+                    </a>
+                  </td>
+                  <td>
+                    <p className="stakingRange">{`${this.formatDate(item.start_at)} - ${this.formatDate(
                       item.expired_at
-                    ]}
-                    tx='staking.tryClaimDepositsWithPunish'
-                  />)}
-                </td>
-              </tr>);
+                    )}`}</p>
+                    <div className="stakingProcess">
+                      <div
+                        className="stakingProcessPassed"
+                        style={{ width: `${this.processTime(item.start_at, item.expired_at)}%` }}
+                      ></div>
+                    </div>
+                  </td>
+                  <td>
+                    {formatBalance(item.amount, false)} {item.currency.toUpperCase()}
+                  </td>
+                  <td>
+                    <div className="textGradient">
+                      {item.currency.toLowerCase() === "kton" || item.month === 0
+                        ? "--"
+                        : formatKtonBalance(ringToKton(item.amount, item.month))}
+                    </div>
+                  </td>
+                  <td>
+                    {item.month === 0 ? (
+                      <>{t("Completed")}</>
+                    ) : dayjs(item.expired_at).unix() < dayjs().unix() && !item.unlock ? (
+                      <TxButton
+                        accountId={controllerId}
+                        isBasic={true}
+                        // isSecondary={true}
+                        label={t("Release")}
+                        onSuccess={() => {
+                          this.refreshList();
+                        }}
+                        tx="staking.claimMatureDeposits"
+                      />
+                    ) : item.unlock ? (
+                      <>{t("Lock limit canceled")}</>
+                    ) : (
+                      <Button
+                        isBasic
+                        label={t("Cancel lock limit")}
+                        onClick={() => {
+                          this.setState({ forceUnbondTarget: item });
+                        }}
+                      />
+                    )}
+                  </td>
+                </tr>
+              );
             })}
           </tbody>
         </table>
         <PaginationWrapper>
           <ReactPaginate
-            activeClassName={'active'}
-            breakClassName={'break-me'}
-            breakLabel={'...'}
-            containerClassName={'pagination'}
+            activeClassName={"active"}
+            breakClassName={"break-me"}
+            breakLabel={"..."}
+            containerClassName={"pagination"}
             marginPagesDisplayed={2}
-            nextLabel={'>'}
+            nextLabel={">"}
             onPageChange={this.handlePageClick}
             pageCount={pageCount}
             pageRangeDisplayed={3}
-            previousLabel={'<'}
-            subContainerClassName={'pages pagination'}
+            previousLabel={"<"}
+            subContainerClassName={"pages pagination"}
           />
         </PaginationWrapper>
+
+        <Modal
+          header={t("Confirm to continue")}
+          open={!!forceUnbondTarget}
+          onCancel={() => this.setState({ forceUnbondTarget: null })}
+        >
+          <Modal.Content>
+            {forceUnbondTarget && (
+              <>
+                <p>
+                  {t(
+                    "In lock-up period, the withdrawal will be punished with a 3 times {{KTON}} fine. Are you sure to continue?",
+                    { replace: { KTON: this.getRewardUnit(forceUnbondTarget) } }
+                  )}
+                </p>
+                <p>
+                  {t("amount")}: {this.calcFine(forceUnbondTarget)}
+                </p>
+              </>
+            )}
+          </Modal.Content>
+          <Modal.Actions onCancel={() => this.setState({ forceUnbondTarget: null })}>
+            <TxButton
+              accountId={controllerId}
+              isBasic={true}
+              isPrimary
+              key="tryClaimDepositsWithPunish"
+              label={t("Continue")}
+              onClick={() => this.setState({ forceUnbondTarget: null })}
+              onSuccess={() => {
+                this.refreshList();
+              }}
+              params={[forceUnbondTarget?.expired_at]}
+              tx="staking.tryClaimDepositsWithPunish"
+            />
+          </Modal.Actions>
+        </Modal>
       </Wrapper>
     );
+  }
+  
+  private getRewardUnit(data: any): string { 
+    const { amount, month } = data;
+    const rewardOrigin = formatKtonBalance(ringToKton(amount, month));
+    const unit = rewardOrigin.match(/[a-zA-Z]{1,}/g) || [];
+
+    return unit[0] || '';
+  }
+
+  private calcFine(data: any): string {
+    const { start_at, amount, month } = data;
+    const rewardOrigin = formatKtonBalance(ringToKton(amount, month));
+    const rewardMonth = Math.floor((new Date().getTime() - start_at) / (30 * 24 * 3600 * 1000)); // calculate as 30 days per month;
+    const rewardActual = formatBalance(ringToKton(amount, rewardMonth));
+    const fine = (parseFloat(rewardOrigin) - parseFloat(rewardActual)) * 3;
+    const unit = this.getRewardUnit(data);
+
+    return fine + ' ' + unit; 
   }
 
   extrinsicIndexToBlockNumber = (index: string): number => {
@@ -570,18 +653,15 @@ class Overview extends React.PureComponent<Props, State> {
     const { status } = this.state;
 
     return (
-      <BoxWrapper>
+      <div>
         {this.renderTitle()}
         {status === 'bonded' ? this.renderBondedList() : null}
         {status === 'unbonding' ? this.renderUnbondList() : null}
         {status === 'map' ? this.renderMapList() : null}
-      </BoxWrapper>
+      </div>
     );
   }
 }
-
-const BoxWrapper = styled.div`
-`;
 
 const PaginationWrapper = styled.div`
   display: flex;

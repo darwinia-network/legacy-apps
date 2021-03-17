@@ -156,5 +156,8 @@
   "twitter": "twitter",
   "web": "web",
   "your current password": "your current password",
-  "your new password": "your new password"
+  "your new password": "your new password",
+  "Confirm to continue": "Confirm to continue",
+  "continue": "Continue",
+  "In lock-up period, the withdrawal will be punished with a 3 times {{KTON}} fine. Are you sure to continue?": "In lock-up period, the withdrawal will be punished with a 3 times {{KTON}} fine. Are you sure to continue?"
 }
