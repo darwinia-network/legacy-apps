@@ -33,11 +33,17 @@ const darwiniaInstance = axios.create({
   timeout: 30000
 });
 
+const pangolinInstance = axios.create({
+  baseURL: "https://pangolin.subscan.io",
+  timeout: 30000,
+});
+
 export const instance = {
   'Darwinia Crab': crabInstance,
   'Darwinia CC1': darwiniaInstance,
   'Darwinia Devnet': darwiniaInstance,
-  Darwinia: darwiniaInstance
+  Darwinia: darwiniaInstance,
+  Pangolin: pangolinInstance,
 };
 
 async function getBondList (instance, { address, locked = 0, page = 0, row = 10, status = 'bonded' }) {

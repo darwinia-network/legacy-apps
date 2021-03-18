@@ -13,6 +13,7 @@
     "ghact",
     "polkadot",
     "stylelint",
-    "wasm"
+    "wasm",
+    "Unbond"
   ]
 }
