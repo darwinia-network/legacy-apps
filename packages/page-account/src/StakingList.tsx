@@ -8,10 +8,11 @@ import { withApi, withCalls, withMulti } from '@polkadot/react-api/hoc';
 import { ApiProps } from '@polkadot/react-api/types';
 import { Modal, TxButton } from '@polkadot/react-components';
 import { I18nProps } from '@polkadot/react-components/types';
-import { getBondList, instance } from '@polkadot/react-darwinia';
+import { getBondList, instance, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import { BlockNumber } from '@polkadot/types/interfaces';
 import { formatBalance, formatKtonBalance, ringToKton } from '@polkadot/util';
 import { encodeAddress } from '@polkadot/util-crypto';
+import BigNumber from 'bignumber.js';
 import dayjs from 'dayjs';
 import React from 'react';
 import ReactPaginate from 'react-paginate';
@@ -403,11 +404,11 @@ class Overview extends React.PureComponent<Props, State> {
                 <p>
                   {t(
                     "In lock-up period, the withdrawal will be punished with a 3 times {{KTON}} fine. Are you sure to continue?",
-                    { replace: { KTON: this.getRewardUnit(forceUnbondTarget) } }
+                    { replace: { KTON: KTON_PROPERTIES.tokenSymbol } }
                   )}
                 </p>
                 <p>
-                  {t("amount")}: {this.calcFine(forceUnbondTarget)}
+                  {t("Total Fines")}: {this.calcFine(forceUnbondTarget)}
                 </p>
               </>
             )}
@@ -415,7 +416,7 @@ class Overview extends React.PureComponent<Props, State> {
           <Modal.Actions onCancel={() => this.setState({ forceUnbondTarget: null })}>
             <TxButton
               accountId={controllerId}
-              isBasic={true}
+              icon="paper plane"
               isPrimary
               key="tryClaimDepositsWithPunish"
               label={t("Continue")}
@@ -431,24 +432,15 @@ class Overview extends React.PureComponent<Props, State> {
       </Wrapper>
     );
   }
-  
-  private getRewardUnit(data: any): string { 
-    const { amount, month } = data;
-    const rewardOrigin = formatKtonBalance(ringToKton(amount, month));
-    const unit = rewardOrigin.match(/[a-zA-Z]{1,}/g) || [];
-
-    return unit[0] || '';
-  }
 
   private calcFine(data: any): string {
     const { start_at, amount, month } = data;
     const rewardOrigin = formatKtonBalance(ringToKton(amount, month));
     const rewardMonth = Math.floor((new Date().getTime() - start_at) / (30 * 24 * 3600 * 1000)); // calculate as 30 days per month;
     const rewardActual = formatBalance(ringToKton(amount, rewardMonth));
-    const fine = (parseFloat(rewardOrigin) - parseFloat(rewardActual)) * 3;
-    const unit = this.getRewardUnit(data);
+    const fine = new BigNumber((parseFloat(rewardOrigin) - parseFloat(rewardActual))).multipliedBy(3);
 
-    return fine + ' ' + unit; 
+    return fine + ' ' + KTON_PROPERTIES.tokenSymbol; 
   }
 
   extrinsicIndexToBlockNumber = (index: string): number => {
