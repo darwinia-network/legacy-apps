@@ -435,12 +435,11 @@ class Overview extends React.PureComponent<Props, State> {
 
   private calcFine(data: any): string {
     const { start_at, amount, month } = data;
-    const rewardOrigin = formatKtonBalance(ringToKton(amount, month));
+    const rewardOrigin = new BigNumber(ringToKton(amount, month));
     const rewardMonth = Math.floor((new Date().getTime() - start_at) / (30 * 24 * 3600 * 1000)); // calculate as 30 days per month;
-    const rewardActual = formatBalance(ringToKton(amount, rewardMonth));
-    const fine = new BigNumber((parseFloat(rewardOrigin) - parseFloat(rewardActual))).multipliedBy(3);
+    const rewardActual = new BigNumber(ringToKton(amount, rewardMonth));
 
-    return fine + ' ' + KTON_PROPERTIES.tokenSymbol; 
+    return formatKtonBalance(rewardOrigin.minus(rewardActual).multipliedBy(3).toString());
   }
 
   extrinsicIndexToBlockNumber = (index: string): number => {
