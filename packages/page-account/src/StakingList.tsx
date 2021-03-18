@@ -403,7 +403,7 @@ class Overview extends React.PureComponent<Props, State> {
               <>
                 <p>
                   {t(
-                    "In lock-up period, the withdrawal will be punished with a 3 times {{KTON}} fine. Are you sure to continue?",
+                    "Currently in lock-up period, you will be charged a penalty of 3 times the {{KTON}} reward. Are you sure to continue?",
                     { replace: { KTON: KTON_PROPERTIES.tokenSymbol } }
                   )}
                 </p>
