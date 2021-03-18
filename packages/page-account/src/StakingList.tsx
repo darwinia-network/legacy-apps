@@ -3,21 +3,22 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/react-components/types';
-import { BlockNumber } from '@polkadot/types/interfaces';
-import { ComponentProps, bondList } from './types';
-import styled from 'styled-components';
-import React from 'react';
-import { withMulti, withCalls, withApi } from '@polkadot/react-api/hoc';
+import ExternalsLinks from '@polkadot/apps-config/links';
+import { withApi, withCalls, withMulti } from '@polkadot/react-api/hoc';
 import { ApiProps } from '@polkadot/react-api/types';
 import { TxButton } from '@polkadot/react-components';
-import { Button as SButton, Checkbox } from 'semantic-ui-react';
-import translate from './translate';
-import { formatBalance, formatKtonBalance, ringToKton } from '@polkadot/util';
-import dayjs from 'dayjs';
-import ReactPaginate from 'react-paginate';
+import { I18nProps } from '@polkadot/react-components/types';
 import { getBondList, instance } from '@polkadot/react-darwinia';
-import ExternalsLinks from '@polkadot/apps-config/links';
+import { BlockNumber } from '@polkadot/types/interfaces';
+import { formatBalance, formatKtonBalance, ringToKton } from '@polkadot/util';
+import { encodeAddress } from "@polkadot/util-crypto";
+import dayjs from 'dayjs';
+import React from 'react';
+import ReactPaginate from 'react-paginate';
+import { Button as SButton, Checkbox } from 'semantic-ui-react';
+import styled from 'styled-components';
+import translate from './translate';
+import { bondList, ComponentProps } from './types';
 
 const PAGE_SIZE = 10;
 
@@ -101,7 +102,13 @@ class Overview extends React.PureComponent<Props, State> {
       return;
     }
 
-    const response = await getBondList(axiosInstance, { page: page, row: PAGE_SIZE, status: status, locked, address: address });
+    const response = await getBondList(axiosInstance, {
+      page: page,
+      row: PAGE_SIZE,
+      status: status,
+      locked,
+      address: ["Pangolin", "Darwinia"].includes(systemChain) ? address : encodeAddress(address, 42)
+    });
 
     if (response.data.code === 0 && response.data.data) {
       this.setState({
@@ -148,16 +155,12 @@ class Overview extends React.PureComponent<Props, State> {
     switch (type.toLowerCase()) {
       case 'redeemdeposit':
         return t('Deposit');
-        break;
       case 'redeemring':
         return 'RING';
-        break;
       case 'redeemkton':
         return 'KTON';
-        break;
       default:
         return type;
-        break;
     }
   }
 
