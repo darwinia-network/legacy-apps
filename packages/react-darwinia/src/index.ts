@@ -34,8 +34,8 @@ const darwiniaInstance = axios.create({
 });
 
 const pangolinInstance = axios.create({
-  baseURL: "https://pangolin.subscan.io",
-  timeout: 30000
+  baseURL: 'https://pangolin.subscan.io',
+  timeout: 30000,
 });
 
 export const instance = {
