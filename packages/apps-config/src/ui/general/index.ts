@@ -12,7 +12,7 @@ const chainWestend = '#da68a7';
 const chainLogoDarwiniaCrab = '#EC3783';
 const chainLogoEmpty = '#313131';
 const chainLogoDarwinia = 'linear-gradient(315deg, #FE3876 0%, #7C30DD 71%, #3A30DD 100%)';
-const chainLogoPangolin = '#291DFF';
+const chainLogoPangolin = '#5744DE';
 
 const nodeCentrifuge = '#fcc367';
 const nodeEdgeware = '#0a95df';
