@@ -38,7 +38,8 @@ const nodeLogos: Record<string, any> = [
   ['node-template', nodeSubstrate],
   ['substrate-node', nodeSubstrate],
   ['darwinia crab', chainCrab],
-  ['darwinia', chainDarwinia]
+  ['darwinia', chainDarwinia],
+  ['pangolin', chainPangolin]
 ].reduce((logos, [node, logo]): Record<string, any> => ({
   ...logos,
   [node.toLowerCase().replace(/-/g, ' ')]: logo
@@ -49,7 +50,8 @@ const namedLogos: Record<string, any> = {
   empty: chainDev,
   substrate: nodeSubstrate,
   crab: chainCrab,
-  darwinia: chainDarwinia
+  darwinia: chainDarwinia,
+  pangolin: chainPangolin
 };
 
 // extension logos
