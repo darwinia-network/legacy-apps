@@ -106,6 +106,6 @@ export default styled(StakingApp)`
   }
 
   .staking--Actions {
-    
+
   }
 `;

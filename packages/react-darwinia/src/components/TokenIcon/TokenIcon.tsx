@@ -8,9 +8,11 @@ import { tokenType } from './types';
 
 import ringImg from './img/ring.svg';
 import cringImg from './img/cring.png';
+import pringImg from './img/pring.svg';
 
 import ktonImg from './img/kton.svg';
 import cktonImg from './img/ckton.png';
+import pktonImg from './img/pkton.svg';
 
 interface Props {
   className?: string;
@@ -28,16 +30,18 @@ const styles = `
 const tokenMap = {
   ring: ringImg,
   cring: cringImg,
+  pring: pringImg,
   kton: ktonImg,
-  ckton: cktonImg
-}
+  ckton: cktonImg,
+  pkton: pktonImg
+};
 
 function TokenIcon ({ className, type }: Props): React.ReactElement<Props> {
-
-  const source = tokenMap[type.toLocaleLowerCase()] || ringImg
+  const source = tokenMap[type.toLocaleLowerCase()] || ringImg;
 
   return (
-    <img className={className} src={source}/>
+    <img className={className}
+      src={source}/>
   );
 }
 

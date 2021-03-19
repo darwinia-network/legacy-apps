@@ -32,7 +32,7 @@ function createLive (t: (key: string, text: string, options: { ns: string }) => 
 function createTest (t: (key: string, text: string, options: { ns: string }) => string): Option[] {
   return [
     {
-      info: 'Pangolin',
+      info: 'pangolin',
       text: t('rpc.pangolin.darwinia', 'Pangolin Test Network (hosted by Darwinia)', { ns: 'apps-config' }),
       value: 'wss://pangolin-rpc.darwinia.network'
     }
