@@ -4,20 +4,17 @@
 
 import { DeriveAccountInfo } from '@polkadot/api-derive/types';
 import { BareProps } from '@polkadot/react-api/types';
+import { useAccounts, useApi, useCall, useToggle } from '@polkadot/react-hooks';
+import { Option } from '@polkadot/types';
 import { AccountId, AccountIndex, Address, RegistrarInfo } from '@polkadot/types/interfaces';
-
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { useCall, useAccounts, useApi, useToggle } from '@polkadot/react-hooks';
-import { Option } from '@polkadot/types';
-import ExternalsLinks from '@polkadot/apps-config/links';
-import { useTranslation } from './translate';
-import { getAddressName, innerText } from './util';
 import AccountNameJudgement from './AccountNameJudgement';
 import AddressMini from './AddressMini';
 import Badge from './Badge';
 import Icon from './Icon';
-import Button from './Button';
+import { useTranslation } from './translate';
+import { getAddressName } from './util';
 
 interface Props extends BareProps {
   children?: React.ReactNode;
@@ -73,34 +70,9 @@ function extractName (address: AccountId | string, accountIndex?: AccountIndex, 
   );
 }
 
-function renderLinkIcon (domain: string, address: string): React.ReactNode {
-  return (
-    <Button
-      className='icon-button'
-      icon='external alternate'
-      isPrimary
-      key='tosubscan'
-      onClick={(): void => {
-        window.open(`${domain}/account/${address}`);
-      }}
-      size='mini'
-    />
-  );
-}
-
-const getText = (tree) => {
-  if (typeof tree === 'string') {
-    return tree;
-  }
-
-  return tree.children?.map((child) => {
-    return getText(child);
-  }).join('');
-};
-
-function AccountName ({ children, className, defaultName, isLink, label, onClick, override, showAddress = true, style, toggle, value }: Props): React.ReactElement<Props> {
+function AccountName ({ children, className, defaultName, label, onClick, override, showAddress = true, style, toggle, value }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { api, systemChain } = useApi();
+  const { api } = useApi();
   const { allAccounts } = useAccounts();
   const [isJudgementOpen, toggleJudgement] = useToggle();
   const registrars = useCall<Option<RegistrarInfo>[]>(api.query.identity?.registrars, []);
@@ -108,8 +80,6 @@ function AccountName ({ children, className, defaultName, isLink, label, onClick
   const [isRegistrar, setIsRegistrar] = useState(false);
   const address = useMemo((): string => (value || '').toString(), [value]);
   const [name, setName] = useState<React.ReactNode>((): React.ReactNode => extractName((value || '').toString(), undefined, defaultName, showAddress));
-  const extChain = ExternalsLinks.Subscan.chains[systemChain];
-  const subscanDomain = ExternalsLinks.Subscan.createDomain(extChain);
 
   // determine if we have a registrar or not - registrars are allowed to approve
   useEffect((): void => {
@@ -240,8 +210,7 @@ function AccountName ({ children, className, defaultName, isLink, label, onClick
         }
         style={style}
       >
-        <div className={override ? '' : 'shortname'}
-          title={innerText(name)}>{label || ''}{override || name}</div>{(!override && isLink) && renderLinkIcon(subscanDomain, address)}{children}
+        {label || ''}{override || name}{children}
       </div>
     </>
   );

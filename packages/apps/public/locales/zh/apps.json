@@ -1,5 +1,5 @@
 {
-  "Create an account now.": "马上创建账号.",
+  "Create an account now.": "马上创建账户.",
   "GitHub": "GitHub",
   "Initializing connection": "正在连接节点",
   "Select Network": "选择网络",
@@ -10,8 +10,8 @@
   "Wormhole": "虫洞",
   "You are connecting from a secure location to an insecure WebSocket ({{wsUrl}}). Due to browser mixed-content security policies this connection type is not allowed. Change the RPC service to a secure 'wss' endpoint.": "你正在从一个安全的连接访问不安全的 WebSocket ({{wsUrl}}). 由于浏览器最大安全策略这个连接将不被允许访问. 更改RPC服务到一个安全的 'wss' 终端.",
   "You are not connected to a node. Ensure that your node is running and that the Websocket endpoint is reachable.": "没有连接任何节点. 确保你的节点正在运行并且保证websocket终端可访问.",
-  "You don't have any accounts. Some features are currently hidden and will only become available once you have accounts.": "你还没有账号. 很多功能对你隐藏了，赶紧添加一个账号试试.",
-  "sidebar.accounts": "账号",
+  "You don't have any accounts. Some features are currently hidden and will only become available once you have accounts.": "你还没有账户. 很多功能对你隐藏了，赶紧添加一个账户试试.",
+  "sidebar.accounts": "账户",
   "sidebar.addressbook": "地址簿",
   "sidebar.chainstate": "链状态",
   "sidebar.claims": "认领",
@@ -32,7 +32,7 @@
   "sidebar.toolbox": "工具箱",
   "sidebar.transfer": "转账",
   "sidebar.treasury": "财政部",
-  "sidebar.vanity": "美化账号",
+  "sidebar.vanity": "美化账户",
   "transfer received": "转账接收成功",
   "update on #{{index}}": "更新 #{{index}}"
 }

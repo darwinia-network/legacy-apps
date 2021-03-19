@@ -2,15 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { Address, AccountId } from '@polkadot/types/interfaces';
-
+import { AccountId, Address } from '@polkadot/types/interfaces';
 import React from 'react';
 import styled from 'styled-components';
-
-import AccountIndex from './AccountIndex';
 import AccountAddress from './AccountAddress';
 import AccountName from './AccountName';
 import IdentityIcon from './IdentityIcon';
+
+
 
 function toIdString (id?: string | Address | AccountId | null | Uint8Array): string | null {
   return id
@@ -72,12 +71,8 @@ export default styled(AddressSmall)`
 
   .nameInfo {
     > div {
-      max-width: 12rem;
-      .shortname {
-        width: 10rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 `;
