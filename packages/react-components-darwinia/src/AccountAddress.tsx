@@ -2,10 +2,11 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { BareProps } from "@polkadot/react-api/types";
-import { AccountId, Address } from "@polkadot/types/interfaces";
-import React from "react";
-import styled from "styled-components";
+import { BareProps } from '@polkadot/react-api/types';
+import { AccountId, Address } from '@polkadot/types/interfaces';
+import React from 'react';
+import styled from 'styled-components';
+import { toShortAddress } from './util';
 
 interface Props extends BareProps {
   children?: React.ReactNode;
@@ -14,7 +15,7 @@ interface Props extends BareProps {
   value?: string | AccountId | Address | null | Uint8Array;
 }
 
-function AccountAddress({
+function AccountAddress ({
   children,
   className,
   defaultValue,
@@ -22,14 +23,17 @@ function AccountAddress({
   style,
   value
 }: Props): React.ReactElement<Props> | null {
+  const address = toShortAddress(value.toString());
+
   if (!value) {
     return null;
   }
 
   return (
-    <div className={`ui--AccountIndex ${className}`} style={style}>
-      {label || ""}
-      <div className="account-index">{value || defaultValue || "-"}</div>
+    <div className={`ui--AccountIndex ${className}`}
+      style={style}>
+      {label || ''}
+      <div className='account-index'>{address || defaultValue || '-'}</div>
       {children}
     </div>
   );
