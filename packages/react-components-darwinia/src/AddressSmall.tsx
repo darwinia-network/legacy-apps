@@ -70,7 +70,8 @@ export default styled(AddressSmall)`
   }
 
   .nameInfo {
-    > div {
+    > div > div {
+      max-width: 16rem;
       overflow: hidden;
       text-overflow: ellipsis;
     }

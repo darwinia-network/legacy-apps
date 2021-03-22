@@ -3,22 +3,22 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/react-components/types';
-import { ApiProps } from '@polkadot/react-api/types';
-import { CalculateBalanceProps } from '../../types';
-import { Balance } from '@polkadot/types/interfaces/runtime';
-
-import BN from 'bn.js';
-import React from 'react';
-import { TxButton } from '@polkadot/react-components';
-import { Available, AvailableKton } from '@polkadot/react-query';
-import { InputAddress, InputBalance, Modal, TxComponent } from '@polkadot/react-components-darwinia';
 // import { calcTxLength } from '@polkadot/react-signer/Checks';
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { withCalls, withApi, withMulti } from '@polkadot/react-api/hoc';
-import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
-
+import { withApi, withMulti } from '@polkadot/react-api/hoc';
+import { ApiProps } from '@polkadot/react-api/types';
+import { TxButton } from '@polkadot/react-components';
+import { InputAddress, InputBalance, Modal, TxComponent } from '@polkadot/react-components-darwinia';
+import { I18nProps } from '@polkadot/react-components/types';
+import { currencyType } from '@polkadot/react-darwinia/types';
+import { Available, AvailableKton } from '@polkadot/react-query';
+import { Balance } from '@polkadot/types/interfaces/runtime';
+import BN from 'bn.js';
+import React from 'react';
 import translate from '../../translate';
+import { CalculateBalanceProps } from '../../types';
+
+
 
 interface Props extends I18nProps, ApiProps, CalculateBalanceProps {
   controllerId: string;
@@ -59,6 +59,7 @@ class BondExtra extends TxComponent<Props, State> {
       <Modal
         className='staking--BondExtra'
         header={t('Rebond funds')}
+        subheader={t('rebond the unbonding funds')}
         onCancel={onClose}
         size='small'
       >

@@ -1408,31 +1408,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@darwinia/types-known@npm:1.0.6":
-  version: 1.0.6
-  resolution: "@darwinia/types-known@npm:1.0.6"
+"@darwinia/types-known@npm:1.1.0-alpha.5, @darwinia/types-known@npm:^1.1.0-alpha.5":
+  version: 1.1.0-alpha.5
+  resolution: "@darwinia/types-known@npm:1.1.0-alpha.5"
   dependencies:
     "@babel/runtime": ^7.9.6
-    "@polkadot/types": 1.27.1
-    "@polkadot/util": ^3.0.1
+    "@polkadot/types": 4.0.4-5
+    "@polkadot/util": 6.0.5
     bn.js: ^5.1.2
-  checksum: ab859933b193209a3f6eb372e140c75ba8286fc6530f4323e8757f6deea1e6eb719bafcb56a517dfe038f801faca82a654e37b5485624c809ff908bccb997792
+  checksum: f472bde97d05de5f1d7f3453a303db2d5ee6284a203eed31f4c6f723794403f15ecefc34693f9ac94d0b778a7b18fe4d0d179e82020e635d7a9f1e113ec06322
   languageName: node
   linkType: hard
 
-"@darwinia/types@npm:1.0.12":
-  version: 1.0.12
-  resolution: "@darwinia/types@npm:1.0.12"
+"@darwinia/types@npm:1.1.0-alpha.5":
+  version: 1.1.0-alpha.5
+  resolution: "@darwinia/types@npm:1.1.0-alpha.5"
   dependencies:
-    "@babel/runtime": ^7.11.2
-    "@polkadot/metadata": 1.35.0-beta.19
-    "@polkadot/util": ^3.5.1
-    "@polkadot/util-crypto": ^3.5.1
-    "@types/bn.js": ^4.11.6
-    bn.js: ^5.1.3
-    memoizee: ^0.4.14
-    rxjs: ^6.6.2
-  checksum: 2ef031729a2c538d72e8ac8a31b4d2091b2d782d37650064b743119afa69657703af797c3c6f675c8bd8111c52e3c6bfed0b47731914a66e94c1c2f272a492a2
+    "@darwinia/types-known": ^1.1.0-alpha.5
+  checksum: 5ae63a65db991ab3e5eefb3fc7a77fb029b75a31c0394db7fca4513f7e57c6b1a8fa5e0d0ea7f1f7228e25e0e9fb080f03f1bdbc232478c394948f86d424c63a
   languageName: node
   linkType: hard
 
@@ -3271,7 +3264,7 @@ __metadata:
   resolution: "@polkadot/app-settings@workspace:packages/page-settings"
   dependencies:
     "@babel/runtime": ^7.9.6
-    "@darwinia/types-known": 1.0.6
+    "@darwinia/types-known": 1.1.0-alpha.5
     "@polkadot/apps-config": 0.42.0-beta.100
     "@polkadot/react-components": 0.42.0-beta.100
     "@polkadot/react-query": 0.42.0-beta.100
@@ -3293,7 +3286,7 @@ __metadata:
   resolution: "@polkadot/app-staking-darwinia@workspace:packages/page-staking-darwinia"
   dependencies:
     "@babel/runtime": ^7.9.6
-    "@darwinia/types": 1.0.2
+    "@darwinia/types": 1.1.0-alpha.5
     "@polkadot/app-explorer": 0.42.0-beta.100
     "@polkadot/react-components-darwinia": 0.42.0-beta.100
     "@polkadot/react-query": 0.42.0-beta.100
@@ -3556,7 +3549,7 @@ __metadata:
   resolution: "@polkadot/react-api@workspace:packages/react-api"
   dependencies:
     "@babel/runtime": ^7.9.6
-    "@darwinia/types-known": 1.0.6
+    "@darwinia/types-known": 1.1.0-alpha.5
     "@polkadot/api": 1.35.0-beta.19
     "@polkadot/extension-dapp": ^0.25.0-beta.4
     rxjs-compat: ^6.6.2

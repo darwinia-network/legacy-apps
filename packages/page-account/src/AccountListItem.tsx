@@ -272,7 +272,7 @@ function Account ({ address, className, filter, isAccountChecked, isFavorite, on
           : <Button
             isBasic={true}
             // isSecondary={true}
-            label={t('Change')}
+            label={t('Change to')}
             onClick={() => {
               store.set('accountMain', address);
               onToggleAccountChecked && onToggleAccountChecked(address);
@@ -326,7 +326,7 @@ function Account ({ address, className, filter, isAccountChecked, isFavorite, on
               {t('Forget this account')}
             </Menu.Item>
 
-            <Menu.Item 
+            <Menu.Item
               onClick={() => {
                 window.open(`${subscanDomain}/account/${(address || '').toString()}`);
               }}
@@ -383,18 +383,22 @@ export default styled(Account)`
     width: 16rem;
   }
 
+  .middle {
+    padding: 1.07142rem 1.02857rem;
+  }
+
   .samewidth {
     padding-left: 0;
 
-    button {
-      width: 5rem;
-    }
-    
     button:first-child {
       margin-bottom: 5px;
       padding-left: 0 !important;
       padding-right: 0 !important;
       text-align: center;
+      width: 5rem;
+    }
+    button+button {
+      width: auto;
     }
   }
 

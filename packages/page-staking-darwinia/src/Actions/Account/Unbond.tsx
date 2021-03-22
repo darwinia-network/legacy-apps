@@ -3,22 +3,22 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { AccountId } from '@polkadot/types/interfaces';
 import { StakingLedgerT as StakingLedger } from '@darwinia/types';
-import { I18nProps } from '@polkadot/react-components/types';
+import { withApi, withCalls, withMulti } from '@polkadot/react-api/hoc';
 import { ApiProps } from '@polkadot/react-api/types';
-
+import { AddressInfo, InputAddress, TxButton, TxComponent } from '@polkadot/react-components';
+import { InputNumber, Modal } from '@polkadot/react-components-darwinia';
+import { I18nProps } from '@polkadot/react-components/types';
+import { currencyType } from '@polkadot/react-darwinia/types';
+import { Option } from '@polkadot/types';
+import { AccountId } from '@polkadot/types/interfaces';
 import BN from 'bn.js';
 import React from 'react';
 import styled from 'styled-components';
-import { Option } from '@polkadot/types';
-import { AddressInfo, InputAddress, TxButton, TxComponent } from '@polkadot/react-components';
-import { InputNumber, Modal } from '@polkadot/react-components-darwinia';
-
-import { withCalls, withApi, withMulti } from '@polkadot/react-api/hoc';
-import { currencyType } from '@polkadot/react-darwinia/types';
-
 import translate from '../../translate';
+
+
+
 
 interface Props extends I18nProps, ApiProps {
   controllerId?: AccountId | null;
@@ -75,6 +75,7 @@ class Unbond extends TxComponent<Props, State> {
       <Modal
         className='staking--Unbond'
         header={t('Unbond funds')}
+        subheader={t('unbond tokens for staking, unbonded tokens become available after 14 days')}
         onCancel={onClose}
         size='small'
       >

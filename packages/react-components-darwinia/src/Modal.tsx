@@ -2,19 +2,19 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { BareProps } from './types';
-
 import React from 'react';
 import SUIModal from 'semantic-ui-react/dist/commonjs/modules/Modal/Modal';
-
+import styled from 'styled-components';
 import Button from './Button';
 import ButtonCancel from './ButtonCancel';
-import { classes } from './util';
 import modalCloseIcon from './styles/images/modal-close.png';
+import { BareProps } from './types';
+import { classes } from './util';
 
 interface ModalProps extends BareProps {
   children: React.ReactNode;
   header?: React.ReactNode;
+  subheader?: React.ReactNode;
   open?: boolean;
   [index: string]: any;
   onCancel?: () => void;
@@ -29,7 +29,7 @@ interface ActionsProps extends BareProps {
 }
 
 function Modal(props: ModalProps): React.ReactElement<ModalProps> {
-  const { className, children, header, open = true, onCancel } = props;
+  const { className, children, header, subheader, open = true, onCancel } = props;
 
   return (
     <SUIModal
@@ -40,7 +40,7 @@ function Modal(props: ModalProps): React.ReactElement<ModalProps> {
       open={open}
     >
       {header && (
-        <SUIModal.Header>{header}</SUIModal.Header>
+        <SUIModal.Header>{header} <Subheader>{subheader}</Subheader></SUIModal.Header>
       )}
       {children}
       <img className="close-btn" src={modalCloseIcon} onClick={onCancel} />
@@ -59,6 +59,14 @@ function Actions({ cancelLabel, className, children, withOr = true, withCancel =
     </SUIModal.Actions>
   );
 }
+
+const Subheader = styled.span`
+  font-size: 12px;
+  margin: 0 0 0 1em;
+  white-space: no-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
 Modal.Actions = Actions;
 Modal.Content = SUIModal.Content;

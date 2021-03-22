@@ -135,6 +135,11 @@ export default {
       ]
     },
     RewardPoint: 'u32',
+    SeatHolder: {
+      who: 'AccountId',
+      stake: 'Balance',
+      deposit: 'Balance'
+    },
     SlashJournalEntry: {
       who: 'AccountId',
       amount: 'Balance',
@@ -193,12 +198,24 @@ export default {
     ValidatorPrefs: {
       commission: 'Compact<Perbill>'
     },
+    ValidatorPrefsWithBlocked: {
+      commission: 'Compact<Perbill>',
+      blocked: 'bool'
+    },
     ValidatorPrefsTo196: {
       validatorPayment: 'Compact<Balance>'
+    },
+    ValidatorPrefsWithCommission: {
+      commission: 'Compact<Perbill>'
     },
     ValidatorPrefsTo145: {
       unstakeThreshold: 'Compact<u32>',
       validatorPayment: 'Compact<Balance>'
+    },
+    Voter: {
+      votes: 'Vec<AccountId>',
+      stake: 'Balance',
+      deposit: 'Balance'
     }
   }
 } as Definitions;
