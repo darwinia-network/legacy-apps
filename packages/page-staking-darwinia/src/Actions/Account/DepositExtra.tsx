@@ -3,27 +3,27 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/react-components/types';
+// import { calcTxLength } from '@polkadot/react-signer/Checks';
+import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import { withApi, withCalls, withMulti } from '@polkadot/react-api/hoc';
 import { ApiProps } from '@polkadot/react-api/types';
-import { CalculateBalanceProps } from '../../types';
+import { TxButton } from '@polkadot/react-components';
+import { Dropdown, InputAddress, InputBalance, Modal, TxComponent } from '@polkadot/react-components-darwinia';
+import { I18nProps } from '@polkadot/react-components/types';
+import { KTON_PROPERTIES, lockLimitOptionsMaker } from '@polkadot/react-darwinia';
+import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
+import { Available, AvailableKton } from '@polkadot/react-query';
+import { ZERO_BALANCE, ZERO_FEES } from '@polkadot/react-signer/Checks/constants';
 import { Balance } from '@polkadot/types/interfaces/runtime';
-
+import { bnMax, formatBalance, ringToKton } from '@polkadot/util';
 import BN from 'bn.js';
 import React from 'react';
 import { Checkbox } from 'semantic-ui-react';
-import { TxButton } from '@polkadot/react-components';
-import { Available, AvailableKton } from '@polkadot/react-query';
-import { InputAddress, InputBalance, Modal, TxComponent, Dropdown } from '@polkadot/react-components-darwinia';
-// import { calcTxLength } from '@polkadot/react-signer/Checks';
-import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { withCalls, withApi, withMulti } from '@polkadot/react-api/hoc';
-import { ZERO_BALANCE, ZERO_FEES } from '@polkadot/react-signer/Checks/constants';
-import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
-import { lockLimitOptionsMaker, RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import styled from 'styled-components';
-import { bnMax, formatBalance, ringToKton } from '@polkadot/util';
-
 import translate from '../../translate';
+import { CalculateBalanceProps } from '../../types';
+
+
 // import detectUnsafe from '../../unsafeChains';
 // import ValidateAmount from './InputValidateAmount';
 
@@ -83,6 +83,7 @@ class BondExtra extends TxComponent<Props, State> {
       <Modal
         className='staking--BondExtra'
         header={t('Deposit more funds')}
+        subheader={t('add lock limit for bonded tokens')}
         onCancel={onClose}
         size='small'
       >

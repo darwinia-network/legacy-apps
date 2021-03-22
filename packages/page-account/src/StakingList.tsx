@@ -111,7 +111,7 @@ class Overview extends React.PureComponent<Props, State> {
       row: PAGE_SIZE,
       status: status,
       locked,
-      address: ["Pangolin", "Darwinia"].includes(systemChain) ? address : encodeAddress(address, 42),
+      address: ["Pangolin", "Darwinia"].includes(systemChain) ? address : encodeAddress(address, 42)
     });
 
     if (response.data.code === 0 && response.data.data) {

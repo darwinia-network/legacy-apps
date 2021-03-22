@@ -3,30 +3,29 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { I18nProps } from '@polkadot/react-components/types';
+// import { calcTxLength } from '@polkadot/react-signer/Checks';
+import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import { withApi, withCalls, withMulti } from '@polkadot/react-api/hoc';
 import { ApiProps } from '@polkadot/react-api/types';
-import { CalculateBalanceProps } from '../../types';
+import { TxButton } from '@polkadot/react-components';
+import { Dropdown, InputAddress, InputBalance, Modal, TxComponent } from '@polkadot/react-components-darwinia';
+import { I18nProps } from '@polkadot/react-components/types';
+import { KTON_PROPERTIES, lockLimitOptionsMaker, RING_PROPERTIES } from '@polkadot/react-darwinia';
+import { PowerTelemetry } from '@polkadot/react-darwinia/components';
+import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
+import { Available, AvailableKton } from '@polkadot/react-query';
+import { ZERO_BALANCE, ZERO_FEES } from '@polkadot/react-signer/Checks/constants';
 import { Balance } from '@polkadot/types/interfaces/runtime';
-
+import { bnMax, formatBalance, ringToKton } from '@polkadot/util';
 import BN from 'bn.js';
 import React from 'react';
 import { Checkbox } from 'semantic-ui-react';
-import { TxButton } from '@polkadot/react-components';
-import { Available, AvailableKton } from '@polkadot/react-query';
-import { InputAddress, InputBalance, Modal, TxComponent, Dropdown } from '@polkadot/react-components-darwinia';
-// import { calcTxLength } from '@polkadot/react-signer/Checks';
-import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import { withCalls, withApi, withMulti } from '@polkadot/react-api/hoc';
-import { ZERO_BALANCE, ZERO_FEES } from '@polkadot/react-signer/Checks/constants';
-import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
-import { lockLimitOptionsMaker, RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
-import { PowerTelemetry } from '@polkadot/react-darwinia/components';
 import styled from 'styled-components';
-import { bnMax, formatBalance, ringToKton } from '@polkadot/util';
-
 import translate from '../../translate';
+import { CalculateBalanceProps } from '../../types';
 import detectUnsafe from '../../unsafeChains';
-import ValidateAmount from './InputValidateAmount';
+
+
 
 interface Props extends I18nProps, ApiProps, CalculateBalanceProps {
   controllerId: string;
@@ -84,6 +83,7 @@ class BondExtra extends TxComponent<Props, State> {
       <Modal
         className='staking--BondExtra'
         header={t('Bond more funds')}
+        subheader={t('adds bonded tokens for staking to obtain more power.')}
         onCancel={onClose}
         size='small'
       >
@@ -147,14 +147,17 @@ class BondExtra extends TxComponent<Props, State> {
           onError={this.setAmountError}
           value={maxAdditional}
         /> */}
-        {currencyType === 'ring' ? <Dropdown
-          className='medium'
-          defaultValue={promiseMonth}
-          help={t('lock limit')}
-          label={t('lock limit')}
-          onChange={this.onChangePromiseMonth}
-          options={lockLimitOptionsMaker(t)}
-        /> : null}
+        {currencyType === 'ring' ? (<>
+          <Dropdown
+            className='medium'
+            defaultValue={promiseMonth}
+            help={t('lock limit')}
+            label={t('lock limit')}
+            onChange={this.onChangePromiseMonth}
+            options={lockLimitOptionsMaker(t)}
+          />
+          <TipsWrapper>{t('The funds status will become locked after freezing period set')}</TipsWrapper>
+        </>) : null}
         {promiseMonth ? <KtonTipStyledWrapper>
           <div>
             <p>{t('After setting a lock limit, you will receive an additional {{KTON}} bonus; if you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the {{KTON}} reward.', {
@@ -279,11 +282,15 @@ class BondExtra extends TxComponent<Props, State> {
   }
 }
 
-const WarnTipsWrapper = styled.div`
+const TipsWrapper = styled.div`
   margin-left: 2rem;
-  color: #9F3A38;
   margin-top: 5px;
   margin-bottom: 10px;
+  font-size: 12px;
+`;
+
+const WarnTipsWrapper = styled(TipsWrapper)`
+  color: #9F3A38;
 `;
 
 const KtonTipStyledWrapper = styled.div`
