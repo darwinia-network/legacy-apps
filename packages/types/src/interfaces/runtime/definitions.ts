@@ -1,10 +1,10 @@
-// Copyright 2017-2020 @polkadot/types authors & contributors
+// Copyright 2017-2021 @polkadot/types authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 // order important in structs... :)
 /* eslint-disable sort-keys */
 
-import { Definitions } from '../../types';
+import type { Definitions } from '../../types';
 
 const numberTypes = {
   Fixed64: 'Int<64, Fixed64>',
@@ -29,7 +29,7 @@ export default {
     AccountId: 'GenericAccountId',
     AccountIdOf: 'AccountId',
     AccountIndex: 'GenericAccountIndex',
-    Address: 'GenericAddress',
+    Address: 'MultiAddress',
     AssetId: 'u32',
     Balance: 'UInt<128, Balance>',
     BalanceOf: 'Balance',
@@ -43,6 +43,7 @@ export default {
       digestLevels: 'u32'
     },
     ConsensusEngineId: 'GenericConsensusEngineId',
+    CodecHash: 'Hash',
     Digest: {
       logs: 'Vec<DigestItem>'
     },
@@ -61,10 +62,13 @@ export default {
       normal: 'Weight',
       operational: 'Weight'
     },
-    GenericAddress: 'LookupSource',
+    H64: '[u8; 8; H64]',
+    H128: '[u8; 16; H64]',
     H160: '[u8; 20; H160]',
     H256: '[u8; 32; H256]',
     H512: '[u8; 64; H512]',
+    H1024: '[u8; 128; H1024]',
+    H2048: '[u8; 256; H2048]',
     Hash: 'H256',
     Header: {
       parentHash: 'Hash',
@@ -73,17 +77,33 @@ export default {
       extrinsicsRoot: 'Hash',
       digest: 'Digest'
     },
+    IndicesLookupSource: 'GenericLookupSource',
     Index: 'u32',
     Justification: 'Bytes',
     KeyValue: '(StorageKey, StorageData)',
     KeyTypeId: 'u32',
     LockIdentifier: '[u8; 8]',
-    LookupSource: 'GenericLookupSource',
+    LookupSource: 'MultiAddress',
     LookupTarget: 'AccountId',
     ModuleId: 'LockIdentifier',
-    Moment: 'u64',
+    MultiAddress: 'GenericMultiAddress',
+    MultiSigner: {
+      _enum: {
+        Ed25519: '[u8; 32]',
+        Sr25519: '[u8; 32]',
+        Ecdsa: '[u8; 33]'
+      }
+    },
+    Moment: 'UInt<64, Moment>',
     OpaqueCall: 'Bytes',
     Origin: 'DoNotConstruct<Origin>',
+    OriginCaller: {
+      _enum: {
+        // this should be dynamically built from the actual modules, based on index
+        System: 'SystemOrigin'
+      }
+    },
+    PalletsOrigin: 'OriginCaller',
     PalletVersion: {
       major: 'u16',
       minor: 'u8',
@@ -105,9 +125,14 @@ export default {
       block: 'Block',
       justification: 'Justification'
     },
+    Slot: 'u64',
     StorageData: 'Bytes',
+    StorageProof: {
+      trieNodes: 'Vec<Bytes>'
+    },
     TransactionPriority: 'u64',
     ValidatorId: 'AccountId',
+    ValidatorIdOf: 'ValidatorId',
     Weight: 'u64',
     WeightMultiplier: 'Fixed64',
 

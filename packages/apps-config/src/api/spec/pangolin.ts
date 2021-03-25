@@ -6,8 +6,4 @@
 /* eslint-disable sort-keys */
 
 export default {
-  Address: 'MultiAddress',
-  LookupSource: 'MultiAddress',
-  MultiAddress: 'GenericMultiAddress',
-  AccountInfo: 'AccountInfoWithProviders'
 };
