@@ -99,6 +99,9 @@ export default React.memo(styled(AddressToggle)`
   .ui--AddressToggle-address {
     filter: grayscale(100%);
     opacity: 0.5;
+    .ui--AddressMini-address {
+      max-width: initial;
+    }
   }
 
   &:hover {
