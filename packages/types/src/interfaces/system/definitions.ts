@@ -1,10 +1,10 @@
-// Copyright 2017-2020 @polkadot/types authors & contributors
+// Copyright 2017-2021 @polkadot/types authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 // order important in structs... :)
 /* eslint-disable sort-keys */
 
-import { Definitions } from '../../types';
+import type { Definitions } from '../../types';
 
 export default {
   rpc: {
@@ -82,6 +82,7 @@ export default {
       type: 'Vec<PeerInfo>'
     },
     networkState: {
+      alias: ['system_unstable_networkState'],
       description: 'Returns current state of the network',
       params: [],
       type: 'NetworkState'
@@ -110,19 +111,48 @@ export default {
       description: 'Returns the roles the node is running as',
       params: [],
       type: 'Vec<NodeRole>'
+    },
+    syncState: {
+      description: 'Returns the state of the syncing of the node',
+      params: [],
+      type: 'SyncState'
+    },
+    addLogFilter: {
+      description: 'Adds the supplied directives to the current log filter',
+      params: [
+        {
+          name: 'directives',
+          type: 'Text'
+        }
+      ],
+      type: 'Null'
+    },
+    resetLogFilter: {
+      description: 'Resets the log filter to Substrate defaults',
+      params: [],
+      type: 'Null'
     }
   },
   types: {
-    AccountInfo: 'AccountInfoWithRefCount',
+    AccountInfo: 'AccountInfoWithTripleRefCount',
     AccountInfoWithRefCount: {
       nonce: 'Index',
       refcount: 'RefCount',
       data: 'AccountData'
     },
-    AccountInfoWithProviders: {
+    AccountInfoWithDualRefCount: {
       nonce: 'Index',
       consumers: 'RefCount',
       providers: 'RefCount',
+      data: 'AccountData'
+    },
+    // original naming
+    AccountInfoWithProviders: 'AccountInfoWithDualRefCount',
+    AccountInfoWithTripleRefCount: {
+      nonce: 'Index',
+      consumers: 'RefCount',
+      providers: 'RefCount',
+      sufficients: 'RefCount',
       data: 'AccountData'
     },
     ApplyExtrinsicResult: 'Result<DispatchOutcome, TransactionValidityError>',
