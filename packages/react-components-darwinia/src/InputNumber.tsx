@@ -123,10 +123,10 @@ function isValidNumber (bn: BN, { bitLength = DEFAULT_BITLENGTH, isZeroable, max
 function inputToBn (input: string, si: SiDef | null, props: Props, currencyType: currencyType): [BN, boolean] {
   /**
    * results of BN do not match expectations when using thousandths numbers
-   * new BN(10232.23).toString() ---> 10232  ✔ 
+   * new BN(10232.23).toString() ---> 10232  ✔
    * new BN(10,232.23).toString() ---> 10 x
    */
-  input = input.replace(',','');  
+  input = input.replace(',', '');
   const [siPower, basePower, siUnitPower] = getSiPowers(si, currencyType);
 
   // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
