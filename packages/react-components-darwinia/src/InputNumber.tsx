@@ -2,23 +2,19 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { SiDef, BalanceFormatter } from '@polkadot/util/types';
-import { BareProps, BitLength } from './types';
-
+import { KTON_PROPERTIES, RING_PROPERTIES } from '@polkadot/react-darwinia';
+import { currencyType } from '@polkadot/react-darwinia/types';
+import { formatBalance, formatKtonBalance } from '@polkadot/util';
+import { BalanceFormatter, SiDef } from '@polkadot/util/types';
 import BN from 'bn.js';
 import React, { useEffect, useState } from 'react';
-import { formatBalance, formatKtonBalance } from '@polkadot/util';
-import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
-import { currencyType } from '@polkadot/react-darwinia/types';
-
-import { classes } from './util';
 import { BitLengthOption } from './constants';
 // import Button from './Button';
 import Dropdown from './Dropdown';
 import Input, { KEYS, KEYS_PRE } from './Input';
 import { useTranslation } from './translate';
-
-// const ALLOW_MAX = false;
+import { BareProps, BitLength } from './types';
+import { classes } from './util';
 
 interface Props extends BareProps {
   autoFocus?: boolean;
@@ -125,6 +121,12 @@ function isValidNumber (bn: BN, { bitLength = DEFAULT_BITLENGTH, isZeroable, max
 }
 
 function inputToBn (input: string, si: SiDef | null, props: Props, currencyType: currencyType): [BN, boolean] {
+  /**
+   * results of BN do not match expectations when using thousandths numbers
+   * new BN(10232.23).toString() ---> 10232  ✔
+   * new BN(10,232.23).toString() ---> 10 x
+   */
+  input = input.replace(',', '');
   const [siPower, basePower, siUnitPower] = getSiPowers(si, currencyType);
 
   // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
