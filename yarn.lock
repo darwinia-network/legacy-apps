@@ -3530,19 +3530,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/metadata@npm:1.35.0-beta.19":
-  version: 1.35.0-beta.19
-  resolution: "@polkadot/metadata@npm:1.35.0-beta.19"
+"@polkadot/metadata@1.35.0-beta.19, @polkadot/metadata@workspace:packages/metadata":
+  version: 0.0.0-use.local
+  resolution: "@polkadot/metadata@workspace:packages/metadata"
   dependencies:
     "@babel/runtime": ^7.11.2
+    "@darwinia/types-known": 1.1.0-alpha.6
+    "@polkadot/keyring": ^3.5.1
     "@polkadot/types": 1.35.0-beta.19
-    "@polkadot/types-known": 1.35.0-beta.19
     "@polkadot/util": ^3.5.1
     "@polkadot/util-crypto": ^3.5.1
     bn.js: ^5.1.3
-  checksum: e2ba9bdf8ed944ca2df60a770538b7630558706c93805058a0b2443404cc3d5c02a6c79e10f2adf0284a6df855f2456ae7e178f88a102e3d1611fe5d6d03dbab
-  languageName: node
-  linkType: hard
+  languageName: unknown
+  linkType: soft
 
 "@polkadot/react-api@0.42.0-beta.100, @polkadot/react-api@workspace:packages/react-api":
   version: 0.0.0-use.local
