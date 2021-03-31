@@ -36,7 +36,7 @@ const types: DefinitionsTypes = {
     stateRoot: 'H256',
     transactionsRoot: 'H256',
     receiptsRoot: 'H256',
-    number: 'Option<U256>',
+    number: 'U256',
     gasUsed: 'U256',
     gasLimit: 'U256',
     extraData: 'Bytes',
