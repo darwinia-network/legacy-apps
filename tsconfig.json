@@ -9,6 +9,8 @@
     "paths": {
       "@polkadot/types": [ "packages/types/src" ],
       "@polkadot/types/*": [ "packages/types/src/*" ],
+      "@polkadot/metadata": [ "packages/metadata/src" ],
+      "@polkadot/metadata/*": [ "packages/metadata/src/*" ],
       "@polkadot/apps-config/*": [ "packages/apps-config/src/*" ],
       "@polkadot/apps-routing": [ "packages/apps-routing/src" ],
       "@polkadot/apps-routing/*": [ "packages/apps-routing/src/*" ],

@@ -21,7 +21,10 @@ export interface DefinitionRpcParam {
 
 export interface DefinitionRpc {
   alias?: string[];
+  aliasSection?: string;
   description: string;
+  endpoint?: string;
+  isSigned?: boolean;
   params: DefinitionRpcParam[];
   type: DefinitionTypeType;
 }
@@ -37,6 +40,10 @@ export interface DefinitionRpcExt extends DefinitionRpc {
 export interface DefinitionRpcSub extends DefinitionRpc {
   pubsub: [string, string, string];
 }
+
+export type DefinitionsRpc = Record<string, DefinitionRpc | DefinitionRpcSub>;
+
+export type DefinitionsTypes = Record<string, DefinitionType>;
 
 export interface Definitions {
   rpc: Record<string, DefinitionRpc | DefinitionRpcSub>;

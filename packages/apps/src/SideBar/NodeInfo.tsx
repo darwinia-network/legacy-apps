@@ -12,7 +12,11 @@ import { NodeName, NodeVersion } from '@polkadot/react-query';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkgJson = require('../../package.json');
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const darwiniaTypeJson = require('@darwinia/types/package.json');
+
 const uiInfo = `apps v${pkgJson.version}`;
+const libInfo = `api v${darwiniaTypeJson.version}`;
 
 function NodeInfo ({ className }: Props): React.ReactElement<Props> {
   const { api, isApiReady } = useApi();
@@ -25,7 +29,7 @@ function NodeInfo ({ className }: Props): React.ReactElement<Props> {
           <NodeVersion label='v' />
         </div>
       )}
-      <div>{api.libraryInfo.replace('@polkadot/', '')}</div>
+      <div>{libInfo}</div>
       <div>{uiInfo}</div>
     </div>
   );
