@@ -1,7 +1,7 @@
 {
   "name": "@polkadot/apps",
   "private": true,
-  "version": "0.42.0-beta.100",
+  "version": "1.0.0",
   "description": "An Apps portal into the Darwinia network",
   "main": "index.js",
   "homepage": ".",
