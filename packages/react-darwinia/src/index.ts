@@ -96,7 +96,11 @@ const lockLimitOptionsMaker = (t: i18nT): Array<object> => {
 
   month.map((i) => {
     options.push({
-      text: i === 0 ? t('No fixed term (Set a lock period will get additional KTON rewards)') : `${i} ${t('Month')}`,
+      text: i === 0 ? t('No fixed term (Set a lock period will get additional {{KTON}} rewards)', {
+        replace: {
+          KTON: KTON_PROPERTIES.tokenSymbol
+        }
+      }) : `${i} ${t('Month')}`,
       value: i
     });
   });
