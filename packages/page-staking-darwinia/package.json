@@ -12,7 +12,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@babel/runtime": "^7.9.6",
-    "@darwinia/types": "1.1.0-alpha.9",
+    "@darwinia/types": "1.1.0-alpha.10",
     "@polkadot/app-explorer": "0.42.0-beta.100",
     "@polkadot/react-components-darwinia": "0.42.0-beta.100",
     "@polkadot/react-query": "0.42.0-beta.100"
