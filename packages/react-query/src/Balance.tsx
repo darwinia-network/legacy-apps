@@ -25,7 +25,7 @@ function BalanceDisplay ({ children, className, label, params }: Props): React.R
     <FormatBalance
       className={className}
       label={label}
-      value={allBalances?.freeBalance}
+      value={allBalances?.freeBalance.add(allBalances?.reservedBalance)}
     >
       {children}
     </FormatBalance>

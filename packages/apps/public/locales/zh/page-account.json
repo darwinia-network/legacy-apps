@@ -115,6 +115,7 @@
   "This account is recoverable, with the following friends:": "This account is recoverable, with the following friends:",
   "This password is used to encrypt your private key. It must be strong and unique! You will need it to sign transactions with this account. You can recover this account using this password together with the backup file (generated in the next step).": "这个秘密用来加密你的私钥. 必须健壮唯一! 你将会和你的账户一起用来签名交易. 你可以用你的密码和你的备份账户一起来恢复你账户 (下一步生成的).",
   "This will apply to any future use of this account as stored on this browser. Ensure that you securely store this new password and that it is strong and unique to the account.": "此帐户在浏览器中存储以供将来使用。 确保您安全地保存了新密码，该密码是该帐户的唯一密码.",
+  "Total": "总计",
   "Total Fines": "罚款",
   "Transfer": "转账",
   "Tx Hash": "交易哈希",

@@ -2,9 +2,9 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { DeriveAccountInfo } from '@polkadot/api-derive/types';
+import { DeriveAccountInfo, DeriveBalancesAll } from '@polkadot/api-derive/types';
 import ExternalsLinks from '@polkadot/apps-config/links';
-import { AddressSmall, Balance, BalanceKton, Button, Forget, Input, Menu, Popup } from '@polkadot/react-components-darwinia';
+import { AddressSmall, Balance, BalanceKton, Button, Forget, Input, Menu, Popup, Available, AvailableKton } from '@polkadot/react-components-darwinia';
 import { ActionStatus } from '@polkadot/react-components/Status/types';
 import { KTON_PROPERTIES, RING_PROPERTIES } from '@polkadot/react-darwinia';
 import { useApi, useCall, useToggle } from '@polkadot/react-hooks';
@@ -14,6 +14,9 @@ import keyring from '@polkadot/ui-keyring';
 import React, { useEffect, useState } from 'react';
 import store from 'store';
 import styled from 'styled-components';
+import BN from 'bn.js';
+import { BN_ZERO } from '@polkadot/util';
+
 import buttonChecked from './img/buttonChecked.svg';
 import Backup from './modals/Backup';
 import ChangePass from './modals/ChangePass';
@@ -34,9 +37,10 @@ interface Props {
   toggleFavorite: (address: string) => void;
   onToggleAccountChecked: (address: string) => void;
   isAccountChecked: boolean;
+  setBalance?: (address: string, value: BN[]) => void;
 }
 
-function Account ({ address, className, filter, isAccountChecked, isFavorite, onToggleAccountChecked, toggleFavorite }: Props): React.ReactElement<Props> | null {
+function Account ({ address, className, filter, isAccountChecked, isFavorite, onToggleAccountChecked, setBalance, toggleFavorite }: Props): React.ReactElement<Props> | null {
   const { t } = useTranslation();
   const api = useApi();
   const info = useCall<DeriveAccountInfo>(api.api.derive.accounts.info as any, [address]);
@@ -62,8 +66,20 @@ function Account ({ address, className, filter, isAccountChecked, isFavorite, on
   const [isTransferOpen, toggleTransfer] = useToggle();
   const extChain = ExternalsLinks.Subscan.chains[api.systemChain];
   const subscanDomain = ExternalsLinks.Subscan.createDomain(extChain);
+  const balancesAll = useCall<DeriveBalancesAll>(api.api.derive.balances.all, [address]);
 
   const _setTags = (tags: string[]): void => setTags(tags.sort());
+
+  useEffect((): void => {
+    if (balancesAll) {
+      setBalance && setBalance(address, [
+        balancesAll.freeBalance.add(balancesAll.reservedBalance),
+        balancesAll.freeBalanceKton.add(balancesAll.reservedBalanceKton),
+        balancesAll.availableBalance,
+        balancesAll.availableBalanceKton
+      ]);
+    }
+  }, [address, api, balancesAll, setBalance]);
 
   useEffect((): void => {
     const { identity, nickname } = info || {};
@@ -246,6 +262,8 @@ function Account ({ address, className, filter, isAccountChecked, isFavorite, on
         <Balance className='accountBox--all'
           label={`${RING_PROPERTIES.tokenSymbol}: `}
           params={address} />
+        <p className='avaliableBalance'><Available label={`${t('transferrable')}: `}
+          params={address} /></p>
 
       </td>
       <td className='middle'>
@@ -257,7 +275,8 @@ function Account ({ address, className, filter, isAccountChecked, isFavorite, on
         <BalanceKton className='accountBox--all'
           label={`${KTON_PROPERTIES.tokenSymbol}: `}
           params={address} />
-
+        <p className='avaliableBalance'><AvailableKton label={`${t('transferrable')}: `}
+          params={address} /></p>
       </td>
       <td className='number middle samewidth'>
         {isAccountChecked ? <Button
@@ -385,6 +404,14 @@ export default styled(Account)`
 
   .middle {
     padding: 1.07142rem 1.02857rem;
+    .accountBox--all {
+
+    }
+    .avaliableBalance {
+      margin-top: 5px;
+      color: #959595;
+      font-size: 12px;
+    }
   }
 
   .samewidth {
