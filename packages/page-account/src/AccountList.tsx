@@ -4,12 +4,15 @@
 
 import { ComponentProps as Props, ModalProps } from './types';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import keyring from '@polkadot/ui-keyring';
 import { useAccounts, useFavorites } from '@polkadot/react-hooks';
 import { Button, Table, Modal } from '@polkadot/react-components-darwinia';
 import { I18nProps } from '@polkadot/react-components/types';
+import BN from 'bn.js';
+import { BN_ZERO } from '@polkadot/util';
+import { FormatBalance } from '@polkadot/react-query';
 
 import CreateModal from './modals/Create';
 import ImportModal from './modals/Import';
@@ -17,6 +20,15 @@ import QrModal from './modals/Qr';
 import Account from './AccountListItem';
 import { useTranslation } from './translate';
 import noAccountImg from './img/noAccount.svg';
+import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
+
+interface Balances {
+  accounts: Record<string, BN[]>;
+  balanceTotal?: BN;
+  balanceKtonTotal?: BN;
+  availableBalanceTotal?: BN;
+  availableBalanceKtonTotal?: BN;
+}
 
 interface Props extends ModalProps, I18nProps {
   onToggleAccountChecked: (address: string) => void;
@@ -36,6 +48,7 @@ function AccountList ({ accountChecked, className, onClose, onStatusChange, onTo
   const [favorites, toggleFavorite] = useFavorites(STORE_FAVS);
   const [sortedAccounts, setSortedAccounts] = useState<SortedAccount[]>([]);
   const [filter, setFilter] = useState<string>('');
+  const [{ accounts, availableBalanceKtonTotal, availableBalanceTotal, balanceKtonTotal, balanceTotal }, setBalances] = useState<Balances>({ accounts: {} });
 
   useEffect((): void => {
     setSortedAccounts(
@@ -57,9 +70,28 @@ function AccountList ({ accountChecked, className, onClose, onStatusChange, onTo
     );
   }, [allAccounts, favorites]);
 
-  const _toggleCreate = (): void => setIsCreateOpen(!isCreateOpen);
-  const _toggleImport = (): void => setIsImportOpen(!isImportOpen);
-  const _toggleQr = (): void => setIsQrOpen(!isQrOpen);
+  const _setBalance = useCallback(
+    (account: string, balance: BN[]) => {
+      accounts[account] = balance;
+
+      if (sortedAccounts.length === Object.values(accounts).length) {
+        setBalances(({ accounts }: Balances): Balances => {
+          return {
+            accounts,
+            balanceTotal: Object.values(accounts).reduce((total: BN, value: BN[]) => total.add(value[0]), BN_ZERO),
+            balanceKtonTotal: Object.values(accounts).reduce((total: BN, value: BN[]) => total.add(value[1]), BN_ZERO),
+            availableBalanceTotal: Object.values(accounts).reduce((total: BN, value: BN[]) => total.add(value[2]), BN_ZERO),
+            availableBalanceKtonTotal: Object.values(accounts).reduce((total: BN, value: BN[]) => total.add(value[3]), BN_ZERO)
+          };
+        });
+      }
+    },
+    [accounts, sortedAccounts]
+  );
+
+  const _toggleCreate = useCallback((): void => setIsCreateOpen(!isCreateOpen), [isCreateOpen]);
+  const _toggleImport = useCallback((): void => setIsImportOpen(!isImportOpen), [isImportOpen]);
+  const _toggleQr = useCallback((): void => setIsQrOpen(!isQrOpen), [isQrOpen]);
 
   return (
     <Modal onCancel={onClose}>
@@ -122,9 +154,31 @@ function AccountList ({ accountChecked, className, onClose, onStatusChange, onTo
                       isFavorite={isFavorite}
                       key={address}
                       onToggleAccountChecked={onToggleAccountChecked}
+                      setBalance={_setBalance}
                       toggleFavorite={toggleFavorite}
                     />
                   ))}
+                  {sortedAccounts.length > 1 ? <tr className='total'>
+                  <td>{t('Total')}</td>
+                    <td className='middle'>
+                      <FormatBalance label={`${RING_PROPERTIES.tokenSymbol}: `}
+                        value={balanceTotal} />
+                      <p className='avaliableBalance'>
+                        <FormatBalance label={`${t('transferrable')}: `}
+                          value={availableBalanceTotal} />
+                      </p>
+                    </td>
+                    <td className='middle'>
+                      <FormatBalance label={`${KTON_PROPERTIES.tokenSymbol}: `}
+                        value={balanceKtonTotal}/>
+                      <p className='avaliableBalance'>
+                        <FormatBalance label={`${t('transferrable')}: `}
+                          value={availableBalanceKtonTotal}/>
+                      </p>
+                    </td>
+                    <td></td>
+
+                  </tr> : null}
                 </Table.Body>
               </Table>
             </>
@@ -238,4 +292,21 @@ export default styled(AccountList)`
         padding: 40px 0px;
       }
     }
+
+
+  .middle {
+    padding: 1.07142rem 1.02857rem;
+    .avaliableBalance {
+      margin-top: 5px;
+      color: #959595;
+      font-size: 12px;
+    }
+  }
+
+  .total {
+    td {
+      border-bottom: 0;
+      background: transparent !important;
+    }
+  }
 `;

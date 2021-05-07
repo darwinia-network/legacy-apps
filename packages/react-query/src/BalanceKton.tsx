@@ -25,7 +25,7 @@ export default function BalanceDisplay ({ children, className, label, params }: 
     <FormatBalance
       className={className}
       label={label}
-      value={allBalances?.freeBalanceKton}
+      value={allBalances?.freeBalanceKton.add(allBalances?.reservedBalanceKton)}
     >
       {children}
     </FormatBalance>

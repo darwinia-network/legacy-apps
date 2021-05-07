@@ -104,6 +104,7 @@
   "This account is recoverable, with the following friends:": "This account is recoverable, with the following friends:",
   "This password is used to encrypt your private key. It must be strong and unique! You will need it to sign transactions with this account. You can recover this account using this password together with the backup file (generated in the next step).": "This password is used to encrypt your private key. It must be strong and unique! You will need it to sign transactions with this account. You can recover this account using this password together with the backup file (generated in the next step).",
   "This will apply to any future use of this account as stored on this browser. Ensure that you securely store this new password and that it is strong and unique to the account.": "This will apply to any future use of this account as stored on this browser. Ensure that you securely store this new password and that it is strong and unique to the account.",
+  "Total": "Total",
   "Total Fines": "Total Fines",
   "Transfer": "Transfer",
   "Tx Hash": "Tx Hash",
