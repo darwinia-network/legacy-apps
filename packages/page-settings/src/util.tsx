@@ -2,6 +2,7 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import queryString from 'query-string';
 import { Option } from '@polkadot/apps-config/settings/types';
 import { SettingsStruct } from '@polkadot/ui-settings/types';
 
@@ -73,5 +74,16 @@ export function saveAndReload (settings: SettingsStruct): void {
 
   // HACK This is terribe, but since the API needs to re-connect, but since
   // the API does not yet handle re-connections properly, it is what it is
-  window.location.reload();
+  const { apiUrl } = settings;
+  const { hash } = location;
+  let options = { rpc: apiUrl };
+
+  if (hash.includes('?')) {
+    const [path, query] = hash.split('?');
+
+    window.location.hash = path;
+    options = { ...queryString.parse(decodeURIComponent(query)), ...options };
+  }
+
+  window.location.search = encodeURIComponent(queryString.stringify(options));
 }
