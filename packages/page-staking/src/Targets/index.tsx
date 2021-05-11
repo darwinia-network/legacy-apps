@@ -33,6 +33,10 @@ function sort (sortBy: TargetSortBy, sortFromMax: boolean, validators: Validator
       validators[a].isFavorite === validators[b].isFavorite
         ? 0
         : (validators[a].isFavorite ? -1 : 1)
+    ).sort((a, b) =>
+      validators[a].isValidator === validators[b].isValidator
+        ? 0
+        : (validators[a].isValidator ? -1 : 1)
     );
 }
 
@@ -45,7 +49,7 @@ function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nomi
 
   useEffect((): void => {
     validators && setSorted(
-      sort(sortBy, sortFromMax, validators)
+      sort(sortBy, sortFromMax, [...validators])
     );
   }, [sortBy, sortFromMax, validators]);
 
@@ -68,29 +72,29 @@ function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nomi
     [selected]
   );
 
-  const _selectProfitable = useCallback(
-    () => setSelected(
-      (validators || [])
-        .filter((_, index) => index < MAX_NOMINATIONS)
-        .map(({ key }) => key)
-    ),
-    [validators]
-  );
+  // const _selectProfitable = useCallback(
+  //   () => setSelected(
+  //     (validators || [])
+  //       .filter((_, index) => index < MAX_NOMINATIONS)
+  //       .map(({ key }) => key)
+  //   ),
+  //   [validators]
+  // );
 
   const labels = useMemo(
     (): Record<string, string> => ({
       rankBondOther: t('other stake'),
       rankBondOwn: t('own stake'),
       rankBondTotal: t('total stake'),
-      rankComm: t('commission'),
-      rankOverall: t('profit/era est')
+      rankComm: t('next commission'),
+      rankActiveComm: t('active commission')
     }),
     [t]
   );
 
   const header = useMemo(() => [
     [t('validators'), 'start', 4],
-    ...['rankComm', 'rankBondTotal', 'rankBondOwn', 'rankBondOther', 'rankOverall'].map((header) => [
+    ...['rankActiveComm', 'rankComm', 'rankBondTotal', 'rankBondOwn', 'rankBondOther'].map((header) => [
       <>{labels[header]}<Icon name={sortBy === header ? (sortFromMax ? 'chevron down' : 'chevron up') : 'minus'} /></>,
       sorted ? `isClickable ${sortBy === header && 'ui--highlight--border'} number` : 'number',
       1,
@@ -99,18 +103,18 @@ function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nomi
     []
   ], [_sort, labels, sortBy, sorted, sortFromMax, t]);
 
-  const filter = useMemo(() => (
-    sorted && (
-      <InputBalance
-        className='balanceInput'
-        help={t('The amount that will be used on a per-validator basis to calculate profits for that validator.')}
-        isFull
-        label={t('amount to use for estimation')}
-        onChange={setCalcWith}
-        value={calcWith}
-      />
-    )
-  ), [calcWith, setCalcWith, sorted, t]);
+  // const filter = useMemo(() => (
+  //   sorted && (
+  //     <InputBalance
+  //       className='balanceInput'
+  //       help={t('The amount that will be used on a per-validator basis to calculate profits for that validator.')}
+  //       isFull
+  //       label={t('amount to use for estimation')}
+  //       onChange={setCalcWith}
+  //       value={calcWith}
+  //     />
+  //   )
+  // ), [calcWith, setCalcWith, sorted, t]);
 
   return (
     <div className={className}>
@@ -121,12 +125,12 @@ function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nomi
         totalStaked={totalStaked}
       />
       <Button.Group>
-        <Button
+        {/* <Button
           icon='check'
           isDisabled={!validators?.length || !ownNominators?.length}
           label={t('Select best')}
           onClick={_selectProfitable}
-        />
+        /> */}
         <Nominate
           ownNominators={ownNominators}
           targets={selected}
@@ -134,18 +138,17 @@ function Targets ({ className, ownStashes, targets: { calcWith, lastReward, nomi
       </Button.Group>
       <Table
         empty={sorted && t('No active validators to check')}
-        filter={filter}
+        // filter={filter}
         header={header}
       >
-        {validators && sorted && (validators.length === sorted.length) && sorted.map((index): React.ReactNode =>
-          <Validator
-            canSelect={selected.length < MAX_NOMINATIONS}
-            info={validators[index]}
-            isSelected={selected.includes(validators[index].key)}
-            key={validators[index].key}
-            toggleFavorite={toggleFavorite}
-            toggleSelected={_toggleSelected}
-          />
+        {validators && sorted && (validators.length === sorted.length) && sorted.map((index): React.ReactNode => <Validator
+          canSelect={selected.length < MAX_NOMINATIONS}
+          info={validators[index]}
+          isSelected={selected.includes(validators[index].key)}
+          key={validators[index].key}
+          toggleFavorite={toggleFavorite}
+          toggleSelected={_toggleSelected}
+        />
         )}
       </Table>
     </div>

@@ -61,6 +61,7 @@ function PayButton ({ isAll, isDisabled, payout }: Props): React.ReactElement<Pr
       {payout && isVisible && (
         <Modal
           header={t('Payout all stakers')}
+          onCancel={togglePayout}
           size='large'
         >
           <Modal.Content>

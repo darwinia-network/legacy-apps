@@ -2,23 +2,22 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-import { KeyringAddress } from '@polkadot/ui-keyring/types';
+import { BlockNumber } from '@polkadot/types/interfaces';
 import { ComponentProps as Props } from './types';
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import keyring from '@polkadot/ui-keyring';
-import { getLedger, isLedger } from '@polkadot/react-api';
+import modulesDisabled from '@polkadot/apps-config/module';
 import { useAccounts, useFavorites, useToggle, useApi, useCall } from '@polkadot/react-hooks';
 import { useAccountChecked } from '@polkadot/react-hooks-darwinia';
 
-import { Button, Input, Table, Available, Balance } from '@polkadot/react-components';
+import { Button, Available, Balance } from '@polkadot/react-components';
 import { AvailableKton, BalanceKton } from '@polkadot/react-components-darwinia';
 
 import CreateModal from './modals/Create';
 import ImportModal from './modals/Import';
 import QrModal from './modals/Qr';
-// import Account from './Account';
 import { useTranslation } from './translate';
 import noAccountImg from './img/noAccount.svg';
 import AccountStatus from './AccountStatus';
@@ -27,29 +26,17 @@ import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import { RowTitle, TokenIcon } from '@polkadot/react-darwinia/components';
 import Transfer from './modals/Transfer';
 import TransferKton from './modals/TransferKton';
+import SwapAndMapping from './modals/SwapAndMapping';
 
 type SortedAccount = { address: string; isFavorite: boolean };
 
 const STORE_FAVS = 'accounts:favorites';
 const STORE_CHECKED = 'accounts:checked';
 
-// query the ledger for the address, adding it to the keyring
-async function queryLedger (): Promise<void> {
-  const ledger = getLedger();
-
-  try {
-    const { address } = await ledger.getAddress();
-
-    keyring.addHardware(address, 'ledger', { name: 'ledger' });
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 function Overview ({ className, onStatusChange }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const { api } = useApi();
-
+  const { api, isApiReady, systemChain } = useApi();
+  const blockNumber = useCall<BlockNumber>(isApiReady && api.derive.chain.bestNumber, []);
   const { allAccounts, hasAccounts } = useAccounts();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
@@ -57,10 +44,12 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
   const [favorites, toggleFavorite] = useFavorites(STORE_FAVS);
   const [accountChecked, toggleAccountChecked] = useAccountChecked(STORE_CHECKED);
   const [sortedAccounts, setSortedAccounts] = useState<SortedAccount[]>([]);
-  const [filter, setFilter] = useState<string>('');
   const [controllerId, setControllerId] = useState<string>('');
   const [isTransferOpen, toggleTransfer] = useToggle();
   const [isTransferKtonOpen, toggleKtonTransfer] = useToggle();
+  const [isMappingOpen, toggleMapping] = useToggle();
+  const [isTransferDisabled, setTransferDisabled] = useState(false);
+  const [isBondHistoryDisabled, setBondHistoryDisabled] = useState(false);
   const _accountChecked = accountChecked[0];
 
   useEffect((): void => {
@@ -84,7 +73,12 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
     api.derive.staking.estimateController(_accountChecked, (controllerId) => {
       setControllerId(controllerId?.toString());
     });
-  }, [allAccounts, favorites, _accountChecked]);
+  }, [allAccounts, favorites, _accountChecked, api.derive.staking]);
+
+  useEffect((): void => {
+    setTransferDisabled(modulesDisabled[systemChain]?.paths.transfer || false);
+    setBondHistoryDisabled(modulesDisabled[systemChain]?.paths.bondHistory || false);
+  }, [systemChain]);
 
   const _toggleCreate = (): void => setIsCreateOpen(!isCreateOpen);
   const _toggleImport = (): void => setIsImportOpen(!isImportOpen);
@@ -125,12 +119,13 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
                   <div className='p-amount'>
                     <Available params={_accountChecked} />
                   </div>
-                  <p className='p-btn'><Button
-                    isBasic={true}
-                    // isSecondary={true}
-                    label={t('Transfer')}
-                    onClick={(): void => { toggleTransfer(); }}
-                  /></p>
+                  {!isTransferDisabled ? <p className='p-btn'>
+                    <Button
+                      isBasic={true}
+                      label={t('Transfer')}
+                      onClick={(): void => { toggleTransfer(); }}
+                    />
+                  </p> : null}
                 </div>
               </div>
             </div>
@@ -152,26 +147,27 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
                   <p className='p-title'>{t('available')}:</p>
                   <div className='p-amount'><AvailableKton label={''}
                     params={_accountChecked} /></div>
-                  <p className='p-btn'><Button
+                  {!isTransferDisabled ? <p className='p-btn'><Button
                     isBasic={true}
                     // isSecondary={true}
                     label={t('Transfer')}
                     onClick={(): void => { toggleKtonTransfer(); }}
-                  /></p>
+                  /></p> : null}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <StakingList
+        {!isBondHistoryDisabled ? <StakingList
           account={_accountChecked}
           controllerId={controllerId}
-        />
+          currentBlock={blockNumber?.toNumber()}
+        /> : null}
       </>
         : <div className='noAccount'>
           <img src={noAccountImg} />
-          <p className='h1'>No account</p>
-          <p>Please add an account and open your Darwinia Network Surfing</p>
+          <p className='h1'>{t('No account')}</p>
+          <p>{t('Please add an account and open your Darwinia Network Surfing')}</p>
 
           <Button
             isPrimary
@@ -211,6 +207,13 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
           senderId={_accountChecked}
         />
       )}
+      {isMappingOpen && (
+        <SwapAndMapping
+          key='modal-transfer'
+          onClose={toggleMapping}
+          senderId={_accountChecked}
+        />
+      )}
       {isTransferKtonOpen && (
         <TransferKton
           key='modal-transfer'
@@ -218,85 +221,6 @@ function Overview ({ className, onStatusChange }: Props): React.ReactElement<Pro
           senderId={_accountChecked}
         />
       )}
-      {/* <Button.Group>
-        <Button
-          icon='add'
-          isPrimary
-          label={t('Add account')}
-          onClick={_toggleCreate}
-        />
-        <Button.Or />
-        <Button
-          icon='sync'
-          isPrimary
-          label={t('Restore JSON')}
-          onClick={_toggleImport}
-        />
-        <Button.Or />
-        <Button
-          icon='qrcode'
-          isPrimary
-          label={t('Add via Qr')}
-          onClick={_toggleQr}
-        />
-        {isLedger() && (
-          <>
-            <Button.Or />
-            <Button
-              icon='question'
-              isPrimary
-              label={t('Query Ledger')}
-              onClick={queryLedger}
-            />
-          </>
-        )}
-      </Button.Group> */}
-      {/* {hasAccounts
-        ? (
-          <>
-            <div className='filter--tags'>
-              <Input
-                autoFocus
-                isFull
-                label={t('filter by name or tags')}
-                onChange={setFilter}
-                value={filter}
-              />
-            </div>
-            <Table>
-              <Table.Body>
-                {sortedAccounts.map(({ address, isFavorite }): React.ReactNode => (
-                  <Account
-                    address={address}
-                    filter={filter}
-                    isFavorite={isFavorite}
-                    key={address}
-                    toggleFavorite={toggleFavorite}
-                  />
-                ))}
-              </Table.Body>
-            </Table>
-          </>
-        )
-        : <div className='noAccount'>
-          <img src={noAccountImg} />
-          <p className='h1'>No account</p>
-          <p>Please add an account and open your Darwinia Network Surfing</p>
-
-          <Button
-            isPrimary
-            label={t('Add account')}
-            onClick={_toggleCreate}
-          />
-
-          <Button
-            isPrimary
-            label={t('Restore JSON')}
-            onClick={_toggleImport}
-          />
-
-        </div>
-      } */}
     </div>
   );
 }
@@ -394,7 +318,7 @@ export default styled(Overview)`
 
         }
         button{
-          width: 110px;
+          min-width: 110px;
           padding: 8px 0px;
           font-weight: bold!important;
         }
@@ -423,7 +347,7 @@ export default styled(Overview)`
       .allvalueBox.kton {
         background:linear-gradient(270deg, #FE3876 0%,#7C30DD 70%, #3A30DD 100%);;
       }
-      
+
       .allvalueBox {
         display: flex;
         flex-direction: row;
@@ -446,7 +370,7 @@ export default styled(Overview)`
       }
 
       .info-bottom{
-        padding: 23px 25px 23px 58px;
+        padding: 23px 25px 23px 28px;
       }
 
       .column {
@@ -481,7 +405,7 @@ export default styled(Overview)`
         .allvalueBox {
           padding: 10px;
         }
-        
+
         .info-bottom {
           padding: 23px 10px;
         }
@@ -497,5 +421,5 @@ export default styled(Overview)`
         }
       }
     }
-    
+
 `;

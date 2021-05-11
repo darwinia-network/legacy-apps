@@ -4,21 +4,17 @@
 
 import { DeriveAccountInfo } from '@polkadot/api-derive/types';
 import { BareProps } from '@polkadot/react-api/types';
+import { useAccounts, useApi, useCall, useToggle } from '@polkadot/react-hooks';
+import { Option } from '@polkadot/types';
 import { AccountId, AccountIndex, Address, RegistrarInfo } from '@polkadot/types/interfaces';
-
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { useCall, useAccounts, useApi, useToggle } from '@polkadot/react-hooks';
-import { Option } from '@polkadot/types';
-import { SUBSCAN_URL_CRAB } from '@polkadot/react-darwinia';
-
-import { useTranslation } from './translate';
-import { getAddressName } from './util';
 import AccountNameJudgement from './AccountNameJudgement';
 import AddressMini from './AddressMini';
 import Badge from './Badge';
 import Icon from './Icon';
-import Button from './Button';
+import { useTranslation } from './translate';
+import { getAddressName } from './util';
 
 interface Props extends BareProps {
   children?: React.ReactNode;
@@ -74,22 +70,7 @@ function extractName (address: AccountId | string, accountIndex?: AccountIndex, 
   );
 }
 
-function renderLinkIcon (address) {
-  return (
-    <Button
-      className='icon-button'
-      icon='external alternate'
-      isPrimary
-      key='tosubscan'
-      onClick={() => {
-        window.open(`${SUBSCAN_URL_CRAB}/account/${address}`);
-      }}
-      size='mini'
-    />
-  );
-}
-
-function AccountName ({ children, className, defaultName, isLink, label, onClick, override, showAddress = true, style, toggle, value }: Props): React.ReactElement<Props> {
+function AccountName ({ children, className, defaultName, label, onClick, override, showAddress = true, style, toggle, value }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { allAccounts } = useAccounts();
@@ -229,7 +210,7 @@ function AccountName ({ children, className, defaultName, isLink, label, onClick
         }
         style={style}
       >
-        {label || ''}{override || name}{isLink && renderLinkIcon(address)}{children}
+        {label || ''}{override || name}{children}
       </div>
     </>
   );

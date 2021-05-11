@@ -4,7 +4,7 @@
 
 import { InjectedExtension } from '@polkadot/extension-inject/types';
 import { ChainType } from '@polkadot/types/interfaces';
-import { ChainProperties } from '@darwinia/typegen/interfaces';
+import { ChainProperties } from '@darwinia/types/interfaces';
 import { ApiProps, ApiState } from './types';
 
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -21,7 +21,8 @@ import { formatBalance, formatKtonBalance, isTestChain } from '@polkadot/util';
 import { setSS58Format } from '@polkadot/util-crypto';
 import addressDefaults from '@polkadot/util-crypto/address/defaults';
 import { setRingProperties, setKtonProperties } from '@polkadot/react-darwinia';
-import rpc from '@darwinia/typegen/interfaces/jsonrpc';
+import rpc from '@darwinia/types/interfaces/jsonrpc';
+import { getSpecTypes } from '@darwinia/types-known';
 import ApiContext from './ApiContext';
 import registry from './typeRegistry';
 
@@ -45,6 +46,8 @@ interface ChainData {
   systemChainType: ChainType;
   systemName: string;
   systemVersion: string;
+  specVersion: number;
+  specName: string;
 }
 
 // const injectedPromise = new Promise<InjectedExtension[]>((resolve): void => {
@@ -55,13 +58,14 @@ interface ChainData {
 
 const DEFAULT_DECIMALS = registry.createType('u32', 12);
 const DEFAULT_SS58 = registry.createType('u32', addressDefaults.prefix);
-const injectedPromise = web3Enable('polkadot-js/apps');
+
 let api: ApiPromise;
 
 export { api };
 
 async function retrieve (api: ApiPromise): Promise<ChainData> {
-  const [properties, systemChain, systemChainType, systemName, systemVersion, injectedAccounts] = await Promise.all([
+  const injectedPromise = web3Enable('polkadot-js/apps');
+  const [properties, systemChain, systemChainType, systemName, systemVersion, specVersion, specName, injectedAccounts] = await Promise.all([
     api.rpc.system.properties(),
     api.rpc.system.chain(),
     api.rpc.system.chainType
@@ -69,6 +73,8 @@ async function retrieve (api: ApiPromise): Promise<ChainData> {
       : Promise.resolve(registry.createType('ChainType', 'Live')),
     api.rpc.system.name(),
     api.rpc.system.version(),
+    api.runtimeVersion.specVersion.toNumber(),
+    api.runtimeVersion.specName.toString(),
     injectedPromise
       .then(() => web3Accounts())
       .then((accounts) => accounts.map(({ address, meta }): InjectedAccountExt => ({
@@ -91,23 +97,29 @@ async function retrieve (api: ApiPromise): Promise<ChainData> {
     systemChain: (systemChain || '<unknown>').toString(),
     systemChainType,
     systemName: systemName.toString(),
-    systemVersion: systemVersion.toString()
+    systemVersion: systemVersion.toString(),
+    specVersion,
+    specName
   };
 }
 
 async function loadOnReady (api: ApiPromise): Promise<ApiState> {
-  const { injectedAccounts, properties, systemChain, systemChainType, systemName, systemVersion } = await retrieve(api);
+  const { injectedAccounts, properties, specName, specVersion, systemChain, systemChainType, systemName, systemVersion } = await retrieve(api);
   const ss58Format = uiSettings.prefix === -1
     ? properties.ss58Format.unwrapOr(DEFAULT_SS58).toNumber()
     : uiSettings.prefix;
-  const tokenSymbol = properties.tokenSymbol.unwrapOr(undefined)?.toString();
-  const tokenDecimals = properties.tokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
-  const ktonTokenSymbol = properties.ktonTokenSymbol.unwrapOr(undefined)?.toString();
-  const ktonTokenDecimals = properties.ktonTokenDecimals.unwrapOr(DEFAULT_DECIMALS).toNumber();
+
+  const tokenSymbol = properties.tokenSymbol.unwrapOr([undefined])[0]?.toString();
+  const tokenDecimals = properties.tokenDecimals.unwrapOr([DEFAULT_DECIMALS])[0].toNumber();
+  const ktonTokenSymbol = properties.tokenSymbol.unwrapOr([undefined])[1]?.toString();
+  const ktonTokenDecimals = properties.tokenDecimals.unwrapOr([DEFAULT_DECIMALS])[1].toNumber();
 
   const isDevelopment = systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain);
 
   console.log(`chain: ${systemChain} (${systemChainType}), ${JSON.stringify(properties)}`);
+  console.log(`runtime: ${systemChain} | ${specName} | ${specVersion}`);
+  console.log('specTypes', getSpecTypes(registry, systemChain, specName, specVersion));
+  registry.register(getSpecTypes(registry, systemChain, specName, specVersion));
 
   // explicitly override the ss58Format as specified
   registry.setChainProperties(registry.createType('ChainProperties', { ...properties, ss58Format }));
@@ -182,16 +194,18 @@ function Api ({ children, url }: Props): React.ReactElement<Props> | null {
     api.on('connected', () => setIsApiConnected(true));
     api.on('disconnected', () => setIsApiConnected(false));
     api.on('ready', async (): Promise<void> => {
+      const injectedPromise = web3Enable('polkadot-js/apps');
+
+      injectedPromise
+        .then(setExtensions)
+        .catch((error) => console.error(error));
+
       try {
         setState(await loadOnReady(api));
       } catch (error) {
         console.error('Unable to load chain', error);
       }
     });
-
-    injectedPromise
-      .then(setExtensions)
-      .catch((error) => console.error(error));
 
     setIsApiInitialized(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps

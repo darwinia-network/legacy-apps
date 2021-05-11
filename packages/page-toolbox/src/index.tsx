@@ -8,11 +8,14 @@ import React, { useMemo } from 'react';
 import { Route, Switch } from 'react-router';
 import Tabs from '@polkadot/react-components/Tabs';
 import { useAccounts } from '@polkadot/react-hooks';
+import Vanity from '@polkadot/app-account/Vanity';
 
+import DvmAddress from './DvmAddress';
 import Hash from './Hash';
 import Rpc from './Rpc';
 import Sign from './Sign';
 import Verify from './Verify';
+import DvmWithdraw from './DvmWithdraw';
 import { useTranslation } from './translate';
 
 function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
@@ -35,6 +38,18 @@ function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
     {
       name: 'verify',
       text: t('Verify signature')
+    },
+    {
+      name: 'vanity',
+      text: t('Vanity')
+    },
+    {
+      name: 'dvmaddress',
+      text: t('DVM address')
+    },
+    {
+      name: 'dvmwithdraw',
+      text: t('DVM Withdraw')
     }
   ], [t]);
 
@@ -46,7 +61,7 @@ function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
           hidden={
             hasAccounts
               ? []
-              : ['sign', 'verify']
+              : ['sign', 'verify', 'dvmwithdraw']
           }
           items={items}
         />
@@ -55,6 +70,9 @@ function ToolboxApp ({ basePath }: Props): React.ReactElement<Props> {
         <Route path={`${basePath}/hash`}><Hash /></Route>
         <Route path={`${basePath}/sign`}><Sign /></Route>
         <Route path={`${basePath}/verify`}><Verify /></Route>
+        <Route path={`${basePath}/vanity`}><Vanity /></Route>
+        <Route path={`${basePath}/dvmaddress`}><DvmAddress /></Route>
+        <Route path={`${basePath}/dvmwithdraw`}><DvmWithdraw /></Route>
         <Route><Rpc /></Route>
       </Switch>
     </main>

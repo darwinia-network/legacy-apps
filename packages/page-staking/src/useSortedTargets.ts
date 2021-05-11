@@ -31,9 +31,11 @@ function mapIndex (mapBy: TargetSortBy): (info: ValidatorInfo, index: number) =>
 
 function sortValidators (list: ValidatorInfo[]): ValidatorInfo[] {
   return list
-    .filter((a) => a.bondTotal.gtn(0))
+    // .filter((a) => a.bondTotal.gtn(0))
     .sort((a, b) => b.commissionPer - a.commissionPer)
     .map(mapIndex('rankComm'))
+    .sort((a, b) => b.currentEraCommissionPer - a.currentEraCommissionPer)
+    .map(mapIndex('rankActiveComm'))
     .sort((a, b) => b.bondOther.cmp(a.bondOther))
     .map(mapIndex('rankBondOther'))
     .sort((a, b) => b.bondOwn.cmp(a.bondOwn))
@@ -63,12 +65,13 @@ function sortValidators (list: ValidatorInfo[]): ValidatorInfo[] {
     );
 }
 
-function extractInfo (allAccounts: string[], amount: BN = baseBalance(), electedInfo: DeriveStakingElected, favorites: string[], lastReward = new BN(1)): Partial<SortedTargets> {
+function extractInfo (allAccounts: string[], amount: BN = baseBalance(), electedInfo: DeriveStakingElected, waitingInfo: DeriveStakingElected, favorites: string[], lastReward = new BN(1)): Partial<SortedTargets> {
   const nominators: string[] = [];
   let totalStaked = new BN(0);
   const perValidatorReward = lastReward.divn(electedInfo.info.length);
+
   const validators = sortValidators(
-    electedInfo.info.map(({ accountId, exposure: _exposure, validatorPrefs }): ValidatorInfo => {
+    [...electedInfo.info, ...waitingInfo.info].map(({ accountId, exposure: _exposure, validatorPrefs }, index): ValidatorInfo => {
       const exposure = _exposure || {
         others: registry.createType('Vec<IndividualExposure>'),
         own: registry.createType('Compact<Balance>'),
@@ -106,15 +109,18 @@ function extractInfo (allAccounts: string[], amount: BN = baseBalance(), elected
         bondShare: 0,
         bondTotal,
         commissionPer: (((prefs as ValidatorPrefs).commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
+        currentEraCommissionPer: ((electedInfo.activeComminssions[index]?.commission?.unwrap() || new BN(0)).toNumber() / 10_000_000),
         isCommission: !!(prefs as ValidatorPrefs).commission,
         isFavorite: favorites.includes(key),
         isNominating,
+        isValidator: index < electedInfo.info.length,
         key,
         numNominators: exposure.others.length,
         rankBondOther: 0,
         rankBondOwn: 0,
         rankBondTotal: 0,
         rankComm: 0,
+        rankActiveComm: 0,
         rankOverall: 0,
         rankPayment: 0,
         rankReward: 0,
@@ -133,6 +139,7 @@ export default function useSortedTargets (): SortedTargets {
   const { allAccounts } = useAccounts();
   const [favorites, toggleFavorite] = useFavorites(STORE_FAVS_BASE);
   const electedInfo = useCall<DeriveStakingElected>(api.derive.staking.electedInfo, []);
+  const waitingInfo = useCall<DeriveStakingElected>(api.derive.staking.waitingInfo, []);
   const lastEra = useCall<BN>(api.derive.session.indexes, [], {
     transform: ({ activeEra }: DeriveSessionIndexes) => activeEra.gtn(0) ? activeEra.subn(1) : new BN(0)
   });
@@ -144,14 +151,14 @@ export default function useSortedTargets (): SortedTargets {
   const [state, setState] = useState<SortedTargets>({ setCalcWith, toggleFavorite });
 
   useEffect((): void => {
-    electedInfo && setState(({ calcWith, setCalcWith, toggleFavorite }) => ({
-      ...extractInfo(allAccounts, calcWithDebounce, electedInfo, favorites, lastReward),
+    electedInfo && waitingInfo && setState(({ calcWith, setCalcWith, toggleFavorite }) => ({
+      ...extractInfo(allAccounts, calcWithDebounce, electedInfo, waitingInfo, favorites, lastReward),
       calcWith,
       lastReward,
       setCalcWith,
       toggleFavorite
     }));
-  }, [allAccounts, calcWithDebounce, electedInfo, favorites, lastReward]);
+  }, [allAccounts, calcWithDebounce, electedInfo, waitingInfo, favorites, lastReward]);
 
   useEffect((): void => {
     calcWith && setState((state) => ({

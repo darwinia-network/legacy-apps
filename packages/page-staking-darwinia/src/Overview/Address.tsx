@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { AccountId, Balance, RewardPoint } from '@polkadot/types/interfaces';
-import { Power } from '@darwinia/typegen/interfaces';
+import { Power } from '@darwinia/types/interfaces';
 import { DeriveAccountInfo, DeriveStakingQuery, DeriveHeartbeatAuthor } from '@polkadot/api-derive/types';
 import { ValidatorFilter } from '../types';
 

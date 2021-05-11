@@ -20,6 +20,13 @@ export default function useAccountChecked (storageKeyBase: string): [string[], (
       )
     );
 
+  //  When the selected account is forgotten, the remaining account is selected by default
+  if (accountChecked.length > 0 && hasAccounts) {
+    if (!((hasAccounts ? allAccounts : []).includes(accountChecked[0]))) {
+      _toggleAccountChecked(allAccounts[0]);
+    }
+  }
+
   if (accountChecked.length === 0 && hasAccounts) {
     _toggleAccountChecked(allAccounts[0]);
   }

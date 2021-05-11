@@ -112,9 +112,10 @@ function CurrentList ({ hasQueries, isIntentions, next, setNominators, stakingOv
   }, [nominators]);
 
   const headerActive = useMemo(() => [
-    [t('intentions'), 'start', 3],
+    [t('intentions'), 'start', 2],
     [t('nominators'), 'start', 2],
-    [t('commission'), 'number', 1],
+    [t('commission'), 'number', 2],
+    [t('next commission')],
     [undefined, undefined, 3]
   ], [t]);
 
@@ -122,7 +123,8 @@ function CurrentList ({ hasQueries, isIntentions, next, setNominators, stakingOv
     [t('validators'), 'start', 3],
     [t('other stake')],
     [t('own stake')],
-    [t('commission')],
+    [t('active commission')],
+    [t('next commission')],
     [t('points')],
     [t('last #')],
     []

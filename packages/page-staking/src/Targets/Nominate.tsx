@@ -46,7 +46,7 @@ function Nominate ({ className, ownNominators, targets }: Props): React.ReactEle
     <>
       <Button
         icon='hand paper outline'
-        isDisabled={!filter.length || !targets.length}
+        isDisabled={!targets.length}
         label={t('Nominate selected')}
         onClick={toggleOpen}
       />
@@ -54,6 +54,7 @@ function Nominate ({ className, ownNominators, targets }: Props): React.ReactEle
         <Modal
           className={className}
           header={t('Nominate validators')}
+          onCancel={toggleOpen}
           size='large'
         >
           <Modal.Content>

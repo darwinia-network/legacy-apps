@@ -33,6 +33,7 @@ interface ValidatorInfoRank {
   rankBondOwn: number;
   rankBondTotal: number;
   rankComm: number;
+  rankActiveComm: number;
   rankOverall: number;
   rankPayment: number;
   rankReward: number;
@@ -45,9 +46,11 @@ export interface ValidatorInfo extends ValidatorInfoRank {
   bondShare: number;
   bondTotal: Balance;
   commissionPer: number;
+  currentEraCommissionPer: number;
   isCommission: boolean;
   isFavorite: boolean;
   isNominating: boolean;
+  isValidator: boolean;
   key: string;
   numNominators: number;
   rewardPayout: BN;
@@ -65,4 +68,5 @@ export interface SortedTargets {
   toggleFavorite: (accountId: string) => void;
   totalStaked?: BN;
   validators?: ValidatorInfo[];
+  waitings?: ValidatorInfo[];
 }

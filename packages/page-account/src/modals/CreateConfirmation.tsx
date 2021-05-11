@@ -18,7 +18,8 @@ export default function CreateConfirmation ({ address, name, onClose, onCommit }
   const { t } = useTranslation();
 
   return (
-    <Modal header={t('Important notice')}>
+    <Modal header={t('Important notice')}
+      onCancel={onClose}>
       <Modal.Content>
         <AddressRow
           defaultName={name}

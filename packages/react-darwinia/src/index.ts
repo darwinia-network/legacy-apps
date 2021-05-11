@@ -3,6 +3,7 @@ import { i18nT } from './types';
 import DARWINIA_CRAB_TYPES from './types_crab.json';
 
 const SUBSCAN_URL_CRAB = 'https://crab.subscan.io';
+const SUBSCAN_URL_DARWINIA = 'https://darwinia.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
 const INIT_VERSION = 'version-2020-05-0101';
 let KTON_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CKTON' };
@@ -22,13 +23,30 @@ const setKtonProperties = (properties) => {
   };
 };
 
-const instance = axios.create({
+const crabInstance = axios.create({
   baseURL: SUBSCAN_URL_CRAB,
-  // baseURL: 'http://localhost:8000',
   timeout: 30000
 });
 
-async function getBondList ({ address, locked = 0, page = 0, row = 10, status = 'bonded' }) {
+const darwiniaInstance = axios.create({
+  baseURL: SUBSCAN_URL_DARWINIA,
+  timeout: 30000
+});
+
+const pangolinInstance = axios.create({
+  baseURL: 'https://pangolin.subscan.io',
+  timeout: 30000,
+});
+
+export const instance = {
+  'Darwinia Crab': crabInstance,
+  'Darwinia CC1': darwiniaInstance,
+  'Darwinia Devnet': darwiniaInstance,
+  Darwinia: darwiniaInstance,
+  Pangolin: pangolinInstance,
+};
+
+async function getBondList (instance, { address, locked = 0, page = 0, row = 10, status = 'bonded' }) {
   if (status === 'map') {
     return await instance.post('/api/wallet/mapping_history', {
       row: row,
@@ -46,7 +64,11 @@ async function getBondList ({ address, locked = 0, page = 0, row = 10, status = 
   });
 }
 
-function getStakingHistory ({ address, page = 0, row = 10 }, callback) {
+function getStakingHistory (instance, { address, page = 0, row = 10 }, callback) {
+  if (!instance) {
+    return;
+  }
+
   instance.post('/api/scan/staking_history', {
     page: page,
     row: 10,
@@ -64,12 +86,21 @@ function getStakingHistory ({ address, page = 0, row = 10 }, callback) {
 }
 
 const lockLimitOptionsMaker = (t: i18nT): Array<object> => {
-  const month = [0, 3, 6, 12, 18, 24, 30, 36];
+  const month = [];
+
+  for (let i = 0; i <= 36; i++) {
+    month.push(i);
+  }
+
   const options: object[] = [];
 
   month.map((i) => {
     options.push({
-      text: i === 0 ? t('No fixed term') : `${i} ${t('Month')}`,
+      text: i === 0 ? t('No fixed term (Set a lock period will get additional {{KTON}} rewards)', {
+        replace: {
+          KTON: KTON_PROPERTIES.tokenSymbol
+        }
+      }) : `${i} ${t('Month')}`,
       value: i
     });
   });

@@ -7,11 +7,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@polkadot/types": [ "packages/types/src" ],
+      "@polkadot/types/*": [ "packages/types/src/*" ],
+      "@polkadot/metadata": [ "packages/metadata/src" ],
+      "@polkadot/metadata/*": [ "packages/metadata/src/*" ],
       "@polkadot/apps-config/*": [ "packages/apps-config/src/*" ],
       "@polkadot/apps-routing": [ "packages/apps-routing/src" ],
       "@polkadot/apps-routing/*": [ "packages/apps-routing/src/*" ],
-      "@polkadot/app-123code": [ "packages/page-123code/src" ],
-      "@polkadot/app-123code/*": [ "packages/page-123code/src/*" ],
       "@polkadot/app-account": [ "packages/page-account/src" ],
       "@polkadot/app-account/*": [ "packages/page-account/src/*" ],
       "@polkadot/app-accounts": [ "packages/page-accounts/src" ],
@@ -44,6 +46,8 @@
       "@polkadot/app-society/*": [ "packages/page-society/src/*" ],
       "@polkadot/app-staking": [ "packages/page-staking/src" ],
       "@polkadot/app-staking/*": [ "packages/page-staking/src/*" ],
+      "@polkadot/app-staking-darwinia": [ "packages/page-staking-darwinia/src" ],
+      "@polkadot/app-staking-darwinia/*": [ "packages/page-staking-darwinia/src/*" ],
       "@polkadot/app-storage": [ "packages/page-storage/src" ],
       "@polkadot/app-storage/*": [ "packages/page-storage/src/*" ],
       "@polkadot/app-sudo": [ "packages/page-sudo/src" ],
@@ -78,8 +82,8 @@
       "@polkadot/api-derive/*": ["packages/api-derive/src/*"],
       "@polkadot/util": ["packages/util/src"],
       "@polkadot/util/*": ["packages/util/src/*"],
-      "@polkadot/api/augment": ["node_modules/@darwinia/typegen/interfaces/augment-api.d.ts"],
-      "@polkadot/types/augment": ["node_modules/@darwinia/typegen/interfaces/augment-types.d.ts"]
+      "@polkadot/api/augment": ["node_modules/@darwinia/types/interfaces/augment-api.d.ts"],
+      "@polkadot/types/augment": ["node_modules/@darwinia/types/interfaces/augment-types.d.ts"]
     },
     "skipLibCheck": true,
     "typeRoots": [

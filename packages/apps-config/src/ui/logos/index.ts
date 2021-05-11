@@ -3,16 +3,13 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 // anything for a specific chain, most would probably fit into the node category (but allow for chain-specific)
-import chainKusama from './chains/kusama-128.gif';
+import chainDarwinia from './chains/darwinia.svg';
+import chainCrab from './chains/crab.svg';
+import chainDev from './chains/dev.svg';
+import chainPangolin from './chains/pangolin.svg';
 
 // defaults for the node type, assuming we don't have a specific chain, but rather match on the implementation
-import nodeCentrifuge from './nodes/centrifuge.png';
-import nodeEdgeware from './nodes/edgeware-circle.svg';
-import nodeNodle from './nodes/nodle.svg';
-import nodePolkadot from './nodes/polkadot-circle.svg';
-import nodePolkadotJs from './nodes/polkadot-js.svg';
 import nodeSubstrate from './nodes/substrate-hexagon.svg';
-import nodeCrab from './nodes/darwinia-white-logo.svg';
 
 // extensions
 import extensionPolkadotJs from './extensions/polkadot-js.svg';
@@ -21,27 +18,28 @@ import extensionPolkadotJs from './extensions/polkadot-js.svg';
 import emptyLogo from './empty.svg';
 
 // overrides based on the actual matched chain name
+// Alphabetical overrides based on the actual matched chain name
+// NOTE: This is as retrieved via system.chain RPC
 const chainLogos: Record<string, any> = [
-  ['Kusama', chainKusama], // new name after CC3
-  ['Kusama CC1', chainKusama],
-  ['Kusama CC2', chainKusama],
-  ['Kusama CC3', chainKusama]
+  ['darwinia cc1', chainDarwinia],
+  ['darwinia', chainDarwinia],
+  ['darwinia crab', chainCrab],
+  ['darwinia network', chainDarwinia],
+  ['Pangolin', chainPangolin]
 ].reduce((logos, [chain, logo]): Record<string, any> => ({
   ...logos,
   [chain.toLowerCase()]: logo
 }), {});
 
 // overrides based on the actual software node type (all '-' converted to ' ')
+// Alphabetical overrides based on the actual software node type
+// NOTE: This is as retrieved via system.name RPC
 const nodeLogos: Record<string, any> = [
-  ['centrifuge chain', nodeCentrifuge],
-  ['Edgeware Node', nodeEdgeware],
-  ['kulupu', nodeSubstrate],
   ['node-template', nodeSubstrate],
-  ['Nodle Chain Node', nodeNodle],
-  ['parity-polkadot', nodePolkadot],
-  ['polkadot-js', nodePolkadotJs],
   ['substrate-node', nodeSubstrate],
-  ['crab', nodeCrab]
+  ['darwinia crab', chainCrab],
+  ['darwinia', chainDarwinia],
+  ['pangolin', chainPangolin]
 ].reduce((logos, [node, logo]): Record<string, any> => ({
   ...logos,
   [node.toLowerCase().replace(/-/g, ' ')]: logo
@@ -49,16 +47,11 @@ const nodeLogos: Record<string, any> = [
 
 // overrides when we pass an explicit logo name
 const namedLogos: Record<string, any> = {
-  alexander: nodePolkadot,
-  centrifuge: nodeCentrifuge,
-  edgeware: nodeEdgeware,
-  empty: emptyLogo,
-  kusama: chainKusama,
-  nodle: nodeNodle,
-  polkadot: nodePolkadot,
+  empty: chainDev,
   substrate: nodeSubstrate,
-  westend: nodePolkadot,
-  crab: nodeCrab
+  crab: chainCrab,
+  darwinia: chainDarwinia,
+  pangolin: chainPangolin
 };
 
 // extension logos

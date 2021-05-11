@@ -4,16 +4,17 @@
 
 import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { DeriveBalancesAll, DeriveStakingAccount, DeriveStakingOverview as DerivedStakingOverview, DeriveHeartbeats as DerivedHeartbeats, DeriveStakingQuery as DerivedStakingQuery, DeriveStakerReward } from '@polkadot/api-derive/types';
-import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs } from '@polkadot/types/interfaces';
+import { AccountId, EraIndex, Exposure, StakingLedger, ValidatorPrefs, RewardDestination, Balance } from '@polkadot/types/interfaces';
 import { Codec, ITuple } from '@polkadot/types/types';
+import type { TFunction } from 'i18next';
 
-import React, { useCallback, useEffect, useState, useContext } from 'react';
+import React, { useCallback, useEffect, useState, useContext, useMemo } from 'react';
 import styled from 'styled-components';
-import { AddressInfo, AddressMini, AddressSmall, Button, Menu, Popup, TxButton, StatusContext } from '@polkadot/react-components';
+import { AddressSmall, Button, Menu, Popup, TxButton, StatusContext, ToggleGroup } from '@polkadot/react-components';
 import { Table } from '@polkadot/react-components-darwinia';
 import { useAccounts, useApi, useCall, useToggle, useOwnEraRewards } from '@polkadot/react-hooks';
 import { u8aConcat, u8aToHex, formatNumber } from '@polkadot/util';
-import { RowTitle, Box, ColorButton } from '@polkadot/react-darwinia/components';
+import { RowTitle, Box } from '@polkadot/react-darwinia/components';
 import Identity from '@polkadot/app-account/modals/Identity';
 import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
@@ -22,6 +23,8 @@ import { FormatBalance } from '@polkadot/react-query';
 
 import { useTranslation } from '../../translate';
 import BondExtra from './BondExtra';
+import DepositExtra from './DepositExtra';
+import Rebond from './Rebond';
 import InjectKeys from './InjectKeys';
 import Nominate from './Nominate';
 import SetControllerAccount from './SetControllerAccount';
@@ -35,6 +38,7 @@ import Earnings from './Earnings';
 import { PayoutValidator } from '../../Payouts/types';
 import useStakerPayouts from '../../Payouts/useStakerPayouts';
 import { IndividualExposure, Power, SpanRecord, SlashingSpans } from '@darwinia/typegen/interfaces';
+import { DestinationType } from '../NewStake';
 
 type ValidatorInfo = ITuple<[ValidatorPrefs, Codec]>;
 
@@ -50,9 +54,15 @@ interface Props {
   isInElection: boolean;
 }
 
+interface EraSelection {
+  value: number;
+  text: string;
+}
+
 interface StakeState {
   controllerId: string | null;
-  destination: number;
+  destination: DestinationType;
+  destAccount: string | null;
   exposure?: Exposure;
   hexSessionIdNext: string | null;
   hexSessionIdQueue: string | null;
@@ -68,6 +78,8 @@ interface StakeState {
 
 const payoutMaxAmount = 30;
 
+const DAY_SECS = new BN(1000 * 60 * 60 * 24);
+
 interface Available {
   validators?: PayoutValidator[];
 }
@@ -78,7 +90,40 @@ function toIdString(id?: AccountId | null): string | null {
     : null;
 }
 
-function getStakeState(allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DeriveStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
+function getOptions (api: ApiPromise, eraLength: BN | undefined, historyDepth: BN | undefined, t: TFunction): EraSelection[] {
+  if (eraLength && historyDepth) {
+    const blocksPerDay = DAY_SECS.div(api.consts.babe?.expectedBlockTime || api.consts.timestamp?.minimumPeriod.muln(2) || new BN(6000));
+    const maxBlocks = eraLength.mul(historyDepth);
+    const eraSelection: EraSelection[] = [];
+    let days = 2;
+
+    while (true) {
+      const dayBlocks = blocksPerDay.muln(days);
+
+      if (dayBlocks.gte(maxBlocks)) {
+        break;
+      }
+
+      eraSelection.push({
+        text: t<string>('{{days}} days', { replace: { days } }),
+        value: dayBlocks.div(eraLength).toNumber()
+      });
+
+      days = days * 3;
+    }
+
+    eraSelection.push({
+      text: t<string>('Max, {{eras}} eras', { replace: { eras: historyDepth.toNumber() } }),
+      value: historyDepth.toNumber()
+    });
+
+    return eraSelection;
+  }
+
+  return [{ text: '', value: 0 }];
+}
+
+function getStakeState (allAccounts: string[], allStashes: string[] | undefined, { controllerId: _controllerId, exposure, nextSessionIds, nominators, rewardDestination, sessionIds, stakingLedger, validatorPrefs }: DeriveStakingAccount, stashId: string, validateInfo: ValidatorInfo): StakeState {
   const isStashNominating = !!(nominators?.length);
   const isStashValidating = !(Array.isArray(validateInfo) ? validateInfo[1].isEmpty : validateInfo.isEmpty) || !!allStashes?.includes(stashId);
   const nextConcat = u8aConcat(...nextSessionIds.map((id): Uint8Array => id.toU8a()));
@@ -87,7 +132,8 @@ function getStakeState(allAccounts: string[], allStashes: string[] | undefined, 
 
   return {
     controllerId,
-    destination: rewardDestination?.toNumber() || 0,
+    destination: (rewardDestination?.isAccount ? 'Account' : rewardDestination?.toString() || 'Staked') as 'Staked',
+    destAccount: rewardDestination?.isAccount ? rewardDestination.asAccount.toString() : null,
     exposure,
     hexSessionIdNext: u8aToHex(nextConcat, 48),
     hexSessionIdQueue: u8aToHex(currConcat.length ? currConcat : nextConcat, 48),
@@ -196,12 +242,14 @@ function Account({ allStashes, className, isInElection, isOwnStash, next, onUpda
   const stakingAccount = useCall<DeriveStakingAccount>(api.derive.staking.account as any, [stashId]);
   const [[payoutEras, payoutTotal], setStakingRewards] = useState<[EraIndex[], BN]>([[], new BN(0)]);
   const stakingInfo = useCall<DerivedStakingQuery>(api.derive.staking.query as any, [stashId]);
-  const [{ controllerId, destination, hexSessionIdNext, hexSessionIdQueue, isLoading, isOwnController, isStashNominating, isStashValidating, nominees, sessionIds, stakingLedger, validatorPrefs }, setStakeState] = useState<StakeState>({ controllerId: null, destination: 0, hexSessionIdNext: null, hexSessionIdQueue: null, isLoading: true, isOwnController: false, isStashNominating: false, isStashValidating: false, stakingLedger: null, sessionIds: [] });
+  const [{ controllerId, destAccount, destination, hexSessionIdNext, hexSessionIdQueue, isLoading, isOwnController, isStashNominating, isStashValidating, nominees, sessionIds, stakingLedger, validatorPrefs }, setStakeState] = useState<StakeState>({ controllerId: null, destination: 'Staked', hexSessionIdNext: null, destAccount: '', hexSessionIdQueue: null, isLoading: true, isOwnController: false, isStashNominating: false, isStashValidating: false, stakingLedger: null, sessionIds: [] });
   const [activeNoms, setActiveNoms] = useState<string[]>([]);
   const inactiveNoms = useInactives(stashId, nominees);
   const stakingInfoMulti = useCall<DerivedStakingQuery[]>(api.derive.staking.queryMulti as any, [nominees || []]);
   const [nomsPower, setNomsPower] = useState<(IndividualExposure | null)[]>([]);
   const [isBondExtraOpen, toggleBondExtra] = useToggle();
+  const [isDepositExtraOpen, toggleDepositExtra] = useToggle();
+  const [isRebondOpen, toggleRebond] = useToggle();
   const [isInjectOpen, toggleInject] = useToggle();
   const [isNominateOpen, toggleNominate] = useToggle();
   const [isRewardDestinationOpen, toggleRewardDestination] = useToggle();
@@ -215,18 +263,26 @@ function Account({ allStashes, className, isInElection, isOwnStash, next, onUpda
   const [payoutsAmount, setPayoutsAmount] = useState<number>(0);
   const [{ validators }, setPayouts] = useState<Available>({});
   const stakerPayoutsAfter = useStakerPayouts();
-  const { allRewards: rewards } = useOwnEraRewards([stashId]);
   const isPayoutEmpty = !validators || (Array.isArray(validators) && validators.length === 0);
+  const [eraSelectionIndex, setEraSelectionIndex] = useState(0);
+  const eraLength = useCall<BN>(api.derive.session.eraLength);
+  const historyDepth = useCall<BN>(api.query.staking.historyDepth);
 
-  useEffect((): void => {
-    if (!isPayoutEmpty) {
-      const amount = validators?.reduce((total: number, validator: PayoutValidator) => {
-        return total + validator.eras.length;
-      }, 0);
+  const eraSelection = useMemo(
+    () => getOptions(api, eraLength, historyDepth, t),
+    [api, eraLength, historyDepth, t]
+  );
 
-      setPayoutsAmount(amount);
-    }
-  }, [validators]);
+  const { allRewards: rewards, isLoadingRewards } = useOwnEraRewards([stashId], eraSelection[eraSelectionIndex].value);
+
+  // useEffect((): void => {
+  //   if (!isPayoutEmpty) {
+  //     const amount = validators?.reduce((total: number, validator: PayoutValidator) => {
+  //       return total + validator.eras.length;
+  //     }, 0);
+  //     // setPayoutsAmount(amount);
+  //   }
+  // }, [validators]);
 
   useEffect((): void => {
     if (stakingInfoMulti) {
@@ -266,15 +322,31 @@ function Account({ allStashes, className, isInElection, isOwnStash, next, onUpda
 
   useEffect((): void => {
     if (nominees) {
-      setActiveNoms(nominees.filter((id): boolean => !inactiveNoms.includes(id)));
+      setActiveNoms(nominees.filter((id: string): boolean => !inactiveNoms.includes(id)));
     }
   }, [inactiveNoms, nominees]);
 
   useEffect((): void => {
+    let payoutsAmount = 0;
+
     rewards && setStakingRewards([
       rewards[stashId].map(({ era }): EraIndex => era),
-      rewards[stashId].reduce((result, { total }) => result.iadd(total), new BN(0))
+      rewards[stashId].reduce((result, { validators }) => {
+        const eraTotalList: Balance[] = Object.keys(validators).map((validatorId: string): Balance => {
+          payoutsAmount++;
+
+          return validators[validatorId].value;
+        });
+
+        const eraTotal = eraTotalList.reduce((total, item) => {
+          return total.iadd(item);
+        }, new BN(0));
+
+        return result.iadd(eraTotal);
+      }, new BN(0))
     ]);
+
+    setPayoutsAmount(payoutsAmount);
   }, [rewards, stashId]);
 
   useEffect((): void => {
@@ -300,7 +372,18 @@ function Account({ allStashes, className, isInElection, isOwnStash, next, onUpda
 
   return (
     <div className={className}>
-
+      <DepositExtra
+        controllerId={controllerId}
+        isOpen={isDepositExtraOpen}
+        onClose={toggleDepositExtra}
+        stashId={stashId}
+      />
+      <Rebond
+        controllerId={controllerId}
+        isOpen={isRebondOpen}
+        onClose={toggleRebond}
+        stashId={stashId}
+      />
       <BondExtra
         controllerId={controllerId}
         isOpen={isBondExtraOpen}
@@ -344,6 +427,7 @@ function Account({ allStashes, className, isInElection, isOwnStash, next, onUpda
       {isRewardDestinationOpen && controllerId && (
         <SetRewardDestination
           controllerId={controllerId}
+          defaultDestAccount={destAccount}
           defaultDestination={destination}
           onClose={toggleRewardDestination}
         />
@@ -480,6 +564,18 @@ function Account({ allStashes, className, isInElection, isOwnStash, next, onUpda
                           {t('Unbond funds')}
                         </Menu.Item>
                         <Menu.Item
+                          disabled={!isOwnController || isInElection}
+                          onClick={toggleDepositExtra}
+                        >
+                          {t('Deposit')}
+                        </Menu.Item>
+                        <Menu.Item
+                          disabled={isInElection}
+                          onClick={toggleRebond}
+                        >
+                          {t('Rebond funds')}
+                        </Menu.Item>
+                        <Menu.Item
                           disabled={isInElection}
                           onClick={toggleSetController}
                         >
@@ -536,12 +632,12 @@ function Account({ allStashes, className, isInElection, isOwnStash, next, onUpda
         }
       </Box>
 
-      <RowTitle title={t('Power Manager')} />
+      <RowTitle subTitle={t('POWER = your stake / total stake')}
+        title={t('Power Manager')}/>
       <Box>
         <PowerManage
           buttons={
             <div className='staking--PowerMange-buttons'>
-
               <Button
                 isBasic
                 isDisabled={isInElection}
@@ -564,13 +660,23 @@ function Account({ allStashes, className, isInElection, isOwnStash, next, onUpda
           stakingAccount={stakingAccount}
           stakingLedger={stakingLedger} />
       </Box>
-      <RowTitle title={t('Earnings')} />
+      <RowTitle title={t('Earnings')} >
+        {api.tx.staking.payoutStakers && (
+          <Button.Group className='staking--Earning-buttons'>
+            <ToggleGroup
+              onChange={setEraSelectionIndex}
+              options={eraSelection}
+              value={eraSelectionIndex}
+            />
+          </Button.Group>
+        )}
+      </RowTitle>
       <Box>
         <Earnings address={stashId}
-          destinationId={destination === 2 ? controllerId : stashId}
+          destinationId={destination === 'Controller' ? controllerId : stashId}
           doPayout={_doPayout}
           doPayoutIsDisabled={isPayoutEmpty || isInElection}
-          isLoading={!rewards}
+          isLoading={isLoadingRewards}
           payoutMaxAmount={payoutMaxAmount}
           payoutsAmount={payoutsAmount}
           unClaimedReward={payoutTotal}
@@ -606,7 +712,8 @@ function Account({ allStashes, className, isInElection, isOwnStash, next, onUpda
           //   />
           // </div>
           <div className='lastBox'>
-            <RowTitle title={t('Nominating')} />
+            <RowTitle title={t('Nominating')}
+            />
             <Box>
               <>
                 {nominators.length !== 0 && (
@@ -634,7 +741,8 @@ function Account({ allStashes, className, isInElection, isOwnStash, next, onUpda
         )
         : isStashNominating && (
           <div className='lastBox'>
-            <RowTitle title={t('Nominating')} />
+            <RowTitle subTitle={t('Your nomination will take effect in the next era. Before that, the POWER may be displayed as 0')}
+              title={t('Nominating')} />
             <Box>
               <>
                 {nominees.length !== 0 && (
@@ -740,7 +848,13 @@ export default styled(Account)`
     display: flex;
     align-items: center;
     flex: 1;
-    justify-content: flex-end;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+    button {
+      min-width: 130px;
+      margin-left: 0;
+    }
   }
 
   .staking--Noms-accountbox {
@@ -760,5 +874,9 @@ export default styled(Account)`
 
   .lastBox {
     margin-bottom: 50px;
+  }
+
+  .staking--Earning-buttons {
+    margin-top: 0;
   }
 `;

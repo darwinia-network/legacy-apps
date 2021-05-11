@@ -18,6 +18,7 @@ export { default as Chain } from './Chain';
 export { default as Elapsed } from './Elapsed';
 export { Events, EventsContext } from './Events';
 export { default as FormatBalance } from './FormatBalance';
+export { default as FormatKtonBalance } from './FormatKtonBalance';
 export { default as LockedVote } from './LockedVote';
 export { default as NodeName } from './NodeName';
 export { default as NodeVersion } from './NodeVersion';

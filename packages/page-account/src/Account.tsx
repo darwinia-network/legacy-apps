@@ -117,6 +117,7 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
       }
     }
   };
+
   const _saveTags = (): void => {
     toggleEditTags();
 
@@ -132,6 +133,7 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
       }
     }
   };
+
   const _onForget = (): void => {
     if (!address) {
       return;
@@ -151,6 +153,7 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
       status.message = error.message;
     }
   };
+
   const _onGenesisChange = (genesisHash: string | null): void => {
     const account = keyring.getPair(address);
 
@@ -158,6 +161,7 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
 
     setGenesisHash(genesisHash);
   };
+
   const _onFavorite = (): void => toggleFavorite(address);
 
   return (
@@ -211,12 +215,13 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
       </td>
       <td className='top'>
         <AddressSmall
+          onClickName={toggleEditName}
           overrideName={
             isEditingName
               ? (
                 <Input
-                  className='name--input'
                   autoFocus
+                  className='name--input'
                   defaultValue={accName}
                   onBlur={_saveName}
                   onChange={setAccName}
@@ -226,7 +231,6 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
               )
               : undefined
           }
-          onClickName={toggleEditName}
           toggle={isEditingName}
           value={address}
         />
@@ -247,9 +251,9 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
         {isForgetOpen && (
           <Forget
             address={address}
-            onForget={_onForget}
             key='modal-forget-account'
             onClose={toggleForget}
+            onForget={_onForget}
           />
         )}
         {isIdentityOpen && (
@@ -292,21 +296,24 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
         {isEditingTags
           ? (
             <InputTags
+              defaultValue={tags}
               onBlur={_saveTags}
               onChange={_setTags}
               onClose={_saveTags}
               openOnFocus
-              defaultValue={tags}
               searchInput={{ autoFocus: true }}
               value={tags}
               withLabel={false}
             />
           )
           : (
-            <div className='tags--toggle' onClick={toggleEditTags}>
+            <div className='tags--toggle'
+              onClick={toggleEditTags}>
               {tags.length
                 ? tags.map((tag): React.ReactNode => (
-                  <Label key={tag} size='tiny' color='grey'>{tag}</Label>
+                  <Label color='grey'
+                    key={tag}
+                    size='tiny'>{tag}</Label>
                 ))
                 : <label>{t('no tags')}</label>
               }
@@ -352,9 +359,9 @@ function Account ({ address, className, filter, isFavorite, toggleFavorite }: Pr
           }
         >
           <Menu
-            vertical
-            text
             onClick={toggleSettings}
+            text
+            vertical
           >
             <Menu.Item
               disabled={!api.api.tx.identity?.setIdentity}

@@ -17,7 +17,7 @@ import { InputBalanceBonded } from '@polkadot/react-components-darwinia';
 
 import { withApi, withMulti } from '@polkadot/react-api/hoc';
 import { currencyType, promiseMonth } from '@polkadot/react-darwinia/types';
-import { lockLimitOptionsMaker, KTON_PROPERTIES } from '@polkadot/react-darwinia';
+import { lockLimitOptionsMaker, RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
 import { PowerTelemetry } from '@polkadot/react-darwinia/components';
 import styled from 'styled-components';
 import { formatBalance, ringToKton } from '@polkadot/util';
@@ -25,8 +25,20 @@ import { formatBalance, ringToKton } from '@polkadot/util';
 import translate from '../translate';
 import detectUnsafe from '../unsafeChains';
 import InputValidateAmount from './Account/InputValidateAmount';
-import InputValidationController from './Account/InputValidationController';
-import { rewardDestinationOptions } from './constants';
+import { TFunction } from 'i18next';
+// import InputValidationController from './Account/InputValidationController';
+// import { rewardDestinationOptions } from './constants';
+
+function rewardDestinationOptions (t: TFunction): any {
+  return [
+    { text: t('Stash account (increase the amount at stake)'), value: 'Staked' },
+    { text: t('Stash account (do not increase the amount at stake)'), value: 'Stash' },
+    { text: t('Controller account'), value: 'Controller' },
+    { text: t('Account'), value: 'Account' }
+  ];
+}
+
+export type DestinationType = 'Staked' | 'Stash' | 'Controller' | 'Account';
 
 interface Props extends ApiProps, I18nProps, CalculateBalanceProps {
   onClose: () => void;
@@ -40,12 +52,14 @@ interface State {
   bondValue?: BN;
   controllerError: string | null;
   controllerId: string | null;
-  destination: number;
+  destAccount: string | null;
+  destination: DestinationType;
   extrinsic: SubmittableExtrinsic | null;
   stashId: string | null;
   currencyType: currencyType;
   promiseMonth: promiseMonth;
   accept: boolean;
+  isAccount: boolean;
 }
 
 const ZERO = new BN(0);
@@ -60,21 +74,24 @@ class NewStake extends TxComponent<Props, State> {
       amountError: null,
       controllerError: null,
       controllerId: null,
-      destination: 0,
+      destAccount: null,
+      destination: 'Staked',
       extrinsic: null,
       stashId: null,
       currencyType: 'ring',
       promiseMonth: 0,
-      accept: false
+      accept: false,
+      isAccount: false
     };
   }
 
   public render (): React.ReactNode {
     const { accountId, onClose, systemChain, t } = this.props;
-    const { accept, amountError, bondValue, controllerError, controllerId, currencyType, destination, extrinsic, promiseMonth, stashId } = this.state;
+    const { accept, amountError, bondValue, controllerError, controllerId, currencyType, destAccount, destination, extrinsic, isAccount, promiseMonth, stashId } = this.state;
     const hasValue = !!bondValue && bondValue.gtn(0);
     const isUnsafeChain = detectUnsafe(systemChain);
-    const canSubmit = (hasValue && (isUnsafeChain || (!controllerError && !!controllerId))) && (promiseMonth && currencyType === 'ring' ? accept : true);
+    const isDestAccount = !isAccount || ((isAccount) && destAccount);
+    const canSubmit = isDestAccount && (hasValue && (isUnsafeChain || (!controllerError && !!controllerId))) && (promiseMonth && currencyType === 'ring' ? accept : true);
 
     return (
       <Modal
@@ -126,6 +143,8 @@ class NewStake extends TxComponent<Props, State> {
             stashId={stashId}
             withMax={!isUnsafeChain}
           />
+          <WarnTipsWrapper>{t('Note: Please keep a little {{token}} as fee', { replace: { token: RING_PROPERTIES.tokenSymbol } })}</WarnTipsWrapper>
+
           <InputValidateAmount
             accountId={stashId}
             onError={this.onAmountError}
@@ -137,9 +156,17 @@ class NewStake extends TxComponent<Props, State> {
             help={t('The destination account for any payments as either a nominator or validator')}
             label={t('payment destination')}
             onChange={this.onChangeDestination}
-            options={rewardDestinationOptions}
+            options={rewardDestinationOptions(t)}
             value={destination}
           />
+          {isAccount && <InputAddress
+            className='medium'
+            help={t('An account that is to receive the rewards.')}
+            label={t('the payment account')}
+            onChange={this.onChangeDestAccount}
+            type='allPlus'
+            value={destAccount}
+          />}
           {currencyType === 'ring' ? <Dropdown
             className='medium'
             defaultValue={promiseMonth}
@@ -227,11 +254,11 @@ class NewStake extends TxComponent<Props, State> {
   private nextState (newState: Partial<State>): void {
     this.setState((prevState: State): State => {
       const { api } = this.props;
-      const { amountError = prevState.amountError, bondValue = prevState.bondValue, controllerError = prevState.controllerError, controllerId = prevState.controllerId, destination = prevState.destination, stashId = prevState.stashId, currencyType = prevState.currencyType, promiseMonth = prevState.promiseMonth, accept = prevState.accept } = newState;
+      const { amountError = prevState.amountError, bondValue = prevState.bondValue, destAccount = prevState.destAccount, controllerError = prevState.controllerError, controllerId = prevState.controllerId, destination = prevState.destination, stashId = prevState.stashId, currencyType = prevState.currencyType, promiseMonth = prevState.promiseMonth, accept = prevState.accept, isAccount = prevState.isAccount } = newState;
       // const typeKey = currencyType.charAt(0).toUpperCase() + currencyType.slice(1) + 'Balance';
       const typeKey = currencyType + 'balance';
       const extrinsic = (bondValue && controllerId)
-        ? api.tx.staking.bond(controllerId, { [typeKey]: bondValue }, destination, promiseMonth)
+        ? api.tx.staking.bond(controllerId, { [typeKey]: bondValue }, isAccount ? { Account: destAccount } : destination, promiseMonth)
         : null;
 
       return {
@@ -244,7 +271,9 @@ class NewStake extends TxComponent<Props, State> {
         stashId,
         currencyType,
         promiseMonth,
-        accept
+        accept,
+        isAccount,
+        destAccount
       };
     });
   }
@@ -257,8 +286,14 @@ class NewStake extends TxComponent<Props, State> {
     this.nextState({ controllerId });
   }
 
-  private onChangeDestination = (destination: number): void => {
-    this.nextState({ destination });
+  private onChangeDestination = (destination: DestinationType): void => {
+    const isAccount = destination === 'Account';
+
+    this.nextState({ destination, isAccount });
+  }
+
+  private onChangeDestAccount = (destAccount: string | null): void => {
+    this.nextState({ destAccount });
   }
 
   private onChangeStash = (stashId: string | null): void => {
@@ -274,6 +309,13 @@ class NewStake extends TxComponent<Props, State> {
   }
 }
 
+const WarnTipsWrapper = styled.div`
+  margin-left: 2rem;
+  color: #9F3A38;
+  margin-top: 5px;
+  margin-bottom: 10px;
+`;
+
 const KtonTipStyledWrapper = styled.div`
   display: flex;
   margin-top: -4px;
@@ -282,6 +324,7 @@ const KtonTipStyledWrapper = styled.div`
     flex: 0 0 15rem;
   }
   &>div{
+    width: 100%;
     border: 1px solid #DEDEDF;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
@@ -289,7 +332,7 @@ const KtonTipStyledWrapper = styled.div`
       color: #98959F;
       font-size: 12px;
     }
-    
+
     padding: 10px 20px;
     background: #FBFBFB;
   }

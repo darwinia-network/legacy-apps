@@ -17,6 +17,7 @@ import NetworkModal from '../modals/Network';
 import { useTranslation } from '../translate';
 import Item from './Item';
 import NodeInfo from './NodeInfo';
+import chainArrowIcon from '../img/chain-arrow.svg';
 
 interface Props {
   className?: string;
@@ -84,17 +85,13 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
         >
           <div className='apps--SideBar-Scroll'>
             <div
-              className='apps--SideBar-logo'
+              className='apps--SideBar-logo ui--logo-bg-color'
               onClick={_toggleModal('network')}
             >
               <ChainImg />
-              {/* <div className='info'>
-                <Chain className='chain' />
-                {runtimeVersion && (
-                  <div className='runtimeVersion'>{t('version {{version}}', { replace: { version: runtimeVersion.specVersion.toNumber() } })}</div>
-                )}
-                <BestNumber label='#' />
-              </div> */}
+              <img alt='select'
+                className='apps-SideBar-select'
+                src={chainArrowIcon}/>
             </div>
             {routing.map((route, index): React.ReactNode => (
               route
@@ -118,6 +115,16 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
                 )
             ))}
             <Menu.Divider hidden />
+            <Menu.Item className='apps--SideBar-Item'>
+              <a
+                className='apps--SideBar-Item-NavLink'
+                href='https://wormhole.darwinia.network/'
+                rel='noopener noreferrer'
+                target='_blank'
+              >
+                <Icon name='sitemap' /><span className='text'>{t('Wormhole')}</span>
+              </a>
+            </Menu.Item>
             <Menu.Item className='apps--SideBar-Item'>
               <a
                 className='apps--SideBar-Item-NavLink'
@@ -174,7 +181,7 @@ export default styled(SideBar)`
   z-index: 300;
 
   &.collapsed {
-    width: 4.2rem;
+    width: 5.5rem;
   }
 
   &.expanded {
@@ -240,10 +247,16 @@ export default styled(SideBar)`
       width: 100%;
       display: flex;
       justify-content: center;
-
+      flex-shrink: 0;
       img {
         height: 4.28571428571rem;
-        width: 3.55rem;
+        width: 4.28571428571rem;
+      }
+
+      .apps-SideBar-select {
+        width: 17px;
+        height: 17px;
+        margin-left: 18px;
       }
 
       > div.info {

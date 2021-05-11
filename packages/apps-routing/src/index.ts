@@ -8,7 +8,6 @@ import appSettings from '@polkadot/ui-settings';
 
 // When adding here, also ensure to add to Dummy.tsx
 
-import template from './123code';
 // import accounts from './accounts';
 import account from './account';
 import claims from './claims';
@@ -26,27 +25,34 @@ import settings from './settings';
 import society from './society';
 import staking from './staking';
 import stakingDarwinia from './staking-darwinia';
-import scan from './scan';
+// import scan from './scan';
 import storage from './storage';
 import sudo from './sudo';
 import techcomm from './techcomm';
 import toolbox from './toolbox';
 // import transfer from './transfer';
 import treasury from './treasury';
-import vanity from './vanity';
+// import vanity from './vanity';
 
 export default function create (t: (key: string, text: string, options: { ns: string }) => string): Routes {
   return appSettings.uiMode === 'light'
     ? [
+      account(t),
+      stakingDarwinia(t),
+      staking(t),
+      democracy(t),
+      council(t),
+      treasury(t),
+      techcomm(t),
+      parachains(t),
+      society(t),
+      contracts(t),
+      claims(t),
       // dashboard,
       // accounts(t),
-      account(t),
-      claims(t),
-      scan(t),
-      stakingDarwinia(t),
       // transfer(t),
       // genericAsset(t),
-      vanity(t),
+      // vanity(t),
       // null,
       // staking(t),
       // explorer(t),
@@ -59,15 +65,11 @@ export default function create (t: (key: string, text: string, options: { ns: st
     : [
       // dashboard(t),
       // accounts(t),
-      account(t),
-      claims(t),
-      scan(t),
-      stakingDarwinia(t),
+      // scan(t),
       // transfer(t),
-      vanity(t),
-      null,
-      genericAsset(t),
-      explorer(t),
+      // vanity(t),
+      account(t),
+      stakingDarwinia(t),
       staking(t),
       democracy(t),
       council(t),
@@ -76,6 +78,10 @@ export default function create (t: (key: string, text: string, options: { ns: st
       parachains(t),
       society(t),
       contracts(t),
+      claims(t),
+      null,
+      genericAsset(t),
+      explorer(t),
       storage(t),
       extrinsics(t),
       sudo(t),
@@ -84,7 +90,6 @@ export default function create (t: (key: string, text: string, options: { ns: st
       toolbox(t),
       js(t),
       // hidden
-      template(t),
       i18n(t)
     ];
 }

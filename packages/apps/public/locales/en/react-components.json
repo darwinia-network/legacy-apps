@@ -1,5 +1,6 @@
 {
   " ({{count}} waiting)": " ({{count}} waiting)",
+  "0.1x voting balance, no lockup period": "0.1x voting balance, no lockup period",
   "1 judgement": "1 judgement",
   "Aye, I approve": "Aye, I approve",
   "Call this message": "Call this message",
@@ -112,5 +113,6 @@
   "{{blocks}} blocks": "{{blocks}} blocks",
   "{{count}} judgements": "{{count}} judgements",
   "{{name}} ({{size}} bytes)": "{{name}} ({{size}} bytes)",
-  "{{value}}, {{remaining}} blocks left": "{{value}}, {{remaining}} blocks left"
+  "{{value}}, {{remaining}} blocks left": "{{value}}, {{remaining}} blocks left",
+  "{{value}}x voting balance, locked for {{lock}}x enactment ({{period}} days)": "{{value}}x voting balance, locked for {{lock}}x enactment ({{period}} days)"
 }

@@ -4,7 +4,7 @@
 
 import { DeriveReferendumExt } from '@polkadot/api-derive/types';
 
-import React, { useMemo } from 'react';
+import React, { useRef } from 'react';
 import { Table } from '@polkadot/react-components';
 
 import Referendum from './Referendum';
@@ -15,23 +15,25 @@ interface Props {
   referendums?: DeriveReferendumExt[];
 }
 
-function Referendums ({ className, referendums }: Props): React.ReactElement<Props> {
+function Referendums ({ className = '', referendums }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
 
-  const header = useMemo(() => [
+  const headerRef = useRef([
     [t('referenda'), 'start', 2],
-    [t('remaining')],
-    [t('activate')],
-    [t('aye')],
-    [t('nay')],
-    [undefined, undefined, 3]
-  ], [t]);
+    [t('remaining'), 'media--1200'],
+    [t('activate'), 'media--1400'],
+    [t('turnout'), 'media--1400'],
+    [undefined, 'badge'],
+    [t('votes'), 'expand'],
+    [undefined, undefined, 2],
+    [undefined, 'media--1000']
+  ]);
 
   return (
     <Table
       className={className}
-      empty={referendums && t('No active referendums')}
-      header={header}
+      empty={referendums && t<string>('No active referendums')}
+      header={headerRef.current}
     >
       {referendums?.map((referendum): React.ReactNode => (
         <Referendum

@@ -2,14 +2,14 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
+import { useDebounce } from '@polkadot/react-hooks';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useDebounce } from '@polkadot/react-hooks';
-
-import { useTranslation } from '../translate';
 import Input from '../Input';
+import { useTranslation } from '../translate';
 import Available from './Available';
 import Selected from './Selected';
+
 
 interface Props {
   available: string[];
@@ -20,6 +20,7 @@ interface Props {
   maxCount: number;
   onChange: (values: string[]) => void;
   valueLabel: React.ReactNode;
+  value?: string[];
 }
 
 // import { DragDropContext, Droppable, DraggableLocation, DroppableProvided, DropResult } from 'react-beautiful-dnd';
@@ -77,15 +78,22 @@ interface Props {
 
 // NOTE Drag code above, disabled since it has massive performance implications
 
-function InputAddressMulti ({ available, availableLabel, className, defaultValue, maxCount, onChange, valueLabel }: Props): React.ReactElement<Props> {
+function InputAddressMulti ({ available, availableLabel, className, defaultValue, maxCount, onChange, valueLabel, value }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const [_filter, setFilter] = useState<string>('');
   const [selected, setSelected] = useState<string[]>([]);
   const filter = useDebounce(_filter);
 
+  /**
+   * Default value only effective for the first rendering.
+   */
   useEffect((): void => {
-    defaultValue && setSelected(defaultValue);
-  }, [defaultValue]);
+    defaultValue && defaultValue.length && setSelected(defaultValue);
+  }, []);
+
+  useEffect(() => { 
+    value && value.length && setSelected(value);
+  }, [value]);
 
   useEffect((): void => {
     selected && onChange(selected);

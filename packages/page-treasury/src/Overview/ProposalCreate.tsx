@@ -35,6 +35,7 @@ function Propose ({ className }: Props): React.ReactElement<Props> | null {
         <Modal
           className={className}
           header={t('Submit treasury proposal')}
+          onCancel={toggleOpen}
           size='large'
         >
           <Modal.Content>

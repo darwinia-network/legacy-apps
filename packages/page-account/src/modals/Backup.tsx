@@ -42,6 +42,7 @@ export default function ({ address, onClose }: Props): React.ReactElement<Props>
     setBackupFailed(false);
     setPassword(value);
   };
+
   const _doBackup = (): void => {
     try {
       const addressKeyring = address && keyring.getPair(address);
@@ -52,6 +53,7 @@ export default function ({ address, onClose }: Props): React.ReactElement<Props>
     } catch (error) {
       setBackupFailed(true);
       console.error(error);
+
       return;
     }
 
@@ -69,8 +71,8 @@ export default function ({ address, onClose }: Props): React.ReactElement<Props>
         doBackup={_doBackup}
         isPassTouched={isPassTouched}
         isPassValid={isPassValid}
-        password={password}
         onChangePass={_onChangePass}
+        password={password}
       />
       <Modal.Actions onCancel={onClose}>
         <Button

@@ -10,11 +10,9 @@ import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import { Route, Switch } from 'react-router';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { HelpOverlay } from '@polkadot/react-components';
 import Tabs from '@polkadot/react-components/Tabs';
 import { useAccounts, useApi, useCall, useOwnStashInfos, useStashIds } from '@polkadot/react-hooks';
 
-import basicMd from './md/basic.md';
 // import Actions from './Actions';
 import Overview from './Overview';
 import Payouts from './Payouts';
@@ -62,12 +60,12 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
     //   name: 'actions',
     //   text: t('Account actions')
     // },
-    api.query.staking.activeEra
-      ? {
-        name: 'payout',
-        text: 'Payouts'
-      }
-      : null,
+    // api.query.staking.activeEra
+    //   ? {
+    //     name: 'payout',
+    //     text: 'Payouts'
+    //   }
+    //   : null,
     {
       name: 'targets',
       text: t('Targets')
@@ -101,7 +99,7 @@ function StakingApp ({ basePath, className }: Props): React.ReactElement<Props> 
 
   return (
     <main className={`staking--App ${className}`}>
-      <HelpOverlay md={basicMd} />
+      {/* <HelpOverlay md={basicMd} /> */}
       <header>
         <Tabs
           basePath={basePath}

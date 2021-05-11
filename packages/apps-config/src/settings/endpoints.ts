@@ -17,20 +17,25 @@ function createDev (t: (key: string, text: string, options: { ns: string }) => s
 function createLive (t: (key: string, text: string, options: { ns: string }) => string): Option[] {
   return [
     {
-      info: 'Crab Network',
+      info: 'darwinia',
+      text: t('rpc.darwinia', 'Darwinia Network (hosted by Darwinia)', { ns: 'apps-config' }),
+      value: 'wss://rpc.darwinia.network'
+    },
+    {
+      info: 'crab',
       text: t('rpc.crab.darwinia', 'Crab Network (hosted by Darwinia)', { ns: 'apps-config' }),
-      value: 'wss://crab.darwinia.network'
+      value: 'wss://crab-rpc.darwinia.network'
     }
-    // {
-    //   info: 'Darwinia Network',
-    //   text: t('rpc.kusama.w3f', 'Darwinia Network (hosted by Darwinia)', { ns: 'apps-config' }),
-    //   value: 'wss://crab.darwinia.network'
-    // }
   ];
 }
 
 function createTest (t: (key: string, text: string, options: { ns: string }) => string): Option[] {
   return [
+    {
+      info: 'pangolin',
+      text: t('rpc.pangolin.darwinia', 'Pangolin Test Network (hosted by Darwinia)', { ns: 'apps-config' }),
+      value: 'wss://pangolin-rpc.darwinia.network'
+    }
   ];
 }
 

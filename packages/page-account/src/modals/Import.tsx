@@ -38,7 +38,8 @@ class Import extends TxComponent<Props, State> {
     const { isFileValid, isPassValid } = this.state;
 
     return (
-      <Modal header={t('Add via backup file')}>
+      <Modal header={t('Add via backup file')}
+        onCancel={onClose}>
         {this.renderInput()}
         <Modal.Actions onCancel={onClose}>
           <Button

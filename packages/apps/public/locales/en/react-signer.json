@@ -13,6 +13,7 @@
   "Fees includes the transaction fee and the per-byte fee": "Fees includes the transaction fee and the per-byte fee",
   "Fees of {{fees}} will be applied to the submission": "Fees of {{fees}} will be applied to the submission",
   "Fees totalling {{fees}} will be applied to the submission": "Fees totalling {{fees}} will be applied to the submission",
+  "If you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the KTON reward.": "if you unlock it in advance within the lock limit, you will be charged a penalty of 3 times the KTON reward.",
   "Include an optional tip for faster processing": "Include an optional tip for faster processing",
   "Lifetime (# of blocks)": "Lifetime (# of blocks)",
   "Multisig approval with hash (not message with call)": "Multisig approval with hash (not message with call)",

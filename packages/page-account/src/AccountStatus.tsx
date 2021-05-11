@@ -3,25 +3,22 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { KeyringAddress } from '@polkadot/ui-keyring/types';
-import { ComponentProps } from './types';
 
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import keyring from '@polkadot/ui-keyring';
-import { getLedger, isLedger } from '@polkadot/react-api';
+import { getLedger } from '@polkadot/react-api';
+import modulesDisabled from '@polkadot/apps-config/module';
 import { useAccounts, useFavorites, useApi } from '@polkadot/react-hooks';
-import { Button, Input, Table, AddressRow } from '@polkadot/react-components';
+import { AddressRow, Button } from '@polkadot/react-components';
 import { ActionStatus } from '@polkadot/react-components/Status/types';
 
 import CreateModal from './modals/Create';
 import ImportModal from './modals/Import';
+import MainnetAddress from './modals/MainnetAddress';
 import QrModal from './modals/Qr';
-import Account from './Account';
-import Banner from './Banner';
 import AccountList from './AccountList';
 import { useTranslation } from './translate';
-import ChangeIcon from './img/changeIcon.svg';
-import SwitchIcon from './img/switchAccount.svg';
 
 interface Props {
   onStatusChange: (status: ActionStatus) => void;
@@ -46,6 +43,14 @@ async function queryLedger (): Promise<void> {
   }
 }
 
+function hackParseSystemChain (systemChain: string): string {
+  if (systemChain === 'Crab' || systemChain === 'crab') {
+    return 'Darwinia Crab';
+  }
+
+  return systemChain;
+}
+
 function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAccountChecked }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { allAccounts, hasAccounts } = useAccounts();
@@ -53,10 +58,11 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [isAccountListOpen, setIsAccountListOpen] = useState(false);
   const [isQrOpen, setIsQrOpen] = useState(false);
+  const [isMainnetAddressOpen, setIsMainnetAddressOpen] = useState(false);
   const [favorites, toggleFavorite] = useFavorites(STORE_FAVS);
   const [sortedAccounts, setSortedAccounts] = useState<SortedAccount[]>([]);
-  const [filter, setFilter] = useState<string>('');
-  const { systemChain } = useApi();
+  const { systemChain, systemName } = useApi();
+  const [isConvertDawiniaAddressDisabled, setConvertDawiniaAddressDisabled] = useState(false);
 
   useEffect((): void => {
     setSortedAccounts(
@@ -78,10 +84,15 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
     );
   }, [allAccounts, favorites]);
 
+  useEffect((): void => {
+    setConvertDawiniaAddressDisabled(modulesDisabled[systemChain]?.paths.convertDarwiniaAddress || false);
+  }, [systemChain]);
+
   const _toggleCreate = (): void => setIsCreateOpen(!isCreateOpen);
   const _toggleImport = (): void => setIsImportOpen(!isImportOpen);
   const _toggleAccountList = (): void => setIsAccountListOpen(!isAccountListOpen);
   const _toggleQr = (): void => setIsQrOpen(!isQrOpen);
+  const _toggleMainnetAddress = (): void => setIsMainnetAddressOpen(!isMainnetAddressOpen);
 
   return (
     <div className={className}>
@@ -112,13 +123,21 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
           onStatusChange={onStatusChange}
         />
       )}
+      {isMainnetAddressOpen && (
+        <MainnetAddress
+          onClose={_toggleMainnetAddress}
+          senderId={accountChecked}
+          onStatusChange={onStatusChange}
+        />
+      )}
       {hasAccounts
         ? (
           <StyledWrapper>
             <div className='ui--AccountStatus-Box'>
               <div className='ui--AccountStatus-Network'>
-                <span>•</span><span>{systemChain} {t('Network')}</span>
+                <span>{hackParseSystemChain(systemChain)} {t('Network')}</span>
               </div>
+
               <AddressRow
                 className='ui--AccountStatus-Address'
                 isEditable={true}
@@ -128,9 +147,18 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
               // withTags
               >
               </AddressRow>
-              <div><img className='switchBtn'
+              {/* {!isConvertDawiniaAddressDisabled ? <Button
+                className='ui--AccountStatus-Convert'
+                isBasic={true}
+                label={t('Convert to Darwinia account')}
+                onClick={_toggleMainnetAddress}
+              /> : null} */}
+              <Button
+                className='ui--AccountStatus-ChangeAccount'
+                isBasic={true}
+                label={t('Change account')}
                 onClick={_toggleAccountList}
-                src={SwitchIcon} /></div>
+              />
             </div>
           </StyledWrapper>
         )
@@ -143,10 +171,21 @@ function AccountStatus ({ accountChecked, className, onStatusChange, onToggleAcc
 const StyledWrapper = styled.div`
   background: #fff;
   padding: 4px 0 0px 2rem;
+  min-height: 61px;
   margin: 0 -2rem;
   border-bottom: 1px solid rgba(237,237,237,1);
 
+  .ui--AccountStatus-Convert {
+    margin-right: 10px;
+  }
+
+  .ui--AccountStatus-ChangeAccount {
+    margin-right: 30px;
+  }
+
   @media (max-width: 767px) {
+    min-height: 44px;
+    display: flex;
     padding: 0 0.5rem;
     margin: 0 0;
     .ui--AccountStatus-Address{
@@ -162,15 +201,12 @@ const StyledWrapper = styled.div`
 
   .ui--AccountStatus-Network{
     color: #8231D8;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     flex: 1;
     span{
       margin-right: .5rem;
     }
-  }
-  button{
-    background-color: transparent!important;
   }
   .accounts--Account-buttons{
     padding: 40px;

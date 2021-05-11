@@ -3,14 +3,14 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { DeriveStakingOverview } from '@polkadot/api-derive/types';
-
+import { InputAddress, InputAddressMulti, Modal, TxButton } from '@polkadot/react-components';
+import { useFavorites } from '@polkadot/react-hooks';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { InputAddressMulti, InputAddress, Modal, TxButton } from '@polkadot/react-components';
-import { useFavorites } from '@polkadot/react-hooks';
-
 import { STORE_FAVS_BASE } from '../../constants';
 import { useTranslation } from '../../translate';
+
+
 
 interface Props {
   className?: string;
@@ -84,7 +84,8 @@ function Nominate ({ className, controllerId, nominees, onClose, next, stakingOv
           label={t('filter candidates')}
           maxCount={MAX_NOMINEES}
           onChange={setSelection}
-          value={selection || []}
+          // Theoretically, should use defaultValue here.
+          value={selection || []} // 
         />
       </Modal.Content>
       <Modal.Actions onCancel={onClose}>

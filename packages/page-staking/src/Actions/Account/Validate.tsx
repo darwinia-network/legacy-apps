@@ -20,10 +20,10 @@ const ZERO = new BN(0);
 
 function Validate ({ controllerId, onClose, stashId }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
-  const [prefs, setPrefs] = useState({ commission: ZERO });
+  const [prefs, setPrefs] = useState({ commission: ZERO, blocked: false });
 
   const _setCommission = useCallback(
-    (commission?: BN) => setPrefs({ commission: (commission || ZERO).mul(COMM_MUL) }),
+    (commission?: BN) => setPrefs({ commission: (commission || ZERO).mul(COMM_MUL), blocked: false }),
     []
   );
 

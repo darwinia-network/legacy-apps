@@ -11,7 +11,7 @@
   "Decimals": "Decimals",
   "Decimals decides the smallest unit of the token, which is 1/10^decimals": "Decimals decides the smallest unit of the token, which is 1/10^decimals",
   "Default browser language (auto-detect)": "默认浏览器语言 (自动检测)",
-  "Default for the connected node": "节点默认",
+  "Default for the connected node": "默认节点",
   "Developer": "开发者",
   "Developer features": "开发者模式",
   "Extensions": "Extensions",

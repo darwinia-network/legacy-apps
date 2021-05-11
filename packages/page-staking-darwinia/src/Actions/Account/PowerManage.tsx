@@ -2,20 +2,18 @@
 // This software may be modified and distributed under the terms
 // of the Apache-2.0 license. See the LICENSE file for details.
 
-// import { DerivedBalances, DerivedStaking } from '@polkadot/api-derive/types';
 import { BareProps, I18nProps } from '@polkadot/react-components/types';
 
 import BN from 'bn.js';
 import React from 'react';
 import styled from 'styled-components';
-// import { formatBalance, formatNumber, formatKtonBalance } from '@polkadot/util';
 import { withMulti } from '@polkadot/react-api/hoc';
 
 import translate from '../../translate';
-// import { Option, createType } from '@polkadot/types';
-import { StakingLedgerT as StakingLedger } from '@darwinia/typegen/interfaces';
+import { StakingLedgerT as StakingLedger } from '@darwinia/types/interfaces';
 import powerbg from '../../Assets/power-bg.svg';
 import { Power, TokenIcon } from '@polkadot/react-darwinia/components';
+import { LabelHelp } from '@polkadot/react-components';
 import { AvailableKton, Available, Balance, BalanceKton } from '@polkadot/react-components-darwinia';
 import { DeriveStakingAccount } from '@polkadot/api-derive/types';
 import { RING_PROPERTIES, KTON_PROPERTIES } from '@polkadot/react-darwinia';
@@ -96,6 +94,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
 
   private renderBalances (): React.ReactElement {
     const { buttons, checkedAccount, stakingAccount, stakingLedger, t } = this.props;
+
     // const { staking_info, t, withBalance = true, kton_locks, balances_locks, buttons, isReadyStaking = false, staking_ledger, balances_all, kton_all, stashId } = this.props;
     // const balanceDisplay = withBalance === true
     //   ? { available: true, bonded: true, free: true, redeemable: true, unlocking: true }
@@ -147,6 +146,12 @@ class AddressInfoStaking extends React.PureComponent<Props> {
       return null;
     }
 
+    let normalBondedRing = stakingLedger.activeRing.toBn().sub(stakingLedger.activeDepositRing.toBn());
+
+    if (normalBondedRing.ltn(0)) {
+      normalBondedRing = new BN(0);
+    }
+
     return (
       <div className='token-box'>
         <div className='nominate-balance-box'>
@@ -162,14 +167,30 @@ class AddressInfoStaking extends React.PureComponent<Props> {
             </div>
             <div>
               <label>{t('bonded')}</label>
-              <FormatBalance value={stakingLedger.activeRing} />
+              <FormatBalance value={normalBondedRing} />
+            </div>
+            <div>
+              <label>{t('deposit')}</label>
+              <FormatBalance value={stakingLedger.activeDepositRing} />
             </div>
             <div>
               <label>{t('unbonding')}</label>
               <FormatBalance value={stakingAccount.unlockingTotalValue} />
             </div>
           </div>
-
+          <LabelHelp
+            className='token-label-help'
+            help={
+              <div style={{ textAlign: 'left' }}>
+                <p>{t('available: The amount of tokens that are able to transfer, bond and transfer.')}</p>
+                <p>{t('bonded: The amount of tokens that cannot operated directly but does not have lock limit, which is used to gain voting power and can be taken out at any time (with a 14-day unbonding period) or add lock limit.')}</p>
+                <p>{t('locked: The amount of tokens that cannot be operated and has a lock limit, which is used to gain voting power and earn additional {{KTON}} rewards.', { replace: {
+                  KTON: KTON_PROPERTIES.tokenSymbol
+                } })}</p>
+                <p>{t('unbonding: The amount of tokens that has been unlocked but in the unbonding period.')}</p>
+              </div>
+            }
+          />
         </div>
 
         <div className='nominate-balance-box'>
@@ -183,6 +204,16 @@ class AddressInfoStaking extends React.PureComponent<Props> {
             <div><label>{t('bonded')}</label><FormatBalance value={stakingLedger.activeKton} /></div>
             <div><label>{t('unbonding')}</label><FormatBalance value={stakingAccount.unlockingKtonTotalValue} /></div>
           </div>
+          <LabelHelp
+            className='token-label-help'
+            help={
+              <div style={{ textAlign: 'left' }}>
+                <p>{t('available: The amount of tokens that are able to transfer, bond and transfer.')}</p>
+                <p>{t('bonded: The amount of tokens that cannot operated directly but does not have lock limit, which is used to gain voting power and can be taken out at any time (with a 14-day unbonding period) or add lock limit.')}</p>
+                <p>{t('unbonding: The amount of tokens that has been unlocked but in the unbonding period.')}</p>
+              </div>
+            }
+          />
         </div>
         {buttons}
       </div>
@@ -202,7 +233,7 @@ export default withMulti(
     .PowerManage--box{
       display: flex;
       flex: 1;
-      padding: 15px;
+      padding: 15px 20px;
       flex-wrap: wrap;
       .power-box{
         display: flex;
@@ -231,7 +262,8 @@ export default withMulti(
 
     .token-box {
       display: flex;
-      flex: 1;s
+      flex-wrap: wrap;
+      flex: 1;
       .balance-box{
         flex-basis: 205px;
         display: flex;
@@ -275,12 +307,13 @@ export default withMulti(
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        padding: 10px 30px;
+        padding: 6px 24px;
         background: #FBFBFB;
+        position: relative;
         .box-left{
           text-align: center;
           margin-top: 5px;
-          
+
           img{
             width: 40px;
           }
@@ -298,7 +331,7 @@ export default withMulti(
           &>div {
             display: flex;
             flex-direction: row;
-            margin-bottom: 0.9rem;
+            margin-bottom: 4px;
             label{
               color: #98959F;
               font-size: 12px;
@@ -311,7 +344,7 @@ export default withMulti(
               font-size: 16px;
               font-weight: bold;
               span {
-                font-size: 16px;
+                font-size: 15px;
                 font-weight: bold;
               }
             }
@@ -344,6 +377,12 @@ export default withMulti(
         i.info.circle.icon {
           margin-left: .3em;
         }
+      }
+
+      .token-label-help {
+        position: absolute;
+        top: 4px;
+        right: 4px;
       }
     }
 

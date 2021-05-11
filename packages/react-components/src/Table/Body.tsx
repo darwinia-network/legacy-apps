@@ -143,7 +143,11 @@ export default React.memo(styled(Body)`
 
   tr {
     &.isHighlight td {
-      background: #ffffed;
+      background: #ffffed !important;
+    }
+
+    &.isWaiting td {
+      background: #f2f2f2;
     }
 
     &:last-child td {

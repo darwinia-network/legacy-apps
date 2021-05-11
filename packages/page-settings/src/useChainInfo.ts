@@ -5,7 +5,7 @@
 import { ChainInfo } from './types';
 
 import { getSystemChainColor, getSystemIcon } from '@polkadot/apps-config/ui';
-import { getSpecTypes } from '@polkadot/types-known';
+import { getSpecTypes } from '@darwinia/types-known';
 import { registry } from '@polkadot/react-api';
 import { useApi } from '@polkadot/react-hooks';
 
@@ -24,8 +24,8 @@ export default function useChainInfo (): ChainInfo | null {
       metaCalls: Buffer.from(api.runtimeMetadata.asCallsOnly.toU8a()).toString('base64'),
       specVersion: api.runtimeVersion.specVersion.toNumber(),
       ss58Format: api.registry.chainSS58 || 42,
-      tokenDecimals: api.registry.chainDecimals || 12,
-      tokenSymbol: api.registry.chainToken || 'Unit',
+      tokenDecimals: api.registry.chainDecimals[0] || 9,
+      tokenSymbol: api.registry.chainToken[0] || 'Unit',
       types: getSpecTypes(registry, systemChain, api.runtimeVersion.specName, api.runtimeVersion.specVersion)
     });
   }, [api, isApiReady, systemChain, systemName]);

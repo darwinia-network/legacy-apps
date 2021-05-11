@@ -6,7 +6,7 @@
 import { AccountId, AccountIndex, Address, Balance, Index } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types/types';
 import { DeriveBalancesAccount as DerivedBalancesAccount } from '../types';
-import { AccountData, AccountInfo } from '@darwinia/typegen/interfaces';
+import { AccountData, AccountInfo } from '@darwinia/types/interfaces';
 import { combineLatest, of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { ApiInterfaceRx } from '@polkadot/api/types';

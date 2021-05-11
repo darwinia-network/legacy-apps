@@ -20,7 +20,7 @@ interface Props {
   toggleSelected: (accountId: string) => void;
 }
 
-function Validator ({ canSelect, info: { accountId, bondOther, bondOwn, bondTotal, commissionPer, isCommission, isFavorite, isNominating, key, numNominators, rankOverall, rewardPayout, validatorPayment }, isSelected, toggleFavorite, toggleSelected }: Props): React.ReactElement<Props> {
+function Validator ({ canSelect, info: { accountId, bondOther, bondOwn, bondTotal, commissionPer, currentEraCommissionPer, isCommission, isFavorite, isNominating, isValidator, key, numNominators, rankOverall, rewardPayout, validatorPayment }, isSelected, toggleFavorite, toggleSelected }: Props): React.ReactElement<Props> {
   const _onQueryStats = useCallback(
     (): void => {
       window.location.hash = `/staking/query/${key}`;
@@ -34,7 +34,7 @@ function Validator ({ canSelect, info: { accountId, bondOther, bondOwn, bondTota
   );
 
   return (
-    <tr className={`${isNominating && 'isHighlight'}`}>
+    <tr className={`${isNominating && 'isHighlight'} ${!isValidator && 'isWaiting'}`}>
       <Favorite
         address={key}
         isFavorite={isFavorite}
@@ -50,6 +50,13 @@ function Validator ({ canSelect, info: { accountId, bondOther, bondOwn, bondTota
       <td className='number'>
         {
           isCommission
+            ? `${currentEraCommissionPer.toFixed(2)}%`
+            : <FormatBalance value={validatorPayment} />
+        }
+      </td>
+      <td className='number'>
+        {
+          isCommission
             ? `${commissionPer.toFixed(2)}%`
             : <FormatBalance value={validatorPayment} />
         }
@@ -59,7 +66,7 @@ function Validator ({ canSelect, info: { accountId, bondOther, bondOwn, bondTota
       <td className='number together'>
         {formatNumber(bondOther)}{` (${numNominators})`}
       </td>
-      <td className='number together'><FormatBalance value={rewardPayout} /></td>
+      {/* <td className='number together'><FormatBalance value={rewardPayout} /></td> */}
       <td>
         {(canSelect || isSelected) && (
           <Toggle

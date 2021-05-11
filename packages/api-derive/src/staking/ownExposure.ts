@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { EraIndex } from '@polkadot/types/interfaces';
-import { ExposureT } from '@darwinia/typegen/interfaces';
+import { ExposureT } from '@darwinia/types/interfaces';
 
 import { ApiInterfaceRx } from '@polkadot/api/types';
 import { DeriveOwnExposure } from '../types';

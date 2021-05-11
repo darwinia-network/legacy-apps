@@ -14,7 +14,7 @@ export default function create (t: (key: string, text: string, options: { ns: st
         ['tx.staking.bond']
       ]
     },
-    icon: 'certificate',
+    icon: 'hand paper',
     name: 'staking',
     text: t('nav.stakinginfo', 'Staking', { ns: 'apps-routing' })
   };

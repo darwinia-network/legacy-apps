@@ -7,5 +7,13 @@
     "javascript",
     "typescript",
     "typescriptreact"
+  ],
+  "cSpell.words": [
+    "darwinia",
+    "ghact",
+    "polkadot",
+    "stylelint",
+    "wasm",
+    "Unbond"
   ]
 }

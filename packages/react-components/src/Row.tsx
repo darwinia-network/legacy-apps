@@ -144,7 +144,7 @@ export const styles = `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
-
+    max-width: 18rem;
     .withName {
       white-space: nowrap;
       text-transform: uppercase;
