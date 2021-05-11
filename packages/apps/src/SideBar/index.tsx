@@ -6,7 +6,7 @@ import { Routes } from '@polkadot/apps-routing/types';
 
 import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Responsive } from 'semantic-ui-react';
+import { Responsive, SemanticICONS } from 'semantic-ui-react';
 import createRoutes from '@polkadot/apps-routing';
 import { Button, Icon, Menu, media } from '@polkadot/react-components';
 import { ChainImg } from '@polkadot/react-components-darwinia';
@@ -27,6 +27,35 @@ interface Props {
   isMenuOpen: boolean;
   toggleMenu: () => void;
 }
+
+interface ExternalLink {
+  href: string;
+  icon: SemanticICONS;
+  text: string;
+}
+
+const externalLinks: ExternalLink[] = [
+  {
+    href: 'https://wormhole.darwinia.network/',
+    icon: 'sitemap',
+    text: 'Wormhole'
+  },
+  {
+    href: 'https://smart.darwinia.network',
+    icon: 'exchange',
+    text: 'Smart App'
+  },
+  {
+    href: 'https://github.com/darwinia-network/',
+    icon: 'github',
+    text: 'GitHub'
+  },
+  {
+    href: 'https://docs.darwinia.network',
+    icon: 'book',
+    text: 'Wiki'
+  }
+];
 
 function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, toggleMenu }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
@@ -115,36 +144,23 @@ function SideBar ({ className, collapse, handleResize, isCollapsed, isMenuOpen, 
                 )
             ))}
             <Menu.Divider hidden />
-            <Menu.Item className='apps--SideBar-Item'>
-              <a
-                className='apps--SideBar-Item-NavLink'
-                href='https://wormhole.darwinia.network/'
-                rel='noopener noreferrer'
-                target='_blank'
-              >
-                <Icon name='sitemap' /><span className='text'>{t('Wormhole')}</span>
-              </a>
-            </Menu.Item>
-            <Menu.Item className='apps--SideBar-Item'>
-              <a
-                className='apps--SideBar-Item-NavLink'
-                href='https://github.com/darwinia-network/'
-                rel='noopener noreferrer'
-                target='_blank'
-              >
-                <Icon name='github' /><span className='text'>{t('GitHub')}</span>
-              </a>
-            </Menu.Item>
-            <Menu.Item className='apps--SideBar-Item'>
-              <a
-                className='apps--SideBar-Item-NavLink'
-                href='https://docs.darwinia.network'
-                rel='noopener noreferrer'
-                target='_blank'
-              >
-                <Icon name='book' /><span className='text'>{t('Wiki')}</span>
-              </a>
-            </Menu.Item>
+            {
+              externalLinks.map(({ href, icon, text }) => (
+                <Menu.Item
+                  className='apps--SideBar-Item'
+                  key={text}
+                >
+                  <a
+                    className='apps--SideBar-Item-NavLink'
+                    href={href}
+                    rel='noopener noreferrer'
+                    target='_blank'
+                  >
+                    <Icon name={icon} /><span className='text'>{t(text)}</span>
+                  </a>
+                </Menu.Item>
+              ))
+            }
             {
               isCollapsed
                 ? undefined
