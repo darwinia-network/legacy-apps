@@ -16,7 +16,7 @@
     "@polkadot/wasm-crypto": "^1.4.1",
     "babel-core": "^7.0.0-bridge.0",
     "typescript": "^3.8.3",
-    "@darwinia/types": "1.1.0-alpha.14"
+    "@darwinia/types": "1.1.0-alpha.15"
   },
   "scripts": {
     "analyze": "yarn run build && cd packages/apps && yarn run source-map-explorer build/main.*.js",
