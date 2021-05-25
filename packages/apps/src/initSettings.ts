@@ -7,7 +7,6 @@ import store from 'store';
 import { createEndpoints } from '@polkadot/apps-config/settings';
 import { registry } from '@polkadot/react-api';
 import settings from '@polkadot/ui-settings';
-import { DARWINIA_CRAB_TYPES, INIT_VERSION } from '@polkadot/react-darwinia';
 import * as definitions from '@darwinia/types/interfaces/definitions';
 
 // we split here so that both these forms are allowed
@@ -21,11 +20,16 @@ if (Array.isArray(urlOptions.rpc)) {
 }
 
 const fallbackUrl = createEndpoints(() => '').find(({ value }) => !!value) || { value: 'ws://127.0.0.1:9944' };
-const apiUrl = urlOptions.rpc // we have a supplied value
+let apiUrl = urlOptions.rpc // we have a supplied value
   ? urlOptions.rpc.split('#')[0] // https://polkadot.js.org/apps/?rpc=ws://127.0.0.1:9944#/explorer
   : [stored.apiUrl, process.env.WS_URL].includes(settings.apiUrl) // overridden, or stored
     ? settings.apiUrl // keep as-is
     : fallbackUrl.value as string; // grab the fallback
+
+// cc1.darwinia.network migration
+if (apiUrl === 'wss://cc1.darwinia.network') {
+  apiUrl = 'wss://rpc.darwinia.network';
+}
 
 // set the default as retrieved here
 settings.set({ apiUrl });
@@ -33,15 +37,8 @@ settings.set({ apiUrl });
 console.log('WS endpoint=', apiUrl);
 
 try {
-  const version = store.get('darwinia_types_version');
-  let types = store.get('types') || {};
+  const types = store.get('types') || {};
   const names = Object.keys(types);
-
-  if (!version || version.toString() < INIT_VERSION) {
-    types = DARWINIA_CRAB_TYPES;
-    store.set('types', types);
-    store.set('darwinia_types_version', INIT_VERSION);
-  }
 
   const darwiniaTypes = Object.values(definitions).reduce((res, { types }): object => ({ ...res, ...types }), {});
 
