@@ -1,11 +1,9 @@
 import axios from 'axios';
 import { i18nT } from './types';
-import DARWINIA_CRAB_TYPES from './types_crab.json';
 
 const SUBSCAN_URL_CRAB = 'https://crab.subscan.io';
 const SUBSCAN_URL_DARWINIA = 'https://darwinia.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
-const INIT_VERSION = 'version-2020-05-0101';
 let KTON_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CKTON' };
 let RING_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CRING' };
 
@@ -114,10 +112,8 @@ export {
   KTON_PROPERTIES,
   setRingProperties,
   setKtonProperties,
-  INIT_VERSION,
   ETHERSCAN_URL,
   getBondList,
   getStakingHistory,
-  lockLimitOptionsMaker,
-  DARWINIA_CRAB_TYPES
+  lockLimitOptionsMaker
 };
