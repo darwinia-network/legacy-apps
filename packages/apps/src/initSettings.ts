@@ -26,9 +26,15 @@ let apiUrl = urlOptions.rpc // we have a supplied value
     ? settings.apiUrl // keep as-is
     : fallbackUrl.value as string; // grab the fallback
 
+// Temporary
 // cc1.darwinia.network migration
 if (apiUrl === 'wss://cc1.darwinia.network') {
   apiUrl = 'wss://rpc.darwinia.network';
+}
+
+// crab.network migration
+if (apiUrl === 'wss://crab.darwinia.network') {
+  apiUrl = 'wss://crab-rpc.darwinia.network';
 }
 
 // set the default as retrieved here
