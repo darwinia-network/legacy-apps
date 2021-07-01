@@ -9,6 +9,7 @@ export { default as authorship } from './authorship/definitions';
 export { default as aura } from './aura/definitions';
 export { default as babe } from './babe/definitions';
 export { default as balances } from './balances/definitions';
+export { default as beefy } from './beefy/definitions';
 export { default as collective } from './collective/definitions';
 export { default as consensus } from './consensus/definitions';
 export { default as contracts } from './contracts/definitions';
@@ -37,6 +38,7 @@ export { default as vesting } from './vesting/definitions';
 
 // polkadot-specific types
 export { default as attestations } from './attestations/definitions';
+export { default as bridges } from './bridges/definitions';
 export { default as claims } from './claims/definitions';
 export { default as parachains } from './parachains/definitions';
 export { default as poll } from './poll/definitions';
