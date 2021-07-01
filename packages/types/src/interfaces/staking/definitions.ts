@@ -22,7 +22,8 @@ export default {
       index: 'EraIndex',
       start: 'Option<Moment>'
     },
-    CompactAssignments: {
+    CompactAssignments: 'CompactAssignmentsWith16',
+    CompactAssignmentsWith16: {
       votes1: 'Vec<(NominatorIndexCompact, ValidatorIndexCompact)>',
       votes2: 'Vec<(NominatorIndexCompact, CompactScoreCompact, ValidatorIndexCompact)>',
       votes3: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 2], ValidatorIndexCompact)>',
@@ -40,6 +41,33 @@ export default {
       votes15: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 14], ValidatorIndexCompact)>',
       votes16: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 15], ValidatorIndexCompact)>'
     },
+    CompactAssignmentsWith24: {
+      votes1: 'Vec<(NominatorIndexCompact, ValidatorIndexCompact)>',
+      votes2: 'Vec<(NominatorIndexCompact, CompactScoreCompact, ValidatorIndexCompact)>',
+      votes3: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 2], ValidatorIndexCompact)>',
+      votes4: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 3], ValidatorIndexCompact)>',
+      votes5: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 4], ValidatorIndexCompact)>',
+      votes6: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 5], ValidatorIndexCompact)>',
+      votes7: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 6], ValidatorIndexCompact)>',
+      votes8: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 7], ValidatorIndexCompact)>',
+      votes9: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 8], ValidatorIndexCompact)>',
+      votes10: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 9], ValidatorIndexCompact)>',
+      votes11: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 10], ValidatorIndexCompact)>',
+      votes12: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 11], ValidatorIndexCompact)>',
+      votes13: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 12], ValidatorIndexCompact)>',
+      votes14: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 13], ValidatorIndexCompact)>',
+      votes15: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 14], ValidatorIndexCompact)>',
+      votes16: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 15], ValidatorIndexCompact)>',
+      votes17: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 16], ValidatorIndexCompact)>',
+      votes18: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 17], ValidatorIndexCompact)>',
+      votes19: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 18], ValidatorIndexCompact)>',
+      votes20: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 19], ValidatorIndexCompact)>',
+      votes21: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 20], ValidatorIndexCompact)>',
+      votes22: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 21], ValidatorIndexCompact)>',
+      votes23: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 22], ValidatorIndexCompact)>',
+      votes24: 'Vec<(NominatorIndexCompact, [CompactScoreCompact; 23], ValidatorIndexCompact)>'
+    },
+    CompactAssignmentsTo265: 'CompactAssignmentsWith16',
     CompactAssignmentsTo257: {
       votes1: 'Vec<(NominatorIndex, [CompactScore; 0], ValidatorIndex)>',
       votes2: 'Vec<(NominatorIndex, [CompactScore; 1], ValidatorIndex)>',
@@ -63,6 +91,14 @@ export default {
     ElectionCompute: {
       _enum: ['OnChain', 'Signed', 'Authority']
     },
+    ElectionPhase: {
+      _enum: {
+        Off: null,
+        Signed: null,
+        Unsigned: '(bool, BlockNumber)',
+        Emergency: null
+      }
+    },
     ElectionResult: {
       compute: 'ElectionCompute',
       slotStake: 'Balance',
@@ -80,6 +116,19 @@ export default {
         Open: 'BlockNumber'
       }
     },
+    ExtendedBalance: 'u128',
+    RawSolution: 'RawSolutionWith16',
+    RawSolutionWith16: {
+      compact: 'CompactAssignmentsWith16',
+      score: 'ElectionScore',
+      round: 'u32'
+    },
+    RawSolutionWith24: {
+      compact: 'CompactAssignmentsWith24',
+      score: 'ElectionScore',
+      round: 'u32'
+    },
+    RawSolutionTo265: 'RawSolutionWith16',
     EraIndex: 'u32',
     EraRewardPoints: {
       total: 'RewardPoint',
@@ -93,6 +142,15 @@ export default {
       total: 'Compact<Balance>',
       own: 'Compact<Balance>',
       others: 'Vec<IndividualExposure>'
+    },
+    ReadySolution: {
+      supports: 'SolutionSupports',
+      score: 'ElectionScore',
+      compute: 'ElectionCompute'
+    },
+    RoundSnapshot: {
+      voters: 'Vec<(AccountId, VoteWeight, Vec<AccountId>)>',
+      targets: 'Vec<AccountId>'
     },
     Forcing: {
       _enum: [
@@ -139,6 +197,14 @@ export default {
       who: 'AccountId',
       stake: 'Balance',
       deposit: 'Balance'
+    },
+    SolutionOrSnapshotSize: {
+      voters: 'Compact<u32>',
+      targets: 'Compact<u32>'
+    },
+    SolutionSupport: {
+      total: 'ExtendedBalance',
+      voters: 'Vec<(AccountId, ExtendedBalance)>'
     },
     SlashJournalEntry: {
       who: 'AccountId',
