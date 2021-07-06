@@ -18,23 +18,9 @@ interface Props {
 }
 
 const transformKeys = {
-  transform: (entries: StorageKey[]): BlockNumber[] => {
-    const blockNumbers = entries.map((key) => key.args[0] as BlockNumber);
-
-    console.log('transformKeys blockNumbers', blockNumbers);
-
-    const _hackBlockNumbers: BlockNumber[] = [];
-
-    blockNumbers.forEach((element: BlockNumber) => {
-      if (element.toString() !== '2332800') {
-        _hackBlockNumbers.push(element);
-      }
-    });
-
-    console.log('transformKeys _hackBlockNumbers', _hackBlockNumbers);
-
-    return _hackBlockNumbers;
-  }
+  transform: (entries: StorageKey[]): BlockNumber[] => entries
+    .map((key) => key.args[0] as BlockNumber)
+    .filter((blockNumber) => (blockNumber.toString() !== '2332800'))
 };
 
 const transformEntries = {
@@ -47,7 +33,7 @@ const transformEntries = {
           .filter((schedOpt) => schedOpt.isSome)
           .map((schedOpt) => schedOpt.unwrap())
           .reduce((items: ScheduledExt[], { call, maybeId, maybePeriodic, priority }, index) => {
-            items.push({ call, index: index, maybeId, maybePeriodic, priority });
+            items.push({ call, index, maybeId, maybePeriodic, priority });
 
             return items;
           }, items);
