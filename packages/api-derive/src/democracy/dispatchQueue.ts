@@ -53,9 +53,18 @@ function schedulerEntries (api: ApiInterfaceRx): Observable<[BlockNumber[], Opti
     switchMap((keys) => {
       const blockNumbers = keys.map((key) => key.args[0] as BlockNumber);
 
+      const _hackBlockNumbers: BlockNumber[] = [];
+
+      blockNumbers.forEach((element: BlockNumber) => {
+        if (element.toString() !== '2332800') {
+          _hackBlockNumbers.push(element);
+        }
+      });
+      console.log(_hackBlockNumbers);
+
       return combineLatest([
-        of(blockNumbers),
-        api.query.scheduler.agenda.multi<Vec<Option<Scheduled>>>(blockNumbers)
+        of(_hackBlockNumbers),
+        api.query.scheduler.agenda.multi<Vec<Option<Scheduled>>>(_hackBlockNumbers)
       ]);
     })
   );
