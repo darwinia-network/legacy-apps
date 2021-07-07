@@ -8,7 +8,7 @@ import { ScheduledExt } from './types';
 import React, { useRef } from 'react';
 import { Table } from '@polkadot/react-components';
 import { useApi, useCall } from '@polkadot/react-hooks';
-import { Option } from '@polkadot/types';
+import { Option, StorageKey } from '@polkadot/types';
 
 import { useTranslation } from '../translate';
 import ScheduledView from './Scheduled';
@@ -17,18 +17,23 @@ interface Props {
   className?: string;
 }
 
-const transformEntries = {
-  transform: (entries: [{ args: [BlockNumber] }, Option<Scheduled>[]][]): ScheduledExt[] => {
-    return entries
-      .filter(([, vecSchedOpt]) => vecSchedOpt.some((schedOpt) => schedOpt.isSome))
-      .reduce((items: ScheduledExt[], [key, vecSchedOpt]): ScheduledExt[] => {
-        const blockNumber = key.args[0];
+const transformKeys = {
+  transform: (entries: StorageKey[]): BlockNumber[] => entries
+    .map((key) => key.args[0] as BlockNumber)
+    .filter((blockNumber) => (blockNumber.toString() !== '2332800'))
+};
 
+const transformEntries = {
+  withParams: true,
+  transform: (entries: Option<Scheduled>[][]): ScheduledExt[] => {
+    return entries
+      .filter((vecSchedOpt) => vecSchedOpt.some((schedOpt) => schedOpt.isSome))
+      .reduce((items: ScheduledExt[], vecSchedOpt): ScheduledExt[] => {
         return vecSchedOpt
           .filter((schedOpt) => schedOpt.isSome)
           .map((schedOpt) => schedOpt.unwrap())
           .reduce((items: ScheduledExt[], { call, maybeId, maybePeriodic, priority }, index) => {
-            items.push({ blockNumber, call, key: `${blockNumber.toString()}-${index}`, maybeId, maybePeriodic, priority });
+            items.push({ call, index, maybeId, maybePeriodic, priority });
 
             return items;
           }, items);
@@ -39,7 +44,6 @@ const transformEntries = {
 function Schedule ({ className = '' }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
-  const items = useCall<ScheduledExt[]>(api.query.scheduler.agenda.entries as any, undefined, transformEntries);
 
   const headerRef = useRef([
     [t('scheduled'), 'start'],
@@ -49,15 +53,20 @@ function Schedule ({ className = '' }: Props): React.ReactElement<Props> {
     [t('count')]
   ]);
 
+  const blockNumbers = useCall<BlockNumber[]>(api.query.scheduler.agenda.keys, undefined, transformKeys);
+
+  const items = useCall<[BlockNumber[], ScheduledExt[]]>(api.query.scheduler.agenda.multi, (!blockNumbers || blockNumbers?.length === 0) ? [] : [blockNumbers], transformEntries) || [];
+
   return (
     <Table
       className={className}
-      empty={items?.length === 0 && t<string>('No active schedules')}
+      empty={(!items || items?.length === 0) && t<string>('No active schedules')}
       header={headerRef.current}
     >
-      {items?.map((scheduled): React.ReactNode => (
+      {items[1]?.map((scheduled: ScheduledExt, index: number): React.ReactNode => (
         <ScheduledView
-          key={scheduled.key}
+          blockNumber={items[0][0][index]}
+          key={`${items[0][0][index]}${scheduled.index}`}
           value={scheduled}
         />
       ))}

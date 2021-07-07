@@ -51,7 +51,7 @@ function schedulerEntries (api: ApiInterfaceRx): Observable<[BlockNumber[], Opti
       api.query.scheduler.agenda.keys()
     ),
     switchMap((keys) => {
-      const blockNumbers = keys.map((key) => key.args[0] as BlockNumber);
+      const blockNumbers = keys.map((key) => key.args[0] as BlockNumber).filter((blockNumber) => blockNumber.toString() !== '2332800');
 
       return combineLatest([
         of(blockNumbers),

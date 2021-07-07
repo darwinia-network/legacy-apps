@@ -7,9 +7,10 @@ import { BlockNumber, Call, SchedulePeriod, SchedulePriority } from '@polkadot/t
 import { Bytes, Option } from '@polkadot/types';
 
 export interface ScheduledExt {
-  blockNumber: BlockNumber;
+  blockNumber?: BlockNumber;
   call: Call;
-  key: string;
+  key?: string;
+  index?: number;
   maybeId: Option<Bytes>;
   maybePeriodic: Option<SchedulePeriod>;
   priority: SchedulePriority;

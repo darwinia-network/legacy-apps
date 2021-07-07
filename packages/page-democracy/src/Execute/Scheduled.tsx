@@ -14,9 +14,10 @@ import { formatNumber } from '@polkadot/util';
 interface Props {
   className?: string;
   value: ScheduledExt;
+  blockNumber: BlockNumber;
 }
 
-function Scheduled ({ className = '', value: { blockNumber, call, maybeId, maybePeriodic } }: Props): React.ReactElement<Props> {
+function Scheduled ({ blockNumber, className = '', value: { call, maybeId, maybePeriodic } }: Props): React.ReactElement<Props> {
   const { api } = useApi();
   const bestNumber = useCall<BlockNumber>(api.derive.chain.bestNumber);
 
