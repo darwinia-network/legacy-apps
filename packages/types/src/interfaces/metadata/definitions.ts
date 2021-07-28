@@ -1,12 +1,12 @@
-// Copyright 2017-2020 @polkadot/types authors & contributors
+// Copyright 2017-2021 @polkadot/types authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 // order important in structs... :)
 /* eslint-disable sort-keys */
 
-import { Definitions } from '../../types';
+import type { Definitions } from '../../types';
 
-const AllHashers = {
+export const AllHashers = {
   Blake2_128: null, // eslint-disable-line camelcase
   Blake2_256: null, // eslint-disable-line camelcase
   Blake2_128Concat: null, // eslint-disable-line camelcase
@@ -16,8 +16,6 @@ const AllHashers = {
   // new in v11
   Identity: null
 };
-
-export { AllHashers };
 
 export default {
   rpc: {},
@@ -248,21 +246,72 @@ export default {
     StorageMetadataV12: 'StorageMetadataV11',
     StorageHasherV12: 'StorageHasherV11',
 
+    // v13
+    DoubleMapTypeV13: 'DoubleMapTypeV12',
+    ErrorMetadataV13: 'ErrorMetadataV12',
+    EventMetadataV13: 'EventMetadataV12',
+    ExtrinsicMetadataV13: 'ExtrinsicMetadataV12',
+    FunctionArgumentMetadataV13: 'FunctionArgumentMetadataV12',
+    FunctionMetadataV13: 'FunctionMetadataV12',
+    MapTypeV13: 'MapTypeV12',
+    MetadataV13: {
+      modules: 'Vec<ModuleMetadataV13>',
+      extrinsic: 'ExtrinsicMetadataV13'
+    },
+    ModuleConstantMetadataV13: 'ModuleConstantMetadataV12',
+    ModuleMetadataV13: {
+      name: 'Text',
+      storage: 'Option<StorageMetadataV13>',
+      calls: 'Option<Vec<FunctionMetadataV13>>',
+      events: 'Option<Vec<EventMetadataV13>>',
+      constants: 'Vec<ModuleConstantMetadataV13>',
+      errors: 'Vec<ErrorMetadataV13>',
+      index: 'u8'
+    },
+    NMapTypeV13: {
+      keyVec: 'Vec<Type>',
+      hashers: 'Vec<StorageHasherV13>',
+      value: 'Type'
+    },
+    StorageEntryModifierV13: 'StorageEntryModifierV12',
+    StorageEntryMetadataV13: {
+      name: 'Text',
+      modifier: 'StorageEntryModifierV13',
+      type: 'StorageEntryTypeV13',
+      fallback: 'Bytes',
+      documentation: 'Vec<Text>'
+    },
+    StorageEntryTypeV13: {
+      _enum: {
+        Plain: 'Type',
+        Map: 'MapTypeV13',
+        DoubleMap: 'DoubleMapTypeV13',
+        NMap: 'NMapTypeV13'
+      }
+    },
+    StorageMetadataV13: {
+      prefix: 'Text',
+      items: 'Vec<StorageEntryMetadataV13>'
+    },
+    StorageHasherV13: 'StorageHasherV12',
+
     // This always maps to the latest
-    DoubleMapTypeLatest: 'DoubleMapTypeV12',
-    EventMetadataLatest: 'EventMetadataV12',
-    ExtrinsicMetadataLatest: 'ExtrinsicMetadataV12',
-    FunctionArgumentMetadataLatest: 'FunctionArgumentMetadataV12',
-    FunctionMetadataLatest: 'FunctionMetadataV12',
-    MapTypeLatest: 'MapTypeV12',
-    MetadataLatest: 'MetadataV12',
-    ModuleConstantMetadataLatest: 'ModuleConstantMetadataV12',
-    ModuleMetadataLatest: 'ModuleMetadataV12',
-    StorageEntryMetadataLatest: 'StorageEntryMetadataV12',
-    StorageEntryModifierLatest: 'StorageEntryModifierV12',
-    StorageEntryTypeLatest: 'StorageEntryTypeV12',
-    StorageMetadataLatest: 'StorageMetadataV12',
-    StorageHasher: 'StorageHasherV12',
+    DoubleMapTypeLatest: 'DoubleMapTypeV13',
+    ErrorMetadataLatest: 'ErrorMetadataV13',
+    EventMetadataLatest: 'EventMetadataV13',
+    ExtrinsicMetadataLatest: 'ExtrinsicMetadataV13',
+    FunctionArgumentMetadataLatest: 'FunctionArgumentMetadataV13',
+    FunctionMetadataLatest: 'FunctionMetadataV13',
+    MapTypeLatest: 'MapTypeV13',
+    MetadataLatest: 'MetadataV13',
+    ModuleConstantMetadataLatest: 'ModuleConstantMetadataV13',
+    ModuleMetadataLatest: 'ModuleMetadataV13',
+    NMapTypeLatest: 'NMapTypeV13',
+    StorageEntryMetadataLatest: 'StorageEntryMetadataV13',
+    StorageEntryModifierLatest: 'StorageEntryModifierV13',
+    StorageEntryTypeLatest: 'StorageEntryTypeV13',
+    StorageMetadataLatest: 'StorageMetadataV13',
+    StorageHasher: 'StorageHasherV13',
 
     // the enum containing all the mappings
     MetadataAll: {
@@ -280,7 +329,8 @@ export default {
         V9: 'MetadataV9',
         V10: 'MetadataV10',
         V11: 'MetadataV11',
-        V12: 'MetadataV12'
+        V12: 'MetadataV12',
+        V13: 'MetadataV13'
       }
     }
   }
