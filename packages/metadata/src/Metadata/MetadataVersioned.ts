@@ -1,7 +1,7 @@
 // Copyright 2017-2020 @polkadot/metadata authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { MetadataAll, MetadataLatest, MetadataV9, MetadataV10, MetadataV11, MetadataV12 } from '@polkadot/types/interfaces/metadata';
+import { MetadataAll, MetadataLatest, MetadataV9, MetadataV10, MetadataV11, MetadataV12, MetadataV13 } from '@polkadot/types/interfaces/metadata';
 import { Registry } from '@polkadot/types/types';
 
 import Struct from '@polkadot/types/codec/Struct';
@@ -11,12 +11,15 @@ import MagicNumber from './MagicNumber';
 import v9ToV10 from './v9/toV10';
 import v10ToV11 from './v10/toV11';
 import v11ToV12 from './v11/toV12';
-import v12ToLatest from './v12/toLatest';
+import { toV13 } from './v12/toV13';
+import { toLatest } from './v13/toLatest';
 import { getUniqTypes, toCallsOnly } from './util';
 
-type MetaMapped = MetadataV9 | MetadataV10 | MetadataV11 | MetadataV12;
-type MetaVersions = 9 | 10 | 11 | 12 | 13;
-type MetaAsX = 'asV9' | 'asV10' | 'asV11' | 'asV12';
+type MetaMapped = MetadataV9 | MetadataV10 | MetadataV11 | MetadataV12 | MetadataV13;
+type MetaVersions = 'latest' | 9 | 10 | 11 | 12 | 13;
+type MetaAsX = 'asV9' | 'asV10' | 'asV11' | 'asV12' | 'asV13';
+
+const LATEST_VERSION = 13;
 
 /**
  * @name MetadataVersioned
@@ -41,9 +44,11 @@ export default class MetadataVersioned extends Struct {
 
   private _getVersion<T extends MetaMapped, F extends MetaMapped> (version: MetaVersions, fromPrev: (registry: Registry, input: F) => T): T {
     const asCurr = `asV${version}` as MetaAsX;
-    const asPrev = `asV${version - 1}` as MetaAsX;
+    const asPrev = version === 'latest'
+      ? `asV${LATEST_VERSION}` as MetaAsX
+      : `asV${version - 1}` as MetaAsX;
 
-    if (this._assertVersion(version)) {
+    if (version !== 'latest' && this._assertVersion(version)) {
       return this._metadata[asCurr] as T;
     }
 
@@ -95,11 +100,18 @@ export default class MetadataVersioned extends Struct {
   }
 
   /**
+   * @description Returns the wrapped values as a V13 object
+   */
+  public get asV13 (): MetadataV13 {
+    return this._getVersion(13, toV13);
+  }
+
+  /**
    * @description Returns the wrapped values as a latest version object
    */
   public get asLatest (): MetadataLatest {
     // This is non-existent & latest - applied here to do the module-specific type conversions
-    return this._getVersion(13, v12ToLatest);
+    return this._getVersion('latest', toLatest);
   }
 
   /**
