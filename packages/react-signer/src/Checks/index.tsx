@@ -6,9 +6,9 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import { RuntimeDispatchInfo } from '@polkadot/types/interfaces';
 
 import BN from 'bn.js';
+import styled from 'styled-components';
 import React, { useState, useEffect } from 'react';
 import { Trans } from 'react-i18next';
-import { Expander } from '@polkadot/react-components';
 import { useApi } from '@polkadot/react-hooks';
 import { formatBalance } from '@polkadot/util';
 
@@ -37,16 +37,20 @@ function Checks ({ accountId, className, extrinsic }: Props): React.ReactElement
   }
 
   return (
-    <Expander
-      className={className}
-      summary={
+    <div className={className}>
+      <p className='ui-Checks-fees'>
         <Trans i18nKey='feesForSubmission'>
           Fees of <span className='highlight'>{formatBalance(dispatchInfo.partialFee, { withSiFull: true })}</span> will be applied to the submission
         </Trans>
-      }
-      withDot
-    />
+      </p>
+
+    </div>
   );
 }
 
-export default React.memo(Checks);
+export default React.memo(styled(Checks)`
+  .ui-Checks-fees {
+    padding-left: 1.75rem;
+    margin-top: 1rem;
+  }
+`);
