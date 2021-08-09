@@ -111,7 +111,7 @@ class Overview extends React.PureComponent<Props, State> {
       row: PAGE_SIZE,
       status: status,
       locked,
-      address: ["Pangolin", "Darwinia"].includes(systemChain) ? address : encodeAddress(address, 42)
+      address: ['Pangolin', 'Darwinia'].includes(systemChain) ? address : encodeAddress(address, 42)
     });
 
     if (response.data.code === 0 && response.data.data) {
@@ -236,7 +236,7 @@ class Overview extends React.PureComponent<Props, State> {
         </div>
       </div>
       <div>
-        {status === 'bonded' ? <Checkbox label={t('Only Locked')}
+        {status === 'bonded' ? <Checkbox label={t('Only Term Deposits')}
           onChange={((event, data) => {
             const _status = data.checked ? 1 : 0;
 
@@ -271,7 +271,7 @@ class Overview extends React.PureComponent<Props, State> {
 
   renderBondedList (): React.ReactNode {
     const { controllerId, systemChain, t } = this.props;
-    const { bondList, pageCount, forceUnbondTarget } = this.state;
+    const { bondList, forceUnbondTarget, pageCount } = this.state;
 
     const { chains, paths } = ExternalsLinks.Subscan;
     const extChain = chains[systemChain];
@@ -287,7 +287,7 @@ class Overview extends React.PureComponent<Props, State> {
                 <td>{t('Date')}</td>
                 <td>{t('Amount')}</td>
                 <td>{t('Reward')}</td>
-                <td>{t('Setting')}</td>
+                <td>{t('Current Status')}</td>
               </tr>
               <tr>
                 <td className='emptyTd'
@@ -303,35 +303,35 @@ class Overview extends React.PureComponent<Props, State> {
 
     return (
       <Wrapper>
-        <table className={"stakingTable"}>
+        <table className={'stakingTable'}>
           <tbody>
-            <tr className="stakingTh">
-              <td>{t("Extrinsic ID")}</td>
-              <td>{t("Date")}</td>
-              <td>{t("Amount")}</td>
-              <td>{t("Reward")}</td>
-              <td>{t("Setting")}</td>
+            <tr className='stakingTh'>
+              <td>{t('Extrinsic ID')}</td>
+              <td>{t('Date')}</td>
+              <td>{t('Amount')}</td>
+              <td>{t('Reward')}</td>
+              <td>{t('Current Status')}</td>
             </tr>
             {bondList.list.map((item, index) => {
               return (
                 <tr key={`${index}${item.Id}`}>
                   <td>
                     <a
-                      className="stakingLink"
-                      href={ExternalsLinks.Subscan.create(extChain, extPaths || "", item.extrinsic_index)}
-                      rel="noopener noreferrer"
-                      target="_blank"
+                      className='stakingLink'
+                      href={ExternalsLinks.Subscan.create(extChain, extPaths || '', item.extrinsic_index)}
+                      rel='noopener noreferrer'
+                      target='_blank'
                     >
                       {item.extrinsic_index}
                     </a>
                   </td>
                   <td>
-                    <p className="stakingRange">{`${this.formatDate(item.start_at)} - ${this.formatDate(
+                    <p className='stakingRange'>{`${this.formatDate(item.start_at)} - ${this.formatDate(
                       item.expired_at
                     )}`}</p>
-                    <div className="stakingProcess">
+                    <div className='stakingProcess'>
                       <div
-                        className="stakingProcessPassed"
+                        className='stakingProcessPassed'
                         style={{ width: `${this.processTime(item.start_at, item.expired_at)}%` }}
                       ></div>
                     </div>
@@ -340,32 +340,32 @@ class Overview extends React.PureComponent<Props, State> {
                     {formatBalance(item.amount, false)} {item.currency.toUpperCase()}
                   </td>
                   <td>
-                    <div className="textGradient">
-                      {item.currency.toLowerCase() === "kton" || item.month === 0
-                        ? "--"
+                    <div className='textGradient'>
+                      {item.currency.toLowerCase() === 'kton' || item.month === 0
+                        ? '--'
                         : formatKtonBalance(ringToKton(item.amount, item.month))}
                     </div>
                   </td>
                   <td>
                     {item.month === 0 ? (
-                      <>{t("Completed")}</>
+                      <>{t('Expired')}</>
                     ) : dayjs(item.expired_at).unix() < dayjs().unix() && !item.unlock ? (
                       <TxButton
                         accountId={controllerId}
                         isBasic={true}
                         // isSecondary={true}
-                        label={t("Release")}
+                        label={t('Release')}
                         onSuccess={() => {
                           this.refreshList();
                         }}
-                        tx="staking.claimMatureDeposits"
+                        tx='staking.claimMatureDeposits'
                       />
                     ) : item.unlock ? (
-                      <>{t("Lock limit canceled")}</>
+                      <>{t('Lock limit canceled')}</>
                     ) : (
                       <Button
                         isBasic
-                        label={t("Cancel lock limit")}
+                        label={t('Unlock earlier')}
                         onClick={() => {
                           this.setState({ forceUnbondTarget: item });
                         }}
@@ -379,36 +379,36 @@ class Overview extends React.PureComponent<Props, State> {
         </table>
         <PaginationWrapper>
           <ReactPaginate
-            activeClassName={"active"}
-            breakClassName={"break-me"}
-            breakLabel={"..."}
-            containerClassName={"pagination"}
+            activeClassName={'active'}
+            breakClassName={'break-me'}
+            breakLabel={'...'}
+            containerClassName={'pagination'}
             marginPagesDisplayed={2}
-            nextLabel={">"}
+            nextLabel={'>'}
             onPageChange={this.handlePageClick}
             pageCount={pageCount}
             pageRangeDisplayed={3}
-            previousLabel={"<"}
-            subContainerClassName={"pages pagination"}
+            previousLabel={'<'}
+            subContainerClassName={'pages pagination'}
           />
         </PaginationWrapper>
 
         <Modal
-          header={t("Confirm to continue")}
-          open={!!forceUnbondTarget}
+          header={t('Confirm to continue')}
           onCancel={() => this.setState({ forceUnbondTarget: null })}
+          open={!!forceUnbondTarget}
         >
           <Modal.Content>
             {forceUnbondTarget && (
               <>
                 <p>
                   {t(
-                    "Currently in lock-up period, you will be charged a penalty of 3 times the {{KTON}} reward. Are you sure to continue?",
+                    'Currently in lock-up period, you will be charged a penalty of 3 times the {{KTON}} reward. Are you sure to continue?',
                     { replace: { KTON: KTON_PROPERTIES.tokenSymbol } }
                   )}
                 </p>
                 <p>
-                  {t("Total Fines")}: {this.calcFine(forceUnbondTarget)}
+                  {t('Total Fines')}: {this.calcFine(forceUnbondTarget)}
                 </p>
               </>
             )}
@@ -416,16 +416,16 @@ class Overview extends React.PureComponent<Props, State> {
           <Modal.Actions onCancel={() => this.setState({ forceUnbondTarget: null })}>
             <TxButton
               accountId={controllerId}
-              icon="paper plane"
+              icon='paper plane'
               isPrimary
-              key="tryClaimDepositsWithPunish"
-              label={t("Continue")}
+              key='tryClaimDepositsWithPunish'
+              label={t('Continue')}
               onClick={() => this.setState({ forceUnbondTarget: null })}
               onSuccess={() => {
                 this.refreshList();
               }}
               params={[forceUnbondTarget?.expired_at]}
-              tx="staking.tryClaimDepositsWithPunish"
+              tx='staking.tryClaimDepositsWithPunish'
             />
           </Modal.Actions>
         </Modal>
@@ -433,8 +433,8 @@ class Overview extends React.PureComponent<Props, State> {
     );
   }
 
-  private calcFine(data: any): string {
-    const { start_at, amount, month } = data;
+  private calcFine (data: any): string {
+    const { amount, month, start_at } = data;
     const rewardOrigin = new BigNumber(ringToKton(amount, month));
     const rewardMonth = Math.floor((new Date().getTime() - start_at) / (30 * 24 * 3600 * 1000)); // calculate as 30 days per month;
     const rewardActual = new BigNumber(ringToKton(amount, rewardMonth));
@@ -541,7 +541,6 @@ class Overview extends React.PureComponent<Props, State> {
     const extPaths = paths.extrinsic;
     const txPaths = paths.transaction;
 
-
     if (!bondList || bondList.count === 0 || (bondList.list?.length === 0)) {
       return (
         <Wrapper>
@@ -552,7 +551,7 @@ class Overview extends React.PureComponent<Props, State> {
                 <td>{t('Date')}</td>
                 <td>{t('Amount')}</td>
                 <td>{t('Reward')}</td>
-                <td>{t('Setting')}</td>
+                <td>{t('Status')}</td>
               </tr>
               <tr>
                 <td className='emptyTd'
