@@ -39,7 +39,7 @@ function TipEndorse ({ defaultId, hash, isMember, isTipped, median, members }: P
         isDisabled={!isMember || !isTipped}
         isIcon
         params={[hash, median]}
-        tx='treasury.tip'
+        tx='tips.tip'
         withoutLink
       />
       {isOpen && (
@@ -88,7 +88,7 @@ function TipEndorse ({ defaultId, hash, isMember, isTipped, median, members }: P
               label={t<string>('Submit tip')}
               onStart={toggleOpen}
               params={[hash, value]}
-              tx='treasury.tip'
+              tx='tips.tip'
             />
           </Modal.Actions>
         </Modal>

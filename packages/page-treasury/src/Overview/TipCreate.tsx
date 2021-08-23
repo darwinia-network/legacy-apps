@@ -123,8 +123,8 @@ function TipCreate ({ members, refresh }: Props): React.ReactElement<Props> {
               }
               tx={
                 isMember
-                  ? 'treasury.tipNew'
-                  : 'treasury.reportAwesome'
+                  ? 'tips.tipNew'
+                  : 'tips.reportAwesome'
               }
             />
           </Modal.Actions>

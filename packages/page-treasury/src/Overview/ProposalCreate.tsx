@@ -22,8 +22,7 @@ function Propose ({ className }: Props): React.ReactElement<Props> | null {
   const [beneficiary, setBeneficiary] = useState<string | null>(null);
   const [isOpen, toggleOpen] = useToggle();
   const [ringValue, setRingValue] = useState<BN | undefined>();
-  const [ktonValue, setKtonValue] = useState<BN | undefined>();
-  const hasValue = ringValue?.gtn(0) || ktonValue?.gtn(0);
+  const hasValue = ringValue?.gtn(0);
   const bondPercentage = useMemo(
     () => `${api.consts.treasury.proposalBond.muln(100).divn(1_000_000).toNumber().toFixed(2)}%`,
     [api]
@@ -76,14 +75,6 @@ function Propose ({ className }: Props): React.ReactElement<Props> | null {
                   label={t('ring')}
                   onChange={setRingValue}
                 />
-                <InputBalance
-                  currencyType={'kton'}
-                  help={t('The amount of KTON that will be allocated from the treasury pot')}
-                  isError={!hasValue}
-                  isZeroable
-                  label={t('kton')}
-                  onChange={setKtonValue}
-                />
                 <Static
                   help={t('The on-chain percentage for the treasury')}
                   label={t('proposal bond')}
@@ -91,7 +82,7 @@ function Propose ({ className }: Props): React.ReactElement<Props> | null {
                   {bondPercentage}
                 </Static>
                 <InputBalance
-                  defaultValue={api.consts.treasury.ringProposalBondMinimum.toString()}
+                  defaultValue={api.consts.treasury.proposalBondMinimum.toString()}
                   help={t('The minimum amount that will be bonded')}
                   isDisabled
                   label={t('minimum bond')}
@@ -111,7 +102,7 @@ function Propose ({ className }: Props): React.ReactElement<Props> | null {
               isPrimary
               label={t('Submit proposal')}
               onStart={toggleOpen}
-              params={[ringValue, ktonValue, beneficiary]}
+              params={[ringValue, beneficiary]}
               tx='treasury.proposeSpend'
             />
           </Modal.Actions>
