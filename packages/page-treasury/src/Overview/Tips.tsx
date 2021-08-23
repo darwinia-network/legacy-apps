@@ -49,7 +49,7 @@ function Tips ({ className = '', defaultId, hashes, isMember, members, onSelectT
   const { api } = useApi();
   const [onlyUntipped, setOnlyUntipped] = useState(false);
   const bestNumber = useCall<BlockNumber>(api.derive.chain.bestNumber);
-  const optTips = useCall<Option<OpenTip>[]>(hashes && api.query.treasury.tips.multi, [hashes]);
+  const optTips = useCall<Option<OpenTip>[]>(hashes && (api.query.tips || api.query.treasury).tips.multi, [hashes]);
 
   const tips = useMemo(
     () => extractTips(optTips, hashes),
