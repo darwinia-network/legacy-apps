@@ -1408,24 +1408,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@darwinia/types-known@npm:1.1.6, @darwinia/types-known@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "@darwinia/types-known@npm:1.1.6"
+"@darwinia/types-known@npm:1.1.7, @darwinia/types-known@npm:^1.1.7":
+  version: 1.1.7
+  resolution: "@darwinia/types-known@npm:1.1.7"
   dependencies:
     "@babel/runtime": ^7.9.6
     "@polkadot/types": 4.0.4-5
     "@polkadot/util": 6.0.5
     bn.js: ^5.1.2
-  checksum: c7eebc22392091450656c28b9ba188643094ffc637ae951421f002656b0e7560be7951621092c9040635dfb8281d923e5373e2cb88858f4fd8a43f55416b6def
+  checksum: 8baadaebfd6c7928df27f58febd743c03d5200582a3fc80bb98351712d2b647cc6c7a3e3ad5ea6613769b2ee7aef5088cb30bbed3666a9b7b4716c244477acdb
   languageName: node
   linkType: hard
 
-"@darwinia/types@npm:1.1.6":
-  version: 1.1.6
-  resolution: "@darwinia/types@npm:1.1.6"
+"@darwinia/types@npm:1.1.7":
+  version: 1.1.7
+  resolution: "@darwinia/types@npm:1.1.7"
   dependencies:
-    "@darwinia/types-known": ^1.1.6
-  checksum: 11dc4d1bc97990feeacd26cef6f18f27b56030b473595166764a82c22fcc9e21aed2e2a3ef80f5701fa35e5b874c7c04e9d3f0b29ebc9d9721260161bc052ac5
+    "@darwinia/types-known": ^1.1.7
+  checksum: 25a4da0d8a836fd4d5e2c5d128d11675f348fe8a8ab7e93d0873b3ddac66e9bf499bd6c40545beabe4e475a10e56056d708f3fc08e37158acd8f96d7d3efad9f
   languageName: node
   linkType: hard
 
@@ -3264,7 +3264,7 @@ __metadata:
   resolution: "@polkadot/app-settings@workspace:packages/page-settings"
   dependencies:
     "@babel/runtime": ^7.9.6
-    "@darwinia/types-known": 1.1.6
+    "@darwinia/types-known": 1.1.7
     "@polkadot/apps-config": 0.42.0-beta.100
     "@polkadot/react-components": 0.42.0-beta.100
     "@polkadot/react-query": 0.42.0-beta.100
@@ -3286,7 +3286,7 @@ __metadata:
   resolution: "@polkadot/app-staking-darwinia@workspace:packages/page-staking-darwinia"
   dependencies:
     "@babel/runtime": ^7.9.6
-    "@darwinia/types": 1.1.6
+    "@darwinia/types": 1.1.7
     "@polkadot/app-explorer": 0.42.0-beta.100
     "@polkadot/react-components-darwinia": 0.42.0-beta.100
     "@polkadot/react-query": 0.42.0-beta.100
@@ -3535,7 +3535,7 @@ __metadata:
   resolution: "@polkadot/metadata@workspace:packages/metadata"
   dependencies:
     "@babel/runtime": ^7.11.2
-    "@darwinia/types-known": 1.1.6
+    "@darwinia/types-known": 1.1.7
     "@polkadot/keyring": ^3.5.1
     "@polkadot/types": 1.35.0-beta.19
     "@polkadot/util": ^3.5.1
@@ -3549,7 +3549,7 @@ __metadata:
   resolution: "@polkadot/react-api@workspace:packages/react-api"
   dependencies:
     "@babel/runtime": ^7.9.6
-    "@darwinia/types-known": 1.1.6
+    "@darwinia/types-known": 1.1.7
     "@polkadot/api": 1.35.0-beta.19
     "@polkadot/extension-dapp": ^0.25.0-beta.4
     rxjs-compat: ^6.6.2
