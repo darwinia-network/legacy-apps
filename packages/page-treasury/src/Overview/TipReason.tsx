@@ -15,7 +15,8 @@ interface Props {
 
 function TipReason ({ hash }: Props): React.ReactElement<Props> {
   const { api } = useApi();
-  const reasonText = useCall<string | null>(api.query.treasury.reasons, [hash], {
+
+  const reasonText = useCall<string | null>((api.query.tips || api.query.treasury).reasons, [hash], {
     transform: (optBytes: Option<Bytes>) =>
       optBytes.isSome
         ? hexToString(optBytes.unwrap().toHex())

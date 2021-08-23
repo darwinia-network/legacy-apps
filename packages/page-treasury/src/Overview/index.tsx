@@ -62,7 +62,7 @@ function Overview ({ className }: Props): React.ReactElement<Props> {
 
   useEffect((): void => {
     if (hashTrigger && mountedRef.current) {
-      api.query.treasury.tips.keys().then((keys) =>
+      (api.query.tips || api.query.treasury).tips.keys().then((keys) =>
         mountedRef.current && setHashes(
           keys.map((key) => key.args[0].toHex())
         )
