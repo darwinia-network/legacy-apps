@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { i18nT } from './types';
 
-const SUBSCAN_URL_CRAB = 'https://crab.subscan.io';
-const SUBSCAN_URL_DARWINIA = 'https://darwinia.subscan.io';
+const SUBSCAN_URL_CRAB = 'https://crab.webapi.subscan.io';
+const SUBSCAN_URL_DARWINIA = 'https://darwinia.webapi.subscan.io';
+const SUBSCAN_URL_PANGOLIN = 'https://pangolin.webapi.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
 let KTON_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CKTON' };
 let RING_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CRING' };
@@ -32,8 +33,8 @@ const darwiniaInstance = axios.create({
 });
 
 const pangolinInstance = axios.create({
-  baseURL: 'https://pangolin.subscan.io',
-  timeout: 30000,
+  baseURL: SUBSCAN_URL_PANGOLIN,
+  timeout: 30000
 });
 
 export const instance = {
