@@ -56,7 +56,7 @@ function TipClose ({ hash, isMember, members }: Props): React.ReactElement<Props
               isDisabled={!accountId}
               onStart={toggleOpen}
               params={[hash]}
-              tx='treasury.closeTip'
+              tx='tips.closeTip'
             />
           </Modal.Actions>
         </Modal>

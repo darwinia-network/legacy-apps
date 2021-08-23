@@ -148,7 +148,7 @@ function Tip ({ bestNumber, className = '', defaultId, hash, isMember, members, 
               isDisabled={!isFinder}
               label={t('Cancel')}
               params={[hash]}
-              tx='treasury.retractTip'
+              tx='tips.retractTip'
             />
           )
         }

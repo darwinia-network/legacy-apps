@@ -45,7 +45,7 @@ function Overview ({ className }: Props): React.ReactElement<Props> {
 
       const available = Object
         .entries(quickTips)
-        .map(([hash, value]) => value ? api.tx.treasury.tip(hash, value) : null)
+        .map(([hash, value]) => value ? (api.tx.tips || api.tx.treasury).tip(hash, value) : null)
         .filter((value): value is SubmittableExtrinsic<'promise'> => !!value);
 
       return {
