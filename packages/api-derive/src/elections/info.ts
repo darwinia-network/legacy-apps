@@ -43,7 +43,7 @@ function sortAccounts ([, balanceA]: ITuple<[AccountId, Balance]>, [, balanceB]:
 }
 
 function queryElections (api: ApiInterfaceRx): Observable<DeriveElectionsInfo> {
-  const section = api.query.electionsPhragmen ? 'electionsPhragmen' : 'elections';
+  const section = api.query.phragmenElection ? 'phragmenElection' : api.query.electionsPhragmen ? 'electionsPhragmen' : 'elections';
 
   return api.queryMulti<[Vec<AccountId>, Vec<AccountId>, Vec<ITuple<[AccountId, Balance]>>, Vec<ITuple<[AccountId, Balance]>>]>([
     api.query.council.members,

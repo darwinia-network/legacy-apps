@@ -33,7 +33,7 @@ function isIncludedFn (accountId: AccountId | Address | string): (_: AccountId |
  */
 export function flags (api: ApiInterfaceRx): (address?: AccountId | Address | string | null) => Observable<DeriveAccountFlags> {
   return memo((address?: AccountId | Address | string | null): Observable<DeriveAccountFlags> => {
-    const councilSection = api.query.electionsPhragmen ? 'electionsPhragmen' : 'elections';
+    const councilSection = api.query.phragmenElection ? 'phragmenElection' : api.query.electionsPhragmen ? 'electionsPhragmen' : 'elections';
 
     return (
       combineLatest([

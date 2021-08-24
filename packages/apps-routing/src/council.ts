@@ -13,7 +13,8 @@ export default function create (t: (key: string, text: string, options: { ns: st
       needsApi: [
         [
           'query.electionsPhragmen.candidates',
-          'query.elections.candidates'
+          'query.elections.candidates',
+          'query.phragmenElection.candidates'
         ]
       ]
     },
