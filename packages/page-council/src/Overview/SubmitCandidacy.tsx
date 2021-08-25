@@ -15,7 +15,7 @@ function SubmitCandidacy ({ electionsInfo }: Props): React.ReactElement {
   const { t } = useTranslation();
   const [accountId, setAcountId] = useState<string | null>(null);
   const { isOpen, onClose, onOpen } = useModal();
-  const modLocation = api.tx.electionsPhragmen ? 'electionsPhragmen' : 'elections';
+  const modLocation = api.tx.phragmenElection ? 'phragmenElection' : api.tx.electionsPhragmen ? 'electionsPhragmen' : 'elections';
 
   return (
     <>
