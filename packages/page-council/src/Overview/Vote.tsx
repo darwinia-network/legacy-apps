@@ -114,7 +114,7 @@ function Vote ({ electionsInfo }: Props): React.ReactElement<Props> {
               onStart={toggleVisible}
               params={[votes, voteValue]}
               tx={
-                api.tx.electionsPhragmen
+                api.tx.phragmenElection ? 'phragmenElection' : api.tx.electionsPhragmen
                   ? 'electionsPhragmen.vote'
                   : 'elections.vote'
               }
