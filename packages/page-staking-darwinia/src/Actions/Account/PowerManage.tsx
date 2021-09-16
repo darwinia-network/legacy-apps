@@ -87,7 +87,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
       <div className='power-box'>
         <h3>Power</h3>
         <p><Power ktonAmount={stakingLedger.activeKton}
-          ringAmount={stakingLedger.activeRing} /></p>
+          ringAmount={stakingLedger.active} /></p>
       </div>
     );
   }
@@ -146,7 +146,7 @@ class AddressInfoStaking extends React.PureComponent<Props> {
       return null;
     }
 
-    let normalBondedRing = stakingLedger.activeRing.toBn().sub(stakingLedger.activeDepositRing.toBn());
+    let normalBondedRing = stakingLedger.active.toBn().sub(stakingLedger.activeDepositRing.toBn());
 
     if (normalBondedRing.ltn(0)) {
       normalBondedRing = new BN(0);
