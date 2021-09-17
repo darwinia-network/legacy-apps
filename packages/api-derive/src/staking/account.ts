@@ -36,8 +36,8 @@ function calculateUnlocking (api: ApiInterfaceRx, stakingLedger: StakingLedger |
     return [undefined, api.registry.createType('Balance', 0)];
   }
 
-  const unlockingChunks = stakingLedger[`${currencyType}StakingLock`].unbondings.filter(({ moment }): boolean => {
-    return moment.gtn(best);
+  const unlockingChunks = stakingLedger[`${currencyType}StakingLock`].unbondings.filter(({ until }): boolean => {
+    return until.gtn(best);
   });
 
   if (!unlockingChunks.length) {
@@ -54,8 +54,8 @@ function redeemableSum (api: ApiInterfaceRx, stakingLedger: StakingLedger | unde
     return api.registry.createType('Balance');
   }
 
-  return api.registry.createType('Balance', stakingLedger.ringStakingLock.unbondings.reduce((total, { amount, moment }): BN => {
-    return moment.gte(best)
+  return api.registry.createType('Balance', stakingLedger.ringStakingLock.unbondings.reduce((total, { amount, until }): BN => {
+    return until.gte(best)
       ? total.add(amount)
       : total;
   }, new BN(0)));
@@ -96,10 +96,10 @@ export function _account (api: ApiInterfaceRx): (best: BlockNumber, accountId: U
  */
 export function account (api: ApiInterfaceRx): (accountId: Uint8Array | string) => Observable<DeriveStakingAccount> {
   return memo((accountId: Uint8Array | string): Observable<DeriveStakingAccount> =>
-  combineLatest([
-    api.derive.chain.bestNumber(),
-    api.query.timestamp.now()
-  ]).pipe(
+    combineLatest([
+      api.derive.chain.bestNumber(),
+      api.query.timestamp.now()
+    ]).pipe(
       switchMap(([best, now]) => api.derive.staking._account(best, accountId, now))
     ));
 }
@@ -109,10 +109,10 @@ export function account (api: ApiInterfaceRx): (accountId: Uint8Array | string) 
  */
 export function accounts (api: ApiInterfaceRx): (accountIds: (Uint8Array | string)[]) => Observable<DeriveStakingAccount[]> {
   return memo((accountIds: (Uint8Array | string)[]): Observable<DeriveStakingAccount[]> =>
-  combineLatest([
-    api.derive.chain.bestNumber(),
-    api.query.timestamp.now()
-  ]).pipe(
+    combineLatest([
+      api.derive.chain.bestNumber(),
+      api.query.timestamp.now()
+    ]).pipe(
       switchMap(([best, now]) =>
         combineLatest(accountIds.map((accountId) => api.derive.staking._account(best, accountId, now)))
       )

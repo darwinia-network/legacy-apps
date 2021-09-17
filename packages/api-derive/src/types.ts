@@ -175,9 +175,10 @@ export type StakingLock = {
   unbondings: StakingLockUnbonding[];
 }
 
+// unused type
 export type StakingLockUnbonding = {
   amount: Balance;
-  moment: BlockNumber;
+  until: BlockNumber;
 }
 
 export type DerivedBalanceLock = {

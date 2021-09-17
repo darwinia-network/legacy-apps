@@ -27,12 +27,12 @@ function calcLocks (api: ApiInterfaceRx, locks: (BalanceLock)[], bestNumber: Blo
   locks.map(({ id, lockFor, reasons }) => {
     if (lockFor.isStaking) {
       let total: BN = lockFor.asStaking?.stakingAmount;
-      const _lockedBreakdown = lockFor.asStaking?.unbondings.filter(({ moment }): boolean => !moment || (bestNumber && moment.gt(bestNumber)));
+      const _lockedBreakdown = lockFor.asStaking?.unbondings.filter(({ until }): boolean => !until || (bestNumber && until.gt(bestNumber)));
 
-      lockedBreakdown = lockedBreakdown.concat(_lockedBreakdown.map(({ amount, moment }): DerivedBalanceLock => ({
+      lockedBreakdown = lockedBreakdown.concat(_lockedBreakdown.map(({ amount, until }): DerivedBalanceLock => ({
         id: id,
         amount,
-        until: moment,
+        until: until,
         reasons: reasons
       })));
       _lockedBreakdown.forEach(({ amount }) => { total = total.add(amount); });
