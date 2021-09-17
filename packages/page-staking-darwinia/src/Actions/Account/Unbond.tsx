@@ -17,9 +17,6 @@ import React from 'react';
 import styled from 'styled-components';
 import translate from '../../translate';
 
-
-
-
 interface Props extends I18nProps, ApiProps {
   controllerId?: AccountId | null;
   isOpen: boolean;
@@ -75,9 +72,9 @@ class Unbond extends TxComponent<Props, State> {
       <Modal
         className='staking--Unbond'
         header={t('Unbond funds')}
-        subheader={t('unbond tokens for staking, unbonded tokens become available after 14 days')}
         onCancel={onClose}
         size='small'
+        subheader={t('unbond tokens for staking, unbonded tokens become available after 14 days')}
       >
         {this.renderContent()}
         <Modal.Actions onCancel={onClose}>
@@ -154,10 +151,10 @@ class Unbond extends TxComponent<Props, State> {
       return;
     }
 
-    const { activeKton, activeRing } = staking_ledger.unwrap();
+    const { active, activeKton } = staking_ledger.unwrap();
 
     this.nextState({
-      maxBalance: currencyType === 'kton' ? activeKton.unwrap() : activeRing.unwrap()
+      maxBalance: currencyType === 'kton' ? activeKton.unwrap() : active.unwrap()
     });
   }
 

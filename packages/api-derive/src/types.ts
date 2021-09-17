@@ -3,7 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import type BN from 'bn.js';
-import { AccountId, Balance, BalanceOf, Bid, BidKind, BlockNumber, Hash, Index, Proposal, ProposalIndex, SetIndex, SocietyVote, StrikeCount, TreasuryProposal, Votes, VoteIndex, VouchingStatus, LockIdentifier, Moment } from '@polkadot/types/interfaces';
+import { AccountId, Balance, BalanceOf, Bid, BidKind, BlockNumber, Hash, Index, Proposal, ProposalIndex, SetIndex, SocietyVote, StrikeCount, TreasuryProposal, Votes, VoteIndex, VouchingStatus, LockIdentifier, Moment, EraIndex, UnlockChunk } from '@polkadot/types/interfaces';
 import { Reasons } from '@darwinia/types/interfaces';
 
 import { u32 } from '@polkadot/types';
@@ -150,14 +150,18 @@ export interface VoterPosition {
 
 export type DeriveVoterPositions = Record<string, VoterPosition>;
 
+// unused type
 export type DerivedLedger = {
   stash: AccountId;
-  activeRing: Balance;
+  active: Balance;
   activeDepositRing: Balance;
   activeKton: Balance;
   depositItems: DerivedLedgerDepositItem[];
   ringStakingLock: StakingLock;
   ktonStakingLock: StakingLock;
+  claimedRewards: EraIndex;
+  total: Balance;
+  unlocking: UnlockChunk;
 };
 
 export type DerivedLedgerDepositItem = {
@@ -171,9 +175,10 @@ export type StakingLock = {
   unbondings: StakingLockUnbonding[];
 }
 
+// unused type
 export type StakingLockUnbonding = {
   amount: Balance;
-  moment: BlockNumber;
+  until: BlockNumber;
 }
 
 export type DerivedBalanceLock = {
