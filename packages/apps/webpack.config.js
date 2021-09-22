@@ -30,7 +30,7 @@ function createWebpack ({ alias = {}, context, name = 'index' }) {
 
   return {
     context,
-    devtool,
+    devtool: 'source-map',
     entry: [
       '@babel/polyfill',
       `./src/${name}.tsx`,
