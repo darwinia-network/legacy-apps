@@ -58,3 +58,7 @@ export { default as childstate } from './childstate/definitions';
 export { default as offchain } from './offchain/definitions';
 export { default as payment } from './payment/definitions';
 export { default as state } from './state/definitions';
+
+// removed types in darwinia.js, restore here
+export { default as headerMMR } from './headerMMR/definitions';
+export { default as darwiniaInject } from './darwiniaInject/definitions';
