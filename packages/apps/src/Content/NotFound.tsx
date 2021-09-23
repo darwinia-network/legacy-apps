@@ -4,12 +4,16 @@
 
 import React from 'react';
 import { Redirect } from 'react-router';
+import settings from '@polkadot/ui-settings';
 
 type Props = {};
 
 function NotFound (): React.ReactElement<Props> {
   return (
-    <Redirect to='/account' />
+    <Redirect to={{
+      pathname: '/account',
+      search: location.search.includes('rpc') ? '' : encodeURIComponent(`rpc=${settings.apiUrl}`)
+    }} />
   );
 }
 

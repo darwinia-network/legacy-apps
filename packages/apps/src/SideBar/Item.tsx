@@ -13,6 +13,7 @@ import { Badge, Icon, Menu, Tooltip } from '@polkadot/react-components';
 import { useAccounts, useApi, useCall } from '@polkadot/react-hooks';
 import { isFunction } from '@polkadot/util';
 import modulesDisabled from '@polkadot/apps-config/module';
+import settings from '@polkadot/ui-settings';
 
 const DUMMY_COUNTER = (): number => 0;
 
@@ -142,7 +143,10 @@ function Item ({ isCollapsed, onClick, route }: Props): React.ReactElement<Props
             data-tip
             data-tip-disable={!isCollapsed}
             onClick={onClick}
-            to={`/${name}`}
+            to={{
+              pathname: `/${name}`,
+              search: apiProps.isApiReady && !location.search.includes('rpc') ? encodeURIComponent(`rpc=${settings.apiUrl}`) : ''
+            }}
           >
             {body}
           </NavLink>

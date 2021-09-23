@@ -12,7 +12,7 @@ import * as definitions from '@darwinia/types/interfaces/definitions';
 // we split here so that both these forms are allowed
 //  - http://localhost:3000/?rpc=wss://substrate-rpc.parity.io/#/explorer
 //  - http://localhost:3000/#/explorer?rpc=wss://substrate-rpc.parity.io
-const urlOptions = queryString.parse(location.href.split('?')[1]);
+const urlOptions = queryString.parse(decodeURIComponent(location.href.split('?')[1]));
 const stored = store.get('settings') || {};
 
 if (Array.isArray(urlOptions.rpc)) {
