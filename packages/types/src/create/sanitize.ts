@@ -18,7 +18,9 @@ const mappings: Mapper[] = [
   // <T::Balance as HasCompact>
   cleanupCompact(),
   // Change BoundedVec<Type, Size> to Vec<Type>
-  removeBounded(),
+  removeExtensions('Bounded', true),
+  // Change WeakVec<Type> to Vec<Type>
+  removeExtensions('Weak', false),
   // Remove all the trait prefixes
   removeTraits(),
   // remove PairOf<T> -> (T, T)
@@ -219,4 +221,23 @@ export default function sanitize (value: String | string, options?: SanitizeOpti
   return mappings.reduce<string>((result, fn) =>
     fn(result, options), value.toString()
   ).trim();
+}
+
+// remove the Bounded* or Weak* wrappers
+export function removeExtensions (type: string, isSized: boolean): Mapper {
+  return (value: string) =>
+    BOUNDED.reduce((value, tag) =>
+      replaceTagWith(value, `${type}${tag}<`, (inner: string): string => {
+        const parts = inner
+          .split(',')
+          .map((s) => s.trim())
+          .filter((s) => s);
+
+        if (isSized) {
+          parts.pop();
+        }
+
+        return `${tag}<${parts.join(',')}>`;
+      }), value
+    );
 }
