@@ -35,6 +35,11 @@ function createTest (t: (key: string, text: string, options: { ns: string }) => 
       info: 'pangolin',
       text: t('rpc.pangolin.darwinia', 'Pangolin Test Network (hosted by Darwinia)', { ns: 'apps-config' }),
       value: 'wss://pangolin-rpc.darwinia.network'
+    },
+    {
+      info: 'pangoro',
+      text: t('rpc.pangoro.darwinia', 'Pangoro Test Network (hosted by Darwinia)', { ns: 'apps-config' }),
+      value: 'wss://pangoro-rpc.darwinia.network'
     }
   ];
 }

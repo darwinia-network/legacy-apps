@@ -47,5 +47,6 @@ export default React.memo(styled(ChainImg)`
   box-sizing: border-box;
   img{
     width: 100%;
+    border-radius: 50%;
   }
 `);

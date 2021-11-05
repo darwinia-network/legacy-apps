@@ -10,7 +10,8 @@ export default {
     'Darwinia Crab': 'crab',
     'Darwinia CC1': 'darwinia',
     'Darwinia Devnet': 'darwinia',
-    Pangolin: 'pangolin'
+    Pangolin: 'pangolin',
+    Pangoro: 'pangoro'
   },
   create: (chain: string, path: string, data: BN | number | string): string =>
     `https://${chain}.subscan.io/${path}/${data.toString()}`,

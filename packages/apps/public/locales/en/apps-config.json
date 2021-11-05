@@ -16,6 +16,7 @@
   "rpc.kusama.w3f": "Kusama (Polkadot Canary, hosted by Web3 Foundation)",
   "rpc.local": "Local Node (Own, 127.0.0.1:9944)",
   "rpc.pangolin.darwinia": "Pangolin Test Network (hosted by Darwinia)",
+  "rpc.pangoro.darwinia": "Pangoro Test Network (hosted by Darwinia)",
   "rpc.westend": "Westend (Polkadot Testnet, hosted by Parity)",
   "ss58.centrifuge": "Centrifuge (live)",
   "ss58.crab": "Crab (live)",
