@@ -7,6 +7,7 @@ import chainDarwinia from './chains/darwinia.svg';
 import chainCrab from './chains/crab.svg';
 import chainDev from './chains/dev.svg';
 import chainPangolin from './chains/pangolin.svg';
+import chainPangoro from './chains/pangoro.svg';
 
 // defaults for the node type, assuming we don't have a specific chain, but rather match on the implementation
 import nodeSubstrate from './nodes/substrate-hexagon.svg';
@@ -25,7 +26,8 @@ const chainLogos: Record<string, any> = [
   ['darwinia', chainDarwinia],
   ['darwinia crab', chainCrab],
   ['darwinia network', chainDarwinia],
-  ['Pangolin', chainPangolin]
+  ['Pangolin', chainPangolin],
+  ['Pangoro', chainPangoro]
 ].reduce((logos, [chain, logo]): Record<string, any> => ({
   ...logos,
   [chain.toLowerCase()]: logo
@@ -39,7 +41,8 @@ const nodeLogos: Record<string, any> = [
   ['substrate-node', nodeSubstrate],
   ['darwinia crab', chainCrab],
   ['darwinia', chainDarwinia],
-  ['pangolin', chainPangolin]
+  ['pangolin', chainPangolin],
+  ['pangoro', chainPangoro]
 ].reduce((logos, [node, logo]): Record<string, any> => ({
   ...logos,
   [node.toLowerCase().replace(/-/g, ' ')]: logo
@@ -51,7 +54,8 @@ const namedLogos: Record<string, any> = {
   substrate: nodeSubstrate,
   crab: chainCrab,
   darwinia: chainDarwinia,
-  pangolin: chainPangolin
+  pangolin: chainPangolin,
+  pangoro: chainPangoro
 };
 
 // extension logos

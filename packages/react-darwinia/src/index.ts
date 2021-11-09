@@ -4,6 +4,7 @@ import { i18nT } from './types';
 const SUBSCAN_URL_CRAB = 'https://crab.webapi.subscan.io';
 const SUBSCAN_URL_DARWINIA = 'https://darwinia.webapi.subscan.io';
 const SUBSCAN_URL_PANGOLIN = 'https://pangolin.webapi.subscan.io';
+const SUBSCAN_URL_PANGORO = 'https://pangoro.webapi.subscan.io';
 const ETHERSCAN_URL = 'https://ropsten.etherscan.io';
 let KTON_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CKTON' };
 let RING_PROPERTIES = { ss58Format: 42, tokenDecimals: 9, tokenSymbol: 'CRING' };
@@ -37,12 +38,18 @@ const pangolinInstance = axios.create({
   timeout: 30000
 });
 
+const pangoroInstance = axios.create({
+  baseURL: SUBSCAN_URL_PANGORO,
+  timeout: 30000
+});
+
 export const instance = {
   'Darwinia Crab': crabInstance,
   'Darwinia CC1': darwiniaInstance,
   'Darwinia Devnet': darwiniaInstance,
   Darwinia: darwiniaInstance,
   Pangolin: pangolinInstance,
+  Pangoro: pangoroInstance
 };
 
 async function getBondList (instance, { address, locked = 0, page = 0, row = 10, status = 'bonded' }) {

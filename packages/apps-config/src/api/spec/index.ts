@@ -5,9 +5,11 @@
 import crab from './crab';
 import darwinia from './darwinia';
 import pangolin from './pangolin';
+import pangoro from './pangoro';
 
 export default {
   Crab: crab,
   Darwinia: darwinia,
-  Pangolin: pangolin
+  Pangolin: pangolin,
+  Pangoro: pangoro
 };

@@ -13,6 +13,7 @@ const chainLogoDarwiniaCrab = '#EC3783';
 const chainLogoEmpty = '#313131';
 const chainLogoDarwinia = 'linear-gradient(315deg, #FE3876 0%, #7C30DD 71%, #3A30DD 100%)';
 const chainLogoPangolin = '#5744DE';
+const chainLogoPangoro = chainLogoPangolin;
 
 const nodeCentrifuge = '#fcc367';
 const nodeEdgeware = '#0a95df';
@@ -55,7 +56,8 @@ const logoBgColors: Record<string, any> = [
   ['Darwinia CC2', chainLogoDarwinia],
   ['Darwinia CC3', chainLogoDarwinia],
   ['Darwinia Devnet', chainLogoDarwinia],
-  ['Pangolin', chainLogoPangolin]
+  ['Pangolin', chainLogoPangolin],
+  ['Pangoro', chainLogoPangoro]
 ].reduce((colors, [chain, color]): Record<string, any> => ({
   ...colors,
   [chain.toLowerCase()]: color
