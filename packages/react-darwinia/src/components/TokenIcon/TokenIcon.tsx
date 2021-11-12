@@ -30,6 +30,7 @@ const styles = `
 const tokenMap = {
   ring: ringImg,
   cring: cringImg,
+  crab: cringImg,
   pring: pringImg,
   kton: ktonImg,
   ckton: cktonImg,
