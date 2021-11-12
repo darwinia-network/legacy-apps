@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { tokenType } from './types';
 
 import ringImg from './img/ring.svg';
-import cringImg from './img/cring.png';
+import crabImg from './img/crab.png';
 import pringImg from './img/pring.svg';
 
 import ktonImg from './img/kton.svg';
@@ -29,7 +29,7 @@ const styles = `
 
 const tokenMap = {
   ring: ringImg,
-  cring: cringImg,
+  crab: crabImg,
   pring: pringImg,
   kton: ktonImg,
   ckton: cktonImg,

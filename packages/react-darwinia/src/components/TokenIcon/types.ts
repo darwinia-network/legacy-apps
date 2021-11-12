@@ -1,1 +1,1 @@
-export type tokenType = 'ring' | 'cring' | 'kton' | 'ckton' | 'pring' | 'pkton';
+export type tokenType = 'ring' | 'crab' | 'kton' | 'ckton' | 'pring' | 'pkton';
