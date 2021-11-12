@@ -9,7 +9,7 @@ import { Dropdown, Icon, Input, InputAddress, Static } from '@polkadot/react-com
 import keyring from '@polkadot/ui-keyring';
 import uiSettings from '@polkadot/ui-settings';
 import { isHex } from '@polkadot/util';
-import { naclVerify, schnorrkelVerify } from '@polkadot/util-crypto';
+import { signatureVerify } from '@polkadot/util-crypto';
 import styled from 'styled-components';
 
 import { useTranslation } from './translate';
@@ -45,33 +45,15 @@ function Verify (): React.ReactElement<{}> {
     let cryptoType: CryptoTypes = 'unknown';
     let isValid = isValidPk && isValidSignature;
 
-    // We cannot just use the keyring verify since it may be an address. So here we first check
-    // for ed25519, if not valid, we try against sr25519 - if neither are valid, well, we have
-    // not been able to validate the signature
+    // We use signatureVerify to detect validity and crypto type
     if (isValid && publicKey) {
-      let isValidSr = false;
-      let isValidEd = false;
+      const verification = signatureVerify(data, signature, publicKey);
 
-      try {
-        isValidEd = naclVerify(data, signature, publicKey);
-      } catch (error) {
-        // do nothing, already set to false
-      }
-
-      if (isValidEd) {
-        cryptoType = 'ed25519';
+      if (verification.crypto !== 'none') {
+        cryptoType = verification.crypto;
+        isValid = verification.isValid;
       } else {
-        try {
-          isValidSr = schnorrkelVerify(data, signature, publicKey);
-        } catch (error) {
-          // do nothing, already set to false
-        }
-
-        if (isValidSr) {
-          cryptoType = 'sr25519';
-        } else {
-          isValid = false;
-        }
+        isValid = false;
       }
     }
 
