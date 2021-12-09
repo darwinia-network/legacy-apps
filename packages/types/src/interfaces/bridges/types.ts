@@ -1,13 +1,13 @@
 // Auto-generated via `yarn polkadot-types-from-defs`, do not edit
 /* eslint-disable */
 
-import type { Bytes, Compact, Enum, Option, Struct, U8aFixed, Vec, bool, u128, u32, u64 } from '@polkadot/types';
+import type { Bytes, Compact, Enum, Option, Struct, U8aFixed, Vec, bool, u128, u32, u64, u8 } from '@polkadot/types';
 import type { ITuple } from '@polkadot/types/types';
 import type { AuthorityId } from '@polkadot/types/interfaces/consensus';
 import type { MultiSignature } from '@polkadot/types/interfaces/extrinsics';
 import type { AuthorityList, SetId } from '@polkadot/types/interfaces/grandpa';
 import type { AuthoritySignature } from '@polkadot/types/interfaces/imOnline';
-import type { AccountId, Consensus, H256, H512, PreRuntime, Seal, SealV0, Weight } from '@polkadot/types/interfaces/runtime';
+import type { AccountId, Consensus, H160, H256, H512, PreRuntime, Seal, SealV0, Weight } from '@polkadot/types/interfaces/runtime';
 
 /** @name AccountSigner */
 export interface AccountSigner extends MultiSigner {}
@@ -228,6 +228,15 @@ export interface SpecVersion extends u32 {}
 
 /** @name StorageProofItem */
 export interface StorageProofItem extends Bytes {}
+
+/** @name TokenMetadata */
+export interface TokenMetadata extends Struct {
+  readonly tokenType: u32;
+  readonly address: H160;
+  readonly name: Bytes;
+  readonly symbol: Bytes;
+  readonly decimal: u8;
+}
 
 /** @name UnrewardedRelayersState */
 export interface UnrewardedRelayersState extends Struct {
