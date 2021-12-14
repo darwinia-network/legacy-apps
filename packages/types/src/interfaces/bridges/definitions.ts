@@ -80,6 +80,13 @@ export default {
     },
     Parameter: 'Null',
     RelayerId: 'AccountId',
+    TokenMetadata: {
+      tokenType: 'u32',
+      address: 'H160',
+      name: 'Vec<u8>',
+      symbol: 'Vec<u8>',
+      decimal: 'u8'
+    },
     UnrewardedRelayer: {
       relayer: 'RelayerId',
       messages: 'DeliveredMessages'
