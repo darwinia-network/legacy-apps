@@ -30,6 +30,9 @@ export interface BridgedBlockNumber extends MillauBlockNumber {}
 /** @name BridgedHeader */
 export interface BridgedHeader extends MillauHeader {}
 
+/** @name BridgeMessageId */
+export interface BridgeMessageId extends ITuple<[LaneId, MessageNonce]> {}
+
 /** @name BridgedOpaqueCall */
 export interface BridgedOpaqueCall extends Bytes {}
 
