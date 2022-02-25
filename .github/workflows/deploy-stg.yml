@@ -25,6 +25,7 @@ jobs:
           vercel_token: ${{ secrets.VERCEL_TOKEN }}
           vercel_group: itering
           preview_output: true
+          dist_path: packages/apps/build
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2

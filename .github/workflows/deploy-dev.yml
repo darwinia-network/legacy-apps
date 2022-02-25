@@ -24,6 +24,7 @@ jobs:
           vercel_token: ${{ secrets.VERCEL_TOKEN }}
           vercel_group: itering
           preview_output: true
+          dist_path: packages/apps/build
 
       - uses: marocchino/sticky-pull-request-comment@v2
         with:

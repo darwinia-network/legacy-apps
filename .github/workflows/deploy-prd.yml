@@ -27,6 +27,7 @@ jobs:
           vercel_group: itering
           preview_output: true
           prod_mode: true
+          dist_path: packages/apps/build
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
